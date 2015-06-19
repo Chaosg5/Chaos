@@ -17,6 +17,24 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# C-Sharp
+*.projdata
+*.pdb
+*.exe
+*.dll
+obj
+tmp
+temp
+bin
+*proj.user
+*.o
+*.obj
+*.ncb
+*.suo
+*.pyc
+*dotsettings.user
+StyleCop.Cache
+
 # =========================
 # Operating System Files
 # =========================
