@@ -7,6 +7,7 @@
 namespace Chaos.Movies.Model.Exceptions
 {
     using System;
+    using System.Globalization;
     using System.Runtime.Serialization;
 
     /// <summary>Exception caused by invalid configuration in the form's settings XML.</summary>
@@ -19,9 +20,17 @@ namespace Chaos.Movies.Model.Exceptions
         }
 
         /// <summary>Initializes a new instance of the <see cref="MissingColumnException"/> class with a specified error message.</summary>
+        /// <param name="column">The name of the missing column.</param>
+        public MissingColumnException(string column)
+            : base(string.Format(CultureInfo.InvariantCulture, "Missing column '{0}'.", column))
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="MissingColumnException"/> class with a specified error message.</summary>
+        /// <param name="column">The name of the missing column.</param>
         /// <param name="message">The message that describes the error.</param>
-        public MissingColumnException(string message)
-            : base(message)
+        public MissingColumnException(string column, string message)
+            : base(string.Format(CultureInfo.InvariantCulture, "Missing column '{0}'. {1}", column, message))
         {
         }
 

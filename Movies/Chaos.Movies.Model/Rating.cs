@@ -8,18 +8,18 @@ namespace Chaos.Movies.Model
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Data;
+    using System.Data.SqlClient;
     using System.Linq;
+    using Exceptions;
 
     /// <summary>A rating for a <see cref="Movie"/> set by a <see cref="User"/>.</summary>
     public class Rating
     {
         #region Fields
 
-        /// <summary>The set value of the rating.</summary>
-        private double assignedValue = -1;
-
         /// <summary>The set and derived value of the rating.</summary>
-        private RatingValue ratingValue;
+        private readonly RatingValue ratingValue = new RatingValue(-1, -1);
 
         /// <summary>The list of sub ratings for this rating.</summary>
         private readonly List<Rating> subRatings = new List<Rating>();
@@ -40,7 +40,7 @@ namespace Chaos.Movies.Model
         /// <param name="ratingType">The type of the rating.</param>
         public Rating(int assignedValue, RatingType ratingType)
         {
-            this.assignedValue = assignedValue;
+            this.ratingValue.Value = assignedValue;
             this.RatingType = ratingType;
         }
 
@@ -65,7 +65,7 @@ namespace Chaos.Movies.Model
         {
             get
             {
-                if (this.ratingValue == null)
+                if (this.ratingValue.Value < 0 || this.ratingValue.Derived < 0)
                 {
                     this.GetRatings(null);
                 }
@@ -79,6 +79,13 @@ namespace Chaos.Movies.Model
         #region Methods
 
         #region Public
+
+        /// <summary>Sets the value of this rating.</summary>
+        /// <param name="value">The value to set.</param>
+        public void SetValue(int value)
+        {
+            this.ratingValue.Value = value;
+        }
 
         /// <summary>Adds a sub rating to this rating.</summary>
         /// <param name="rating">The sub rating to add.</param>
@@ -104,31 +111,129 @@ namespace Chaos.Movies.Model
                 derivedValues.Add(childRating.RatingType, childRating.Value);
             }
 
-            this.ratingValue = this.CalculateValue(derivedValues, ratingSystem);
+            this.CalculateValue(derivedValues, ratingSystem);
             return allRatings;
+        }
+
+        /// <summary>Saves this rating to the database.</summary>
+        public void Save()
+        {
+            ValidateSaveCandidate(this);
+            SaveToDatabase(this);
+        }
+
+        /// <summary>Saves this rating to the database.</summary>
+        public void SaveAll()
+        {
+            ValidateAllSaveCandidates(this);
+            SaveAllToDatabase(this);
+        }
+
+        /// <summary>Validates that the <paramref name="rating"/> is valid to be saved.</summary>
+        /// <param name="rating">The rating type to validate.</param>
+        private static void ValidateAllSaveCandidates(Rating rating)
+        {
+            ValidateSaveCandidate(rating);
+            foreach (var subtype in rating.subRatings)
+            {
+                ValidateAllSaveCandidates(subtype);
+            }
+        }
+
+        /// <summary>Validates that the <paramref name="rating"/> is valid to be saved.</summary>
+        /// <param name="rating">The rating type to validate.</param>
+        private static void ValidateSaveCandidate(Rating rating)
+        {
+            if (rating.Id < 0)
+            {
+                throw new InvalidSaveCandidateException("The 'Id' can not be less than zero.");
+            }
+
+            if (rating.RatingType.Id <= 0)
+            {
+                throw new InvalidSaveCandidateException("The 'RatingType.Id' must be greater than zero.");
+            }
+
+            if (rating.ratingValue.Value < 0)
+            {
+                rating.ratingValue.Value = 0;
+            }
         }
 
         #endregion
 
+        #region Private
+
+        /// <summary>Updates a rating from a data record.</summary>
+        /// <param name="rating">The rating to update.</param>
+        /// <param name="record">The record containing the data for the rating.</param>
+        private static void ReadFromRecord(Rating rating, IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { "Id", "RatingTypeId", "Value" });
+            rating.Id = (int)record["Id"];
+            rating.ratingValue.Value = (int)record["Value"];
+
+            var ratingTypeId = (int)record["RatingTypeId"];
+            if (rating.RatingType.Id != ratingTypeId)
+            {
+                rating.RatingType = new RatingType(ratingTypeId);
+            }
+        }
+
+        /// <summary>Saves this rating to the database.</summary>
+        /// <param name="rating">The type to save.</param>
+        private static void SaveToDatabase(Rating rating)
+        {
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("RatingSave", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@Id", rating.Id));
+                command.Parameters.Add(new SqlParameter("@RatingTypeId", rating.RatingType.Id));
+                command.Parameters.Add(new SqlParameter("@Value", rating.ratingValue.Value));
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        ReadFromRecord(rating, reader);
+                    }
+                }
+            }
+        }
+
+        /// <summary>Saves this rating to the database.</summary>
+        /// <param name="rating">The type to save.</param>
+        private static void SaveAllToDatabase(Rating rating)
+        {
+            SaveToDatabase(rating);
+            foreach (var subRating in rating.subRatings)
+            {
+                SaveToDatabase(subRating);
+            }
+        }
+
         /// <summary>Calculates the derived value of this <see cref="Rating"/>.</summary>
         /// <param name="derivedValues">The list of derived sub values.</param>
         /// <param name="ratingSystem">The rating value system to calculate values based on.</param>
-        /// <returns>The set value and derived value.</returns>
-        private RatingValue CalculateValue(Dictionary<RatingType, double> derivedValues, RatingSystem ratingSystem)
+        private void CalculateValue(Dictionary<RatingType, double> derivedValues, RatingSystem ratingSystem)
         {
-            if (this.assignedValue < 0)
+            if (this.ratingValue.Value < 0)
             {
-                this.assignedValue = 0;
+                this.ratingValue.Value = 0;
             }
 
             if (!derivedValues.Any())
             {
-                return new RatingValue(this.assignedValue, 0);
+                this.ratingValue.Derived = 0;
+                return;
             }
 
             if (ratingSystem == null)
             {
-                return new RatingValue(this.assignedValue, derivedValues.Values.Average());
+                this.ratingValue.Derived = derivedValues.Values.Average();
+                return;
             }
 
             double ratingTotal = 0;
@@ -136,25 +241,28 @@ namespace Chaos.Movies.Model
             foreach (var systemValue in ratingSystem.Values)
             {
                 // ReSharper disable once LoopCanBePartlyConvertedToQuery - http://stackoverflow.com/questions/15837313/foreach-variable-in-closure-why-results-differ-for-these-snippets
-                foreach (var t in derivedValues)
+                foreach (var childValue in derivedValues)
                 {
-                    if (t.Key.Id != systemValue.Key.Id)
+                    if (childValue.Key.Id != systemValue.Key.Id || childValue.Value <= 0)
                     {
                         continue;
                     }
 
-                    ratingTotal += systemValue.Value * t.Value;
+                    ratingTotal += systemValue.Value * childValue.Value;
                     systemTotal += systemValue.Value;
                 }
             }
 
             if (!(ratingTotal > 0 && systemTotal > 0))
             {
-                return new RatingValue(this.assignedValue, 0);
+                this.ratingValue.Derived = 0;
+                return;
             }
 
-            return new RatingValue(this.assignedValue, ratingTotal / systemTotal);
+            this.ratingValue.Derived = ratingTotal / systemTotal;
         }
+
+        #endregion
 
         #endregion
     }

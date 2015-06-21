@@ -12,14 +12,14 @@ namespace Chaos.Movies.Model
         /// <summary>Initializes a new instance of the <see cref="RatingValue" /> class.</summary>
         /// <param name="value">The value to set for <see cref="Value"/>.</param>
         /// <param name="derived">The value to set for <see cref="Derived"/>.</param>
-        public RatingValue(double value, double derived)
+        public RatingValue(int value, double derived)
         {
             this.Value = value;
             this.Derived = derived;
         }
 
         /// <summary>Gets the value of the rating.</summary>
-        public double Value { get; set; }
+        public int Value { get; set; }
 
         /// <summary>Gets the derived value from sub ratings.</summary>
         public double Derived { get; set; }
