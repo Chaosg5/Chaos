@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--https://msdn.microsoft.com/en-us/library/bb514188.aspx-->
+<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>IMDB</Word>
+      <Word>TMDB</Word>
+      <Word>CMDB</Word>
+    </Recognized>
+  </Words>
+</Dictionary>

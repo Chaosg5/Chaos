@@ -7,6 +7,7 @@
 namespace Chaos.Movies.Model
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     /// <summary>A movie or a series.</summary>
     public class Movie
@@ -21,9 +22,9 @@ namespace Chaos.Movies.Model
         public int TmdbId { get; private set; }
 
         /// <summary>The list of title of the movie in different languages.</summary>
-        public List<MovieTitle> Titles { get; private set; }
+        public ReadOnlyCollection<MovieTitle> Titles { get; private set; }
 
         /// <summary>The list of genres that the movie belongs to.</summary>
-        public List<Genre> Genres { get; private set; } 
+        public ReadOnlyCollection<Genre> Genres { get; private set; } 
     }
 }

@@ -4,86 +4,158 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Chaos.Movies.Model
 {
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+
     /// <summary>A rating for a <see cref="Movie"/> set by a <see cref="User"/>.</summary>
     public class Rating
     {
-        private short value = 0;
+        #region Fields
 
-        private decimal derivedValue = -1;
+        /// <summary>The set value of the rating.</summary>
+        private double assignedValue = -1;
 
-        /// <summary>The id of this rating.</summary>
+        /// <summary>The set and derived value of the rating.</summary>
+        private RatingValue ratingValue;
+
+        /// <summary>The list of sub ratings for this rating.</summary>
+        private readonly List<Rating> subRatings = new List<Rating>();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>Initializes a new instance of the <see cref="Rating" /> class.</summary>
+        /// <param name="ratingType">The type of the rating.</param>
+        public Rating(RatingType ratingType)
+        {
+            this.RatingType = ratingType;
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="Rating" /> class.</summary>
+        /// <param name="assignedValue">The value to set.</param>
+        /// <param name="ratingType">The type of the rating.</param>
+        public Rating(int assignedValue, RatingType ratingType)
+        {
+            this.assignedValue = assignedValue;
+            this.RatingType = ratingType;
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>Gets the id of this rating.</summary>
         public int Id { get; private set; }
 
+        /// <summary>Gets the type of this rating.</summary>
         public RatingType RatingType { get; private set; }
 
-        public List<Rating> SubRatings { get; private set; }
+        /// <summary>Gets the child ratings of this rating.</summary>
+        public ReadOnlyCollection<Rating> SubRatings
+        {
+            get { return this.subRatings.AsReadOnly(); }
+        }
 
         /// <summary>Gets the values of this rating.</summary>
-        public decimal Value
+        public double Value
         {
             get
             {
-                if (this.derivedValue == -1)
+                if (this.ratingValue == null)
                 {
                     this.GetRatings(null);
                 }
 
-                return this.derivedValue;
+                return this.ratingValue.Value > 0 ? this.ratingValue.Value : this.ratingValue.Derived;
             }
         }
 
+        #endregion
+
+        #region Methods
+
+        #region Public
+
+        /// <summary>Adds a sub rating to this rating.</summary>
+        /// <param name="rating">The sub rating to add.</param>
+        public void AddSubRating(Rating rating)
+        {
+            this.subRatings.Add(rating);
+        }
+
         /// <summary>Gets the list of values for this rating.</summary>
+        /// <param name="ratingSystem">The rating value system to calculate values based on.</param>
         /// <returns>The list of set rating values.</returns>
         public Dictionary<RatingType, RatingValue> GetRatings(RatingSystem ratingSystem)
         {
             var allRatings = new Dictionary<RatingType, RatingValue>();
-            var derivedValues = new Dictionary<RatingType, decimal>();
-            foreach (var childRating in this.SubRatings)
+            var derivedValues = new Dictionary<RatingType, double>();
+            foreach (var childRating in this.subRatings)
             {
-                allRatings.Add(childRating.GetRatings(ratingSystem));
-                derivedValues.Add(childRating.RatingType, childRating.value);
+                foreach (var rating in childRating.GetRatings(ratingSystem))
+                {
+                    allRatings.Add(rating.Key, rating.Value);
+                }
+
+                derivedValues.Add(childRating.RatingType, childRating.Value);
             }
 
-
+            this.ratingValue = this.CalculateValue(derivedValues, ratingSystem);
+            return allRatings;
         }
 
-        private RatingValue CalculateValue(Dictionary<RatingType, decimal> derivedValues, RatingSystem ratingSystem)
+        #endregion
+
+        /// <summary>Calculates the derived value of this <see cref="Rating"/>.</summary>
+        /// <param name="derivedValues">The list of derived sub values.</param>
+        /// <param name="ratingSystem">The rating value system to calculate values based on.</param>
+        /// <returns>The set value and derived value.</returns>
+        private RatingValue CalculateValue(Dictionary<RatingType, double> derivedValues, RatingSystem ratingSystem)
         {
-            if (this.value > 0)
+            if (this.assignedValue < 0)
             {
-                return new RatingValue(this.value, false);
+                this.assignedValue = 0;
             }
 
-            if (derivedValues.Count() == 0)
+            if (!derivedValues.Any())
             {
-                return new RatingValue(0, true);
+                return new RatingValue(this.assignedValue, 0);
             }
 
             if (ratingSystem == null)
             {
-                return new RatingValue(derivedValues.Values.Average(), true);
+                return new RatingValue(this.assignedValue, derivedValues.Values.Average());
             }
 
-            foreach (var ratingType in ratingSystem.Values)
+            double ratingTotal = 0;
+            double systemTotal = 0;
+            foreach (var systemValue in ratingSystem.Values)
             {
+                // ReSharper disable once LoopCanBePartlyConvertedToQuery - http://stackoverflow.com/questions/15837313/foreach-variable-in-closure-why-results-differ-for-these-snippets
                 foreach (var t in derivedValues)
                 {
-                    if (t.Key.Id != ratingType.Key.Id)
+                    if (t.Key.Id != systemValue.Key.Id)
                     {
                         continue;
                     }
+
+                    ratingTotal += systemValue.Value * t.Value;
+                    systemTotal += systemValue.Value;
                 }
-
-                string s; 
-                s = "string";
-
             }
 
+            if (!(ratingTotal > 0 && systemTotal > 0))
+            {
+                return new RatingValue(this.assignedValue, 0);
+            }
+
+            return new RatingValue(this.assignedValue, ratingTotal / systemTotal);
         }
+
+        #endregion
     }
 }
