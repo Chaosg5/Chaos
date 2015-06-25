@@ -8,7 +8,7 @@ namespace Chaos.Movies.Model.Tests
     [TestFixture]
     public class RatingTest
     {
-        [TestCase("2:25;3:50;4:25;5:75;6:25", "2:4;3:3-5:4-6:5;4-3", 3.5)]
+        [TestCase("2:25;3:50;4:25;5:75;6:25", "2:4;3:3-5:4-6:5;4:3", 3.5)]
         public void TestRatingCalculate(string systemString, string ratingString, double expectedResult)
         {
             var ratingSystem = this.GetRatingSystem(systemString);
@@ -42,7 +42,7 @@ namespace Chaos.Movies.Model.Tests
         {
             var system = new RatingSystem();
             var types = systemString.Split(new[] { ";" }, StringSplitOptions.None);
-            foreach (var values in types.Select(type => type.Split(new[] { ";" }, StringSplitOptions.None)))
+            foreach (var values in types.Select(type => type.Split(new[] { ":" }, StringSplitOptions.None)))
             {
                 system.AddValue(new RatingType(int.Parse(values[0])), short.Parse(values[1]));
             }

@@ -146,12 +146,12 @@ namespace Chaos.Movies.Model
         {
             if (rating.Id < 0)
             {
-                throw new InvalidSaveCandidateException("The 'Id' can not be less than zero.");
+                throw new InvalidSaveCandidateException("The id of the rating can not be less than zero.");
             }
 
             if (rating.RatingType.Id <= 0)
             {
-                throw new InvalidSaveCandidateException("The 'RatingType.Id' must be greater than zero.");
+                throw new InvalidSaveCandidateException("The id of the rating's type must be greater than zero.");
             }
 
             if (rating.ratingValue.Value < 0)
