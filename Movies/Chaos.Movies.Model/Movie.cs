@@ -12,6 +12,27 @@ namespace Chaos.Movies.Model
     /// <summary>A movie or a series.</summary>
     public class Movie
     {
+        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
+        private readonly List<MovieTitle> titles = new List<MovieTitle>();
+
+        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
+        private readonly List<Genre> genres = new List<Genre>();
+
+        /// <summary>Private part of the <see cref="Images"/> property.</summary>
+        private readonly List<Icon> images = new List<Icon>();
+
+        /// <summary>Private part of the <see cref="UserRating"/> property.</summary>
+        private readonly Rating userRating = new Rating(new RatingType(1));
+
+        /// <summary>Private part of the <see cref="TotalRating"/> property.</summary>
+        private readonly Rating totalRating = new Rating(new RatingType(1));
+
+        /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
+        public Movie()
+        {
+            
+        }
+
         /// <summary>The id of the movie.</summary>
         public int Id { get; private set; }
 
@@ -22,9 +43,42 @@ namespace Chaos.Movies.Model
         public int TmdbId { get; private set; }
 
         /// <summary>The list of title of the movie in different languages.</summary>
-        public ReadOnlyCollection<MovieTitle> Titles { get; private set; }
+        public ReadOnlyCollection<MovieTitle> Titles
+        {
+            get { return this.titles.AsReadOnly(); }
+        }
 
         /// <summary>The list of genres that the movie belongs to.</summary>
-        public ReadOnlyCollection<Genre> Genres { get; private set; } 
+        public ReadOnlyCollection<Genre> Genres
+        {
+            get { return this.genres.AsReadOnly(); }
+        }
+
+        /// <summary>The list of images for the movie and their order as represented by the key.</summary>
+        public ReadOnlyCollection<Icon> Images
+        {
+            get { return this.images.AsReadOnly(); }
+        }
+        
+        /// <summary>The total rating score from the current user.</summary>
+        public Rating UserRating
+        {
+            get { return this.userRating; }
+        }
+
+        /// <summary>The total rating score from all users.</summary>
+        public Rating TotalRating
+        {
+            get { return this.totalRating; }
+        }
+
+        #region Methods
+
+        #region Private
+
+
+        #endregion
+
+        #endregion
     }
 }

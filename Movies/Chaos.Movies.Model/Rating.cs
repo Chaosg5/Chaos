@@ -11,6 +11,7 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Data.SqlClient;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using Exceptions;
 
     /// <summary>A rating for a <see cref="Movie"/> set by a <see cref="User"/>.</summary>
@@ -49,7 +50,13 @@ namespace Chaos.Movies.Model
         #region Properties
 
         /// <summary>Gets the id of this rating.</summary>
-        public int Id { get; private set; }
+        public uint Id { get; private set; }
+
+        /// <summary>The id of the parent <see cref="Rating"/>.</summary>
+        public uint ParentRatingId { get; private set; }
+
+        /// <summary>The id of the <see cref="User"/> who owns the rating.</summary>
+        public uint UserId { get; private set; }
 
         /// <summary>Gets the type of this rating.</summary>
         public RatingType RatingType { get; private set; }
@@ -129,6 +136,10 @@ namespace Chaos.Movies.Model
             SaveAllToDatabase(this);
         }
 
+        #endregion
+
+        #region Private
+
         /// <summary>Validates that the <paramref name="rating"/> is valid to be saved.</summary>
         /// <param name="rating">The rating type to validate.</param>
         private static void ValidateAllSaveCandidates(Rating rating)
@@ -144,14 +155,14 @@ namespace Chaos.Movies.Model
         /// <param name="rating">The rating type to validate.</param>
         private static void ValidateSaveCandidate(Rating rating)
         {
-            if (rating.Id < 0)
-            {
-                throw new InvalidSaveCandidateException("The id of the rating can not be less than zero.");
-            }
-
-            if (rating.RatingType.Id <= 0)
+            if (rating.RatingType.Id == 0)
             {
                 throw new InvalidSaveCandidateException("The id of the rating's type must be greater than zero.");
+            }
+
+            if (rating.UserId == 0)
+            {
+                throw new InvalidSaveCandidateException("The id of the rating's user must be greater than zero.");
             }
 
             if (rating.ratingValue.Value < 0)
@@ -160,24 +171,22 @@ namespace Chaos.Movies.Model
             }
         }
 
-        #endregion
-
-        #region Private
-
         /// <summary>Updates a rating from a data record.</summary>
         /// <param name="rating">The rating to update.</param>
         /// <param name="record">The record containing the data for the rating.</param>
         private static void ReadFromRecord(Rating rating, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "Id", "RatingTypeId", "Value" });
-            rating.Id = (int)record["Id"];
+            Persistent.ValidateRecord(record, new[] { "Id", "RatingTypeId", "Value", "UserId" });
+            rating.Id = (uint)record["Id"];
             rating.ratingValue.Value = (int)record["Value"];
 
-            var ratingTypeId = (int)record["RatingTypeId"];
+            var ratingTypeId = (uint)record["RatingTypeId"];
             if (rating.RatingType.Id != ratingTypeId)
             {
                 rating.RatingType = new RatingType(ratingTypeId);
             }
+
+            rating.UserId = (uint)record["UserId"];
         }
 
         /// <summary>Saves this rating to the database.</summary>
@@ -210,6 +219,7 @@ namespace Chaos.Movies.Model
             SaveToDatabase(rating);
             foreach (var subRating in rating.subRatings)
             {
+                subRating.ParentRatingId = rating.Id;
                 SaveToDatabase(subRating);
             }
         }

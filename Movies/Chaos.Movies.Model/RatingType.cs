@@ -15,12 +15,14 @@ namespace Chaos.Movies.Model
     /// <summary>A sub rating with a defined type.</summary>
     public class RatingType
     {
+        // ToDo: Split Save to Save and SaveAll
+
         /// <summary>The sub types of this rating type.</summary>
         private readonly List<RatingType> subtypes = new List<RatingType>();
 
         /// <summary>Initializes a new instance of the <see cref="RatingType" /> class.</summary>
         /// <param name="id">The id of the type.</param>
-        public RatingType(int id)
+        public RatingType(uint id)
         {
             this.Id = id;
         }
@@ -29,7 +31,7 @@ namespace Chaos.Movies.Model
         /// <param name="id">The id of the type.</param>
         /// <param name="name">The name of the type.</param>
         /// <param name="description">The description of the type.</param>
-        public RatingType(int id, string name, string description)
+        public RatingType(uint id, string name, string description)
         {
             this.Id = id;
             this.Name = name;
@@ -53,7 +55,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the id of this rating type.</summary>
-        public int Id { get; private set; }
+        public uint Id { get; private set; }
 
         /// <summary>Gets the name of this rating type.</summary>
         public string Name { get; private set; }
@@ -88,11 +90,6 @@ namespace Chaos.Movies.Model
         /// <param name="type">The rating type to validate.</param>
         private static void ValidateSaveCandidates(RatingType type)
         {
-            if (type.Id < 0)
-            {
-                throw new InvalidSaveCandidateException("The 'Id' can not be less than zero.");
-            }
-
             if (string.IsNullOrEmpty(type.Name))
             {
                 throw new InvalidSaveCandidateException("The 'Name' can not be empty.");
@@ -110,12 +107,12 @@ namespace Chaos.Movies.Model
         private static void ReadFromRecord(RatingType type, IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "Id", "Name", "Description" });
-            type.Id = (int)record["Id"];
+            type.Id = (uint)record["Id"];
             type.Name = record["Name"].ToString();
             type.Description = record["Description"].ToString();
         }
 
-        /// <summary>Saves this rating type to the database.</summary>
+        /// <summary>Saves a rating type to the database.</summary>
         /// <param name="type">The rating type to save.</param>
         private static void SaveToDatabase(RatingType type)
         {
