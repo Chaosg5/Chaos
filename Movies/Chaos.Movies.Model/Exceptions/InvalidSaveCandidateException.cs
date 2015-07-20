@@ -9,7 +9,7 @@ namespace Chaos.Movies.Model.Exceptions
     using System;
     using System.Runtime.Serialization;
 
-    /// <summary>Exception caused by invalid configuration in the form's settings XML.</summary>
+    /// <summary>Exception caused when trying to save an object which does not contain all required data for the instanced class to save it to the database.</summary>
     [Serializable]
     public class InvalidSaveCandidateException : Exception
     {

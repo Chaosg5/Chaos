@@ -47,9 +47,14 @@ namespace Chaos.Movies.Model
         {
             get
             {
-                if (this.types == null)
+                if (this.types != null)
                 {
-                    this.types = new List<WatchType>();
+                    return this.types.AsReadOnly();
+                }
+
+                this.types = new List<WatchType>();
+                if (this.Id > 0)
+                {
                     // ToDo: Read from database
                 }
 

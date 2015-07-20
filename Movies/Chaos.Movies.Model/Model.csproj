@@ -47,6 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\UserChangeNotAllowedException.cs" />
     <Compile Include="MovieSet.cs" />
     <Compile Include="Exceptions\InvalidRecordValueException.cs" />
     <Compile Include="Exceptions\MissingColumnException.cs" />

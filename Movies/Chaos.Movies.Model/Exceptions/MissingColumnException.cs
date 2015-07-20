@@ -7,10 +7,11 @@
 namespace Chaos.Movies.Model.Exceptions
 {
     using System;
+    using System.Data;
     using System.Globalization;
     using System.Runtime.Serialization;
 
-    /// <summary>Exception caused by invalid configuration in the form's settings XML.</summary>
+    /// <summary>Exception caused when an <see cref="IDataRecord"/> does not contain all the required columns.</summary>
     [Serializable]
     public class MissingColumnException : Exception
     {

@@ -6,7 +6,7 @@
     <ProjectGuid>{5B768037-DEDF-4B98-9B18-20EACD09D89F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Chaos.Movies.Model.Test</RootNamespace>
+    <RootNamespace>Chaos.Movies.Model.Tests</RootNamespace>
     <AssemblyName>Chaos.Movies.Model.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

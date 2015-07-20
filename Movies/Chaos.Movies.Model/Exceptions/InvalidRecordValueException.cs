@@ -7,9 +7,10 @@
 namespace Chaos.Movies.Model.Exceptions
 {
     using System;
+    using System.Data;
     using System.Runtime.Serialization;
 
-    /// <summary>Exception caused by invalid configuration in the form's settings XML.</summary>
+    /// <summary>Exception caused by trying to update an object with a <see cref="IDataRecord"/> which does not contain data that matched the instanced class.</summary>
     [Serializable]
     public class InvalidRecordValueException : Exception
     {

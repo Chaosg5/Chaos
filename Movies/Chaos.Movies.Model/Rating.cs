@@ -11,7 +11,6 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Data.SqlClient;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using Exceptions;
 
     /// <summary>A rating for a <see cref="Movie"/> set by a <see cref="User"/>.</summary>
