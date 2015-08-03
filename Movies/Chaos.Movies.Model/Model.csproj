@@ -58,6 +58,10 @@
     <Compile Include="Movie.cs" />
     <Compile Include="MovieTitle.cs" />
     <Compile Include="Persistent.cs" />
+    <Compile Include="Department.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rating.cs" />
     <Compile Include="RatingSystem.cs" />

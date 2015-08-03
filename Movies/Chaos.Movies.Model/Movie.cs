@@ -12,6 +12,8 @@ namespace Chaos.Movies.Model
     /// <summary>A movie or a series.</summary>
     public class Movie
     {
+        #region Fields
+
         /// <summary>Private part of the <see cref="Titles"/> property.</summary>
         private readonly List<MovieTitle> titles = new List<MovieTitle>();
 
@@ -27,11 +29,19 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="TotalRating"/> property.</summary>
         private readonly Rating totalRating = new Rating(new RatingType(1));
 
+        #endregion
+
+        #region Constructors
+
         /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
         public Movie()
         {
-            
+
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>The id of the movie.</summary>
         public int Id { get; private set; }
@@ -59,7 +69,7 @@ namespace Chaos.Movies.Model
         {
             get { return this.images.AsReadOnly(); }
         }
-        
+
         /// <summary>The total rating score from the current user.</summary>
         public Rating UserRating
         {
@@ -72,12 +82,25 @@ namespace Chaos.Movies.Model
             get { return this.totalRating; }
         }
 
+        public MovieDepartments Departments { get; private set; }
+
+        #endregion
+
         #region Methods
 
         #region Private
 
 
         #endregion
+
+        #endregion
+
+        #region Classes
+
+        public class MovieDepartments
+        {
+             
+        }
 
         #endregion
     }
