@@ -138,7 +138,7 @@ namespace Chaos.Movies.Model
             watch.UserId = (uint)record["UserId"];
 
             DateTime watchDate;
-            if (!DateTime.TryParse(record["Id"].ToString(), out watchDate))
+            if (!DateTime.TryParse(record["WatchedDate"].ToString(), out watchDate))
             {
                 throw new InvalidRecordValueException();
             }
