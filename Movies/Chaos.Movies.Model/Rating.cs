@@ -175,8 +175,8 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the rating.</param>
         private static void ReadFromRecord(Rating rating, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "Id", "RatingTypeId", "Value", "UserId" });
-            rating.Id = (uint)record["Id"];
+            Persistent.ValidateRecord(record, new[] { "RatingId", "RatingTypeId", "Value", "UserId" });
+            rating.Id = (uint)record["RatingId"];
             rating.ratingValue.Value = (int)record["Value"];
 
             var ratingTypeId = (uint)record["RatingTypeId"];
@@ -196,7 +196,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("RatingSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@Id", rating.Id));
+                command.Parameters.Add(new SqlParameter("@RatingId", rating.Id));
                 command.Parameters.Add(new SqlParameter("@RatingTypeId", rating.RatingType.Id));
                 command.Parameters.Add(new SqlParameter("@Value", rating.ratingValue.Value));
                 connection.Open();

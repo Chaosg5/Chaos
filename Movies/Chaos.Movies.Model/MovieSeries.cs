@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Collection.cs">
+// <copyright file="MovieSeries.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -10,20 +10,26 @@ namespace Chaos.Movies.Model
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    /// <summary>A collection of movies.</summary>
-    public class MovieSet
+    /// <summary>A serie of movies.</summary>
+    public class MovieSeries
     {
-        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
-        private readonly List<MovieTitle> titles = new List<MovieTitle>();
-
         /// <summary>Private part of the <see cref="Movies"/> property.</summary>
         private List<Movie> movies = new List<Movie>();
 
-        /// <summary>The list of title of the movie collection in different languages.</summary>
-        public ReadOnlyCollection<MovieTitle> Titles
+        /// <summary>Initializes a new instance of the <see cref="MovieSeries" /> class.</summary>
+        public MovieSeries()
         {
-            get { return this.titles.AsReadOnly(); }
+            this.Titles = new LanguageTitles();
         }
+
+        /// <summary>The id of the movie series.</summary>
+        public int Id { get; private set; }
+
+        /// <summary>The type of the movie series.</summary>
+        public MovieSeriesType MovieSeriesType { get; private set; }
+
+        /// <summary>The list of title of the movie collection in different languages.</summary>
+        public LanguageTitles Titles { get; private set; }
 
         /// <summary>The movies which are a part of this collection with the keys representing their order.</summary>
         public ReadOnlyCollection<Movie> Movies

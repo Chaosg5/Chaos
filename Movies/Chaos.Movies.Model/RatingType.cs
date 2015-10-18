@@ -82,13 +82,13 @@ namespace Chaos.Movies.Model
         /// <summary>Saves this rating type to the database.</summary>
         public void Save()
         {
-            ValidateSaveCandidates(this);
+            ValidateSaveCandidate(this);
             SaveToDatabase(this);
         }
 
         /// <summary>Validates that the <paramref name="type"/> is valid to be saved.</summary>
         /// <param name="type">The rating type to validate.</param>
-        private static void ValidateSaveCandidates(RatingType type)
+        private static void ValidateSaveCandidate(RatingType type)
         {
             if (string.IsNullOrEmpty(type.Name))
             {
@@ -97,7 +97,7 @@ namespace Chaos.Movies.Model
 
             foreach (var subtype in type.subtypes)
             {
-                ValidateSaveCandidates(subtype);
+                ValidateSaveCandidate(subtype);
             }
         }
 
@@ -106,8 +106,8 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the rating type.</param>
         private static void ReadFromRecord(RatingType type, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "Id", "Name", "Description" });
-            type.Id = (uint)record["Id"];
+            Persistent.ValidateRecord(record, new[] { "RatingTypeId", "Name", "Description" });
+            type.Id = (uint)record["RatingTypeId"];
             type.Name = record["Name"].ToString();
             type.Description = record["Description"].ToString();
         }
@@ -120,7 +120,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("RatingTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@Id", type.Id));
+                command.Parameters.Add(new SqlParameter("@RatingTypeId", type.Id));
                 command.Parameters.Add(new SqlParameter("@Name", type.Name));
                 command.Parameters.Add(new SqlParameter("@Description", type.Description));
                 connection.Open();

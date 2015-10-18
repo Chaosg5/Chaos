@@ -1,0 +1,3 @@
+Change the name of Collection to MovieSeries.
+MovieSeriesType should be enum or have language titles?
+RatingType should have language titles

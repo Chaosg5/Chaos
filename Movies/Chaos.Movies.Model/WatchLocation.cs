@@ -111,8 +111,8 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the watch location.</param>
         private static void ReadFromRecord(WatchLocation location, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "Id", "Name" });
-            location.Id = (uint)record["Id"];
+            Persistent.ValidateRecord(record, new[] { "WatchLocationId", "Name" });
+            location.Id = (uint)record["WatchLocationId"];
             location.Name = record["Name"].ToString();
         }
 
@@ -124,7 +124,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("WatchLocationSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@Id", location.Id));
+                command.Parameters.Add(new SqlParameter("@WatchLocationId", location.Id));
                 command.Parameters.Add(new SqlParameter("@Name", location.Name));
                 connection.Open();
 
@@ -144,12 +144,11 @@ namespace Chaos.Movies.Model
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("WatchLocationSaveAll", connection))
-            using (var typesTable = GetTypesIdDataTable(location))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@Id", location.Id));
+                command.Parameters.Add(new SqlParameter("@WatchLocationId", location.Id));
                 command.Parameters.Add(new SqlParameter("@Name", location.Name));
-                var types = command.Parameters.AddWithValue("@WatchTypes", typesTable);
+                var types = command.Parameters.AddWithValue("@WatchTypes", GetTypesIdDataTable(location));
                 types.SqlDbType = SqlDbType.Structured;
                 connection.Open();
 
@@ -171,11 +170,11 @@ namespace Chaos.Movies.Model
             using (var typesTable = new DataTable())
             {
                 typesTable.Locale = CultureInfo.InvariantCulture;
-                typesTable.Columns.Add(new DataColumn("Id"));
+                typesTable.Columns.Add(new DataColumn("WatchTypeId"));
                 foreach (var type in location.types)
                 {
                     var row = typesTable.NewRow();
-                    row["Id"] = type.Id;
+                    row["WatchTypeId"] = type.Id;
                     typesTable.Rows.Add(row);
                 }
 

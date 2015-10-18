@@ -15,9 +15,6 @@ namespace Chaos.Movies.Model
         #region Fields
 
         /// <summary>Private part of the <see cref="Titles"/> property.</summary>
-        private readonly List<MovieTitle> titles = new List<MovieTitle>();
-
-        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
         private readonly List<Genre> genres = new List<Genre>();
 
         /// <summary>Private part of the <see cref="Images"/> property.</summary>
@@ -36,7 +33,7 @@ namespace Chaos.Movies.Model
         /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
         public Movie()
         {
-
+            this.Titles = new LanguageTitles();
         }
 
         #endregion
@@ -53,10 +50,7 @@ namespace Chaos.Movies.Model
         public int TmdbId { get; private set; }
 
         /// <summary>The list of title of the movie in different languages.</summary>
-        public ReadOnlyCollection<MovieTitle> Titles
-        {
-            get { return this.titles.AsReadOnly(); }
-        }
+        public LanguageTitles Titles { get; private set; }
 
         /// <summary>The list of genres that the movie belongs to.</summary>
         public ReadOnlyCollection<Genre> Genres
