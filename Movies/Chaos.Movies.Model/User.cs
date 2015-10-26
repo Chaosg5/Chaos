@@ -9,7 +9,7 @@ namespace Chaos.Movies.Model
     /// <summary>A user.</summary>
     public class User
     {
-        public uint Id { get; private set; }
+        public int Id { get; private set; }
 
         public string UserName { get; private set; }
 

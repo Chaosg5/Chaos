@@ -22,7 +22,7 @@ namespace Chaos.Movies.Model
         /// <param name="dateUncertain">If the <paramref name="watchDate"/> when the <see cref="Movie"/> was watched is just estimated and thus uncertain.</param>
         /// <param name="watchLocationId">The id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</param>
         /// <param name="watchTypeId">The id of the <see cref="WatchType"/> describing in what format the <see cref="Movie"/> was watched.</param>
-        public Watch(uint movieId, uint userId, DateTime watchDate, bool dateUncertain, uint watchLocationId, uint watchTypeId)
+        public Watch(int movieId, int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
         {
             this.MovieId = movieId;
             this.UserId = userId;
@@ -44,13 +44,13 @@ namespace Chaos.Movies.Model
         #region Properties
 
         /// <summary>Gets the id of the watch.</summary>
-        public uint Id { get; private set; }
+        public int Id { get; private set; }
 
         /// <summary>Gets the id of the <see cref="Movie"/> watched.</summary>
-        public uint MovieId { get; private set; }
+        public int MovieId { get; private set; }
 
         /// <summary>Gets the id of the <see cref="User"/> who watched <see cref="Movie"/>.</summary>
-        public uint UserId { get; private set; }
+        public int UserId { get; private set; }
 
         /// <summary>Gets the user who watched the <see cref="Movie"/>.</summary>
         public User User { get; private set; }
@@ -62,13 +62,13 @@ namespace Chaos.Movies.Model
         public bool DateUncertain { get; private set; }
 
         /// <summary>Gets the id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</summary>
-        public uint WatchLocationId { get; private set; }
+        public int WatchLocationId { get; private set; }
 
         /// <summary>Gets the  <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</summary>
         public WatchLocation WatchLocation { get; private set; }
 
         /// <summary>Gets the id of the <see cref="WatchType"/> of how the <see cref="Movie"/> was watched.</summary>
-        public uint WatchTypeId { get; private set; }
+        public int WatchTypeId { get; private set; }
 
         /// <summary>Gets the <see cref="WatchType"/> how the <see cref="Movie"/> was watched.</summary>
         public WatchType WatchType { get; private set; }
@@ -133,9 +133,9 @@ namespace Chaos.Movies.Model
         private static void ReadFromRecord(Watch watch, IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "Id", "MovieId", "UserId", "WatchedDate", "DateUncertain" });
-            watch.Id = (uint)record["Id"];
-            watch.MovieId = (uint)record["MovieId"];
-            watch.UserId = (uint)record["UserId"];
+            watch.Id = (int)record["Id"];
+            watch.MovieId = (int)record["MovieId"];
+            watch.UserId = (int)record["UserId"];
 
             DateTime watchDate;
             if (!DateTime.TryParse(record["WatchedDate"].ToString(), out watchDate))
@@ -155,12 +155,12 @@ namespace Chaos.Movies.Model
 
             if (record["WatchLocationId"] != null)
             {
-                watch.WatchLocationId = (uint)record["WatchLocationId"];
+                watch.WatchLocationId = (int)record["WatchLocationId"];
             }
 
             if (record["WatchTypeId"] != null)
             {
-                watch.WatchTypeId = (uint)record["WatchTypeId"];
+                watch.WatchTypeId = (int)record["WatchTypeId"];
             }
         }
 

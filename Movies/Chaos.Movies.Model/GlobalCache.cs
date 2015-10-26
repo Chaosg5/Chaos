@@ -60,7 +60,7 @@ namespace Chaos.Movies.Model
                     MovieSeriesType type = null;
                     while (reader.Read())
                     {
-                        var id = (uint)reader["MovieSeriesTypeId"];
+                        var id = (int)reader["MovieSeriesTypeId"];
                         if (type == null || type.Id != id)
                         {
                             type = this.movieSeriesTypes.Find(t => t.Id == id);

@@ -49,13 +49,13 @@ namespace Chaos.Movies.Model
         #region Properties
 
         /// <summary>Gets the id of this rating.</summary>
-        public uint Id { get; private set; }
+        public int Id { get; private set; }
 
         /// <summary>The id of the parent <see cref="Rating"/>.</summary>
-        public uint ParentRatingId { get; private set; }
+        public int ParentRatingId { get; private set; }
 
         /// <summary>The id of the <see cref="User"/> who owns the rating.</summary>
-        public uint UserId { get; private set; }
+        public int UserId { get; private set; }
 
         /// <summary>Gets the type of this rating.</summary>
         public RatingType RatingType { get; private set; }
@@ -176,16 +176,16 @@ namespace Chaos.Movies.Model
         private static void ReadFromRecord(Rating rating, IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "RatingId", "RatingTypeId", "Value", "UserId" });
-            rating.Id = (uint)record["RatingId"];
+            rating.Id = (int)record["RatingId"];
             rating.ratingValue.Value = (int)record["Value"];
 
-            var ratingTypeId = (uint)record["RatingTypeId"];
+            var ratingTypeId = (int)record["RatingTypeId"];
             if (rating.RatingType.Id != ratingTypeId)
             {
                 rating.RatingType = new RatingType(ratingTypeId);
             }
 
-            rating.UserId = (uint)record["UserId"];
+            rating.UserId = (int)record["UserId"];
         }
 
         /// <summary>Saves this rating to the database.</summary>

@@ -35,7 +35,7 @@ namespace Chaos.Movies.Model
         #region Properties
 
         /// <summary>Gets the id of this watch type.</summary>
-        public uint Id { get; private set; }
+        public int Id { get; private set; }
 
         /// <summary>Gets the name of this watch type.</summary>
         public string Name { get; private set; }
@@ -63,7 +63,7 @@ namespace Chaos.Movies.Model
         private static void ReadFromRecord(WatchType type, IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "Id", "Name" });
-            type.Id = (uint)record["Id"];
+            type.Id = (int)record["Id"];
             type.Name = record["Name"].ToString();
         }
 

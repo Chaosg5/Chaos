@@ -37,7 +37,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the id of the location.</summary>
-        public uint Id { get; private set; }
+        public int Id { get; private set; }
 
         /// <summary>Gets the name of the location.</summary>
         public string Name { get; private set; }
@@ -112,7 +112,7 @@ namespace Chaos.Movies.Model
         private static void ReadFromRecord(WatchLocation location, IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "WatchLocationId", "Name" });
-            location.Id = (uint)record["WatchLocationId"];
+            location.Id = (int)record["WatchLocationId"];
             location.Name = record["Name"].ToString();
         }
 

@@ -22,7 +22,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="RatingType" /> class.</summary>
         /// <param name="id">The id of the type.</param>
-        public RatingType(uint id)
+        public RatingType(int id)
         {
             this.Id = id;
         }
@@ -31,7 +31,7 @@ namespace Chaos.Movies.Model
         /// <param name="id">The id of the type.</param>
         /// <param name="name">The name of the type.</param>
         /// <param name="description">The description of the type.</param>
-        public RatingType(uint id, string name, string description)
+        public RatingType(int id, string name, string description)
         {
             this.Id = id;
             this.Name = name;
@@ -55,7 +55,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the id of this rating type.</summary>
-        public uint Id { get; private set; }
+        public int Id { get; private set; }
 
         /// <summary>Gets the name of this rating type.</summary>
         public string Name { get; private set; }
@@ -107,7 +107,7 @@ namespace Chaos.Movies.Model
         private static void ReadFromRecord(RatingType type, IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "RatingTypeId", "Name", "Description" });
-            type.Id = (uint)record["RatingTypeId"];
+            type.Id = (int)record["RatingTypeId"];
             type.Name = record["Name"].ToString();
             type.Description = record["Description"].ToString();
         }

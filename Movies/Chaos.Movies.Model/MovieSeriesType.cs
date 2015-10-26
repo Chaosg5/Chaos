@@ -28,7 +28,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>The id of the type.</summary>
-        public uint Id { get; private set; }
+        public int Id { get; private set; }
 
         /// <summary>The list of title of the movie series type in different languages.</summary>
         public LanguageTitles Titles { get; private set; }
@@ -46,7 +46,7 @@ namespace Chaos.Movies.Model
         {
             if (type.Titles.Count == 0)
             {
-                throw new InvalidSaveCandidateException("The 'Title' can not be empty.");
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
         }
 
@@ -58,8 +58,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("MovieSeriesTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@MovieSeriesTypeId", type.Id));
-                command.Parameters.Add(new SqlParameter("@Titles", type.Titles.GetSaveTitles));
+                command.Parameters.Add(new SqlParameter("@movieSeriesTypeId", type.Id));
+                command.Parameters.Add(new SqlParameter("@titles", type.Titles.GetSaveTitles));
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
@@ -78,7 +78,7 @@ namespace Chaos.Movies.Model
         private static void ReadFromRecord(MovieSeriesType type, IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "MovieSeriesTypeId" });
-            type.Id = (uint)record["MovieSeriesTypeId"];
+            type.Id = (int)record["MovieSeriesTypeId"];
         }
     }
 }

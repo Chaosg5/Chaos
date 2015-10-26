@@ -76,8 +76,6 @@ namespace Chaos.Movies.Model
             get { return this.totalRating; }
         }
 
-        public MovieDepartments Departments { get; private set; }
-
         #endregion
 
         #region Methods
@@ -86,15 +84,6 @@ namespace Chaos.Movies.Model
 
 
         #endregion
-
-        #endregion
-
-        #region Classes
-
-        public class MovieDepartments
-        {
-             
-        }
 
         #endregion
     }

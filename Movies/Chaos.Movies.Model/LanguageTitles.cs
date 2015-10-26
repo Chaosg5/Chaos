@@ -12,6 +12,7 @@ using System.Data;
 namespace Chaos.Movies.Model
 {
     using System.Globalization;
+    using System.Linq;
 
     /// <summary>The title of a movie.</summary>
     public class LanguageTitles
@@ -31,6 +32,31 @@ namespace Chaos.Movies.Model
             get { return this.titles.Count; }
         }
 
+        /// <summary>Gets the base title.</summary>
+        public string GetBaseTitle
+        {
+            get { return this.GetTitle(null); }
+        }
+
+        /// <summary>Gets the title for the specified <paramref name="language"/>.</summary>
+        /// <param name="language">The language to get the title for.</param>
+        /// <returns>The title of the specified language; else the title of the default language</returns>
+        public string GetTitle(CultureInfo language)
+        {
+            if (this.Count == 0)
+            {
+                return string.Empty;
+            }
+            
+            var languageName = "en-US";
+            if (language != null)
+            {
+                languageName = language.Name;
+            }
+
+            return (this.titles.Find(t => t.Language.Name == languageName) ?? this.titles.First()).Title;
+        }
+
         /// <summary>Changes the title of this movie series type.</summary>
         /// <param name="title">The title to set.</param>
         public void SetTitle(LanguageTitle title)
@@ -44,10 +70,21 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Changes the title of this movie series type.</summary>
-        /// <param name="title">The title to set for the speciefied <paramref name="language"/>.</param>
+        /// <param name="title">The title to set for the specified <paramref name="language"/>.</param>
         /// <param name="language">The language of the specified <paramref name="title"/>.</param>
+        /// <exception cref="ArgumentNullException">If the <paramref name="title"/> or <paramref name="language"/> is null.</exception>
         public void SetTitle(string title, CultureInfo language)
         {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                throw new ArgumentNullException("title");
+            }
+
+            if (language == null)
+            {
+                throw new ArgumentNullException("language");
+            }
+
             var existingTitle = this.titles.Find(t => t.Language.Name == language.Name);
             if (existingTitle != null)
             {
