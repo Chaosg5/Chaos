@@ -19,6 +19,9 @@ namespace Chaos.Movies.Model
         /// <summary>The connection string to the database read from configuration application settings.</summary>
         public static readonly string ConnectionString = ConfigurationManager.AppSettings["ConnectionString"];
 
+        /// <summary>If database interaction should be made through the service.</summary>
+        public static readonly bool UseSaveService = ConfigurationManager.AppSettings["UseSaveService"] == null || ConfigurationManager.AppSettings["UseSaveService"] != "false";
+
         /// <summary>Validates that the data record contains the specified columns.</summary>
         /// <param name="record">The data record to validate.</param>
         /// <param name="requiredColumns">The list of column names which are required.</param>

@@ -48,6 +48,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\ServiceRequiredException.cs" />
     <Compile Include="Exceptions\PersistentObjectRequiredException.cs" />
     <Compile Include="LanguageTitles.cs" />
     <Compile Include="GlobalCache.cs" />

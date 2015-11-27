@@ -124,6 +124,11 @@ namespace Chaos.Movies.Model
         /// <summary>Saves this rating to the database.</summary>
         public void Save()
         {
+            if (Persistent.UseSaveService)
+            {
+                throw new ServiceRequiredException();
+            }
+
             ValidateSaveCandidate(this);
             SaveToDatabase(this);
         }
@@ -131,6 +136,11 @@ namespace Chaos.Movies.Model
         /// <summary>Saves this rating to the database.</summary>
         public void SaveAll()
         {
+            if (Persistent.UseSaveService)
+            {
+                throw new ServiceRequiredException();
+            }
+
             ValidateAllSaveCandidates(this);
             SaveAllToDatabase(this);
         }
