@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
             this.Image = image;
         }
 
-        /// <summary>The imgage of the icon.</summary>
+        /// <summary>The image of the icon.</summary>
         public ImageSource Image { get; private set; }
     }
 }

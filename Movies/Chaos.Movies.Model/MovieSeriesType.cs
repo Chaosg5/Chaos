@@ -4,34 +4,67 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System.Data;
-using System.Data.SqlClient;
-using Chaos.Movies.Model.Exceptions;
-
 namespace Chaos.Movies.Model
 {
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.SqlClient;
+    using Chaos.Movies.Model.Exceptions;
+
     /// <summary>Represents a type of a movie series.</summary>
     public class MovieSeriesType
     {
         /// <summary>Initializes a new instance of the <see cref="MovieSeriesType" /> class.</summary>
         public MovieSeriesType()
         {
-            this.Titles = new LanguageTitles();
         }
 
         /// <summary>Initializes a new instance of the <see cref="MovieSeriesType" /> class.</summary>
         /// <param name="record">The record containing the data for the movie series type.</param>
         public MovieSeriesType(IDataRecord record)
         {
-            this.Titles = new LanguageTitles();
             ReadFromRecord(this, record);
         }
 
-        /// <summary>The id of the type.</summary>
+        /// <summary>Gets the id of the type.</summary>
         public int Id { get; private set; }
 
-        /// <summary>The list of title of the movie series type in different languages.</summary>
-        public LanguageTitles Titles { get; private set; }
+        /// <summary>Gets the list of titles of the movie series type in different languages.</summary>
+        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
+        
+        /// <summary>Loads all movie series types from the database.</summary>
+        public static IEnumerable<MovieSeriesType> GetAll()
+        {
+            var result = new List<MovieSeriesType>();
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("MovieSeriesTypesGetAll", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    MovieSeriesType type = null;
+                    while (reader.Read())
+                    {
+                        var id = (int)reader["MovieSeriesTypeId"];
+                        if (type == null || type.Id != id)
+                        {
+                            type = result.Find(t => t.Id == id);
+                            if (type == null)
+                            {
+                                type = new MovieSeriesType(reader);
+                                result.Add(type);
+                            }
+                        }
+
+                        type.Titles.SetTitle(new LanguageTitle(reader));
+                    }
+                }
+            }
+
+            return result;
+        }
 
         /// <summary>Saves this movie series type to the database.</summary>
         public void Save()
@@ -51,6 +84,11 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves a movie series type to the database.</summary>
+        /// <remarks>
+        /// Uses stored procedure <c>MovieSeriesTypeSave</c>.
+        /// Result 1 columns: MovieSeriesTypeId
+        /// Result 2 columns: Language, Title
+        /// </remarks>
         /// <param name="type">The movie series type to save.</param>
         private static void SaveToDatabase(MovieSeriesType type)
         {
@@ -67,6 +105,11 @@ namespace Chaos.Movies.Model
                     if (reader.Read())
                     {
                         ReadFromRecord(type, reader);
+                    }
+
+                    if (reader.NextResult())
+                    {
+                        type.Titles = new LanguageTitles(reader);   
                     }
                 }
             }

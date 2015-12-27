@@ -229,7 +229,7 @@ namespace Chaos.Movies.Model
             foreach (var subRating in rating.subRatings)
             {
                 subRating.ParentRatingId = rating.Id;
-                SaveToDatabase(subRating);
+                SaveAllToDatabase(subRating);
             }
         }
 

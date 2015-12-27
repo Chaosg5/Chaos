@@ -34,6 +34,9 @@ bin
 *.pyc
 *dotsettings.user
 StyleCop.Cache
+packages
+!packages/repositories.config
+.vs
 
 # =========================
 # Operating System Files
@@ -59,6 +62,3 @@ StyleCop.Cache
 Network Trash Folder
 Temporary Items
 .apdisk
-Movies/packages/NUnit.2.6.4/NUnit.2.6.4.nupkg
-Movies/packages/NUnit.2.6.4/license.txt
-Movies/packages/NUnit.2.6.4/lib/nunit.framework.xml

@@ -4,11 +4,10 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Data;
-
 namespace Chaos.Movies.Model
 {
+    using System;
+    using System.Data;
     using System.Globalization;
 
     /// <summary>The title of a movie.</summary>
@@ -21,12 +20,12 @@ namespace Chaos.Movies.Model
         {
             if (string.IsNullOrEmpty(title))
             {
-                throw new ArgumentNullException("title");
+                throw new ArgumentNullException(nameof(title));
             }
 
             if (language == null)
             {
-                throw new ArgumentNullException("language");
+                throw new ArgumentNullException(nameof(language));
             }
 
             this.Title = title;
@@ -40,10 +39,10 @@ namespace Chaos.Movies.Model
             ReadFromRecord(this, record);
         }
 
-        /// <summary>The title.</summary>
+        /// <summary>Gets or sets the title.</summary>
         public string Title { get; set; }
 
-        /// <summary>The language of the title.</summary>
+        /// <summary>Gets the language of the title.</summary>
         public CultureInfo Language { get; private set; }
 
         /// <summary>Updates a language title from a record.</summary>

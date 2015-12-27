@@ -55,8 +55,8 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the user who watched the <see cref="Movie"/>.</summary>
         public User User { get; private set; }
 
-        /// <summary>Gets the date when the <see cref="Movie"/> was watched.</summary>
-        public DateTime WatchDate { get; private set; }
+        /// <summary>Gets or sets the date when the <see cref="Movie"/> was watched.</summary>
+        public DateTime WatchDate { get; set; }
 
         /// <summary>Gets a value indication whether the <see cref="WatchDate"/> is uncertain or not.</summary>
         public bool DateUncertain { get; private set; }

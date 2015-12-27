@@ -15,7 +15,7 @@ namespace Chaos.Movies.Model
     using System.Linq;
     using Chaos.Movies.Model.Exceptions;
 
-    /// <summary>A serie of movies.</summary>
+    /// <summary>A series of movies.</summary>
     public class MovieSeries
     {
         /// <summary>Private part of the <see cref="Movies"/> property.</summary>
@@ -24,27 +24,25 @@ namespace Chaos.Movies.Model
         /// <summary>Initializes a new instance of the <see cref="MovieSeries" /> class.</summary>
         public MovieSeries()
         {
-            this.Titles = new LanguageTitles();
         }
 
         /// <summary>Initializes a new instance of the <see cref="MovieSeries" /> class.</summary>
         /// <param name="record">The record containing the data for the movie series.</param>
         public MovieSeries(IDataRecord record)
         {
-            this.Titles = new LanguageTitles();
             ReadFromRecord(this, record);
         }
 
-        /// <summary>The id of the movie series.</summary>
+        /// <summary>Gets the id of the movie series.</summary>
         public int Id { get; private set; }
 
-        /// <summary>The type of the movie series.</summary>
-        public MovieSeriesType MovieSeriesType { get; private set; }
+        /// <summary>Gets the type of the movie series.</summary>
+        public MovieSeriesType MovieSeriesType { get; set; }
 
-        /// <summary>The list of title of the movie collection in different languages.</summary>
-        public LanguageTitles Titles { get; private set; }
+        /// <summary>Gets the list of title of the movie collection in different languages.</summary>
+        public LanguageTitles Titles { get; } = new LanguageTitles();
 
-        /// <summary>The movies which are a part of this collection with the keys representing their order.</summary>
+        /// <summary>Gets the movies which are a part of this collection with the keys representing their order.</summary>
         public ReadOnlyCollection<Movie> Movies
         {
             get { return this.movies.AsReadOnly(); }
@@ -59,9 +57,10 @@ namespace Chaos.Movies.Model
                 {
                     table.Locale = CultureInfo.InvariantCulture;
                     table.Columns.Add(new DataColumn("MovieId"));
-                    foreach (var movie in this.movies)
+                    table.Columns.Add(new DataColumn("Order"));
+                    for (var i = 0; i < this.movies.Count; i++)
                     {
-                        table.Rows.Add(movie.Id);
+                        table.Rows.Add(this.movies[i].Id, i + 1);
                     }
 
                     return table;
@@ -78,6 +77,12 @@ namespace Chaos.Movies.Model
         {
             ValidateSaveCandidate(this);
             SaveToDatabase(this);
+        }
+
+        /// <summary>Saves this movie series and underlying objects to the database.</summary>
+        public void SaveAll()
+        {
+            // ToDo:
         }
 
         /// <summary>Sets the order of the movies in this collection.</summary>
@@ -103,7 +108,7 @@ namespace Chaos.Movies.Model
         {
             if (movie == null)
             {
-                throw new ArgumentNullException("movie");
+                throw new ArgumentNullException(nameof(movie));
             }
 
             if (movie.Id <= 0)
@@ -147,7 +152,7 @@ namespace Chaos.Movies.Model
         {
             if (movie == null)
             {
-                throw new ArgumentNullException("movie");
+                throw new ArgumentNullException(nameof(movie));
             }
 
             if (movie.Id <= 0)
@@ -197,8 +202,8 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Saves a movie series type to the database.</summary>
-        /// <param name="series">The movie series type to save.</param>
+        /// <summary>Saves a movie series to the database.</summary>
+        /// <param name="series">The movie series to save.</param>
         private static void SaveToDatabase(MovieSeries series)
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
@@ -221,12 +226,15 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves the relations to the movies in this series.</summary>
+        /// <param name="series">The movie series to save movies for.</param>
         private static void SaveMoviesToDatabase(MovieSeries series)
         {
+            // ToDo: This requires a special SQL type
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesSaveMovies", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@movieSeriesId", series.Id));
                 command.Parameters.Add(new SqlParameter("@movieIds", series.GetSaveMovies));
                 connection.Open();
 

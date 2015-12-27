@@ -4,13 +4,12 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-
 namespace Chaos.Movies.Model
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Data;
     using System.Globalization;
     using System.Linq;
 
@@ -20,22 +19,46 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="Titles"/> property.</summary>
         private readonly List<LanguageTitle> titles = new List<LanguageTitle>();
 
-        /// <summary>The list of title of the movie series type in different languages.</summary>
-        public ReadOnlyCollection<LanguageTitle> Titles
+        /// <summary>Initializes a new instance of the <see cref="LanguageTitles" /> class.</summary>
+        public LanguageTitles()
         {
-            get { return this.titles.AsReadOnly(); }
         }
+
+        /// <summary>Initializes a new instance of the <see cref="LanguageTitles" /> class.</summary>
+        /// <param name="reader">The reader containing the data for the movie series type.</param>
+        public LanguageTitles(IDataReader reader)
+        {
+            ReadFromRecord(this, reader);
+        }
+
+        /// <summary>Gets the list of title of the movie series type in different languages.</summary>
+        public ReadOnlyCollection<LanguageTitle> Titles => this.titles.AsReadOnly();
 
         /// <summary>Gets the number if existing titles.</summary>
-        public int Count
-        {
-            get { return this.titles.Count; }
-        }
+        public int Count => this.titles.Count;
 
         /// <summary>Gets the base title.</summary>
-        public string GetBaseTitle
+        public string GetBaseTitle => this.GetTitle(null);
+
+        /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
+        /// <returns>A table containing the title and language as columns for each title.</returns>
+        public DataTable GetSaveTitles
         {
-            get { return this.GetTitle(null); }
+            get
+            {
+                using (var table = new DataTable())
+                {
+                    table.Locale = CultureInfo.InvariantCulture;
+                    table.Columns.Add(new DataColumn("Title"));
+                    table.Columns.Add(new DataColumn("Language"));
+                    foreach (var languageTitle in this.titles)
+                    {
+                        table.Rows.Add(languageTitle.Title, languageTitle.Language.Name);
+                    }
+
+                    return table;
+                }
+            }
         }
 
         /// <summary>Gets the title for the specified <paramref name="language"/>.</summary>
@@ -63,7 +86,7 @@ namespace Chaos.Movies.Model
         {
             if (title == null)
             {
-                throw new ArgumentNullException("title");
+                throw new ArgumentNullException(nameof(title));
             }
 
             this.SetTitle(title.Title, title.Language);
@@ -77,12 +100,12 @@ namespace Chaos.Movies.Model
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentNullException("title");
+                throw new ArgumentNullException(nameof(title));
             }
 
             if (language == null)
             {
-                throw new ArgumentNullException("language");
+                throw new ArgumentNullException(nameof(language));
             }
 
             var existingTitle = this.titles.Find(t => t.Language.Name == language.Name);
@@ -96,24 +119,15 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
-        /// <returns>A table containing the title and language as columns for each title.</returns>
-        public DataTable GetSaveTitles
+        /// <summary>Updates language titles from a reader.</summary>
+        /// <param name="titles">The language titles to update.</param>
+        /// <param name="reader">The record containing the data for the language titles.</param>
+        private static void ReadFromRecord(LanguageTitles titles, IDataReader reader)
         {
-            get
+            titles.titles.Clear();
+            while (reader.Read())
             {
-                using (var table = new DataTable())
-                {
-                    table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn("Title"));
-                    table.Columns.Add(new DataColumn("Language"));
-                    foreach (var languageTitle in this.titles)
-                    {
-                        table.Rows.Add(languageTitle.Title, languageTitle.Language.Name);
-                    }
-
-                    return table;
-                }
+                titles.titles.Add(new LanguageTitle(reader));
             }
         }
     }

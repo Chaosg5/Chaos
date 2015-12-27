@@ -18,10 +18,10 @@ namespace Chaos.Movies.Model
             this.Derived = derived;
         }
 
-        /// <summary>Gets the value of the rating.</summary>
+        /// <summary>Gets or sets the value of the rating.</summary>
         public int Value { get; set; }
 
-        /// <summary>Gets the derived value from sub ratings.</summary>
+        /// <summary>Gets or sets the derived value from sub ratings.</summary>
         public double Derived { get; set; }
     }
 }
