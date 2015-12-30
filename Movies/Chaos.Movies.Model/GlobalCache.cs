@@ -9,6 +9,8 @@ namespace Chaos.Movies.Model
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Globalization;
+    using System.Linq;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Provides a global cache of objects.</summary>
@@ -25,7 +27,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Private part of the <see cref="User"/> property.</summary>
         private static User UserField;
-        
+
         /// <summary>Initializes a new instance of the <see cref="GlobalCache"/> class.</summary>
         /// <param name="user">The current user.</param>
         public static void InitCache(User user)
@@ -41,7 +43,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets all available movie series types.</summary>
         public static ReadOnlyCollection<MovieSeriesType> MovieSeriesTypes => MovieSeriesTypesField.AsReadOnly();
-        
+
         /// <summary>Gets all available person roles.</summary>
         public static ReadOnlyCollection<Role> Roles => RolesField.AsReadOnly();
 
@@ -59,12 +61,27 @@ namespace Chaos.Movies.Model
             }
         }
 
+        ////public static User SystemUser { get; private set; } = new User {Id = 1};
+
+        /// <summary>The default system language.</summary>
+        public static CultureInfo DefaultLanguage { get; } = new CultureInfo("en-US");
+
         /// <summary>Adds the specified <paramref name="type"/> to the current list of movie series types.</summary>
         /// <param name="type">The movie series type to add.</param>
         public static void AddMovieSeriesType(MovieSeriesType type)
         {
-           MovieSeriesTypesField.RemoveAll(t => t.Id == type.Id);
-           MovieSeriesTypesField.Add(type);
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (type.Id <= 0)
+            {
+                throw new PersistentObjectRequiredException("The movie series type needs to be saved before added to the cache.");
+            }
+
+            MovieSeriesTypesField.RemoveAll(t => t.Id == type.Id);
+            MovieSeriesTypesField.Add(type);
         }
 
         /// <summary>Gets the specified department.</summary>
@@ -77,6 +94,17 @@ namespace Chaos.Movies.Model
             if (department == null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
+            }
+
+            return department;
+        }
+
+        public static Department GetDepartment(string departmentTitle, CultureInfo language)
+        {
+            var department = DepartmentsField.Find(d => d.Titles.GetTitle(language) == departmentTitle);
+            if (department == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(departmentTitle));
             }
 
             return department;
@@ -103,10 +131,27 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentOutOfRangeException">If the role with the specified id doesn't exist.</exception>
         public static Role GetRole(int id)
         {
-            var role = RolesField.Find(d => d.Id == id);
+            var role = RolesField.Find(r => r.Id == id) ?? Role.Get(new[] { id }).First();
             if (role == null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
+            }
+
+            return role;
+        }
+
+        /// <summary>Gets the specified <see cref="Role"/> by title and <see cref="Department"/> title.</summary>
+        /// <param name="roleTitle">The title of the <see cref="Role"/> to get.</param>
+        /// <param name="departmentTitle">The title of the <see cref="Department"/> that the role belongs to.</param>
+        /// <param name="language">The lagnuage of the titles.</param>
+        /// <returns>The found role.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">If the role or department wasn't found.</exception>
+        public static Role GetRole(string roleTitle, string departmentTitle, CultureInfo language)
+        {
+            var role = GetDepartment(departmentTitle, language).Roles.First(r => r.Titles.GetTitle(language) == roleTitle);
+            if (role == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(roleTitle));
             }
 
             return role;

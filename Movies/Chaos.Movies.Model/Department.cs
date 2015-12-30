@@ -17,15 +17,10 @@ namespace Chaos.Movies.Model
     {
         /// <summary>Private part of the <see cref="Roles"/> property.</summary>
         private readonly List<Role> roles = new List<Role>();
-
-        /// <summary>Initializes a new instance of the <see cref="Department" /> class.</summary>
-        public Department()
-        {
-        }
-
+        
         /// <summary>Initializes a new instance of the <see cref="Department" /> class.</summary>
         /// <param name="record">The record containing the data for the department.</param>
-        public Department(IDataRecord record)
+        private Department(IDataRecord record)
         {
             ReadFromRecord(this, record);
         }
@@ -138,15 +133,22 @@ namespace Chaos.Movies.Model
 
                 using (var reader = command.ExecuteReader())
                 {
+                    if (!reader.HasRows)
+                    {
+                        throw new MissingResultException(1);
+                    }
+
                     if (reader.Read())
                     {
                         ReadFromRecord(department, reader);
                     }
 
-                    if (reader.NextResult())
+                    if (!reader.NextResult() || !reader.HasRows)
                     {
-                        department.Titles = new LanguageTitles(reader);
+                        throw new MissingResultException(2);
                     }
+
+                    department.Titles = new LanguageTitles(reader);
                 }
             }
         }

@@ -55,11 +55,20 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PeopleInMovie.cs" />
+    <Compile Include="CharactersInMovie.cs" />
+    <Compile Include="Exceptions\CacheInitializationException.cs" />
+    <Compile Include="Exceptions\Logger.cs" />
+    <Compile Include="Exceptions\RelationshipException.cs" />
+    <Compile Include="Exceptions\SqlResultSyncException.cs" />
+    <Compile Include="Exceptions\MissingResultException.cs" />
     <Compile Include="Exceptions\ServiceRequiredException.cs" />
     <Compile Include="Exceptions\PersistentObjectRequiredException.cs" />
     <Compile Include="LanguageTitles.cs" />
     <Compile Include="GlobalCache.cs" />
-    <Compile Include="MoviePerson.cs" />
+    <Compile Include="CharacterInMovie.cs" />
+    <Compile Include="PersonUserRating.cs" />
+    <Compile Include="PersonInMovie.cs" />
     <Compile Include="MovieSeriesType.cs" />
     <Compile Include="Exceptions\UserChangeNotAllowedException.cs" />
     <Compile Include="MovieSeries.cs" />

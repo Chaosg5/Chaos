@@ -6,22 +6,19 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
+    using System.Linq;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a role of a person in a movie.</summary>
     public class Role
     {
         /// <summary>Initializes a new instance of the <see cref="Role" /> class.</summary>
-        public Role()
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="Role" /> class.</summary>
         /// <param name="record">The record containing the data for the role.</param>
-        public Role(IDataRecord record)
+        private Role(IDataRecord record)
         {
             ReadFromRecord(this, record);
         }
@@ -40,7 +37,6 @@ namespace Chaos.Movies.Model
         /// <returns>All roles.</returns>
         public static IEnumerable<Role> GetAll()
         {
-            var result = new List<Role>();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("RolesGetAll", connection))
             {
@@ -49,26 +45,47 @@ namespace Chaos.Movies.Model
 
                 using (var reader = command.ExecuteReader())
                 {
-                    Role role = null;
-                    while (reader.Read())
+                    if (!reader.HasRows)
                     {
-                        var id = (int)reader["RoleId"];
-                        if (role == null || role.Id != id)
-                        {
-                            role = result.Find(t => t.Id == id);
-                            if (role == null)
-                            {
-                                role = new Role(reader);
-                                result.Add(role);
-                            }
-                        }
-
-                        role.Titles.SetTitle(new LanguageTitle(reader));
+                        throw new MissingResultException(1);
                     }
+
+                    return ReadFromReader(reader);
                 }
             }
+        }
 
-            return result;
+        /// <summary>Gets the specified roles.</summary>
+        /// <remarks>
+        /// Uses stored procedure <c>RolesGet</c>.
+        /// Result 1 columns: RoleId, Language, Title
+        /// </remarks>
+        /// <param name="idList">The list of ids of the roles to get.</param>
+        /// <returns>The specified roles.</returns>
+        public static IEnumerable<Role> Get(IEnumerable<int> idList)
+        {
+            if (idList == null || !idList.Any())
+            {
+                throw new ArgumentNullException(nameof(idList));
+            }
+
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("RolesGet", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@idList", idList));
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (!reader.HasRows)
+                    {
+                        throw new MissingResultException(1);
+                    }
+
+                    return ReadFromReader(reader);
+                }
+            }
         }
 
         /// <summary>Saves this role to the database.</summary>
@@ -127,6 +144,32 @@ namespace Chaos.Movies.Model
         {
             Persistent.ValidateRecord(record, new[] { "RoleId" });
             role.Id = (int)record["RoleId"];
+        }
+
+        /// <summary>Creates a list of roles from a reader.</summary>
+        /// <param name="reader">The reader containing the data for the roles.</param>
+        /// <returns>The list of roles.</returns>
+        private static IEnumerable<Role> ReadFromReader(IDataReader reader)
+        {
+            var result = new List<Role>();
+            Role role = null;
+            while (reader.Read())
+            {
+                var id = (int)reader["RoleId"];
+                if (role == null || role.Id != id)
+                {
+                    role = result.Find(t => t.Id == id);
+                    if (role == null)
+                    {
+                        role = new Role(reader);
+                        result.Add(role);
+                    }
+                }
+
+                role.Titles.SetTitle(new LanguageTitle(reader));
+            }
+
+            return result;
         }
     }
 }
