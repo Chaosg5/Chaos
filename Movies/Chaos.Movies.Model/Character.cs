@@ -44,6 +44,36 @@ namespace Chaos.Movies.Model
             get { return this.images.AsReadOnly(); }
         }
 
+        public static IEnumerable<Character> Get(IEnumerable<int> idList)
+        {
+            var characters = new List<Character>();
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("CharactersGet", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@userId", GlobalCache.User));
+                command.Parameters.Add(new SqlParameter("@idList", idList));
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (!reader.HasRows)
+                    {
+                        throw new MissingResultException(1);
+                    }
+
+                    while (reader.Read())
+                    {
+                        characters.Add(new Character(reader));
+                    }
+
+                    // ToDo: Get other stuff
+                }
+            }
+
+            return characters;
+        }
+
         /// <summary>Saves this character to the database.</summary>
         public void Save()
         {

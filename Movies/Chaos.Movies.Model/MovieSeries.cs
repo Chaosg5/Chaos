@@ -113,7 +113,7 @@ namespace Chaos.Movies.Model
 
             if (movie.Id <= 0)
             {
-                throw new PersistentObjectRequiredException("The movie needs to be persited before added to a series.");
+                throw new PersistentObjectRequiredException("The movie needs to be saved before added to a series.");
             }
 
             if (this.movies.Exists(m => m.Id == movie.Id))
@@ -157,7 +157,7 @@ namespace Chaos.Movies.Model
 
             if (movie.Id <= 0)
             {
-                throw new PersistentObjectRequiredException("The movie needs to be persited before removed from a series.");
+                throw new PersistentObjectRequiredException("The movie needs to be saved before removed from a series.");
             }
 
             this.movies.RemoveAll(m => m.Id == movie.Id);

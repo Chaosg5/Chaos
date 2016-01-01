@@ -6,10 +6,12 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.SqlClient;
+    using System.Linq;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a production department in a movie.</summary>
@@ -17,7 +19,7 @@ namespace Chaos.Movies.Model
     {
         /// <summary>Private part of the <see cref="Roles"/> property.</summary>
         private readonly List<Role> roles = new List<Role>();
-        
+
         /// <summary>Initializes a new instance of the <see cref="Department" /> class.</summary>
         /// <param name="record">The record containing the data for the department.</param>
         private Department(IDataRecord record)
@@ -41,9 +43,9 @@ namespace Chaos.Movies.Model
         /// Result 2 columns: DepartmentId, RoleId
         /// </remarks>
         /// <returns>All departments.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
         public static IEnumerable<Department> GetAll()
         {
-            var result = new List<Department>();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("DepartmentsGetAll", connection))
             {
@@ -52,49 +54,38 @@ namespace Chaos.Movies.Model
 
                 using (var reader = command.ExecuteReader())
                 {
-                    if (!reader.HasRows)
-                    {
-                        throw new MissingResultException(1);
-                    }
-
-                    Department department = null;
-                    while (reader.Read())
-                    {
-                        var id = (int)reader["DepartmentId"];
-                        if (department == null || department.Id != id)
-                        {
-                            department = result.Find(t => t.Id == id);
-                            if (department == null)
-                            {
-                                department = new Department(reader);
-                                result.Add(department);
-                            }
-                        }
-
-                        department.Titles.SetTitle(new LanguageTitle(reader));
-                    }
-
-                    if (!reader.NextResult() || !reader.HasRows)
-                    {
-                        throw new MissingResultException(2);
-                    }
-
-                    while (reader.Read())
-                    {
-                        var departmentId = (int)reader["DepartmentId"];
-                        var roleId = (int)reader["RoleId"];
-                        department = result.Find(t => t.Id == departmentId);
-                        if (department == null)
-                        {
-                            throw new SqlResultSyncException(departmentId);
-                        }
-
-                        department.roles.Add(GlobalCache.GetRole(roleId));
-                    }
+                    return ReadFromReader(reader);
                 }
             }
+        }
 
-            return result;
+        /// <summary>Loads all <see cref="Department"/>s from the database.</summary>
+        /// <remarks>
+        /// Uses stored procedure <c>DepartmentsGet</c>.
+        /// Result 1 columns: DepartmentId, Language, Title
+        /// Result 2 columns: DepartmentId, RoleId
+        /// </remarks>
+        /// <param name="idList">The list of ids of the <see cref="Department"/>s to get.</param>
+        /// <returns>The specified <see cref="Department"/>s.</returns>
+        public static IEnumerable<Department> Get(IEnumerable<int> idList)
+        {
+            if (idList == null || !idList.Any())
+            {
+                throw new ArgumentNullException(nameof(idList));
+            }
+
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("DepartmentsGet", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@idList", idList));
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    return ReadFromReader(reader);
+                }
+            }
         }
 
         /// <summary>Saves this department to the database.</summary>
@@ -160,6 +151,56 @@ namespace Chaos.Movies.Model
         {
             Persistent.ValidateRecord(record, new[] { "DepartmentId" });
             department.Id = (int)record["DepartmentId"];
+        }
+
+        /// <summary>Creates a list of <see cref="Department"/>s from a reader.</summary>
+        /// <param name="reader">The reader containing the data for the <see cref="Department"/>s.</param>
+        /// <returns>The list of <see cref="Department"/>s.</returns>
+        private static IEnumerable<Department> ReadFromReader(SqlDataReader reader)
+        {
+
+            var result = new List<Department>();
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1);
+            }
+
+            Department department = null;
+            while (reader.Read())
+            {
+                var id = (int)reader["DepartmentId"];
+                if (department == null || department.Id != id)
+                {
+                    department = result.Find(t => t.Id == id);
+                    if (department == null)
+                    {
+                        department = new Department(reader);
+                        result.Add(department);
+                    }
+                }
+
+                department.Titles.SetTitle(new LanguageTitle(reader));
+            }
+
+            if (!reader.NextResult() || !reader.HasRows)
+            {
+                throw new MissingResultException(2);
+            }
+
+            while (reader.Read())
+            {
+                var departmentId = (int)reader["DepartmentId"];
+                var roleId = (int)reader["RoleId"];
+                department = result.Find(t => t.Id == departmentId);
+                if (department == null)
+                {
+                    throw new SqlResultSyncException(departmentId);
+                }
+
+                department.roles.Add(GlobalCache.GetRole(roleId));
+            }
+
+            return result;
         }
     }
 }

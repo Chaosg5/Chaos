@@ -35,6 +35,7 @@ namespace Chaos.Movies.Model
         /// Result 1 columns: RoleId, Language, Title
         /// </remarks>
         /// <returns>All roles.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
         public static IEnumerable<Role> GetAll()
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
@@ -45,23 +46,18 @@ namespace Chaos.Movies.Model
 
                 using (var reader = command.ExecuteReader())
                 {
-                    if (!reader.HasRows)
-                    {
-                        throw new MissingResultException(1);
-                    }
-
                     return ReadFromReader(reader);
                 }
             }
         }
 
-        /// <summary>Gets the specified roles.</summary>
+        /// <summary>Gets the specified <see cref="Role"/>s.</summary>
         /// <remarks>
         /// Uses stored procedure <c>RolesGet</c>.
         /// Result 1 columns: RoleId, Language, Title
         /// </remarks>
-        /// <param name="idList">The list of ids of the roles to get.</param>
-        /// <returns>The specified roles.</returns>
+        /// <param name="idList">The list of ids of the <see cref="Role"/>s to get.</param>
+        /// <returns>The specified <see cref="Role"/>s.</returns>
         public static IEnumerable<Role> Get(IEnumerable<int> idList)
         {
             if (idList == null || !idList.Any())
@@ -78,11 +74,6 @@ namespace Chaos.Movies.Model
 
                 using (var reader = command.ExecuteReader())
                 {
-                    if (!reader.HasRows)
-                    {
-                        throw new MissingResultException(1);
-                    }
-
                     return ReadFromReader(reader);
                 }
             }
@@ -146,11 +137,16 @@ namespace Chaos.Movies.Model
             role.Id = (int)record["RoleId"];
         }
 
-        /// <summary>Creates a list of roles from a reader.</summary>
-        /// <param name="reader">The reader containing the data for the roles.</param>
-        /// <returns>The list of roles.</returns>
-        private static IEnumerable<Role> ReadFromReader(IDataReader reader)
+        /// <summary>Creates a list of <see cref="Role"/>s from a reader.</summary>
+        /// <param name="reader">The reader containing the data for the <see cref="Role"/>s.</param>
+        /// <returns>The list of <see cref="Role"/>s.</returns>
+        private static IEnumerable<Role> ReadFromReader(SqlDataReader reader)
         {
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1);
+            }
+
             var result = new List<Role>();
             Role role = null;
             while (reader.Read())

@@ -38,6 +38,12 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="TotalRating"/> property.</summary>
         private readonly Rating totalRating = new Rating(new RatingType(1));
 
+        /// <summary>Private part of the <see cref="Characters"/> property.</summary>
+        private CharactersInMovieCollection characters = new CharactersInMovieCollection();
+
+        /// <summary>Private part of the <see cref="People"/> property.</summary>
+        private PeopleInMovieCollection people = new PeopleInMovieCollection();
+
         /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
         public Movie()
         {
@@ -50,8 +56,19 @@ namespace Chaos.Movies.Model
 
             private set
             {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                if (this.Id != 0)
+                {
+                    throw new ValueLogicalReadOnlyException("The id of the movie can't be changed once set.");
+                }
+
                 this.id = value;
-                this.Characters = new CharactersInMovie(this.Id);
+                this.Characters.SetMovieId(this.Id);
+                this.People.SetMovieId(this.Id);
             }
         }
 
@@ -75,8 +92,31 @@ namespace Chaos.Movies.Model
 
         /// <summary>The total rating score from all users.</summary>
         public Rating TotalRating => this.totalRating;
-        
-        public CharactersInMovie Characters { get; private set; }
+
+        /// <summary>Gets the list of <see cref="Character"/>s in this <see cref="Movie"/>.</summary>
+        public CharactersInMovieCollection Characters
+        {
+            get
+            {
+                if (this.characters.Count == 0)
+                {
+                    this.characters.LoadCharacters();
+                }
+
+                return this.characters;
+            }
+        }
+
+        /// <summary>Gets the list of <see cref="Person"/>s in this <see cref="Movie"/>.</summary>
+        public PeopleInMovieCollection People
+        {
+            get
+            {
+
+
+                return this.people;
+            }
+        }
 
         public void SavePeople()
         {

@@ -7,6 +7,7 @@
 namespace Chaos.Movies.Model
 {
     using System;
+    using System.Data;
     using System.Linq;
     using Chaos.Movies.Model.Exceptions;
 
@@ -49,6 +50,5 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the person playing the <see cref="Character"/>.</summary>
         public Person Person { get; private set; }
-
     }
 }

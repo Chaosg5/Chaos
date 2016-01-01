@@ -17,17 +17,22 @@ namespace Chaos.Movies.Model.Exceptions
         /// <param name="exception">The exception to log.</param>
         public static void Log(Exception exception)
         {
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("ExceptionLog", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@UserId", GlobalCache.User.Id));
-                command.Parameters.Add(new SqlParameter("@Time", DateTime.Now));
-                command.Parameters.Add(new SqlParameter("@Type", exception.GetType().ToString()));
-                command.Parameters.Add(new SqlParameter("@Source", exception.Source));
-                command.Parameters.Add(new SqlParameter("@Method", exception.TargetSite));
-                command.Parameters.Add(new SqlParameter("@Message", exception.Message));
-                command.Parameters.Add(new SqlParameter("@Exception", exception.ToString()));
+                command.Parameters.Add(new SqlParameter("@userId", GlobalCache.User.Id));
+                command.Parameters.Add(new SqlParameter("@time", DateTime.Now));
+                command.Parameters.Add(new SqlParameter("@type", exception.GetType().ToString()));
+                command.Parameters.Add(new SqlParameter("@source", exception.Source));
+                command.Parameters.Add(new SqlParameter("@method", exception.TargetSite));
+                command.Parameters.Add(new SqlParameter("@message", exception.Message));
+                command.Parameters.Add(new SqlParameter("@exception", exception.ToString()));
                 connection.Open();
                 command.ExecuteNonQuery();
             }

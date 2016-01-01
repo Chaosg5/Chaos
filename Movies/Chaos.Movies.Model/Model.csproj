@@ -55,8 +55,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PeopleInMovie.cs" />
-    <Compile Include="CharactersInMovie.cs" />
+    <Compile Include="Exceptions\ValueLogicalReadonlyException.cs" />
+    <Compile Include="PeopleInMovieCollection.cs" />
+    <Compile Include="CharactersInMovieCollection.cs" />
     <Compile Include="Exceptions\CacheInitializationException.cs" />
     <Compile Include="Exceptions\Logger.cs" />
     <Compile Include="Exceptions\RelationshipException.cs" />

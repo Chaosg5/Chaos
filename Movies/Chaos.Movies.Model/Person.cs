@@ -51,6 +51,59 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the list ratings of this <see cref="Person"/> for the current <see cref="User"/>.</summary>
         public ReadOnlyCollection<PersonUserRating> PersonUserRatings => this.personUserRatings.AsReadOnly();
+        
+        /// <summary>Gets the specified people.</summary>
+        /// <param name="idList">The list of ids of the people to get.</param>
+        /// <remarks>
+        /// Uses stored procedure <c>PeopleGet</c>.
+        /// Result 1 columns: PersonId, Favorite
+        /// Result 2 columns: PersonId, MovieId, Rating, Watches
+        /// </remarks>
+        /// <returns>The list of people.</returns>
+        public static IEnumerable<Person> Get(IEnumerable<int> idList)
+        {
+            var people = new List<Person>();
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("PeopleGet", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@userId", GlobalCache.User));
+                command.Parameters.Add(new SqlParameter("@idList", idList));
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (!reader.HasRows)
+                    {
+                        throw new MissingResultException(1);
+                    }
+
+                    while (reader.Read())
+                    {
+                        people.Add(new Person(reader));
+                    }
+
+                    if (!reader.NextResult() || !reader.HasRows)
+                    {
+                        throw new MissingResultException(2);
+                    }
+
+                    while (reader.Read())
+                    {
+                        var personId = (int)reader["PersonId"];
+                        var person = people.Find(p => p.Id == personId);
+                        if (person == null)
+                        {
+                            throw new SqlResultSyncException(personId);
+                        }
+
+                        person.personUserRatings.Add(new PersonUserRating(reader));
+                    }
+                }
+            }
+
+            return people;
+        }
 
         /// <summary>Saves this person to the database.</summary>
         public void Save()
@@ -99,61 +152,6 @@ namespace Chaos.Movies.Model
                     }
                 }
             }
-        }
-
-        /// <summary>Gets the specified people.</summary>
-        /// <param name="idList">The list of ids of the people to get.</param>
-        /// <remarks>
-        /// Uses stored procedure <c>PeopleGet</c>.
-        /// Result 1 columns: PersonId, Favorite
-        /// Result 2 columns: PersonId, MovieId, Rating, Watches
-        /// </remarks>
-        /// <returns>The list of people.</returns>
-        private static IEnumerable<Person> Get(IEnumerable<int> idList)
-        {
-            var people = new List<Person>();
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("PeopleGet", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@userId", GlobalCache.User));
-                command.Parameters.Add(new SqlParameter("@idList", idList));
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (!reader.HasRows)
-                    {
-                        throw new MissingResultException(1);
-                    }
-
-                    while (reader.Read())
-                    {
-                        var person = new Person();
-                        ReadFromRecord(person, reader);
-                        people.Add(person);
-                    }
-
-                    if (!reader.NextResult() || !reader.HasRows)
-                    {
-                        throw new MissingResultException(2);
-                    }
-
-                    while (reader.Read())
-                    {
-                        var personId = (int)reader["PersonId"];
-                        var person = people.Find(p => p.Id == personId);
-                        if (person == null)
-                        {
-                            throw new SqlResultSyncException(personId);
-                        }
-
-                        person.personUserRatings.Add(new PersonUserRating(reader));
-                    }
-                }
-            }
-
-            return people;
         }
     }
 }
