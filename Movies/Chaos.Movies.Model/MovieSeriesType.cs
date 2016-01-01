@@ -16,6 +16,8 @@ namespace Chaos.Movies.Model
     /// <summary>Represents a type of a movie series.</summary>
     public class MovieSeriesType
     {
+        private LanguageTitles titles = new LanguageTitles();
+
         /// <summary>Initializes a new instance of the <see cref="MovieSeriesType" /> class.</summary>
         public MovieSeriesType()
         {
@@ -32,7 +34,11 @@ namespace Chaos.Movies.Model
         public int Id { get; private set; }
 
         /// <summary>Gets the list of titles of the movie series type in different languages.</summary>
-        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
+        public LanguageTitles Titles
+        {
+            get { return this.titles; }
+            private set { this.titles = value; }
+        }
 
         /// <summary>Loads all movie series types from the database.</summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
@@ -63,7 +69,7 @@ namespace Chaos.Movies.Model
         {
             if (idList == null || !idList.Any())
             {
-                throw new ArgumentNullException(nameof(idList));
+                throw new ArgumentNullException("idList");
             }
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))

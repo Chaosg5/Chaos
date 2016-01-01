@@ -18,6 +18,9 @@ namespace Chaos.Movies.Model
     /// <summary>A series of movies.</summary>
     public class MovieSeries
     {
+        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
+        private readonly LanguageTitles titles = new LanguageTitles();
+
         /// <summary>Private part of the <see cref="Movies"/> property.</summary>
         private List<Movie> movies = new List<Movie>();
 
@@ -36,11 +39,14 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the id of the movie series.</summary>
         public int Id { get; private set; }
 
-        /// <summary>Gets the type of the movie series.</summary>
+        /// <summary>Gets or sets the type of the movie series.</summary>
         public MovieSeriesType MovieSeriesType { get; set; }
 
         /// <summary>Gets the list of title of the movie collection in different languages.</summary>
-        public LanguageTitles Titles { get; } = new LanguageTitles();
+        public LanguageTitles Titles
+        {
+            get { return this.titles; }
+        }
 
         /// <summary>Gets the movies which are a part of this collection with the keys representing their order.</summary>
         public ReadOnlyCollection<Movie> Movies
@@ -108,7 +114,7 @@ namespace Chaos.Movies.Model
         {
             if (movie == null)
             {
-                throw new ArgumentNullException(nameof(movie));
+                throw new ArgumentNullException("movie");
             }
 
             if (movie.Id <= 0)
@@ -152,7 +158,7 @@ namespace Chaos.Movies.Model
         {
             if (movie == null)
             {
-                throw new ArgumentNullException(nameof(movie));
+                throw new ArgumentNullException("movie");
             }
 
             if (movie.Id <= 0)

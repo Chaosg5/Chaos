@@ -44,6 +44,8 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="People"/> property.</summary>
         private PeopleInMovieCollection people = new PeopleInMovieCollection();
 
+        private LanguageTitles titles = new LanguageTitles();
+
         /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
         public Movie()
         {
@@ -58,7 +60,7 @@ namespace Chaos.Movies.Model
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                    throw new ArgumentOutOfRangeException("value");
                 }
 
                 if (this.Id != 0)
@@ -79,19 +81,35 @@ namespace Chaos.Movies.Model
         public int TmdbId { get; private set; }
 
         /// <summary>The list of title of the movie in different languages.</summary>
-        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
+        public LanguageTitles Titles
+        {
+            get { return this.titles; }
+            private set { this.titles = value; }
+        }
 
         /// <summary>The list of genres that the movie belongs to.</summary>
-        public ReadOnlyCollection<Genre> Genres => this.genres.AsReadOnly();
+        public ReadOnlyCollection<Genre> Genres
+        {
+            get { return this.genres.AsReadOnly(); }
+        }
 
         /// <summary>The list of images for the movie and their order as represented by the key.</summary>
-        public ReadOnlyCollection<Icon> Images => this.images.AsReadOnly();
+        public ReadOnlyCollection<Icon> Images
+        {
+            get { return this.images.AsReadOnly(); }
+        }
 
         /// <summary>The total rating score from the current user.</summary>
-        public Rating UserRating => this.userRating;
+        public Rating UserRating
+        {
+            get { return this.userRating; }
+        }
 
         /// <summary>The total rating score from all users.</summary>
-        public Rating TotalRating => this.totalRating;
+        public Rating TotalRating
+        {
+            get { return this.totalRating; }
+        }
 
         /// <summary>Gets the list of <see cref="Character"/>s in this <see cref="Movie"/>.</summary>
         public CharactersInMovieCollection Characters

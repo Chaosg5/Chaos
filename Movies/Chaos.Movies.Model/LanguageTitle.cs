@@ -20,12 +20,12 @@ namespace Chaos.Movies.Model
         {
             if (string.IsNullOrEmpty(title))
             {
-                throw new ArgumentNullException(nameof(title));
+                throw new ArgumentNullException("title");
             }
 
             if (language == null)
             {
-                throw new ArgumentNullException(nameof(language));
+                throw new ArgumentNullException("language");
             }
 
             this.Title = title;

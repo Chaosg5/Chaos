@@ -32,13 +32,22 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the list of title of the movie series type in different languages.</summary>
-        public ReadOnlyCollection<LanguageTitle> Titles => this.titles.AsReadOnly();
+        public ReadOnlyCollection<LanguageTitle> Titles
+        {
+            get { return this.titles.AsReadOnly(); }
+        }
 
         /// <summary>Gets the number if existing titles.</summary>
-        public int Count => this.titles.Count;
+        public int Count
+        {
+            get { return this.titles.Count; }
+        }
 
         /// <summary>Gets the base title.</summary>
-        public string GetBaseTitle => this.GetTitle(null);
+        public string GetBaseTitle
+        {
+            get { return this.GetTitle(null); }
+        }
 
         /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
         /// <returns>A table containing the title and language as columns for each title.</returns>
@@ -86,7 +95,7 @@ namespace Chaos.Movies.Model
         {
             if (title == null)
             {
-                throw new ArgumentNullException(nameof(title));
+                throw new ArgumentNullException("title");
             }
 
             this.SetTitle(title.Title, title.Language);
@@ -100,12 +109,12 @@ namespace Chaos.Movies.Model
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentNullException(nameof(title));
+                throw new ArgumentNullException("title");
             }
 
             if (language == null)
             {
-                throw new ArgumentNullException(nameof(language));
+                throw new ArgumentNullException("language");
             }
 
             var existingTitle = this.titles.Find(t => t.Language.Name == language.Name);

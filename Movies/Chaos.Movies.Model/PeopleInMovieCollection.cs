@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="PeopleInMovie.cs">
+// <copyright file="PeopleInMovieCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -55,7 +55,7 @@ namespace Chaos.Movies.Model
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                    throw new ArgumentOutOfRangeException("value");
                 }
 
                 if (this.movieId != 0)
@@ -68,7 +68,10 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the number of elements contained in this <see cref="PeopleInMovieCollection"/>.</summary>
-        public int Count => this.people.Count;
+        public int Count
+        {
+            get { return this.people.Count; }
+        }
 
         /// <summary>Returns an enumerator which iterates through this <see cref="PeopleInMovieCollection"/>.</summary>
         /// <returns>The enumerator.</returns>
@@ -90,7 +93,7 @@ namespace Chaos.Movies.Model
         {
             if (personInMovie == null)
             {
-                throw new ArgumentNullException(nameof(personInMovie));
+                throw new ArgumentNullException("personInMovie");
             }
 
             if (this.people.Exists(p => p.Person.Id == personInMovie.Person.Id && p.Department.Id == personInMovie.Department.Id && p.Role.Id == personInMovie.Role.Id))
@@ -131,7 +134,7 @@ namespace Chaos.Movies.Model
         {
             if (personInMovie == null)
             {
-                throw new ArgumentNullException(nameof(personInMovie));
+                throw new ArgumentNullException("personInMovie");
             }
 
             if (!this.people.Contains(personInMovie))

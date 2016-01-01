@@ -44,6 +44,13 @@ namespace Chaos.Movies.Model
             get { return this.images.AsReadOnly(); }
         }
 
+        /// <summary>Gets the specified <see cref="Character"/>s.</summary>
+        /// <param name="idList">The list of ids of the <see cref="Character"/>s to get.</param>
+        /// <remarks>
+        /// Uses stored procedure <c>CharactersGet</c>.
+        /// Result 1 columns: CharacterId, Name
+        /// </remarks>
+        /// <returns>The list of <see cref="Character"/>s.</returns>
         public static IEnumerable<Character> Get(IEnumerable<int> idList)
         {
             var characters = new List<Character>();

@@ -47,19 +47,25 @@ namespace Chaos.Movies.Model
         public string Name { get; set; }
 
         /// <summary>Gets the list of images for the <see cref="Person"/> and their order as represented by the key.</summary>
-        public ReadOnlyCollection<Icon> Images => this.images.AsReadOnly();
+        public ReadOnlyCollection<Icon> Images
+        {
+            get { return this.images.AsReadOnly(); }
+        }
 
         /// <summary>Gets the list ratings of this <see cref="Person"/> for the current <see cref="User"/>.</summary>
-        public ReadOnlyCollection<PersonUserRating> PersonUserRatings => this.personUserRatings.AsReadOnly();
-        
-        /// <summary>Gets the specified people.</summary>
-        /// <param name="idList">The list of ids of the people to get.</param>
+        public ReadOnlyCollection<PersonUserRating> PersonUserRatings
+        {
+            get { return this.personUserRatings.AsReadOnly(); }
+        }
+
+        /// <summary>Gets the specified <see cref="Person"/>s.</summary>
+        /// <param name="idList">The list of ids of the <see cref="Person"/>s to get.</param>
         /// <remarks>
         /// Uses stored procedure <c>PeopleGet</c>.
         /// Result 1 columns: PersonId, Favorite
         /// Result 2 columns: PersonId, MovieId, Rating, Watches
         /// </remarks>
-        /// <returns>The list of people.</returns>
+        /// <returns>The list of <see cref="Person"/>s.</returns>
         public static IEnumerable<Person> Get(IEnumerable<int> idList)
         {
             var people = new List<Person>();

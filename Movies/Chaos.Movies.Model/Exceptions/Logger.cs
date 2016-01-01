@@ -19,7 +19,7 @@ namespace Chaos.Movies.Model.Exceptions
         {
             if (exception == null)
             {
-                throw new ArgumentNullException(nameof(exception));
+                throw new ArgumentNullException("exception");
             }
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))

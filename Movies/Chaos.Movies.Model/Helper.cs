@@ -11,11 +11,11 @@ namespace Chaos.Movies.Model
     using System.Globalization;
     using System.Linq;
 
+    /// <summary>Generic helper class.</summary>
     public static class Helper
     {
-
-
         /// <summary>Reorders a dictionary with an order based key.</summary>
+        /// <typeparam name="T">The type of the items in the <paramref name="list"/>.</typeparam>
         /// <param name="list">The list to change to order.</param>
         /// <param name="newOrder">The order to set based on the indexes of the old order.</param>
         /// <returns>The reordered list.</returns>

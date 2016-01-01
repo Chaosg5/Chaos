@@ -20,6 +20,9 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="Roles"/> property.</summary>
         private readonly List<Role> roles = new List<Role>();
 
+        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
+        private LanguageTitles titles = new LanguageTitles();
+
         /// <summary>Initializes a new instance of the <see cref="Department" /> class.</summary>
         /// <param name="record">The record containing the data for the department.</param>
         private Department(IDataRecord record)
@@ -31,10 +34,17 @@ namespace Chaos.Movies.Model
         public int Id { get; private set; }
 
         /// <summary>Gets the list of titles of the department in different languages.</summary>
-        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
+        public LanguageTitles Titles
+        {
+            get { return this.titles; }
+            private set { this.titles = value; }
+        }
 
         /// <summary>Gets all available person roles.</summary>
-        public ReadOnlyCollection<Role> Roles => this.roles.AsReadOnly();
+        public ReadOnlyCollection<Role> Roles
+        {
+            get { return this.roles.AsReadOnly(); }
+        }
 
         /// <summary>Loads all departments from the database.</summary>
         /// <remarks>
@@ -71,7 +81,7 @@ namespace Chaos.Movies.Model
         {
             if (idList == null || !idList.Any())
             {
-                throw new ArgumentNullException(nameof(idList));
+                throw new ArgumentNullException("idList");
             }
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
@@ -158,7 +168,6 @@ namespace Chaos.Movies.Model
         /// <returns>The list of <see cref="Department"/>s.</returns>
         private static IEnumerable<Department> ReadFromReader(SqlDataReader reader)
         {
-
             var result = new List<Department>();
             if (!reader.HasRows)
             {

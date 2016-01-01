@@ -23,7 +23,7 @@ namespace Chaos.Movies.Model.Exceptions
         /// <summary>Initializes a new instance of the <see cref="MissingColumnException"/> class with a specified error message.</summary>
         /// <param name="column">The name of the missing column.</param>
         public MissingColumnException(string column)
-            : base($"Missing column '{column}'.")
+            : base(string.Format(CultureInfo.InvariantCulture, "Missing column '{0}'.", column))
         {
         }
 
@@ -31,7 +31,7 @@ namespace Chaos.Movies.Model.Exceptions
         /// <param name="column">The name of the missing column.</param>
         /// <param name="message">The message that describes the error.</param>
         public MissingColumnException(string column, string message)
-            : base($"Missing column '{column}'. {message}")
+            : base(string.Format(CultureInfo.InvariantCulture, "Missing column '{0}'. {1}", column, message))
         {
         }
 

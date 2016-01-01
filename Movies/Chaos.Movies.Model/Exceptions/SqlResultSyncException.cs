@@ -8,6 +8,7 @@ namespace Chaos.Movies.Model.Exceptions
 {
     using System;
     using System.Data;
+    using System.Globalization;
     using System.Runtime.Serialization;
 
     /// <summary>Exception caused by an <see cref="IDataReader"/> missing a SQL result.</summary>
@@ -22,7 +23,7 @@ namespace Chaos.Movies.Model.Exceptions
         /// <summary>Initializes a new instance of the <see cref="SqlResultSyncException"/> class with a specified error message.</summary>
         /// <param name="objectId">The id of the out of sync object.</param>
         public SqlResultSyncException(int objectId)
-            : base($"An object with id {objectId} was out of sync.")
+            : base(string.Format(CultureInfo.InvariantCulture, "An object with id {0} was out of sync.", objectId))
         {
         }
 

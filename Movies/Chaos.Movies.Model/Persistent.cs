@@ -30,7 +30,7 @@ namespace Chaos.Movies.Model
         {
             if (record == null)
             {
-                throw new ArgumentNullException(nameof(record));
+                throw new ArgumentNullException("record");
             }
 
             foreach (var columnName in requiredColumns.Where(columnName => record[columnName] == null))

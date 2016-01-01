@@ -8,6 +8,7 @@ namespace Chaos.Movies.Model.Exceptions
 {
     using System;
     using System.Data;
+    using System.Globalization;
     using System.Runtime.Serialization;
 
     /// <summary>Exception caused by an <see cref="IDataReader"/> missing a SQL result.</summary>
@@ -22,7 +23,7 @@ namespace Chaos.Movies.Model.Exceptions
         /// <summary>Initializes a new instance of the <see cref="MissingResultException"/> class with a specified error message.</summary>
         /// <param name="resultNumber">The order number of the missing SQL result.</param>
         public MissingResultException(int resultNumber)
-            : base($"Missing the result number {resultNumber} in the SQL.")
+            : base(string.Format(CultureInfo.InvariantCulture, "Missing the result number {0} in the SQL.", resultNumber))
         {
         }
 

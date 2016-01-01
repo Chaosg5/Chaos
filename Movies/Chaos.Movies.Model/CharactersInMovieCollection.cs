@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CharactersInMovie.cs">
+// <copyright file="CharactersInMovieCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -36,13 +36,6 @@ namespace Chaos.Movies.Model
             this.MovieId = movieId;
         }
 
-        /// <summary>Returns an enumerator which iterates through this <see cref="CharactersInMovieCollection"/>.</summary>
-        /// <returns>The enumerator.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
         /// <summary>Gets id of the <see cref="Movie"/> which this <see cref="CharactersInMovieCollection"/> belongs to.</summary>
         public int MovieId
         {
@@ -55,7 +48,7 @@ namespace Chaos.Movies.Model
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                    throw new ArgumentOutOfRangeException("value");
                 }
 
                 if (this.movieId != 0)
@@ -68,7 +61,17 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the number of elements contained in this <see cref="CharactersInMovieCollection"/>.</summary>
-        public int Count => this.characters.Count;
+        public int Count
+        {
+            get { return this.characters.Count; }
+        }
+
+        /// <summary>Returns an enumerator which iterates through this <see cref="CharactersInMovieCollection"/>.</summary>
+        /// <returns>The enumerator.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
 
         /// <summary>Returns an enumerator which iterates through this <see cref="CharactersInMovieCollection"/>.</summary>
         /// <returns>The enumerator.</returns>
@@ -90,7 +93,7 @@ namespace Chaos.Movies.Model
         {
             if (characterInMovie == null)
             {
-                throw new ArgumentNullException(nameof(characterInMovie));
+                throw new ArgumentNullException("characterInMovie");
             }
 
             if (this.characters.Exists(c => c.Character.Id == characterInMovie.Character.Id))
@@ -99,6 +102,7 @@ namespace Chaos.Movies.Model
             }
 
             this.characters.Add(characterInMovie);
+
             // ToDo: this.AddPerson(new PersonInMovie(characterInMovie.Person, CastDepartment, ActorRole));
         }
 
@@ -123,11 +127,13 @@ namespace Chaos.Movies.Model
 
         /// <summary>Removes specified <paramref name="characterInMovie"/> item from the list.</summary>
         /// <param name="characterInMovie">The item to remove.</param>
+        /// <returns><see langword="true"/> if the <paramref name="characterInMovie"/> was found and removed; <see langword="false"/> if it was not found.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="characterInMovie"/> is <see langword="null"/>.</exception>
         public bool RemoveCharacter(CharacterInMovie characterInMovie)
         {
             if (characterInMovie == null)
             {
-                throw new ArgumentNullException(nameof(characterInMovie));
+                throw new ArgumentNullException("characterInMovie");
             }
 
             if (!this.characters.Contains(characterInMovie))
@@ -136,6 +142,7 @@ namespace Chaos.Movies.Model
             }
 
             this.characters.Remove(characterInMovie);
+
             // ToDo: this.RemovePersonAsActor(person);
             return true;
         }
