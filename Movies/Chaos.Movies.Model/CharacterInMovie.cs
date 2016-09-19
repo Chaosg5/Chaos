@@ -7,8 +7,6 @@
 namespace Chaos.Movies.Model
 {
     using System;
-    using System.Data;
-    using System.Linq;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
@@ -17,9 +15,10 @@ namespace Chaos.Movies.Model
         /// <summary>Initializes a new instance of the <see cref="CharacterInMovie"/> class.</summary>
         /// <param name="person">The person playing the <paramref name="character"/> in the movie.</param>
         /// <param name="character">The character in the movie.</param>
+        /// <param name="userRating">The current user's rating.</param>
         /// <exception cref="ArgumentNullException">If any parameter is null.</exception>
         /// <exception cref="PersistentObjectRequiredException">If any of the objects aren't saved.</exception>
-        public CharacterInMovie(Person person, Character character)
+        public CharacterInMovie(Person person, Character character, int userRating)
         {
             if (person == null)
             {
@@ -43,6 +42,7 @@ namespace Chaos.Movies.Model
 
             this.Person = person;
             this.Character = character;
+            this.UserRating = userRating;
         }
 
         /// <summary>Gets the character.</summary>
@@ -50,5 +50,8 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the person playing the <see cref="Character"/>.</summary>
         public Person Person { get; private set; }
+
+        /// <summary>Gets the current user's rating of the <see cref="Character"/> in the <see cref="Movie"/>.</summary>
+        public int UserRating { get; private set; }
     }
 }

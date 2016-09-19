@@ -17,10 +17,11 @@ namespace Chaos.Movies.Model
         /// <param name="person">The person in the movie.</param>
         /// <param name="department">The department which the <paramref name="person"/> belongs to.</param>
         /// <param name="role">The role of the person in the <paramref name="department"/>.</param>
+        /// <param name="userRating">The current user's rating.</param>
         /// <exception cref="ArgumentNullException">If any parameter is null.</exception>
         /// <exception cref="PersistentObjectRequiredException">If any of the objects aren't saved.</exception>
         /// <exception cref="RelationshipException">If the <paramref name="role"/> isn't a part of the <paramref name="department"/>.</exception>
-        public PersonInMovie(Person person, Department department, Role role)
+        public PersonInMovie(Person person, Department department, Role role, int userRating)
         {
             if (person == null)
             {
@@ -60,6 +61,7 @@ namespace Chaos.Movies.Model
             this.Person = person;
             this.Department = department;
             this.Role = role;
+            this.UserRating = userRating;
         }
 
         /// <summary>Gets the person.</summary>
@@ -70,5 +72,8 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the department of the <see cref="Person"/>.</summary>
         public Department Department { get; private set; }
+
+        /// <summary>Gets the current user's rating of the <see cref="Character"/> in the <see cref="Movie"/>.</summary>
+        public int UserRating { get; private set; }
     }
 }

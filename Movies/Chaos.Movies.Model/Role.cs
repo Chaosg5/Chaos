@@ -76,7 +76,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("RolesGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@idList", idList));
+                command.Parameters.AddWithValue("@idList", idList);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
@@ -116,8 +116,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("RoleSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@RoleId", role.Id));
-                command.Parameters.Add(new SqlParameter("@titles", role.Titles.GetSaveTitles));
+                command.Parameters.AddWithValue("@RoleId", role.Id);
+                command.Parameters.AddWithValue("@titles", role.Titles.GetSaveTitles);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
@@ -151,7 +151,7 @@ namespace Chaos.Movies.Model
         {
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1);
+                throw new MissingResultException(1, "");
             }
 
             var result = new List<Role>();

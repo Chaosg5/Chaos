@@ -22,8 +22,9 @@ namespace Chaos.Movies.Model.Exceptions
 
         /// <summary>Initializes a new instance of the <see cref="MissingResultException"/> class with a specified error message.</summary>
         /// <param name="resultNumber">The order number of the missing SQL result.</param>
-        public MissingResultException(int resultNumber)
-            : base(string.Format(CultureInfo.InvariantCulture, "Missing the result number {0} in the SQL.", resultNumber))
+        /// <param name="resultName">The descriptive name of the missing SQL result.</param>
+        public MissingResultException(int resultNumber, string resultName)
+            : base(string.Format(CultureInfo.InvariantCulture, "Missing the result number '{0}' for '{1}' in the SQL.", resultNumber, resultName))
         {
         }
 

@@ -58,8 +58,8 @@ namespace Chaos.Movies.Model
                 using (var table = new DataTable())
                 {
                     table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn("Title"));
                     table.Columns.Add(new DataColumn("Language"));
+                    table.Columns.Add(new DataColumn("Title"));
                     foreach (var languageTitle in this.titles)
                     {
                         table.Rows.Add(languageTitle.Title, languageTitle.Language.Name);

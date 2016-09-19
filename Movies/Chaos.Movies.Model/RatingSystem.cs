@@ -18,22 +18,21 @@ namespace Chaos.Movies.Model
         /// <summary>Initializes a new instance of the <see cref="RatingSystem" /> class.</summary>
         public RatingSystem()
         {
-
         }
 
-        /// <summary>The id of this rating system.</summary>
+        /// <summary>Gets the id of this rating system.</summary>
         public int Id { get; private set; }
 
-        /// <summary>The name of this rating system.</summary>
+        /// <summary>Gets the name of this rating system.</summary>
         public string Name { get; private set; }
 
-        /// <summary>The description of this rating system.</summary>
+        /// <summary>Gets the description of this rating system.</summary>
         public string Description { get; private set; }
 
-        /// <summary>Contains the relative value for each <see cref="RatingType"/>.</summary>
+        /// <summary>Gets the the relative value for each <see cref="RatingType"/>.</summary>
         public ReadOnlyDictionary<RatingType, short> Values
         {
-            get { return new ReadOnlyDictionary<RatingType, short>(values); }
+            get { return new ReadOnlyDictionary<RatingType, short>(this.values); }
         }
 
         /// <summary>Sets the value for the specified type.</summary>

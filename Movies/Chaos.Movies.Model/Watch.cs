@@ -13,8 +13,6 @@ namespace Chaos.Movies.Model
     /// <summary>Represents an event where a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
     public class Watch
     {
-        #region Constructors
-
         /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
         /// <param name="movieId">The id of the <see cref="Movie"/> that was watched.</param>
         /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
@@ -39,10 +37,6 @@ namespace Chaos.Movies.Model
             ReadFromRecord(this, record);
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>Gets the id of the watch.</summary>
         public int Id { get; private set; }
 
@@ -58,7 +52,7 @@ namespace Chaos.Movies.Model
         /// <summary>Gets or sets the date when the <see cref="Movie"/> was watched.</summary>
         public DateTime WatchDate { get; set; }
 
-        /// <summary>Gets a value indication whether the <see cref="WatchDate"/> is uncertain or not.</summary>
+        /// <summary>Gets a value indicating whether the <see cref="WatchDate"/> is uncertain or not.</summary>
         public bool DateUncertain { get; private set; }
 
         /// <summary>Gets the id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</summary>
@@ -72,12 +66,6 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the <see cref="WatchType"/> how the <see cref="Movie"/> was watched.</summary>
         public WatchType WatchType { get; private set; }
-
-        #endregion
-
-        #region Methods
-
-        #region Public
 
         /// <summary>Sets the user who watched the <see cref="Movie"/>.</summary>
         /// <param name="user">The user to set.</param>
@@ -123,10 +111,6 @@ namespace Chaos.Movies.Model
             this.WatchType = type;
         }
 
-        #endregion
-
-        #region Private
-
         /// <summary>Updates a watch from a record.</summary>
         /// <param name="watch">The watch to update.</param>
         /// <param name="record">The record containing the data for the watch.</param>
@@ -163,9 +147,5 @@ namespace Chaos.Movies.Model
                 watch.WatchTypeId = (int)record["WatchTypeId"];
             }
         }
-
-        #endregion
-
-        #endregion
     }
 }

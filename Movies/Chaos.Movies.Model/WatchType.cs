@@ -13,8 +13,6 @@ namespace Chaos.Movies.Model
     /// <summary>Represents the way in which a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
     public class WatchType
     {
-        #region Constructors
-
         /// <summary>Initializes a new instance of the <see cref="WatchType" /> class.</summary>
         /// <param name="name">The name to set for the watch type.</param>
         public WatchType(string name)
@@ -30,21 +28,11 @@ namespace Chaos.Movies.Model
             ReadFromRecord(this, record);
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>Gets the id of this watch type.</summary>
         public int Id { get; private set; }
 
         /// <summary>Gets the name of this watch type.</summary>
         public string Name { get; private set; }
-
-        #endregion
-
-        #region Methods
-
-        #region Public
 
         /// <summary>Saves this watch type.</summary>
         public void Save()
@@ -52,10 +40,6 @@ namespace Chaos.Movies.Model
             ValidateSaveCandidate(this);
             SaveToDatabase(this);
         }
-
-        #endregion
-
-        #region Private
 
         /// <summary>Updates a watch type from a record.</summary>
         /// <param name="type">The watch type to update.</param>
@@ -85,8 +69,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("WatchTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@Id", type.Id));
-                command.Parameters.Add(new SqlParameter("@Name", type.Name));
+                command.Parameters.AddWithValue("@Id", type.Id);
+                command.Parameters.AddWithValue("@Name", type.Name);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
@@ -98,9 +82,5 @@ namespace Chaos.Movies.Model
                 }
             }
         }
-
-        #endregion
-
-        #endregion
     }
 }

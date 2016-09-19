@@ -61,11 +61,7 @@ namespace Chaos.Movies.Model
                 return this.types.AsReadOnly();
             }
         }
-
-        #region Methods
-
-        #region Public
-
+        
         /// <summary>Adds a watch type to this watch location.</summary>
         /// <param name="type">The watch type to add.</param>
         public void AddType(WatchType type)
@@ -102,10 +98,6 @@ namespace Chaos.Movies.Model
             SaveAllToDatabase(this);
         }
 
-        #endregion
-
-        #region Private
-
         /// <summary>Updates a watch location from a record.</summary>
         /// <param name="location">The watch location to update.</param>
         /// <param name="record">The record containing the data for the watch location.</param>
@@ -124,8 +116,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("WatchLocationSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@WatchLocationId", location.Id));
-                command.Parameters.Add(new SqlParameter("@Name", location.Name));
+                command.Parameters.AddWithValue("@WatchLocationId", location.Id);
+                command.Parameters.AddWithValue("@Name", location.Name);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
@@ -146,8 +138,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("WatchLocationSaveAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@WatchLocationId", location.Id));
-                command.Parameters.Add(new SqlParameter("@Name", location.Name));
+                command.Parameters.AddWithValue("@WatchLocationId", location.Id);
+                command.Parameters.AddWithValue("@Name", location.Name);
                 var types = command.Parameters.AddWithValue("@WatchTypes", GetTypesIdDataTable(location));
                 types.SqlDbType = SqlDbType.Structured;
                 connection.Open();
@@ -173,9 +165,7 @@ namespace Chaos.Movies.Model
                 typesTable.Columns.Add(new DataColumn("WatchTypeId"));
                 foreach (var type in location.types)
                 {
-                    var row = typesTable.NewRow();
-                    row["WatchTypeId"] = type.Id;
-                    typesTable.Rows.Add(row);
+                    typesTable.Rows.Add(type.Id);
                 }
 
                 return typesTable;
@@ -189,7 +179,7 @@ namespace Chaos.Movies.Model
             ValidateSaveCandidate(location);
             if (location.types.Any(type => type.Id == 0))
             {
-                throw new InvalidSaveCandidateException("The watch location cant contain unsaved watch types.");
+                throw new InvalidSaveCandidateException("The watch location can't contain unsaved watch types.");
             }
         }
 
@@ -203,9 +193,5 @@ namespace Chaos.Movies.Model
                 throw new InvalidSaveCandidateException("The name of the watch location cant be empty.");
             }
         }
-
-        #endregion
-
-        #endregion
     }
 }

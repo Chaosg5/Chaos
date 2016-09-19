@@ -26,13 +26,13 @@ namespace Chaos.Movies.Model.Exceptions
             using (var command = new SqlCommand("ExceptionLog", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@userId", GlobalCache.User.Id));
-                command.Parameters.Add(new SqlParameter("@time", DateTime.Now));
-                command.Parameters.Add(new SqlParameter("@type", exception.GetType().ToString()));
-                command.Parameters.Add(new SqlParameter("@source", exception.Source));
-                command.Parameters.Add(new SqlParameter("@method", exception.TargetSite));
-                command.Parameters.Add(new SqlParameter("@message", exception.Message));
-                command.Parameters.Add(new SqlParameter("@exception", exception.ToString()));
+                command.Parameters.AddWithValue("@userId", GlobalCache.User.Id);
+                command.Parameters.AddWithValue("@time", DateTime.Now);
+                command.Parameters.AddWithValue("@type", exception.GetType().ToString());
+                command.Parameters.AddWithValue("@source", exception.Source);
+                command.Parameters.AddWithValue("@method", exception.TargetSite);
+                command.Parameters.AddWithValue("@message", exception.Message);
+                command.Parameters.AddWithValue("@exception", exception.ToString());
                 connection.Open();
                 command.ExecuteNonQuery();
             }

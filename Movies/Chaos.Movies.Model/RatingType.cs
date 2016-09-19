@@ -120,9 +120,9 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("RatingTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@RatingTypeId", type.Id));
-                command.Parameters.Add(new SqlParameter("@Name", type.Name));
-                command.Parameters.Add(new SqlParameter("@Description", type.Description));
+                command.Parameters.AddWithValue("@RatingTypeId", type.Id);
+                command.Parameters.AddWithValue("@Name", type.Name);
+                command.Parameters.AddWithValue("@Description", type.Description);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())

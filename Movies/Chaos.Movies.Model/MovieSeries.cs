@@ -142,8 +142,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("MovieSeriesAddMovie", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@movieSeriesId", this.Id));
-                command.Parameters.Add(new SqlParameter("@movieId", movie.Id));
+                command.Parameters.AddWithValue("@movieSeriesId", this.Id);
+                command.Parameters.AddWithValue("@movieId", movie.Id);
                 connection.Open();
 
                 command.ExecuteNonQuery();
@@ -181,8 +181,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("MovieSeriesRemoveMovie", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@movieSeriesId", this.Id));
-                command.Parameters.Add(new SqlParameter("@movieId", movie.Id));
+                command.Parameters.AddWithValue("@movieSeriesId", this.Id);
+                command.Parameters.AddWithValue("@movieId", movie.Id);
                 connection.Open();
 
                 command.ExecuteNonQuery();
@@ -216,9 +216,9 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("MovieSeriesSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@movieSeriesId", series.Id));
-                command.Parameters.Add(new SqlParameter("@movieSeriesTypeId", series.MovieSeriesType.Id));
-                command.Parameters.Add(new SqlParameter("@titles", series.Titles.GetSaveTitles));
+                command.Parameters.AddWithValue("@movieSeriesId", series.Id);
+                command.Parameters.AddWithValue("@movieSeriesTypeId", series.MovieSeriesType.Id);
+                command.Parameters.AddWithValue("@titles", series.Titles.GetSaveTitles);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
@@ -240,8 +240,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("MovieSeriesSaveMovies", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@movieSeriesId", series.Id));
-                command.Parameters.Add(new SqlParameter("@movieIds", series.GetSaveMovies));
+                command.Parameters.AddWithValue("@movieSeriesId", series.Id);
+                command.Parameters.AddWithValue("@movieIds", series.GetSaveMovies);
                 connection.Open();
 
                 command.ExecuteNonQuery();

@@ -17,14 +17,11 @@ namespace Chaos.Movies.Model
     /// <summary>A movie or a series.</summary>
     public class Movie
     {
-        /// <summary>Private part of the <see cref="Id"/> property.</summary>
-        private int id;
-
         /// <summary>The department for cast members.</summary>
-        private static Department CastDepartment = GlobalCache.GetDepartment("Cast", GlobalCache.DefaultLanguage);
+        private static Department castDepartment = GlobalCache.GetDepartment("Cast", GlobalCache.DefaultLanguage);
 
         /// <summary>The role for cast actors.</summary>
-        private static Role ActorRole = GlobalCache.GetRole("Actor", "Cast", GlobalCache.DefaultLanguage);
+        private static Role actorRole = GlobalCache.GetRole("Actor", "Cast", GlobalCache.DefaultLanguage);
 
         /// <summary>Private part of the <see cref="Titles"/> property.</summary>
         private readonly List<Genre> genres = new List<Genre>();
@@ -39,11 +36,12 @@ namespace Chaos.Movies.Model
         private readonly Rating totalRating = new Rating(new RatingType(1));
 
         /// <summary>Private part of the <see cref="Characters"/> property.</summary>
-        private CharactersInMovieCollection characters = new CharactersInMovieCollection();
+        private readonly CharactersInMovieCollection characters = new CharactersInMovieCollection();
 
         /// <summary>Private part of the <see cref="People"/> property.</summary>
-        private PeopleInMovieCollection people = new PeopleInMovieCollection();
+        private readonly PeopleInMovieCollection people = new PeopleInMovieCollection();
 
+        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
         private LanguageTitles titles = new LanguageTitles();
 
         /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
@@ -52,60 +50,40 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the id of the movie.</summary>
-        public int Id
-        {
-            get { return this.id; }
+        public int Id { get; private set; }
 
-            private set
-            {
-                if (value <= 0)
-                {
-                    throw new ArgumentOutOfRangeException("value");
-                }
-
-                if (this.Id != 0)
-                {
-                    throw new ValueLogicalReadOnlyException("The id of the movie can't be changed once set.");
-                }
-
-                this.id = value;
-                this.Characters.SetMovieId(this.Id);
-                this.People.SetMovieId(this.Id);
-            }
-        }
-
-        /// <summary>The id of the movie in IMDB.</summary>
+        /// <summary>Gets the id of the movie in IMDB.</summary>
         public string ImdbId { get; private set; }
 
-        /// <summary>The id of the movie in TMDB.</summary>
+        /// <summary>Gets the id of the movie in TMDB.</summary>
         public int TmdbId { get; private set; }
 
-        /// <summary>The list of title of the movie in different languages.</summary>
+        /// <summary>Gets the list of title of the movie in different languages.</summary>
         public LanguageTitles Titles
         {
             get { return this.titles; }
             private set { this.titles = value; }
         }
 
-        /// <summary>The list of genres that the movie belongs to.</summary>
+        /// <summary>Gets the list of genres that the movie belongs to.</summary>
         public ReadOnlyCollection<Genre> Genres
         {
             get { return this.genres.AsReadOnly(); }
         }
 
-        /// <summary>The list of images for the movie and their order as represented by the key.</summary>
+        /// <summary>Gets the list of images for the movie and their order as represented by the key.</summary>
         public ReadOnlyCollection<Icon> Images
         {
             get { return this.images.AsReadOnly(); }
         }
 
-        /// <summary>The total rating score from the current user.</summary>
+        /// <summary>Gets the total rating score from the current user.</summary>
         public Rating UserRating
         {
             get { return this.userRating; }
         }
 
-        /// <summary>The total rating score from all users.</summary>
+        /// <summary>Gets the total rating score from all users.</summary>
         public Rating TotalRating
         {
             get { return this.totalRating; }
@@ -130,26 +108,39 @@ namespace Chaos.Movies.Model
         {
             get
             {
-
-
                 return this.people;
             }
         }
+        
+        /// <summary>Gets or sets the type of the movie.</summary>
+        public MovieType MovieType { get; set; }
 
-        public void SavePeople()
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="Id"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        public void SaveAll()
         {
-            if (this.Id <= 0)
-            {
-                throw new PersistentObjectRequiredException("The movie needs to be saved before saving people.");
-            }
+            this.People.Save();
+            this.Characters.Save();
         }
-
-        public void SaveCharacters()
+        
+        /// <summary>Sets the id of the <see cref="Movie"/> this <see cref="CharactersInMovieCollection"/> belongs to.</summary>
+        /// <param name="movieId">The id of the <see cref="Movie"/> which this <see cref="CharactersInMovieCollection"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The id of the <see cref="Movie"/> can't be changed once set.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="movieId"/> is not valid.</exception>
+        private void SetMovieId(int movieId)
         {
-            if (this.Id <= 0)
+            if (movieId <= 0)
             {
-                throw new PersistentObjectRequiredException("The movie needs to be saved before saving characters.");
+                throw new ArgumentOutOfRangeException("movieId");
             }
+
+            if (this.Id != 0)
+            {
+                throw new ValueLogicalReadOnlyException("The id of the movie can't be changed once set.");
+            }
+
+            this.Id = movieId;
+            this.Characters.SetMovieId(this.Id);
+            this.People.SetMovieId(this.Id);
         }
     }
 }

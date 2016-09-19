@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\ValueLogicalReadOnlyException.cs" />
+    <Compile Include="MovieSeriesType.cs" />
     <Compile Include="PeopleInMovieCollection.cs" />
     <Compile Include="CharactersInMovieCollection.cs" />
     <Compile Include="Exceptions\CacheInitializationException.cs" />
@@ -71,7 +72,7 @@
     <Compile Include="CharacterInMovie.cs" />
     <Compile Include="PersonUserRating.cs" />
     <Compile Include="PersonInMovie.cs" />
-    <Compile Include="MovieSeriesType.cs" />
+    <Compile Include="MovieType.cs" />
     <Compile Include="Exceptions\UserChangeNotAllowedException.cs" />
     <Compile Include="MovieSeries.cs" />
     <Compile Include="Exceptions\InvalidRecordValueException.cs" />

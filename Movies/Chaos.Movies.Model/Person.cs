@@ -73,15 +73,15 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("PeopleGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@userId", GlobalCache.User));
-                command.Parameters.Add(new SqlParameter("@idList", idList));
+                command.Parameters.AddWithValue("@userId", GlobalCache.User);
+                command.Parameters.AddWithValue("@idList", idList);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (!reader.HasRows)
                     {
-                        throw new MissingResultException(1);
+                        throw new MissingResultException(1, "");
                     }
 
                     while (reader.Read())
@@ -91,7 +91,7 @@ namespace Chaos.Movies.Model
 
                     if (!reader.NextResult() || !reader.HasRows)
                     {
-                        throw new MissingResultException(2);
+                        throw new MissingResultException(2, "");
                     }
 
                     while (reader.Read())
@@ -146,8 +146,8 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("PersonSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@personId", person.Id));
-                command.Parameters.Add(new SqlParameter("@name", person.Name));
+                command.Parameters.AddWithValue("@personId", person.Id);
+                command.Parameters.AddWithValue("@name", person.Name);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())

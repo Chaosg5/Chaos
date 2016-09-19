@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Department.cs">
+// <copyright file="MovieType.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -8,65 +8,54 @@ namespace Chaos.Movies.Model
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.SqlClient;
     using System.IO;
     using System.Linq;
     using Chaos.Movies.Model.Exceptions;
 
-    /// <summary>Represents a production department in a movie.</summary>
-    public class Department
+    /// <summary>Represents a type of a movie.</summary>
+    public class MovieType
     {
-        /// <summary>Private part of the <see cref="Roles"/> property.</summary>
-        private readonly List<Role> roles = new List<Role>();
-
         /// <summary>Private part of the <see cref="Titles"/> property.</summary>
         private LanguageTitles titles = new LanguageTitles();
 
-        /// <summary>Initializes a new instance of the <see cref="Department" /> class.</summary>
-        /// <param name="record">The record containing the data for the department.</param>
+        /// <summary>Initializes a new instance of the <see cref="MovieType" /> class.</summary>
+        public MovieType()
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="MovieType" /> class.</summary>
+        /// <param name="record">The record containing the data for the movie type.</param>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-        private Department(IDataRecord record)
+        public MovieType(IDataRecord record)
         {
             ReadFromRecord(this, record);
         }
 
-        /// <summary>Gets the id of the department.</summary>
+        /// <summary>Gets the id of the type.</summary>
         public int Id { get; private set; }
 
-        /// <summary>Gets the list of titles of the department in different languages.</summary>
+        /// <summary>Gets the list of titles of the movie type in different languages.</summary>
         public LanguageTitles Titles
         {
             get { return this.titles; }
             private set { this.titles = value; }
         }
 
-        /// <summary>Gets all available person roles.</summary>
-        public ReadOnlyCollection<Role> Roles
-        {
-            get { return this.roles.AsReadOnly(); }
-        }
-
-        /// <summary>Loads all departments from the database.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>DepartmentsGetAll</c>.
-        /// Result 1 columns: DepartmentId, Language, Title
-        /// Result 2 columns: DepartmentId, RoleId
-        /// </remarks>
-        /// <returns>All departments.</returns>
-        /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
+        /// <summary>Loads all movie types from the database.</summary>
+        /// <returns>All <see cref="MovieType"/>s.</returns>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
+        /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
+        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
-        public static IEnumerable<Department> GetAll()
+        public static IEnumerable<MovieType> GetAll()
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("DepartmentsGetAll", connection))
+            using (var command = new SqlCommand("MovieTypesGetAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 connection.Open();
@@ -78,22 +67,20 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Loads all <see cref="Department"/>s from the database.</summary>
+        /// <summary>Gets the specified <see cref="MovieType"/>s.</summary>
         /// <remarks>
-        /// Uses stored procedure <c>DepartmentsGet</c>.
-        /// Result 1 columns: DepartmentId, Language, Title
-        /// Result 2 columns: DepartmentId, RoleId
+        /// Uses stored procedure <c>MovieTypesGet</c>.
+        /// Result 1 columns: MovieTypeId, Language, Title
         /// </remarks>
-        /// <param name="idList">The list of ids of the <see cref="Department"/>s to get.</param>
-        /// <returns>The specified <see cref="Department"/>s.</returns>
+        /// <param name="idList">The list of ids of the <see cref="MovieType"/>s to get.</param>
+        /// <returns>The specified <see cref="MovieType"/>s.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="idList"/> is <see langword="null" />.</exception>
-        /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
         /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
+        /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        public static IEnumerable<Department> Get(IEnumerable<int> idList)
+        public static IEnumerable<MovieType> Get(IEnumerable<int> idList)
         {
             if (idList == null || !idList.Any())
             {
@@ -101,12 +88,12 @@ namespace Chaos.Movies.Model
             }
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("DepartmentsGet", connection))
+            using (var command = new SqlCommand("MovieTypesGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@idList", idList);
-                command.Parameters.AddWithValue("@idList", idList);
                 connection.Open();
+
                 using (var reader = command.ExecuteReader())
                 {
                     return ReadFromReader(reader);
@@ -114,133 +101,104 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Saves this department to the database.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <summary>Saves this movie type to the database.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
         /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
+        /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public void Save()
         {
             ValidateSaveCandidate(this);
             SaveToDatabase(this);
         }
 
-        /// <summary>Validates that the <paramref name="department"/> is valid to be saved.</summary>
-        /// <param name="department">The department to validate.</param>
-        /// <exception cref="InvalidSaveCandidateException">The <paramref name="department"/> is not valid to be saved.</exception>
-        // ReSharper disable once UnusedParameter.Local
-        private static void ValidateSaveCandidate(Department department)
+        /// <summary>Validates that the <paramref name="type"/> is valid to be saved.</summary>
+        /// <param name="type">The movie type to validate.</param>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
+        private static void ValidateSaveCandidate(MovieType type)
         {
-            if (department.Titles.Count == 0)
+            if (type.Titles.Count == 0)
             {
                 throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
         }
 
-        /// <summary>Saves a department to the database.</summary>
+        /// <summary>Saves a movie type to the database.</summary>
         /// <remarks>
-        /// Uses stored procedure <c>DepartmentSave</c>.
-        /// Result 1 columns: DepartmentId
+        /// Uses stored procedure <c>MovieTypeSave</c>.
+        /// Result 1 columns: MovieTypeId
         /// Result 2 columns: Language, Title
         /// </remarks>
-        /// <param name="department">The department to save.</param>
+        /// <param name="type">The movie type to save.</param>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
+        /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
-        private static void SaveToDatabase(Department department)
+        private static void SaveToDatabase(MovieType type)
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("DepartmentSave", connection))
+            using (var command = new SqlCommand("MovieTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@DepartmentId", department.Id);
-                command.Parameters.AddWithValue("@titles", department.Titles.GetSaveTitles);
+                command.Parameters.AddWithValue("@MovieTypeId", type.Id);
+                command.Parameters.AddWithValue("@titles", type.Titles.GetSaveTitles);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
-                    if (!reader.HasRows)
-                    {
-                        throw new MissingResultException(1, "Departments");
-                    }
-
                     if (reader.Read())
                     {
-                        ReadFromRecord(department, reader);
+                        ReadFromRecord(type, reader);
                     }
 
-                    if (!reader.NextResult() || !reader.HasRows)
+                    if (reader.NextResult())
                     {
-                        throw new MissingResultException(2, "DepartmentTitles");
+                        type.Titles = new LanguageTitles(reader);
                     }
-
-                    department.Titles = new LanguageTitles(reader);
                 }
             }
         }
 
-        /// <summary>Updates a department from a record.</summary>
-        /// <param name="department">The department to update.</param>
-        /// <param name="record">The record containing the data for the department.</param>
+        /// <summary>Updates a movie type from a record.</summary>
+        /// <param name="type">The movie type to update.</param>
+        /// <param name="record">The record containing the data for the movie type.</param>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-        private static void ReadFromRecord(Department department, IDataRecord record)
+        private static void ReadFromRecord(MovieType type, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "DepartmentId" });
-            department.Id = (int)record["DepartmentId"];
+            Persistent.ValidateRecord(record, new[] { "MovieTypeId" });
+            type.Id = (int)record["MovieTypeId"];
         }
 
-        /// <summary>Creates a list of <see cref="Department"/>s from a reader.</summary>
-        /// <param name="reader">The reader containing the data for the <see cref="Department"/>s.</param>
-        /// <returns>The list of <see cref="Department"/>s.</returns>
+        /// <summary>Creates a list of <see cref="MovieType"/>s from a reader.</summary>
+        /// <param name="reader">The reader containing the data for the <see cref="MovieType"/>s.</param>
+        /// <returns>The list of <see cref="MovieType"/>s.</returns>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        private static IEnumerable<Department> ReadFromReader(SqlDataReader reader)
+        private static IEnumerable<MovieType> ReadFromReader(SqlDataReader reader)
         {
-            var result = new List<Department>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, "Departments");
+                throw new MissingResultException(1, "");
             }
 
-            Department department = null;
+            var result = new List<MovieType>();
+            MovieType type = null;
             while (reader.Read())
             {
-                var id = (int)reader["DepartmentId"];
-                if (department == null || department.Id != id)
+                var id = (int)reader["MovieTypeId"];
+                if (type == null || type.Id != id)
                 {
-                    department = result.Find(t => t.Id == id);
-                    if (department == null)
+                    type = result.Find(t => t.Id == id);
+                    if (type == null)
                     {
-                        department = new Department(reader);
-                        result.Add(department);
+                        type = new MovieType(reader);
+                        result.Add(type);
                     }
                 }
 
-                department.Titles.SetTitle(new LanguageTitle(reader));
-            }
-
-            if (!reader.NextResult() || !reader.HasRows)
-            {
-                throw new MissingResultException(2, "DepartmentTitles");
-            }
-
-            while (reader.Read())
-            {
-                var departmentId = (int)reader["DepartmentId"];
-                var roleId = (int)reader["RoleId"];
-                department = result.Find(t => t.Id == departmentId);
-                if (department == null)
-                {
-                    throw new SqlResultSyncException(departmentId);
-                }
-
-                department.roles.Add(GlobalCache.GetRole(roleId));
+                type.Titles.SetTitle(new LanguageTitle(reader));
             }
 
             return result;
