@@ -14,6 +14,8 @@ namespace Chaos.Movies.Model
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Threading;
+
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Provides a global cache of objects.</summary>
@@ -39,6 +41,8 @@ namespace Chaos.Movies.Model
 
         /// <summary>Private part of the <see cref="User"/> property.</summary>
         private static User userField;
+
+        ////public static AsyncCache<int, Character> Characters = new AsyncCache<int, Character>();
 
         /// <summary>Gets all available characters.</summary>
         public static ReadOnlyCollection<Character> Characters

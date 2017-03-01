@@ -13,6 +13,8 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Data.SqlClient;
     using System.IO;
+    using System.Threading.Tasks;
+
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
@@ -77,6 +79,11 @@ namespace Chaos.Movies.Model
             get { return this.images.AsReadOnly(); }
         }
 
+        ////public static async Character Get(int idList)
+        ////{
+        ////    var characters = 
+        ////}
+
         /// <summary>Gets the specified <see cref="Character"/>s.</summary>
         /// <param name="idList">The list of ids of the <see cref="Character"/>s to get.</param>
         /// <remarks>
@@ -90,7 +97,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ConfigurationErrorsException">There are two entries with the same name in the &lt;localdbinstances&gt; section.</exception>
         /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
-        public static IEnumerable<Character> Get(IEnumerable<int> idList)
+        public static async Task<IEnumerable<Character>> Get(IEnumerable<int> idList)
         {
             var characters = new List<Character>();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
@@ -112,7 +119,7 @@ namespace Chaos.Movies.Model
                         characters.Add(new Character(reader));
                     }
 
-                    if (reader.NextResult())
+                    if (!reader.NextResult())
                     {
                         throw new MissingResultException(2, "IconsInCharacters");
                     }

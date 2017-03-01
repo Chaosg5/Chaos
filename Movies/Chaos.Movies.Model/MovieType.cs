@@ -180,7 +180,7 @@ namespace Chaos.Movies.Model
         {
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, "");
+                throw new MissingResultException(1, string.Empty);
             }
 
             var result = new List<MovieType>();

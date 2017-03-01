@@ -1,5 +1,11 @@
 Rating historik
+Sortera personer efter sitt betyg, totalt betyg, sedda filmer, totalt filmer
+Musik - Importera iTunes biblotek!!!!!
+Boxoffice - Integration
 
+Like Love Hate Star
+
+Tagline - Where your rating is the key
 
 Story	Uppbyggnad	
 	Plot	Handling	Was the events of the plot interesting, did it s
@@ -20,19 +26,22 @@ Video	Bild	How well did the movie's imigary look visually?
 	Cinematography	Filmografi	How was the camera work and did it fit the world and story. Were angles, distance and movement right.
 	Costumes	Klädsel	How was the costumes and props.
 	Sets	Miljöer	Set design and locations.
+	Special effects	Special effekter
+	Visual effects	Visuella effekter
 Audio	Ljud	How was the sound?
 	Music	Musik	Was the music good, well balanced with other sound and fit the world, characters and story.
-	Effects	Ljudeffekter	Was the m
+	Sound effects	Ljudeffekter	Was the m
 	Vocal	Tal	Was the vocals and speech of the 
 Actors	Skådespelare	How well did the actors perform their roles in the movie?
 	Acting	Skådespeleri	How was the quality of the actors' acting?
-	Devotion	Inlevelse	How devoted, prepared and interested did the actors seem to be in the movie and making it good.
+	Involvement	Inlevelse	How devoted, prepared and interested did the actors seem to be in the movie and making it good.
 	Casting	Roller	Was the different actors well cast for their different roles.
 Characters	Karaktärer	How good was the quality of the characters.
-	Characterization	Personligheter	Likable, relatable. Were they interesting and could you care for what happended to them.
+	Personalities	Personligheter	Likable, relatable. Were they interesting and could you care for what happended to them.
 	Dialogue	Dialoger	How good was the dialogues written for the character and how well did it fit their personallity.
 	Credibility	Trovärdighet	Was the characters actions and dialogue compared to their personalty, their interaction with other characters, the world around them and the events of the plot.
 Rewatchable	Omsevärdhet	How pleaseant would it be to rewatch compared to the first view.
+Memorable	Minnesvärd	How likley you are to remember och think about elements of the movies, whether it be scences, dialogs, characters, feelings or anything else.
 
 Tags
 #boring
