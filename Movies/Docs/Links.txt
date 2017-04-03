@@ -1,1 +1,5 @@
 IMDB database dump text files - ftp://ftp.sunet.se/pub/tv+movies/imdb/
+Soundtrack - http://www.what-song.com
+TMDB - https://www.themoviedb.org/
+http://www.allmovie.com/
+http://www.tvguide.com/movies/

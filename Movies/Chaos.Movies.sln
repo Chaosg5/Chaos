@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Chaos.Movies.Model\Model.csproj", "{824958AE-121D-49AA-B605-899EF11FF4C5}"
 EndProject
@@ -10,6 +10,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{B30131AD-0B8E-4559-A963-C023BFCD157B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chaos.Movies.Contract", "Chaos.Movies.Contract\Chaos.Movies.Contract.csproj", "{91F29319-AF34-4AFD-9A55-EC97245019D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{98CD6842-EAA0-4CBD-968D-00F595DA3C61}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\DatabaseDiagram.png = Docs\DatabaseDiagram.png
+		Docs\Links.txt = Docs\Links.txt
+		packages\repositories.config = packages\repositories.config
+		Docs\ToDo.txt = Docs\ToDo.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

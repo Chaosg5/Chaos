@@ -15,10 +15,11 @@ namespace Chaos.Movies.Model
     using System.IO;
     using System.Threading.Tasks;
 
+    using Chaos.Movies.Contract;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
-    public class Character
+    public class Character : IReadOnlyCharacter
     {
         /// <summary>Private part of the <see cref="Images"/> property.</summary>
         private readonly List<Icon> images = new List<Icon>();
@@ -55,7 +56,7 @@ namespace Chaos.Movies.Model
                 return this.name;
             }
 
-            set
+            private set
             {
                 if (string.IsNullOrEmpty(value))
                 {
@@ -70,7 +71,7 @@ namespace Chaos.Movies.Model
         public string ImdbId
         {
             get { return this.imdbId; }
-            set { this.imdbId = value ?? string.Empty; }
+            private set { this.imdbId = value ?? string.Empty; }
         }
 
         /// <summary>Gets the list of images for the movie and their order as represented by the key.</summary>

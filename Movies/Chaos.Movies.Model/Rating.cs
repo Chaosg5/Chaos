@@ -11,6 +11,8 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Data.SqlClient;
     using System.Linq;
+    using System.Threading.Tasks;
+
     using Exceptions;
 
     /// <summary>A rating for a <see cref="Movie"/> set by a <see cref="User"/>.</summary>
@@ -51,10 +53,10 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the id of this rating.</summary>
         public int Id { get; private set; }
 
-        /// <summary>The id of the parent <see cref="Rating"/>.</summary>
+        /// <summary>Gets the id of the parent <see cref="Rating"/>.</summary>
         public int ParentRatingId { get; private set; }
 
-        /// <summary>The id of the <see cref="User"/> who owns the rating.</summary>
+        /// <summary>Gets the id of the <see cref="User"/> who owns the rating.</summary>
         public int UserId { get; private set; }
 
         /// <summary>Gets the type of this rating.</summary>
@@ -122,7 +124,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves this rating to the database.</summary>
-        public void Save()
+        public async void Save()
         {
             if (Persistent.UseService)
             {
@@ -130,11 +132,12 @@ namespace Chaos.Movies.Model
             }
 
             ValidateSaveCandidate(this);
-            SaveToDatabase(this);
+            await SaveToDatabase(this);
         }
 
         /// <summary>Saves this rating to the database.</summary>
-        public void SaveAll()
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task SaveAll()
         {
             if (Persistent.UseService)
             {
@@ -142,7 +145,7 @@ namespace Chaos.Movies.Model
             }
 
             ValidateAllSaveCandidates(this);
-            SaveAllToDatabase(this);
+            await SaveAllToDatabase(this);
         }
 
         #endregion
@@ -200,7 +203,8 @@ namespace Chaos.Movies.Model
 
         /// <summary>Saves this rating to the database.</summary>
         /// <param name="rating">The type to save.</param>
-        private static void SaveToDatabase(Rating rating)
+        /// <returns>The <see cref="Task"/>.</returns>
+        private static async Task SaveToDatabase(Rating rating)
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("RatingSave", connection))
@@ -209,11 +213,10 @@ namespace Chaos.Movies.Model
                 command.Parameters.AddWithValue("@RatingId", rating.Id);
                 command.Parameters.AddWithValue("@RatingTypeId", rating.RatingType.Id);
                 command.Parameters.AddWithValue("@Value", rating.ratingValue.Value);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    if (reader.Read())
+                    if (await reader.ReadAsync())
                     {
                         ReadFromRecord(rating, reader);
                     }
@@ -223,13 +226,14 @@ namespace Chaos.Movies.Model
 
         /// <summary>Saves this rating to the database.</summary>
         /// <param name="rating">The type to save.</param>
-        private static void SaveAllToDatabase(Rating rating)
+        /// <returns>The <see cref="Task"/>.</returns>
+        private static async Task SaveAllToDatabase(Rating rating)
         {
-            SaveToDatabase(rating);
+            await SaveToDatabase(rating);
             foreach (var subRating in rating.subRatings)
             {
                 subRating.ParentRatingId = rating.Id;
-                SaveAllToDatabase(subRating);
+                await SaveAllToDatabase(subRating);
             }
         }
 

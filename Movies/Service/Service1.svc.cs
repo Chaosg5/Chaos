@@ -4,6 +4,8 @@ namespace Chaos.Movies.Service
 {
     using System;
     using System.ServiceModel;
+    using System.Threading.Tasks;
+
     using Chaos.Movies.Model;
 
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in code, svc and config file together.
@@ -41,7 +43,7 @@ namespace Chaos.Movies.Service
             }
         }
 
-        public void RatingSaveAll(Rating rating)
+        public async Task RatingSaveAll(Rating rating)
         {
             try
             {
@@ -50,7 +52,7 @@ namespace Chaos.Movies.Service
                     throw new ArgumentNullException("rating");
                 }
 
-                rating.SaveAll();
+                await rating.SaveAll();
             }
             catch (Exception exception)
             {

@@ -2,8 +2,16 @@ Rating historik
 Sortera personer efter sitt betyg, totalt betyg, sedda filmer, totalt filmer
 Musik - Importera iTunes biblotek!!!!!
 Boxoffice - Integration
+Filmmusik
 
 Like Love Hate Star
+
+User compare
++ Should watch movies with other user who likes the same
++ Match rating with other user
++ You may also like based on users who liked/disliked the same movies as you
+
+Userlists + comments?
 
 Tagline - Where your rating is the key
 

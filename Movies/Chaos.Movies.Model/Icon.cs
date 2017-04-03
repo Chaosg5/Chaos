@@ -7,10 +7,13 @@
 namespace Chaos.Movies.Model
 {
     using System.Data;
+    using System.Data.Linq;
     using System.Windows.Media;
 
+    using Chaos.Movies.Contract;
+
     /// <summary>An image icon.</summary>
-    public class Icon
+    public class Icon : IReadOnlyIcon
     {
         /// <summary>Initializes a new instance of the <see cref="Icon" /> class.</summary>
         /// <param name="record">The record containing the data for the character.</param>
@@ -19,6 +22,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>The image of the icon.</summary>
-        public ImageSource Image { get; private set; }
+        public Binary Image { get; private set; }
     }
 }
