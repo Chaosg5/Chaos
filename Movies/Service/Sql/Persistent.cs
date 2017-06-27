@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model
+namespace Chaos.Movies.Service.Sql
 {
     using System;
     using System.Collections.Generic;
@@ -12,10 +12,10 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Globalization;
     using System.Linq;
-    using Exceptions;
+
+    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Contains generic database persistence handling.</summary>
-    [Obsolete]
     public static class Persistent
     {
         /// <summary>The connection string to the database read from configuration application settings.</summary>

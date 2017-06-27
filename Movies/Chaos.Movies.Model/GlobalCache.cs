@@ -152,13 +152,14 @@ namespace Chaos.Movies.Model
             var character = CharactersField.Find(d => d.Id == id);
             if (character == null)
             {
-                character = Character.Get(new[] { id }).First();
-                if (character == null)
-                {
-                    throw new ArgumentOutOfRangeException("id");
-                }
+                // ToDo:
+                ////character = Character.GetAsync(new[] { id }).First();
+                ////if (character == null)
+                ////{
+                ////    throw new ArgumentOutOfRangeException("id");
+                ////}
 
-                CharactersField.Add(character);
+                ////CharactersField.Add(character);
             }
 
             if (character == null)
@@ -321,7 +322,8 @@ namespace Chaos.Movies.Model
         private static void CharactersLoad(IEnumerable<int> idList)
         {
             CharactersField.RemoveAll(c => idList.Contains(c.Id));
-            CharactersField.AddRange(Character.Get(idList));
+            // ToDO:
+            ////CharactersField.AddRange(Character.GetAsync(idList));
         }
 
         /// <summary>Loads all <see cref="Department"/>s from the database.</summary>

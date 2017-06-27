@@ -225,15 +225,16 @@ namespace Chaos.Movies.Model
                         loadData.Add(new PersonLoadShell(reader));
                     }
                 }
-
+                
                 this.people.Clear();
-                this.people.AddRange(
-                    loadData.Select(
-                        p =>
-                            new PersonInMovie(
-                                GlobalCache.GetPerson(p.PersonId),
-                                GlobalCache.GetDepartment(p.DepartmentId),
-                                GlobalCache.GetRole(p.RoleId))));
+                // ToDo:
+                ////this.people.AddRange(
+                ////    loadData.Select(
+                ////        p =>
+                ////            new PersonInMovie(
+                ////                GlobalCache.GetPerson(p.PersonId),
+                ////                GlobalCache.GetDepartment(p.DepartmentId),
+                ////                GlobalCache.GetRole(p.RoleId))));
             }
         }
 

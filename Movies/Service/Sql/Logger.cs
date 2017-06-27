@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model.Exceptions
+namespace Chaos.Movies.Service.Sql
 {
     using System;
     using System.Data;
@@ -15,7 +15,7 @@ namespace Chaos.Movies.Model.Exceptions
     {
         /// <summary>Logs an exception to the database.</summary>
         /// <param name="exception">The exception to log.</param>
-        public static void Log(Exception exception)
+        public static void Log(Guid userId, Exception exception)
         {
             if (exception == null)
             {
@@ -26,7 +26,7 @@ namespace Chaos.Movies.Model.Exceptions
             using (var command = new SqlCommand("ExceptionLog", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@userId", GlobalCache.User.Id);
+                command.Parameters.AddWithValue("@userId", userId);
                 command.Parameters.AddWithValue("@time", DateTime.Now);
                 command.Parameters.AddWithValue("@type", exception.GetType().ToString());
                 command.Parameters.AddWithValue("@source", exception.Source);

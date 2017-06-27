@@ -132,12 +132,12 @@ namespace Chaos.Movies.Model
             }
 
             ValidateSaveCandidate(this);
-            await SaveToDatabase(this);
+            await SaveToDatabaseAsync(this);
         }
 
         /// <summary>Saves this rating to the database.</summary>
         /// <returns>The <see cref="Task"/>.</returns>
-        public async Task SaveAll()
+        public async Task SaveAllAsync()
         {
             if (Persistent.UseService)
             {
@@ -145,7 +145,7 @@ namespace Chaos.Movies.Model
             }
 
             ValidateAllSaveCandidates(this);
-            await SaveAllToDatabase(this);
+            await SaveAllToDatabaseAsync(this);
         }
 
         #endregion
@@ -204,7 +204,7 @@ namespace Chaos.Movies.Model
         /// <summary>Saves this rating to the database.</summary>
         /// <param name="rating">The type to save.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        private static async Task SaveToDatabase(Rating rating)
+        private static async Task SaveToDatabaseAsync(Rating rating)
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("RatingSave", connection))
@@ -227,13 +227,13 @@ namespace Chaos.Movies.Model
         /// <summary>Saves this rating to the database.</summary>
         /// <param name="rating">The type to save.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        private static async Task SaveAllToDatabase(Rating rating)
+        private static async Task SaveAllToDatabaseAsync(Rating rating)
         {
-            await SaveToDatabase(rating);
+            await SaveToDatabaseAsync(rating);
             foreach (var subRating in rating.subRatings)
             {
                 subRating.ParentRatingId = rating.Id;
-                await SaveAllToDatabase(subRating);
+                await SaveAllToDatabaseAsync(subRating);
             }
         }
 

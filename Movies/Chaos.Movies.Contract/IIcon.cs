@@ -9,7 +9,7 @@ namespace Chaos.Movies.Contract
     using System.Data.Linq;
 
     /// <summary>Represents a character in a movie.</summary>
-    public interface IIcon : IReadOnlyIcon
+    public interface IIcon
     {
         Binary Image { get; set; }
     }

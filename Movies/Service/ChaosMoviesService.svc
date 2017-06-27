@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="Chaos.Movies.Service.ChaosMoviesService" CodeBehind="ChaosMoviesService.svc.cs" %>
