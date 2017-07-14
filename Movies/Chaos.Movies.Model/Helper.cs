@@ -8,8 +8,11 @@ namespace Chaos.Movies.Model
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Globalization;
     using System.Linq;
+
+    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Generic helper class.</summary>
     public static class Helper
@@ -26,12 +29,12 @@ namespace Chaos.Movies.Model
         {
             if (list == null)
             {
-                throw new ArgumentNullException("list");
+                throw new ArgumentNullException(nameof(list));
             }
 
             if (newOrder == null)
             {
-                throw new ArgumentNullException("newOrder");
+                throw new ArgumentNullException(nameof(newOrder));
             }
 
             if (newOrder.Count != list.Count)
@@ -43,12 +46,36 @@ namespace Chaos.Movies.Model
             {
                 if (!newOrder.Contains(i))
                 {
-                    throw new ArgumentOutOfRangeException("newOrder", string.Format(CultureInfo.InvariantCulture, "The item with the old order '{0}' was not specified in the new order.", i));
+                    throw new ArgumentOutOfRangeException(nameof(newOrder), string.Format(CultureInfo.InvariantCulture, "The item with the old order '{0}' was not specified in the new order.", i));
                 }
             }
 
             var oldList = list.ToList();
             return newOrder.Select(order => oldList[order]).ToList();
+        }
+
+        /// <summary>Validates that the data record contains the specified columns.</summary>
+        /// <param name="record">The data record to validate.</param>
+        /// <param name="requiredColumns">The list of column names which are required.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        public static void ValidateRecord(IDataRecord record, IEnumerable<string> requiredColumns)
+        {
+            if (record == null)
+            {
+                throw new ArgumentNullException(nameof(record));
+            }
+
+            var existingColumns = new List<string>();
+            for (var i = 0; i < record.FieldCount; i++)
+            {
+                existingColumns.Add(record.GetName(i));
+            }
+
+            foreach (var columnName in requiredColumns.Where(columnName => !existingColumns.Contains(columnName)))
+            {
+                throw new MissingColumnException(columnName);
+            }
         }
     }
 }

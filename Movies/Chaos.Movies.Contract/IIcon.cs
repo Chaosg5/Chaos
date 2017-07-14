@@ -11,6 +11,6 @@ namespace Chaos.Movies.Contract
     /// <summary>Represents a character in a movie.</summary>
     public interface IIcon
     {
-        Binary Image { get; set; }
+        Binary Image { get; }
     }
 }

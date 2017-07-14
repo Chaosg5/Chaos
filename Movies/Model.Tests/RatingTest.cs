@@ -14,7 +14,8 @@ namespace Chaos.Movies.Model.Tests
     [TestFixture]
     public static class RatingTest
     {
-        [TestCase("2:25;3:50;4:25;5:75;6:25", "2:4;3:3-5:4-6:5;4:3", 3.5)]
+        [TestCase("2:25;3:50;4:25;5:75;6:25", "2:4;3:3-5:4-6:5;4:3", 3.25)]
+        [TestCase("2:25;3:50;4:25;5:75;6:25", "2:4;3:0-5:4-6:5;4:3", 3.875)]
         public static void TestRatingCalculate(string systemValue, string ratingValue, double expectedResult)
         {
             var ratingSystem = GetRatingSystem(systemValue);

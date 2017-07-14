@@ -64,10 +64,7 @@ namespace Chaos.Movies.Model
         public string Description { get; private set; }
 
         /// <summary>Gets the <see cref="RatingType"/>s that makes up the derived children of this <see cref="RatingType"/>.</summary>
-        public ReadOnlyCollection<RatingType> Subtypes
-        {
-            get { return this.subtypes.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<RatingType> Subtypes => this.subtypes.AsReadOnly();
 
         /// <summary>Adds a sub <see cref="RatingType"/> to this type.</summary>
         /// <param name="subtype">The subtype to add.</param>
@@ -106,7 +103,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the rating type.</param>
         private static void ReadFromRecord(RatingType type, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "RatingTypeId", "Name", "Description" });
+            Helper.ValidateRecord(record, new[] { "RatingTypeId", "Name", "Description" });
             type.Id = (int)record["RatingTypeId"];
             type.Name = record["Name"].ToString();
             type.Description = record["Description"].ToString();

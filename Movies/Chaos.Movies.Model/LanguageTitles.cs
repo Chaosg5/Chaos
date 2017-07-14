@@ -32,22 +32,13 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the list of title of the movie series type in different languages.</summary>
-        public ReadOnlyCollection<LanguageTitle> Titles
-        {
-            get { return this.titles.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<LanguageTitle> Titles => this.titles.AsReadOnly();
 
         /// <summary>Gets the number if existing titles.</summary>
-        public int Count
-        {
-            get { return this.titles.Count; }
-        }
+        public int Count => this.titles.Count;
 
         /// <summary>Gets the base title.</summary>
-        public string GetBaseTitle
-        {
-            get { return this.GetTitle(null); }
-        }
+        public string GetBaseTitle => this.GetTitle(null).Title;
 
         /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
         /// <returns>A table containing the title and language as columns for each title.</returns>
@@ -73,20 +64,20 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the title for the specified <paramref name="language"/>.</summary>
         /// <param name="language">The language to get the title for.</param>
         /// <returns>The title of the specified language; else the title of the default language</returns>
-        public string GetTitle(CultureInfo language)
+        public LanguageTitle GetTitle(CultureInfo language)
         {
             if (this.Count == 0)
             {
-                return string.Empty;
+                return new LanguageTitle(string.Empty, language ?? CultureInfo.InvariantCulture);
             }
             
             var languageName = "en-US";
-            if (language != null)
+            if (!string.IsNullOrEmpty(language?.Name))
             {
                 languageName = language.Name;
             }
 
-            return (this.titles.Find(t => t.Language.Name == languageName) ?? this.titles.First()).Title;
+            return this.titles.Find(t => t.Language.Name == languageName) ?? this.titles.Find(t => t.Language.Name == "en-US") ?? this.titles.First();
         }
 
         /// <summary>Changes the title of this movie series type.</summary>
@@ -95,7 +86,7 @@ namespace Chaos.Movies.Model
         {
             if (title == null)
             {
-                throw new ArgumentNullException("title");
+                throw new ArgumentNullException(nameof(title));
             }
 
             this.SetTitle(title.Title, title.Language);
@@ -109,12 +100,12 @@ namespace Chaos.Movies.Model
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentNullException("title");
+                throw new ArgumentNullException(nameof(title));
             }
 
             if (language == null)
             {
-                throw new ArgumentNullException("language");
+                throw new ArgumentNullException(nameof(language));
             }
 
             var existingTitle = this.titles.Find(t => t.Language.Name == language.Name);

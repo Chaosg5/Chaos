@@ -140,7 +140,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the role.</param>
         private static void ReadFromRecord(Role role, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "RoleId" });
+            Helper.ValidateRecord(record, new[] { "RoleId" });
             role.Id = (int)record["RoleId"];
         }
 

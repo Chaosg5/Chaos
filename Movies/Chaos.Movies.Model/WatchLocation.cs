@@ -103,7 +103,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the watch location.</param>
         private static void ReadFromRecord(WatchLocation location, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "WatchLocationId", "Name" });
+            Helper.ValidateRecord(record, new[] { "WatchLocationId", "Name" });
             location.Id = (int)record["WatchLocationId"];
             location.Name = record["Name"].ToString();
         }

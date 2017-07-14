@@ -46,7 +46,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the watch type.</param>
         private static void ReadFromRecord(WatchType type, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "Id", "Name" });
+            Helper.ValidateRecord(record, new[] { "Id", "Name" });
             type.Id = (int)record["Id"];
             type.Name = record["Name"].ToString();
         }

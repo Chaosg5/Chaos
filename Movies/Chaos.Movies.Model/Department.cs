@@ -190,7 +190,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
         private static void ReadFromRecord(Department department, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "DepartmentId" });
+            Helper.ValidateRecord(record, new[] { "DepartmentId" });
             department.Id = (int)record["DepartmentId"];
         }
 

@@ -11,8 +11,6 @@ namespace Chaos.Movies.Model
     using System.Configuration;
     using System.Data;
     using System.Globalization;
-    using System.Linq;
-    using Exceptions;
 
     /// <summary>Contains generic database persistence handling.</summary>
     [Obsolete]
@@ -23,31 +21,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>If database interaction should be made through the service.</summary>
         public static readonly bool UseService = ConfigurationManager.AppSettings["UseService"] == null || ConfigurationManager.AppSettings["UseSaveService"] != "false";
-
-        /// <summary>Validates that the data record contains the specified columns.</summary>
-        /// <param name="record">The data record to validate.</param>
-        /// <param name="requiredColumns">The list of column names which are required.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        public static void ValidateRecord(IDataRecord record, IEnumerable<string> requiredColumns)
-        {
-            if (record == null)
-            {
-                throw new ArgumentNullException("record");
-            }
-
-            var existingColumns = new List<string>();
-            for (var i = 0; i < record.FieldCount; i++)
-            {
-                existingColumns.Add(record.GetName(i));
-            }
-
-            foreach (var columnName in requiredColumns.Where(columnName => !existingColumns.Contains(columnName)))
-            {
-                throw new MissingColumnException(columnName);
-            }
-        }
-
+        
         /// <summary>Creates a data table containing a single column and rows for each item in <paramref name="ids"/>.</summary>
         /// <param name="ids">The list of ids.</param>
         /// <returns>The created <see cref="DataTable"/>.</returns>

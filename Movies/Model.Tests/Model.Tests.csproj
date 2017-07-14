@@ -63,6 +63,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="LanguageTest.cs" />
     <Compile Include="UserLoginTest.cs" />
     <Compile Include="RatingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

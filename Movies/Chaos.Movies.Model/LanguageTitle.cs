@@ -20,12 +20,13 @@ namespace Chaos.Movies.Model
         {
             if (string.IsNullOrEmpty(title))
             {
-                throw new ArgumentNullException("title");
+                throw new ArgumentNullException(nameof(title));
             }
 
+            // ReSharper disable once JoinNullCheckWithUsage
             if (language == null)
             {
-                throw new ArgumentNullException("language");
+                throw new ArgumentNullException(nameof(language));
             }
 
             this.Title = title;
@@ -50,7 +51,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the language title.</param>
         private static void ReadFromRecord(LanguageTitle title, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "Title", "Language" });
+            Helper.ValidateRecord(record, new[] { "Title", "Language" });
             title.Title = record["Title"].ToString();
             title.Language = new CultureInfo(record["Language"].ToString());
         }

@@ -32,7 +32,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the person user rating.</param>
         private static void ReadFromRecord(PersonUserRating personUserRating, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "MovieId", "Rating", "Watches" });
+            Helper.ValidateRecord(record, new[] { "MovieId", "Rating", "Watches" });
             personUserRating.MovieId = (int)record["MovieId"];
             personUserRating.Rating = (int)record["Rating"];
             personUserRating.Watches = (int)record["Watches"];

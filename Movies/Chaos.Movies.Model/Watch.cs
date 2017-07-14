@@ -116,7 +116,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the watch.</param>
         private static void ReadFromRecord(Watch watch, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "Id", "MovieId", "UserId", "WatchedDate", "DateUncertain" });
+            Helper.ValidateRecord(record, new[] { "Id", "MovieId", "UserId", "WatchedDate", "DateUncertain" });
             watch.Id = (int)record["Id"];
             watch.MovieId = (int)record["MovieId"];
             watch.UserId = (int)record["UserId"];

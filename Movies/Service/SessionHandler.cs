@@ -23,7 +23,7 @@ namespace Chaos.Movies.Service
             throw new NotImplementedException();
         }
 
-        internal static async Task ValidateSession(UserSession userSession)
+        internal static async Task ValidateSessionAsync(UserSession userSession)
         {
             if (userSession == null)
             {

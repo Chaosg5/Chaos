@@ -266,7 +266,7 @@ namespace Chaos.Movies.Model
             /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
             private static void ReadFromRecord(CharacterLoadShell character, IDataRecord record)
             {
-                Persistent.ValidateRecord(record, new[] { "CharacterId", "PersonId", "Rating" });
+                Helper.ValidateRecord(record, new[] { "CharacterId", "PersonId", "Rating" });
                 character.CharacterId = (int)record["CharacterId"];
                 character.PersonId = (int)record["PersonId"];
                 character.UserRating = (int)record["Rating"];

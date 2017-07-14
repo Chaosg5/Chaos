@@ -133,7 +133,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the person.</param>
         private static void ReadFromRecord(Person person, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "PersonId", "Name" });
+            Helper.ValidateRecord(record, new[] { "PersonId", "Name" });
             person.Id = (int)record["PersonId"];
             person.Name = record["Name"].ToString();
         }

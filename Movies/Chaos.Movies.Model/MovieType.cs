@@ -167,7 +167,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
         private static void ReadFromRecord(MovieType type, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "MovieTypeId" });
+            Helper.ValidateRecord(record, new[] { "MovieTypeId" });
             type.Id = (int)record["MovieTypeId"];
         }
 

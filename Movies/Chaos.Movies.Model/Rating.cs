@@ -63,10 +63,7 @@ namespace Chaos.Movies.Model
         public RatingType RatingType { get; private set; }
 
         /// <summary>Gets the child ratings of this rating.</summary>
-        public ReadOnlyCollection<Rating> SubRatings
-        {
-            get { return this.subRatings.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<Rating> SubRatings => this.subRatings.AsReadOnly();
 
         /// <summary>Gets the values of this rating.</summary>
         public double Value
@@ -188,7 +185,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the rating.</param>
         private static void ReadFromRecord(Rating rating, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "RatingId", "RatingTypeId", "Value", "UserId" });
+            Helper.ValidateRecord(record, new[] { "RatingId", "RatingTypeId", "Value", "UserId" });
             rating.Id = (int)record["RatingId"];
             rating.ratingValue.Value = (int)record["Value"];
 

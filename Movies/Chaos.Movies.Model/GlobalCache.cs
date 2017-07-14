@@ -209,7 +209,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentOutOfRangeException">If the <see cref="Department"/> with the specified <paramref name="departmentTitle"/> does not exists.</exception>
         public static Department GetDepartment(string departmentTitle, CultureInfo language)
         {
-            var department = DepartmentsField.Find(d => d.Titles.GetTitle(language) == departmentTitle);
+            var department = DepartmentsField.Find(d => d.Titles.GetTitle(language).Title == departmentTitle);
             if (department == null)
             {
                 throw new ArgumentOutOfRangeException("departmentTitle");
@@ -304,7 +304,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentOutOfRangeException">If the role or department wasn't found.</exception>
         public static Role GetRole(string roleTitle, string departmentTitle, CultureInfo language)
         {
-            var role = GetDepartment(departmentTitle, language).Roles.First(r => r.Titles.GetTitle(language) == roleTitle);
+            var role = GetDepartment(departmentTitle, language).Roles.First(r => r.Titles.GetTitle(language).Title == roleTitle);
             if (role == null)
             {
                 throw new ArgumentOutOfRangeException("roleTitle");

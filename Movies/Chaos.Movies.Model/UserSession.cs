@@ -39,7 +39,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record.</param>
         private static void ReadFromRecord(UserSession session, IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { "SessionId", "ClientIp", "UserId", "ActiveFrom", "ActiveTo" });
+            Helper.ValidateRecord(record, new[] { "SessionId", "ClientIp", "UserId", "ActiveFrom", "ActiveTo" });
             session.SessionId = (Guid)record["SessionId"];
             session.ClientIp = record["ClientIp"].ToString();
             session.UserId = (int)record["UserId"];
