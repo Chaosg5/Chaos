@@ -1,0 +1,233 @@
+﻿@{
+    ViewData["Title"] = "Movie";
+}
+<h2>@ViewData["Title"].</h2>
+<h3>@ViewData["Message"]</h3>
+
+<style>
+    .star {
+        width: 20px;
+        height: 20px;
+    }
+
+        .star img {
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            display: inline-block;
+        }
+
+    .cnt {
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        width: 25px;
+        height: 25px
+    }
+</style>
+
+<script language="javascript" type="text/javascript">
+    function fillStarOnPercent(star, percent) {
+        var fill = 25 * percent;
+        star.children('.cnt').css({ 'width': fill + 'px' });
+    }
+
+    function fillStars(parent, fullStars, percent) {
+        for (var i = 1; i < 6; i++) {
+            var star = parent.find('.star[data-seq="' + i + '"]');
+            if (i < fullStars)
+                fillStarOnPercent(star, 1);
+
+            if (i == fullStars)
+                fillStarOnPercent(star, percent);
+
+            if (i > fullStars)
+                fillStarOnPercent(star, 0);
+        }
+    }
+    /*
+    $(document).ready(function () {
+        alert("Hej");
+
+        jQuery('.rating').each(function () {
+
+            var calc = jQuery(this).data('calc');
+            var fullStars = Math.floor(calc);
+            if (fullStars == calc)
+                var percent = 1
+            else
+                var percent = calc - fullStars;
+
+            fillStars(jQuery(this), fullStars, percent);
+
+        });
+
+        jQuery('.rating').on('click', '.star', function () {
+            var rating = jQuery(this).data('seq');
+            fillStars(jQuery(this).parent(), rating, 1);
+
+            jQuery(this).parent().children('input[name="rating"]').val(rating);
+        });
+    });*/
+</script>
+
+<div style="position: absolute; width: 750px; height: 1334px; border: black 1px solid;">
+    <img src="~/images/StarTransparent.svg" />
+</div>
+<div style="position: absolute; width: 1334px; height: 750px; border: black 1px solid;">
+
+</div>
+
+<h2>Actors/Characters</h2>
+<div class="row">
+    <div class="col-md-8">
+        <div class="item left">
+            <div class="rating">
+                <div class="name">
+                    <h4>Travis Fimmel</h4>
+                </div>
+                <div class="ratingRow">
+                    <img src="~/images/StarRowTransparent.svg" />
+                    <div class="ratingIcon">
+                        <img src="~/images/User.svg" />
+                    </div>
+                    <div class="ratingBackground">
+                        <div style="background-color: rgb(255, 51, 0); height: 100%; width: 20%; margin-left: 80%;">
+                            <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="ratingRow">
+                    <img src="~/images/StarRowTransparent.svg" />
+                    <div class="ratingIcon">
+                        <img src="~/images/CMDB.png" />
+                    </div>
+                    <div class="ratingBackground">
+                        <div style="background-color: rgb(255, 153, 0); height: 100%; width: 40%; margin-left: 60%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="ratingRow">
+                    <img src="~/images/StarRowTransparent.svg" />
+                    <div class="ratingIcon">
+                        <img src="~/images/IMDB.ico" />
+                    </div>
+                    <div class="ratingBackground">
+                        <div style="background-color: rgb(205, 230, 0); height: 100%; width: 60%; margin-left: 40%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="ratingRow">
+                    <img src="~/images/StarRowTransparent.svg" />
+                    <div class="ratingIcon">
+                        <img src="~/images/TMDB.png" />
+                    </div>
+                    <div class="ratingBackground">
+                        <div style="background-color: rgb(102, 179, 0); height: 100%; width: 80%; margin-left: 20%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="ratingRow">
+                    <img src="~/images/StarRowTransparent.svg" />
+                    <div class="ratingIcon">
+                        <img src="~/images/TMDB.png" />
+                    </div>
+                    <div class="ratingBackground">
+                        <div style="background-color: green; height: 100%; width: 100%; margin-left: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="listIcon">
+                <img src="~/images/TravisFimmel.jpg" />
+            </div>
+        </div>
+        <div class="item right">
+            <div class="listIcon">
+                <img src="~/images/AnduinLothar.jpg" />
+            </div>
+            <div class="rating">
+                <div class="name">
+                    <h4>Anduin Lothar</h4>
+                </div>
+                <div class="ratingRow">
+                    <img src="~/images/StarRowTransparent.svg" />
+                    <div class="ratingIcon">
+                        <img src="~/images/CMDB.png" />
+                    </div>
+                    <div class="ratingBackground">
+                        <div style="background-color: green; height: 100%; width: 75%;"></div>
+                    </div>
+                </div>
+                <div class="ratingRow">
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+                </div>
+                <div class="ratingRow">
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+                </div>
+                <div class="ratingRow">
+                    <img class="star" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <h4>Travis Fimmel - Anduin Lothar</h4>
+        <img src="~/images/TravisFimmel.jpg" width="100" height="150" />
+        <img src="~/images/AnduinLothar.jpg" width="100" height="150" />
+        <ul>
+            <li>Sample pages using ASP.NET Core MVC</li>
+            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518004">Bower</a> for managing client-side libraries</li>
+            <li>Theming using <a href="https://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="rating" data-calc="3.3">
+    <div class="star" data-seq="1">
+        <div>
+        </div>
+        <img class="full" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+        <img class="empty" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+
+    </div>
+    <div class="star" data-seq="2">
+        <div class="cnt">
+            <img class="full2" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+        </div>
+        <img class="empty" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+    </div>
+    <div class="star" data-seq="3">
+        <div class="cnt">
+            <img class="full" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+        </div>
+        <img class="empty" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+    </div>
+    <div class="star" data-seq="4">
+        <div class="cnt">
+            <img class="full" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+        </div>
+        <img class="empty" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+    </div>
+    <div class="star" data-seq="5">
+        <div class="cnt">
+            <img class="full" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Stj%C3%A4rna.svg/2000px-Stj%C3%A4rna.svg.png" />
+        </div>
+        <img class="empty" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Five-pointed_star.svg/1088px-Five-pointed_star.svg.png" />
+    </div>
+
+    <input type="text" name="rating" value="" />
+</div>

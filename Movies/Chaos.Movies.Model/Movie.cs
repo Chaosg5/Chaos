@@ -114,7 +114,7 @@ namespace Chaos.Movies.Model
         
         /// <summary>Gets or sets the type of the movie.</summary>
         public MovieType MovieType { get; set; }
-
+        
         /// <exception cref="PersistentObjectRequiredException">If the <see cref="Id"/> is not a valid id of a <see cref="Movie"/>.</exception>
         public void SaveAll()
         {

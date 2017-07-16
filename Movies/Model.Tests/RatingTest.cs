@@ -24,6 +24,30 @@ namespace Chaos.Movies.Model.Tests
             Assert.AreEqual(expectedResult, rating.Value);
         }
 
+        [TestCase(1, 255, 0, 0, "#FF0000")]
+        [TestCase(2, 255, 51, 0, "#FF3300")]
+        [TestCase(3, 255, 102, 0, "#FF6600")]
+        [TestCase(4, 255, 153, 0, "#FF9900")]
+        [TestCase(5, 255, 204, 0, "#FFCC00")]
+        [TestCase(6, 204, 230, 0, "#CCE600")]
+        [TestCase(7, 153, 204, 0, "#99CC00")]
+        [TestCase(8, 102, 179, 0, "#66B300")]
+        [TestCase(9, 51, 153, 0, "#339900")]
+        [TestCase(10, 0, 128, 0, "#008000")]
+
+        public static void TestGetColor(int value, byte red, byte green, byte blue, string hex)
+        {
+            var rating = new Rating(new RatingType(1));
+            rating.SetValue(value);
+            var color = rating.GetColor();
+            Assert.AreEqual(red, color.R);
+            Assert.AreEqual(green, color.G);
+            Assert.AreEqual(blue, color.B);
+
+            var hexColor = rating.GetHexColor();
+            Assert.AreEqual(hex, hexColor);
+        }
+
         private static Rating GetRatings(string ratingString)
         {
             var rootRating = new Rating(new RatingType(1));

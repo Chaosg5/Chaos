@@ -10,8 +10,10 @@ namespace Chaos.Movies.Model
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.SqlClient;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Windows.Media;
 
     using Exceptions;
 
@@ -84,6 +86,40 @@ namespace Chaos.Movies.Model
         #region Methods
 
         #region Public
+
+        public string GetHexColor()
+        {
+            var color = this.GetColor();
+            return string.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
+        }
+
+        public Color GetColor()
+        {
+            byte redValue = 255;
+            byte greenValue = 0;
+            byte blueValue = 0;
+            if (this.Value > 1 && this.Value <= 5)
+            {
+                greenValue = (byte)((this.Value - 1) * 51);
+            }
+
+            if (this.Value > 5 && this.Value < 6)
+            {
+                greenValue = (byte)(204 + ((this.Value - 5) * 26));
+            }
+
+            if (this.Value >= 6)
+            {
+                greenValue = (byte)(230 - ((this.Value - 6) * 25.5));
+            }
+
+            if (this.Value > 5)
+            {
+                redValue = (byte)(255 - ((this.Value - 5) * 51));
+            }
+
+            return Color.FromRgb(redValue, greenValue, blueValue);
+        }
 
         /// <summary>Sets the value of this rating.</summary>
         /// <param name="value">The value to set.</param>

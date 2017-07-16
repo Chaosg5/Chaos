@@ -35,3 +35,72 @@ textarea {
         display: none;
     }
 }
+
+/***********************************************************/
+.item {
+    display: inline-block;
+    border: #c0c0c0 1px solid;
+    box-shadow: 5px 5px 5px #c0c0c0;
+    white-space: nowrap;
+}
+
+    .item .name {
+        height: 30px;
+        border-bottom: 1px solid #c0c0c0;
+    }
+
+    .item.left .name {
+        text-align: right;
+    }
+
+    .item.separator {
+        border: black 1px solid;
+        height: 152px;
+        vertical-align: bottom;
+    }
+
+.listIcon {
+    display: inline-block;
+    vertical-align: top;
+}
+
+    .listIcon img {
+        width: 100px;
+        height: 150px;
+    }
+
+/**************************/
+/*****     RATING     *****/
+/**************************/
+.rating {
+    display: inline-block;
+}
+
+    .rating .ratingRow {
+        display: block;
+        height: 20px;
+        width: 220px;
+    }
+
+        .rating .ratingRow img {
+            vertical-align: top;
+            position: absolute;
+        }
+
+        .rating .ratingRow .ratingIcon img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .rating .ratingRow .ratingBackground {
+            height: 20px;
+            width: 200px;
+            background-color: lightgray;
+        }
+
+.item.left .rating .ratingRow .ratingIcon img {
+    margin-left: 200px;
+}
+
+.item.right .rating .ratingRow .ratingIcon img {
+}

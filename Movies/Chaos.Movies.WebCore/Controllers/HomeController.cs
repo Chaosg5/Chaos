@@ -27,6 +27,13 @@ namespace Chaos.Movies.WebCore.Controllers
             return View();
         }
 
+        public IActionResult Movie()
+        {
+            ViewData["Message"] = "Your movie page.";
+
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View();
