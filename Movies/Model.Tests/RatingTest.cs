@@ -39,12 +39,12 @@ namespace Chaos.Movies.Model.Tests
         {
             var rating = new Rating(new RatingType(1));
             rating.SetValue(value);
-            var color = rating.GetColor();
+            var color = rating.Color;
             Assert.AreEqual(red, color.R);
             Assert.AreEqual(green, color.G);
             Assert.AreEqual(blue, color.B);
 
-            var hexColor = rating.GetHexColor();
+            var hexColor = rating.HexColor;
             Assert.AreEqual(hex, hexColor);
         }
 

@@ -3,3 +3,9 @@ Soundtrack - http://www.what-song.com
 TMDB - https://www.themoviedb.org/
 http://www.allmovie.com/
 http://www.tvguide.com/movies/
+
+
+
+Stars script => http://jsfiddle.net/Ln8Lt0m5/3/
+Mouse click position => http://jsfiddle.net/AMsK9/
+iPhone resolutions => https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions

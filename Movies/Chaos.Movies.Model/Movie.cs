@@ -18,10 +18,10 @@ namespace Chaos.Movies.Model
     public class Movie
     {
         /// <summary>The department for cast members.</summary>
-        private static Department castDepartment = GlobalCache.GetDepartment("Cast", GlobalCache.DefaultLanguage);
+        ////private static Department castDepartment = GlobalCache.GetDepartment("Cast", GlobalCache.DefaultLanguage);
 
         /// <summary>The role for cast actors.</summary>
-        private static Role actorRole = GlobalCache.GetRole("Actor", "Cast", GlobalCache.DefaultLanguage);
+        ////private static Role actorRole = GlobalCache.GetRole("Actor", "Cast", GlobalCache.DefaultLanguage);
 
         /// <summary>Private part of the <see cref="Titles"/> property.</summary>
         private readonly List<Genre> genres = new List<Genre>();

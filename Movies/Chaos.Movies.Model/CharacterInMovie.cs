@@ -25,7 +25,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException("person");
             }
 
-            if (person.Id <= 0)
+            if (person.Id <= -1)
             {
                 throw new PersistentObjectRequiredException("The person needs to be saved before being added to a character.");
             }
@@ -35,7 +35,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException("character");
             }
 
-            if (character.Id <= 0)
+            if (character.Id <= -1)
             {
                 throw new PersistentObjectRequiredException("The character needs to be saved before being added as a character.");
             }

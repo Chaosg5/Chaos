@@ -90,7 +90,7 @@ namespace Chaos.Movies.Model
 
             if (this.characters.Exists(c => c.Character.Id == characterInMovie.Character.Id))
             {
-                return;
+               // return;
             }
 
             this.characters.Add(characterInMovie);
@@ -206,6 +206,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         public void LoadCharacters()
         {
+            return;
             this.ValidateMovieId();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("CharactersInMovieGet", connection))

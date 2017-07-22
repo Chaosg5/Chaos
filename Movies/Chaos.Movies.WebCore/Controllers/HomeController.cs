@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Chaos.Movies.WebCore.Controllers
 {
+    using Chaos.Movies.Model;
+
     public class HomeController : Controller
     {
         public IActionResult Index()
@@ -29,9 +31,11 @@ namespace Chaos.Movies.WebCore.Controllers
 
         public IActionResult Movie()
         {
-            ViewData["Message"] = "Your movie page.";
-
-            return View();
+            var movie = new Movie();
+            movie.Characters.AddCharacter(new CharacterInMovie(new Person("Paula Patton"), new Character("Garona"), 0));
+            movie.Characters.AddCharacter(new CharacterInMovie(new Person("Travis Fimmel"), new Character("Anduin Lothar"), 0));
+            movie.Characters.AddCharacter(new CharacterInMovie(new Person("Ben Foster"), new Character("Medivh"), 0));
+            return this.View(movie);
         }
 
         public IActionResult Error()

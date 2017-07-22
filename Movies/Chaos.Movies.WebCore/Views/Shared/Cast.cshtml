@@ -1,0 +1,163 @@
+﻿@using Chaos.Movies.Model
+@model Movie
+@foreach(var character in Model.Characters)
+{
+    <div class="row">
+        <div class="col-md-8">
+            <div class="item left">
+                <div class="rating">
+                    <div class="name">
+                        <h4>@character.Person.Name</h4>
+                    </div>
+                    <!---->
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <span class="ratingScore">1.5</span>
+                            <img src="~/images/User.svg"/>
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: rgb(255, 51, 0); height: 100%; width: 15%; margin-left: 85%;">
+                                <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                            </div>
+                        </div>
+                        <div class="ratingStars" onclick="SetPersonRating(event, this, true);">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <span class="ratingScore">2.0</span>
+                            <img src="~/images/CMDB.png" />
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: rgb(255, 153, 0); height: 100%; width: 40%; margin-left: 60%;">
+                            </div>
+                        </div>
+                        <div class="ratingStars">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <span class="ratingScore">2.0</span>
+                            <img src="~/images/IMDB.ico" />
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: rgb(205, 230, 0); height: 100%; width: 60%; margin-left: 40%;">
+                            </div>
+                        </div>
+                        <div class="ratingStars">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <span class="ratingScore">2.0</span>
+                            <img src="~/images/TMDB.png" />
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: rgb(102, 179, 0); height: 100%; width: 80%; margin-left: 20%;">
+                            </div>
+                        </div>
+                        <div class="ratingStars">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <span class="ratingScore">2.0</span>
+                            <img src="~/images/TMDB.png" />
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: green; height: 100%; width: 100%; margin-left: 0%;"></div>
+                        </div>
+                        <div class="ratingStars">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <!---->
+                </div>
+                <div class="listIcon">
+                    <img src="~/images/TravisFimmel.jpg" />
+                </div>
+            </div>
+            <div class="item right">
+                <div class="listIcon">
+                    <img src="~/images/AnduinLothar.jpg" />
+                </div>
+                <div class="rating">
+                    <div class="name">
+                        <h4>@character.Character.Name</h4>
+                    </div>
+                    <!---->
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <img src="~/images/User.svg" />
+                            <span class="ratingScore">2.0</span>
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: rgb(255, 51, 0); height: 100%; width: 20%;">
+                                <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                            </div>
+                        </div>
+                        <div class="ratingStars" onclick="SetPersonRating(event, this, false);">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <img src="~/images/CMDB.png" />
+                            <span class="ratingScore">4.0</span>
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: rgb(255, 153, 0); height: 100%; width: 40%;">
+                            </div>
+                        </div>
+                        <div class="ratingStars">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <img src="~/images/IMDB.ico" />
+                            <span class="ratingScore">6.0</span>
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: rgb(205, 230, 0); height: 100%; width: 60%;">
+                            </div>
+                        </div>
+                        <div class="ratingStars">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <img src="~/images/TMDB.png" />
+                            <span class="ratingScore">8.0</span>
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: rgb(102, 179, 0); height: 100%; width: 80%;">
+                            </div>
+                        </div>
+                        <div class="ratingStars">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                    <div class="ratingRow">
+                        <div class="ratingIcon">
+                            <img src="~/images/TMDB.png" />
+                            <span class="ratingScore">10</span>
+                        </div>
+                        <div class="ratingBackground">
+                            <div style="background-color: green; height: 100%; width: 100%;"></div>
+                        </div>
+                        <div class="ratingStars">
+                            <img src="~/images/StarRowTransparent.svg" />
+                        </div>
+                    </div>
+                <!---->
+                </div>
+            </div>
+        </div>
+    </div>
+}
