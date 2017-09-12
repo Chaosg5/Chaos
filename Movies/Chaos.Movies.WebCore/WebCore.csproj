@@ -16,7 +16,7 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chaos.Movies.Contract\Chaos.Movies.Contract.csproj" />
+    <ProjectReference Include="..\Chaos.Movies.Contract\Contract.csproj" />
     <ProjectReference Include="..\Chaos.Movies.Model\Model.csproj" />
   </ItemGroup>
 

@@ -16,10 +16,10 @@
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>44318</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -27,12 +27,12 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\..\..\..\..\SVN\Utveckling\EyeDoc\Forms\trunk\EyeDoc.Forms.FormSettings\FormSettings.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\Chaos.Movies.Service.xml</DocumentationFile>
+    <DocumentationFile>bin\Chaos.Movies.Service.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -86,9 +86,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IChaosMoviesService.cs" />
     <Compile Include="SessionHandler.cs" />
-    <Compile Include="Sql\Logger.cs" />
-    <Compile Include="Sql\Persistent.cs" />
-    <Compile Include="Sql\SqlCharacter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -104,9 +101,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chaos.Movies.Contract\Chaos.Movies.Contract.csproj">
+    <ProjectReference Include="..\Chaos.Movies.Contract\Contract.csproj">
       <Project>{91f29319-af34-4afd-9a55-ec97245019d6}</Project>
-      <Name>Chaos.Movies.Contract</Name>
+      <Name>Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Chaos.Movies.Model.Sql\Model.Sql.csproj">
+      <Project>{0033a991-1911-46f1-b3da-889b8f49ff4d}</Project>
+      <Name>Model.Sql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Chaos.Movies.Model\Model.csproj">
       <Project>{824958ae-121d-49aa-b605-899ef11ff4c5}</Project>
@@ -128,7 +129,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>64549</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:64549/</IISUrl>
+          <IISUrl>https://localhost:44318/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

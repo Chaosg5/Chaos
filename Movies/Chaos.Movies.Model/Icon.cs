@@ -8,7 +8,6 @@ namespace Chaos.Movies.Model
 {
     using System.Data;
     using System.Data.Linq;
-    using System.Windows.Media;
 
     using Chaos.Movies.Contract;
 
@@ -23,5 +22,8 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the image of the icon.</summary>
         public Binary Image { get; private set; }
+
+        /// <summary>Gets the URL of the image of the icon.</summary>
+        public string Url { get; private set; }
     }
 }

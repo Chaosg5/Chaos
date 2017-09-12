@@ -7,10 +7,20 @@
 namespace Chaos.Movies.Service
 {
     using System.ServiceModel;
-    
+    using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract.Dto;
+    using Chaos.Movies.Model;
+
     /// <summary>Interface for <see cref="ChaosMoviesService"/>.</summary>
     [ServiceContract]
     public interface IChaosMoviesService
     {
+        [OperationContract]
+        Task<UserSessionDto> CreateUserSessionAsync(UserSessionDto session, UserLoginDto userLogin);
+
+
+        [OperationContract]
+        Task CharacterSaveAsync(UserSessionDto session, CharacterDto character);
     }
 }

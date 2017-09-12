@@ -22,7 +22,7 @@ namespace Chaos.Movies.Model
         {
             if (person == null)
             {
-                throw new ArgumentNullException("person");
+                throw new ArgumentNullException(nameof(person));
             }
 
             if (person.Id <= -1)
@@ -32,7 +32,7 @@ namespace Chaos.Movies.Model
 
             if (character == null)
             {
-                throw new ArgumentNullException("character");
+                throw new ArgumentNullException(nameof(character));
             }
 
             if (character.Id <= -1)
@@ -46,12 +46,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the character.</summary>
-        public Character Character { get; private set; }
+        public Character Character { get; }
 
         /// <summary>Gets the person playing the <see cref="Character"/>.</summary>
-        public Person Person { get; private set; }
+        public Person Person { get; }
 
         /// <summary>Gets the current user's rating of the <see cref="Character"/> in the <see cref="Movie"/>.</summary>
-        public int UserRating { get; private set; }
+        public int UserRating { get; }
     }
 }

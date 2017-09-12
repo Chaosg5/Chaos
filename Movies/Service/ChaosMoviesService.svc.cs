@@ -9,37 +9,57 @@ namespace Chaos.Movies.Service
     using System;
     using System.ServiceModel;
     using System.Threading.Tasks;
-
-    using Chaos.Movies.Contract;
-    using Chaos.Movies.Model;
     
+    using Chaos.Movies.Contract.Dto;
+    using Chaos.Movies.Model;
+    using Chaos.Movies.Model.Exceptions;
+    using Chaos.Movies.Model.Sql;
+
     /// <summary>Internal service for Chaos Movies.</summary>
     public class ChaosMoviesService : IChaosMoviesService
     {
-        public async Task CreateUserAsync(UserSession session, User user, UserLogin userLogin)
+        private static string TmdbApiKey = "edd081789d1682057b56406a750f9e01";
+        // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZGQwODE3ODlkMTY4MjA1N2I1NjQwNmE3NTBmOWUwMSIsInN1YiI6IjUwNGJhODNhMTljMjk1NzM5OTAwMTZiNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E4BK8hZVN1I6a7YLKYh2Ia8PVtL4-Sxag8qfSOlAY5Y
+        // https://api.themoviedb.org/3/movie/550?api_key=edd081789d1682057b56406a750f9e01
+
+        public async Task CreateUserAsync(UserSessionDto session, User user, UserLogin userLogin)
+        {
+        }
+
+        public async Task<UserSessionDto> CreateUserSessionAsync(UserSessionDto session, UserLoginDto userLogin)
+        {
+            return null;
+        }
+
+        public void MovieSearch(string searchText)
         {
             
         }
 
-        public async Task<UserSession> CreateUserSessionAsync(UserSession session, UserLogin userLogin)
+        public void MovieSearchNewUpdates(string searchText)
         {
-            return null;
+            // var s = new TMDbLib.Client.TMDbClient()
         }
-        
-        public void MovieSave(UserSession session, Movie movie)
+
+        public void LoadMovie(string movieIdentifier)
+        {
+            var s = new TMDbLib.Client.TMDbClient(TmdbApiKey);
+            //s.GetMovieAsync()
+        }
+
+        public void MovieSave(UserSessionDto session, Movie movie)
         {
             try
             {
-                //var s = new TMDbLib.Client.TMDbClient()
             }
             catch (Exception exception)
             {
-                //Logger.Error(exception);
+                // Logger.Error(exception);
                 throw new FaultException(exception.ToString());
             }
         }
 
-        public async Task RatingSaveAsync(UserSession session, Rating rating)
+        public async Task RatingSaveAsync(UserSessionDto session, Rating rating)
         {
             try
             {
@@ -52,12 +72,12 @@ namespace Chaos.Movies.Service
             }
             catch (Exception exception)
             {
-                //Logger.Error(exception);
+                // Logger.Error(exception);
                 throw new FaultException(exception.ToString());
             }
         }
 
-        public async Task RatingSaveAllAsync(UserSession session, Rating rating)
+        public async Task RatingSaveAllAsync(UserSessionDto session, Rating rating)
         {
             try
             {
@@ -70,26 +90,34 @@ namespace Chaos.Movies.Service
             }
             catch (Exception exception)
             {
-                //Logger.Error(exception);
+                // Logger.Error(exception);
                 throw new FaultException(exception.ToString());
             }
         }
 
         #region Character
 
-        public async Task CharacterSaveAsync(UserSession session, ICharacter character)
+        public async Task CharacterSaveAsync(UserSessionDto session, CharacterDto character)
         {
-            
+            this.ValidateState();
+            await new SqlCharacter(character).SaveAsync(new UserSession(session));
         }
 
         /// <summary></summary>
         /// <param name="characterToKeep"></param>
         /// <param name="characterIdToMerge"></param>
-        public void MergeCharacters(UserSession session, Character characterToKeep, int characterIdToMerge)
+        public void MergeCharacters(UserSessionDto session, Character characterToKeep, int characterIdToMerge)
         {
-
         }
 
         #endregion
+
+        private void ValidateState()
+        {
+            if (Model.Sql.Persistent.UseService)
+            {
+                throw new ServiceRequiredException($"The {nameof(Model.Sql.Persistent.UseService)} setting has to be set to false.");
+            }
         }
+    }
 }

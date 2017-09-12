@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Service.Sql
+namespace Chaos.Movies.Model.Sql
 {
     using System;
     using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace Chaos.Movies.Service.Sql
         public static readonly string ConnectionString = ConfigurationManager.AppSettings["ConnectionString"];
 
         /// <summary>If database interaction should be made through the service.</summary>
-        public static readonly bool UseService = ConfigurationManager.AppSettings["UseService"] == null || ConfigurationManager.AppSettings["UseSaveService"] != "false";
+        public static readonly bool UseService = ConfigurationManager.AppSettings["UseService"] != null && ConfigurationManager.AppSettings["UseSaveService"] == "true";
 
         /// <summary>Validates that the data record contains the specified columns.</summary>
         /// <param name="record">The data record to validate.</param>
@@ -33,7 +33,7 @@ namespace Chaos.Movies.Service.Sql
         {
             if (record == null)
             {
-                throw new ArgumentNullException("record");
+                throw new ArgumentNullException(nameof(record));
             }
 
             var existingColumns = new List<string>();
@@ -51,7 +51,6 @@ namespace Chaos.Movies.Service.Sql
         /// <summary>Creates a data table containing a single column and rows for each item in <paramref name="ids"/>.</summary>
         /// <param name="ids">The list of ids.</param>
         /// <returns>The created <see cref="DataTable"/>.</returns>
-        /// <exception cref="InvalidCastException">A value does not match it's respective column type. </exception>
         public static DataTable CreateIntCollectionTable(IEnumerable<int> ids)
         {
             return CreateTable(ids, "Item");
@@ -62,7 +61,6 @@ namespace Chaos.Movies.Service.Sql
         /// <param name="columnName">The name of the column for the table.</param>
         /// <typeparam name="T">The type of the column for the table.</typeparam>
         /// <returns>The created <see cref="DataTable"/>.</returns>
-        /// <exception cref="InvalidCastException">A value does not match it's respective column type. </exception>
         public static DataTable CreateTable<T>(IEnumerable<T> values, string columnName)
         {
             using (var table = new DataTable())

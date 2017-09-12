@@ -40,10 +40,7 @@ namespace Chaos.Movies.Model
         public int MovieId { get; private set; }
 
         /// <summary>Gets the number of elements contained in this <see cref="CharactersInMovieCollection"/>.</summary>
-        public int Count
-        {
-            get { return this.characters.Count; }
-        }
+        public int Count => this.characters.Count;
 
         /// <summary>Returns an enumerator which iterates through this <see cref="CharactersInMovieCollection"/>.</summary>
         /// <returns>The enumerator.</returns>
@@ -67,7 +64,7 @@ namespace Chaos.Movies.Model
         {
             if (movieId <= 0)
             {
-                throw new ArgumentOutOfRangeException("movieId");
+                throw new ArgumentOutOfRangeException(nameof(movieId));
             }
 
             if (this.MovieId != 0)
@@ -85,7 +82,7 @@ namespace Chaos.Movies.Model
         {
             if (characterInMovie == null)
             {
-                throw new ArgumentNullException("characterInMovie");
+                throw new ArgumentNullException(nameof(characterInMovie));
             }
 
             if (this.characters.Exists(c => c.Character.Id == characterInMovie.Character.Id))
@@ -106,8 +103,8 @@ namespace Chaos.Movies.Model
         /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
         public void AddCharacterAndSave(CharacterInMovie characterInMovie)
         {
-            this.AddCharacter(characterInMovie);
             this.ValidateMovieId();
+            this.AddCharacter(characterInMovie);
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("CharacterInMovieAdd", connection))
             {
@@ -128,7 +125,7 @@ namespace Chaos.Movies.Model
         {
             if (characterInMovie == null)
             {
-                throw new ArgumentNullException("characterInMovie");
+                throw new ArgumentNullException(nameof(characterInMovie));
             }
 
             if (!this.characters.Contains(characterInMovie))
@@ -206,7 +203,6 @@ namespace Chaos.Movies.Model
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         public void LoadCharacters()
         {
-            return;
             this.ValidateMovieId();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("CharactersInMovieGet", connection))

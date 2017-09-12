@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="7e34b746-ad3e-47c5-9b44-d8f145d72327" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://localhost:44318/ChaosMoviesService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ChaosMoviesService.wsdl" MetadataType="Wsdl" ID="4bdd93ef-1364-4c4a-a02f-800362dc5d43" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc" />
+    <MetadataFile FileName="ChaosMoviesService2.xsd" MetadataType="Schema" ID="64ce2d0b-e3fd-41f9-840a-c62a3ac14222" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd2" />
+    <MetadataFile FileName="ChaosMoviesService3.xsd" MetadataType="Schema" ID="e03befe0-a788-4aef-bc7b-7581c0666f47" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd3" />
+    <MetadataFile FileName="ChaosMoviesService.xsd" MetadataType="Schema" ID="b0031aed-2d6c-4df5-82fd-5211f7021400" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd1" />
+    <MetadataFile FileName="ChaosMoviesService1.xsd" MetadataType="Schema" ID="df8bee42-37a0-40c5-889a-708ad643ca94" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

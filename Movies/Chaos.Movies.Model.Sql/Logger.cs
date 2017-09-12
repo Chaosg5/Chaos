@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Service.Sql
+namespace Chaos.Movies.Model.Sql
 {
     using System;
     using System.Data;

@@ -45,34 +45,19 @@ namespace Chaos.Movies.Model
         ////public static AsyncCache<int, Character> Characters = new AsyncCache<int, Character>();
 
         /// <summary>Gets all available characters.</summary>
-        public static ReadOnlyCollection<Character> Characters
-        {
-            get { return CharactersField.AsReadOnly(); }
-        }
+        public static ReadOnlyCollection<Character> Characters => CharactersField.AsReadOnly();
 
         /// <summary>Gets all available movie departments.</summary>
-        public static ReadOnlyCollection<Department> Departments
-        {
-            get { return DepartmentsField.AsReadOnly(); }
-        }
+        public static ReadOnlyCollection<Department> Departments => DepartmentsField.AsReadOnly();
 
         /// <summary>Gets all available movie series types.</summary>
-        public static ReadOnlyCollection<MovieSeriesType> MovieSeriesTypes
-        {
-            get { return MovieSeriesTypesField.AsReadOnly(); }
-        }
+        public static ReadOnlyCollection<MovieSeriesType> MovieSeriesTypes => MovieSeriesTypesField.AsReadOnly();
 
         /// <summary>Gets all available people.</summary>
-        public static ReadOnlyCollection<Person> People
-        {
-            get { return PeopleField.AsReadOnly(); }
-        }
+        public static ReadOnlyCollection<Person> People => PeopleField.AsReadOnly();
 
         /// <summary>Gets all available person roles.</summary>
-        public static ReadOnlyCollection<Role> Roles
-        {
-            get { return RolesField.AsReadOnly(); }
-        }
+        public static ReadOnlyCollection<Role> Roles => RolesField.AsReadOnly();
 
         /// <summary>Gets the id of the current user.</summary>
         /// <exception cref="InvalidOperationException" accessor="get">The user has not been initialized.</exception>
@@ -93,10 +78,7 @@ namespace Chaos.Movies.Model
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
         /// <summary>Gets the default system language.</summary>
-        public static CultureInfo DefaultLanguage
-        {
-            get { return DefaultLanguageField; }
-        }
+        public static CultureInfo DefaultLanguage => DefaultLanguageField;
 
         /// <summary>Initializes a new instance of the <see cref="GlobalCache"/> class.</summary>
         /// <param name="user">The current user.</param>
@@ -164,7 +146,7 @@ namespace Chaos.Movies.Model
 
             if (character == null)
             {
-                throw new ArgumentOutOfRangeException("id");
+                throw new ArgumentOutOfRangeException(nameof(id));
             }
 
             return character;
@@ -188,7 +170,7 @@ namespace Chaos.Movies.Model
                 department = Department.Get(new[] { id }).First();
                 if (department == null)
                 {
-                    throw new ArgumentOutOfRangeException("id");
+                    throw new ArgumentOutOfRangeException(nameof(id));
                 }
 
                 DepartmentsField.Add(department);
@@ -196,7 +178,7 @@ namespace Chaos.Movies.Model
 
             if (department == null)
             {
-                throw new ArgumentOutOfRangeException("id");
+                throw new ArgumentOutOfRangeException(nameof(id));
             }
 
             return department;
@@ -212,7 +194,7 @@ namespace Chaos.Movies.Model
             var department = DepartmentsField.Find(d => d.Titles.GetTitle(language).Title == departmentTitle);
             if (department == null)
             {
-                throw new ArgumentOutOfRangeException("departmentTitle");
+                throw new ArgumentOutOfRangeException(nameof(departmentTitle));
             }
 
             return department;
@@ -230,7 +212,7 @@ namespace Chaos.Movies.Model
                 type = MovieSeriesType.Get(new[] { id }).First();
                 if (type == null)
                 {
-                    throw new ArgumentOutOfRangeException("id");
+                    throw new ArgumentOutOfRangeException(nameof(id));
                 }
 
                 MovieSeriesTypesField.Add(type);
@@ -238,7 +220,7 @@ namespace Chaos.Movies.Model
 
             if (type == null)
             {
-                throw new ArgumentOutOfRangeException("id");
+                throw new ArgumentOutOfRangeException(nameof(id));
             }
 
             return type;
@@ -256,7 +238,7 @@ namespace Chaos.Movies.Model
                 person = Person.Get(new[] { id }).First();
                 if (person == null)
                 {
-                    throw new ArgumentOutOfRangeException("id");
+                    throw new ArgumentOutOfRangeException(nameof(id));
                 }
 
                 PeopleField.Add(person);
@@ -264,7 +246,7 @@ namespace Chaos.Movies.Model
 
             if (person == null)
             {
-                throw new ArgumentOutOfRangeException("id");
+                throw new ArgumentOutOfRangeException(nameof(id));
             }
 
             return person;
@@ -282,7 +264,7 @@ namespace Chaos.Movies.Model
                 role = Role.Get(new[] { id }).First();
                 if (role == null)
                 {
-                    throw new ArgumentOutOfRangeException("id");
+                    throw new ArgumentOutOfRangeException(nameof(id));
                 }
 
                 RolesField.Add(role);
@@ -290,7 +272,7 @@ namespace Chaos.Movies.Model
 
             if (role == null)
             {
-                throw new ArgumentOutOfRangeException("id");
+                throw new ArgumentOutOfRangeException(nameof(id));
             }
 
             return role;
@@ -307,7 +289,7 @@ namespace Chaos.Movies.Model
             var role = GetDepartment(departmentTitle, language).Roles.First(r => r.Titles.GetTitle(language).Title == roleTitle);
             if (role == null)
             {
-                throw new ArgumentOutOfRangeException("roleTitle");
+                throw new ArgumentOutOfRangeException(nameof(roleTitle));
             }
 
             return role;

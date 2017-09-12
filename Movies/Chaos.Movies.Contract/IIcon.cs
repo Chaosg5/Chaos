@@ -8,9 +8,13 @@ namespace Chaos.Movies.Contract
 {
     using System.Data.Linq;
 
-    /// <summary>Represents a character in a movie.</summary>
+    /// <summary>Represents xxx.</summary>
     public interface IIcon
     {
+        /// <summary>Gets the image of the icon.</summary>
         Binary Image { get; }
+
+        /// <summary>Gets the URL of the image of the icon.</summary>
+        string Url { get; }
     }
 }

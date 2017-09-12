@@ -313,7 +313,6 @@ namespace Chaos.Movies.Model
             double systemTotal = 0;
             foreach (var systemValue in ratingSystem.Values)
             {
-                // ReSharper disable once LoopCanBePartlyConvertedToQuery - http://stackoverflow.com/questions/15837313/foreach-variable-in-closure-why-results-differ-for-these-snippets
                 foreach (var childValue in derivedValues)
                 {
                     if (childValue.Key.Id != systemValue.Key.Id || childValue.Value <= 0)
