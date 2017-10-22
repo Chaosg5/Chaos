@@ -6,6 +6,8 @@
 
 namespace Chaos.Movies.Model
 {
+    using Chaos.Movies.Contract;
+
     /// <summary>A user.</summary>
     public class User
     {

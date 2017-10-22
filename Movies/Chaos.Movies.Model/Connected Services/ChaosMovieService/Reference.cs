@@ -16,19 +16,16 @@ namespace Chaos.Movies.Model.ChaosMovieService {
     public interface IChaosMoviesService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CreateUserSession", ReplyAction="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse")]
-        Chaos.Movies.Contract.Dto.UserSessionDto CreateUserSession(Chaos.Movies.Contract.Dto.UserSessionDto session, Chaos.Movies.Contract.Dto.UserLoginDto userLogin);
+        Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLoginDto userLogin);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CreateUserSession", ReplyAction="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse")]
-        System.Threading.Tasks.Task<Chaos.Movies.Contract.Dto.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.Dto.UserSessionDto session, Chaos.Movies.Contract.Dto.UserLoginDto userLogin);
+        System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLoginDto userLogin);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CharacterSave", ReplyAction="http://tempuri.org/IChaosMoviesService/CharacterSaveResponse")]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Chaos.Movies.Contract.Dto.UserSessionDto))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Chaos.Movies.Contract.Dto.UserLoginDto))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(object[]))]
-        void CharacterSave(Chaos.Movies.Contract.Dto.UserSessionDto session, Chaos.Movies.Contract.Dto.CharacterDto character);
+        void CharacterSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CharacterSave", ReplyAction="http://tempuri.org/IChaosMoviesService/CharacterSaveResponse")]
-        System.Threading.Tasks.Task CharacterSaveAsync(Chaos.Movies.Contract.Dto.UserSessionDto session, Chaos.Movies.Contract.Dto.CharacterDto character);
+        System.Threading.Tasks.Task CharacterSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -58,19 +55,19 @@ namespace Chaos.Movies.Model.ChaosMovieService {
                 base(binding, remoteAddress) {
         }
         
-        public Chaos.Movies.Contract.Dto.UserSessionDto CreateUserSession(Chaos.Movies.Contract.Dto.UserSessionDto session, Chaos.Movies.Contract.Dto.UserLoginDto userLogin) {
+        public Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLoginDto userLogin) {
             return base.Channel.CreateUserSession(session, userLogin);
         }
         
-        public System.Threading.Tasks.Task<Chaos.Movies.Contract.Dto.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.Dto.UserSessionDto session, Chaos.Movies.Contract.Dto.UserLoginDto userLogin) {
+        public System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLoginDto userLogin) {
             return base.Channel.CreateUserSessionAsync(session, userLogin);
         }
         
-        public void CharacterSave(Chaos.Movies.Contract.Dto.UserSessionDto session, Chaos.Movies.Contract.Dto.CharacterDto character) {
+        public void CharacterSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character) {
             base.Channel.CharacterSave(session, character);
         }
         
-        public System.Threading.Tasks.Task CharacterSaveAsync(Chaos.Movies.Contract.Dto.UserSessionDto session, Chaos.Movies.Contract.Dto.CharacterDto character) {
+        public System.Threading.Tasks.Task CharacterSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character) {
             return base.Channel.CharacterSaveAsync(session, character);
         }
     }

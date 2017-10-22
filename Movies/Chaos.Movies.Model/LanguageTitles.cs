@@ -31,7 +31,7 @@ namespace Chaos.Movies.Model
             ReadFromRecord(this, reader);
         }
 
-        /// <summary>Gets the list of title of the movie series type in different languages.</summary>
+        /// <summary>Gets the list of titles in different languages.</summary>
         public ReadOnlyCollection<LanguageTitle> Titles => this.titles.AsReadOnly();
 
         /// <summary>Gets the number if existing titles.</summary>

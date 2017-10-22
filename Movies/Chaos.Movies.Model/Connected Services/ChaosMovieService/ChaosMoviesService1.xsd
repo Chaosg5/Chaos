@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract.Dto" />
+  <xs:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
   <xs:element name="CreateUserSession">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract.Dto" minOccurs="0" name="session" nillable="true" type="q1:UserSessionDto" />
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract.Dto" minOccurs="0" name="userLogin" nillable="true" type="q2:UserLoginDto" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q1:UserSessionDto" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="userLogin" nillable="true" type="q2:UserLoginDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="CreateUserSessionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract.Dto" minOccurs="0" name="CreateUserSessionResult" nillable="true" type="q3:UserSessionDto" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="CreateUserSessionResult" nillable="true" type="q3:UserSessionDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="CharacterSave">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract.Dto" minOccurs="0" name="session" nillable="true" type="q4:UserSessionDto" />
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract.Dto" minOccurs="0" name="character" nillable="true" type="q5:CharacterDto" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q4:UserSessionDto" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="character" nillable="true" type="q5:CharacterDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

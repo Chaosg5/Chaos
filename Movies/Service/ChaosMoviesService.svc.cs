@@ -9,8 +9,8 @@ namespace Chaos.Movies.Service
     using System;
     using System.ServiceModel;
     using System.Threading.Tasks;
-    
-    using Chaos.Movies.Contract.Dto;
+
+    using Chaos.Movies.Contract;
     using Chaos.Movies.Model;
     using Chaos.Movies.Model.Exceptions;
     using Chaos.Movies.Model.Sql;
@@ -43,7 +43,7 @@ namespace Chaos.Movies.Service
 
         public void LoadMovie(string movieIdentifier)
         {
-            var s = new TMDbLib.Client.TMDbClient(TmdbApiKey);
+            var s = new TMDbLib.Client.TMDbClient(Properties.Settings.Default.TmdbApiKey);
             //s.GetMovieAsync()
         }
 
@@ -67,7 +67,7 @@ namespace Chaos.Movies.Service
                 {
                     throw new ArgumentNullException("rating");
                 }
-
+                
                 rating.Save();
             }
             catch (Exception exception)

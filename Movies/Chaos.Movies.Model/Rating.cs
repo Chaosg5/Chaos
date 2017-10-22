@@ -51,8 +51,6 @@ namespace Chaos.Movies.Model
 
         #endregion
 
-        #region Properties
-
         /// <summary>Gets the id of this rating.</summary>
         public int Id { get; private set; }
 
@@ -197,8 +195,6 @@ namespace Chaos.Movies.Model
             ValidateAllSaveCandidates(this);
             await SaveAllToDatabaseAsync(this);
         }
-
-        #endregion
 
         #region Private
 

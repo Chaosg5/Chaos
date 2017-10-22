@@ -6,7 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
-    /// <summary>A genre of movies.</summary>
+    /// <summary>A genre of <see cref="Movie"/>s.</summary>
     public class Genre
     {
         /// <summary>Gets the id of the genre.</summary>

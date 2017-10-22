@@ -12,7 +12,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Contract;
 
     /// <summary>An image icon.</summary>
-    public class Icon : IIcon
+    public class Icon
     {
         /// <summary>Initializes a new instance of the <see cref="Icon" /> class.</summary>
         /// <param name="record">The record containing the data for the character.</param>
@@ -25,5 +25,12 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the URL of the image of the icon.</summary>
         public string Url { get; private set; }
+
+        /// <summary>Converts this <see cref="Icon"/> to a <see cref="IconDto"/>.</summary>
+        /// <returns>The <see cref="IconDto"/>.</returns>
+        public IconDto ToContract()
+        {
+            return new IconDto { Image = this.Image, Url = this.Url };
+        }
     }
 }

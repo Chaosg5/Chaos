@@ -10,10 +10,9 @@ namespace Chaos.Movies.Model
     using System.Data;
 
     using Chaos.Movies.Contract;
-    using Chaos.Movies.Contract.Dto;
 
     /// <summary>A login session for a specific <see cref="User"/>.</summary>
-    public class UserSession : IUserSession
+    public class UserSession
     {
         /// <summary>Initializes a new instance of the <see cref="UserSession"/> class.</summary>
         /// <param name="record">The record.</param>
@@ -23,7 +22,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="UserSession"/> class.</summary>
         /// <param name="session">The session.</param>
-        public UserSession(IUserSession session)
+        public UserSession(UserSessionDto session)
         {
             this.SessionId = session.SessionId;
             this.ClientIp = session.ClientIp;

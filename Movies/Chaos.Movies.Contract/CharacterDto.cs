@@ -4,14 +4,14 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Contract.Dto
+namespace Chaos.Movies.Contract
 {
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
     /// <summary>Represents a character in a movie.</summary>
     [DataContract]
-    public class CharacterDto : ICharacter
+    public class CharacterDto
     {
         /// <summary>Gets or sets the id of the character.</summary>
         [DataMember]
@@ -27,6 +27,6 @@ namespace Chaos.Movies.Contract.Dto
 
         /// <summary>Gets or sets the list of images for the movie and their order as represented by the key.</summary>
         [DataMember]
-        public IEnumerable<IIcon> Images { get; set; }
+        public IEnumerable<IconDto> Images { get; set; }
     }
 }

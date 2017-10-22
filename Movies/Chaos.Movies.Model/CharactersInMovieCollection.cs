@@ -30,14 +30,14 @@ namespace Chaos.Movies.Model
         /// <summary>Initializes a new instance of the <see cref="CharactersInMovieCollection"/> class.</summary>
         /// <param name="movieId">The id of the <see cref="Movie"/> which this <see cref="CharactersInMovieCollection"/> belongs to.</param>
         /// <exception cref="ValueLogicalReadOnlyException">The id of the <see cref="Movie"/> can't be changed once set.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">The <see cref="MovieId"/> is not valid.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The <see cref="ParentId"/> is not valid.</exception>
         public CharactersInMovieCollection(int movieId)
         {
-            this.SetMovieId(movieId);
+            this.SetParentId(movieId);
         }
 
         /// <summary>Gets id of the <see cref="Movie"/> which this <see cref="CharactersInMovieCollection"/> belongs to.</summary>
-        public int MovieId { get; private set; }
+        public int ParentId { get; private set; }
 
         /// <summary>Gets the number of elements contained in this <see cref="CharactersInMovieCollection"/>.</summary>
         public int Count => this.characters.Count;
@@ -57,22 +57,22 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Sets the id of the <see cref="Movie"/> this <see cref="CharactersInMovieCollection"/> belongs to.</summary>
-        /// <param name="movieId">The id of the <see cref="Movie"/> which this <see cref="CharactersInMovieCollection"/> belongs to.</param>
+        /// <param name="parentId">The id of the <see cref="Movie"/> which this <see cref="CharactersInMovieCollection"/> belongs to.</param>
         /// <exception cref="ValueLogicalReadOnlyException">The id of the <see cref="Movie"/> can't be changed once set.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="movieId"/> is not valid.</exception>
-        public void SetMovieId(int movieId)
+        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="parentId"/> is not valid.</exception>
+        public void SetParentId(int parentId)
         {
-            if (movieId <= 0)
+            if (parentId <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(movieId));
+                throw new ArgumentOutOfRangeException(nameof(parentId));
             }
 
-            if (this.MovieId != 0)
+            if (this.ParentId != 0)
             {
                 throw new ValueLogicalReadOnlyException("The id of the movie can't be changed once set.");
             }
             
-            this.MovieId = movieId;
+            this.ParentId = parentId;
         }
 
         /// <summary>Removes specified <paramref name="characterInMovie"/> item to the list.</summary>
@@ -97,7 +97,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Removes specified <paramref name="characterInMovie"/> item from the list and saves the change to the database.</summary>
         /// <param name="characterInMovie">The item to remove.</param>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="MovieId"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="ParentId"/> is not a valid id of a <see cref="Movie"/>.</exception>
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
@@ -109,7 +109,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("CharacterInMovieAdd", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieId", this.MovieId);
+                command.Parameters.AddWithValue("@movieId", this.ParentId);
                 command.Parameters.AddWithValue("@characterId", characterInMovie.Character.Id);
                 command.Parameters.AddWithValue("@personId", characterInMovie.Person.Id);
                 connection.Open();
@@ -141,7 +141,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Removes specified <paramref name="characterInMovie"/> item from the list and saves the change to the database.</summary>
         /// <param name="characterInMovie">The item to remove.</param>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="MovieId"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="ParentId"/> is not a valid id of a <see cref="Movie"/>.</exception>
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
@@ -157,7 +157,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("CharacterInMovieRemove", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieId", this.MovieId);
+                command.Parameters.AddWithValue("@movieId", this.ParentId);
                 command.Parameters.AddWithValue("@characterId", characterInMovie.Character.Id);
                 command.Parameters.AddWithValue("@personId", characterInMovie.Person.Id);
                 connection.Open();
@@ -166,7 +166,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves all <see cref="CharacterInMovie"/> to the database.</summary>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="MovieId"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="ParentId"/> is not a valid id of a <see cref="Movie"/>.</exception>
         /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The &lt;system.data.localdb&gt; tag in the app.config file has invalid or unknown elements.</exception>
         /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
@@ -187,7 +187,7 @@ namespace Chaos.Movies.Model
                 using (var command = new SqlCommand("CharactersInMovieSave", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@movieId", this.MovieId);
+                    command.Parameters.AddWithValue("@movieId", this.ParentId);
                     command.Parameters.AddWithValue("@characters", table);
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -196,7 +196,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Loads <see cref="Character"/>s for the current movie.</summary>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="MovieId"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="ParentId"/> is not a valid id of a <see cref="Movie"/>.</exception>
         /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The &lt;system.data.localdb&gt; tag in the app.config file has invalid or unknown elements.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
@@ -208,7 +208,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("CharactersInMovieGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieId", this.MovieId);
+                command.Parameters.AddWithValue("@movieId", this.ParentId);
                 connection.Open();
 
                 var loadData = new List<CharacterLoadShell>();
@@ -225,11 +225,11 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Validates that the <see cref="MovieId"/> is set.</summary>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="MovieId"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <summary>Validates that the <see cref="ParentId"/> is set.</summary>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="ParentId"/> is not a valid id of a <see cref="Movie"/>.</exception>
         private void ValidateMovieId()
         {
-            if (this.MovieId <= 0)
+            if (this.ParentId <= 0)
             {
                 throw new PersistentObjectRequiredException("The movie needs to be saved before adding characters.");
             }

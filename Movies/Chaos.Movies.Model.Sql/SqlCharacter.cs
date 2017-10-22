@@ -27,7 +27,7 @@ namespace Chaos.Movies.Model.Sql
 
         /// <summary>Initializes a new instance of the <see cref="SqlCharacter" /> class.</summary>
         /// <param name="character">The character to create.</param>
-        public SqlCharacter(ICharacter character)
+        public SqlCharacter(CharacterDto character)
             : base(character)
         {
         }

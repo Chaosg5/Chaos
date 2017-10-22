@@ -1,17 +1,17 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="UserSessionDto.cs">
+// <copyright file="UserSessionDto.cs" company="Erik Bunnstad">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Contract.Dto
+namespace Chaos.Movies.Contract
 {
     using System;
     using System.Runtime.Serialization;
 
     /// <summary>A login session for a specific <see cref="UserDto"/>.</summary>
     [DataContract]
-    public class UserSessionDto : IUserSession
+    public class UserSessionDto
     {
         /// <summary>Gets or sets the id of the session.</summary>
         [DataMember]

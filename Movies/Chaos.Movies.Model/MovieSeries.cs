@@ -18,9 +18,6 @@ namespace Chaos.Movies.Model
     /// <summary>A series of movies.</summary>
     public class MovieSeries
     {
-        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
-        private readonly LanguageTitles titles = new LanguageTitles();
-
         /// <summary>Private part of the <see cref="Movies"/> property.</summary>
         private List<Movie> movies = new List<Movie>();
 
@@ -43,10 +40,7 @@ namespace Chaos.Movies.Model
         public MovieSeriesType MovieSeriesType { get; set; }
 
         /// <summary>Gets the list of title of the movie collection in different languages.</summary>
-        public LanguageTitles Titles
-        {
-            get { return this.titles; }
-        }
+        public LanguageTitles Titles { get; } = new LanguageTitles();
 
         /// <summary>Gets the movies which are a part of this collection with the keys representing their order.</summary>
         public ReadOnlyCollection<Movie> Movies

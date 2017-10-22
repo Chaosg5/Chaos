@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Contract.Dto
+namespace Chaos.Movies.Contract
 {
     using System.Runtime.Serialization;
 

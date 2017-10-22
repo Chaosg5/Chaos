@@ -65,6 +65,11 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Exceptions\ValueLogicalReadOnlyException.cs" />
+    <Compile Include="ExternalRatingsCollection.cs" />
+    <Compile Include="ExternalLookupCollection.cs" />
+    <Compile Include="ExternalLookup.cs" />
+    <Compile Include="ExternalRating.cs" />
+    <Compile Include="ExternalSource.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MovieSeriesType.cs" />
     <Compile Include="PeopleInMovieCollection.cs" />
@@ -128,12 +133,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Chaos.Movies.Contract.Dto.UserSessionDto.datasource" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Chaos.Movies.Contract\Contract.csproj">
-      <Project>{91f29319-af34-4afd-9a55-ec97245019d6}</Project>
-      <Name>Contract</Name>
-    </ProjectReference>
+    <None Include="Properties\DataSources\Chaos.Movies.Contract.UserSessionDto.datasource" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
@@ -152,6 +152,12 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chaos.Movies.Contract\Contract.csproj">
+      <Project>{91f29319-af34-4afd-9a55-ec97245019d6}</Project>
+      <Name>Contract</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

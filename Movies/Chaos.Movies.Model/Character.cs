@@ -9,15 +9,15 @@ namespace Chaos.Movies.Model
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
-    using Chaos.Movies.Contract.Dto;
     using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
-    public class Character : ICharacter
+    public class Character
     {
         /// <summary>Private part of the <see cref="Images"/> property.</summary>
         private readonly List<Icon> images = new List<Icon>();
@@ -37,7 +37,7 @@ namespace Chaos.Movies.Model
         
         /// <summary>Initializes a new instance of the <see cref="Character" /> class.</summary>
         /// <param name="character">The character to create.</param>
-        public Character(ICharacter character)
+        public Character(CharacterDto character)
         {
             this.Id = character.Id;
             this.Name = character.Name;
@@ -78,7 +78,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the list of images for the movie and their order as represented by the key.</summary>
-        public IEnumerable<IIcon> Images => this.images;
+        public IEnumerable<Icon> Images => this.images;
 
         /// <summary>The save async.</summary>
         /// <param name="session">The session.</param>
@@ -95,7 +95,7 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="CharacterDto"/>.</returns>
         public CharacterDto ToContract()
         {
-            return new CharacterDto { Id = this.Id, Name = this.Name, ImdbId = this.imdbId, Images = this.Images };
+            return new CharacterDto { Id = this.Id, Name = this.Name, ImdbId = this.imdbId, Images = this.Images.Select(s => s.ToContract()) };
         }
 
         /// <summary>Updates a character from a record.</summary>

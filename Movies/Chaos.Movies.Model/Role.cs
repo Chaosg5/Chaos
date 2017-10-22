@@ -16,9 +16,6 @@ namespace Chaos.Movies.Model
     /// <summary>Represents a role of a person in a movie.</summary>
     public class Role
     {
-        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
-        private LanguageTitles titles = new LanguageTitles();
-
         /// <summary>Initializes a new instance of the <see cref="Role" /> class.</summary>
         /// <param name="record">The record containing the data for the role.</param>
         private Role(IDataRecord record)
@@ -30,11 +27,7 @@ namespace Chaos.Movies.Model
         public int Id { get; private set; }
 
         /// <summary>Gets the list of titles of the role in different languages.</summary>
-        public LanguageTitles Titles
-        {
-            get { return this.titles; }
-            private set { this.titles = value; }
-        }
+        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
 
         /// <summary>Loads all roles from the database.</summary>
         /// <remarks>

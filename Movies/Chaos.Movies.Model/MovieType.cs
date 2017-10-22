@@ -17,9 +17,6 @@ namespace Chaos.Movies.Model
     /// <summary>Represents a type of a movie.</summary>
     public class MovieType
     {
-        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
-        private LanguageTitles titles = new LanguageTitles();
-
         /// <summary>Initializes a new instance of the <see cref="MovieType" /> class.</summary>
         public MovieType()
         {
@@ -38,11 +35,7 @@ namespace Chaos.Movies.Model
         public int Id { get; private set; }
 
         /// <summary>Gets the list of titles of the movie type in different languages.</summary>
-        public LanguageTitles Titles
-        {
-            get { return this.titles; }
-            private set { this.titles = value; }
-        }
+        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
 
         /// <summary>Loads all movie types from the database.</summary>
         /// <returns>All <see cref="MovieType"/>s.</returns>

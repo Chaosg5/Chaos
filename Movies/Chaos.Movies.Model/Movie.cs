@@ -29,20 +29,8 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="Images"/> property.</summary>
         private readonly List<Icon> images = new List<Icon>();
 
-        /// <summary>Private part of the <see cref="UserRating"/> property.</summary>
-        private readonly Rating userRating = new Rating(new RatingType(1));
-
-        /// <summary>Private part of the <see cref="TotalRating"/> property.</summary>
-        private readonly Rating totalRating = new Rating(new RatingType(1));
-
         /// <summary>Private part of the <see cref="Characters"/> property.</summary>
         private readonly CharactersInMovieCollection characters = new CharactersInMovieCollection();
-
-        /// <summary>Private part of the <see cref="People"/> property.</summary>
-        private readonly PeopleInMovieCollection people = new PeopleInMovieCollection();
-
-        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
-        private LanguageTitles titles = new LanguageTitles();
 
         /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
         public Movie()
@@ -52,42 +40,26 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the id of the movie.</summary>
         public int Id { get; private set; }
 
-        /// <summary>Gets the id of the movie in IMDB.</summary>
-        public string ImdbId { get; private set; }
-
-        /// <summary>Gets the id of the movie in TMDB.</summary>
-        public int TmdbId { get; private set; }
+        /// <summary>Gets the id of the movie in <see cref="ExternalSource"/>s.</summary>
+        public ExternalLookupCollection ExternalLookup { get; private set; }
+    
+        /// <summary>Gets the ratings of the movie in <see cref="ExternalSource"/>s.</summary>
+        public ExternalRatingsCollection ExternalRatings { get; private set; }
 
         /// <summary>Gets the list of title of the movie in different languages.</summary>
-        public LanguageTitles Titles
-        {
-            get { return this.titles; }
-            private set { this.titles = value; }
-        }
+        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
 
         /// <summary>Gets the list of genres that the movie belongs to.</summary>
-        public ReadOnlyCollection<Genre> Genres
-        {
-            get { return this.genres.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<Genre> Genres => this.genres.AsReadOnly();
 
         /// <summary>Gets the list of images for the movie and their order as represented by the key.</summary>
-        public ReadOnlyCollection<Icon> Images
-        {
-            get { return this.images.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<Icon> Images => this.images.AsReadOnly();
 
         /// <summary>Gets the total rating score from the current user.</summary>
-        public Rating UserRating
-        {
-            get { return this.userRating; }
-        }
+        public Rating UserRating { get; } = new Rating(new RatingType(1));
 
         /// <summary>Gets the total rating score from all users.</summary>
-        public Rating TotalRating
-        {
-            get { return this.totalRating; }
-        }
+        public Rating TotalRating { get; } = new Rating(new RatingType(1));
 
         /// <summary>Gets the list of <see cref="Character"/>s in this <see cref="Movie"/>.</summary>
         public CharactersInMovieCollection Characters
@@ -104,14 +76,8 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the list of <see cref="Person"/>s in this <see cref="Movie"/>.</summary>
-        public PeopleInMovieCollection People
-        {
-            get
-            {
-                return this.people;
-            }
-        }
-        
+        public PeopleInMovieCollection People { get; } = new PeopleInMovieCollection();
+
         /// <summary>Gets or sets the type of the movie.</summary>
         public MovieType MovieType { get; set; }
         
@@ -139,7 +105,7 @@ namespace Chaos.Movies.Model
             }
 
             this.Id = movieId;
-            this.Characters.SetMovieId(this.Id);
+            this.Characters.SetParentId(this.Id);
             this.People.SetMovieId(this.Id);
         }
     }
