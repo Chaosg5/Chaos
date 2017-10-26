@@ -114,9 +114,9 @@
       <Project>{91f29319-af34-4afd-9a55-ec97245019d6}</Project>
       <Name>Contract</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Chaos.Movies.Model.Sql\Model.Sql.csproj">
+    <ProjectReference Include="..\Chaos.Movies.Model.Sql\Model.Data.csproj">
       <Project>{0033a991-1911-46f1-b3da-889b8f49ff4d}</Project>
-      <Name>Model.Sql</Name>
+      <Name>Model.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Chaos.Movies.Model\Model.csproj">
       <Project>{824958ae-121d-49aa-b605-899ef11ff4c5}</Project>

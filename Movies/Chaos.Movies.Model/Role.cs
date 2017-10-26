@@ -38,7 +38,7 @@ namespace Chaos.Movies.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
         public static IEnumerable<Role> GetAll()
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("RolesGetAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -65,7 +65,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException("idList");
             }
 
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("RolesGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -105,7 +105,7 @@ namespace Chaos.Movies.Model
         /// <param name="role">The role to save.</param>
         private static void SaveToDatabase(Role role)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("RoleSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

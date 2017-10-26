@@ -30,7 +30,7 @@ namespace Chaos.Movies.Model
         private readonly List<Icon> images = new List<Icon>();
 
         /// <summary>Private part of the <see cref="Characters"/> property.</summary>
-        private readonly CharactersInMovieCollection characters = new CharactersInMovieCollection();
+        private PersonAsCharacterCollection characters;
 
         /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
         public Movie()
@@ -40,11 +40,11 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the id of the movie.</summary>
         public int Id { get; private set; }
 
-        /// <summary>Gets the id of the movie in <see cref="ExternalSource"/>s.</summary>
-        public ExternalLookupCollection ExternalLookup { get; private set; }
+        /// <summary>Gets the id of the <see cref="Movie"/> in <see cref="ExternalSource"/>s.</summary>
+        public ExternalLookupCollection ExternalLookup { get; } = new ExternalLookupCollection();
     
         /// <summary>Gets the ratings of the movie in <see cref="ExternalSource"/>s.</summary>
-        public ExternalRatingsCollection ExternalRatings { get; private set; }
+        public ExternalRatingsCollection ExternalRatings { get; } = new ExternalRatingsCollection();
 
         /// <summary>Gets the list of title of the movie in different languages.</summary>
         public LanguageTitles Titles { get; private set; } = new LanguageTitles();
@@ -62,12 +62,13 @@ namespace Chaos.Movies.Model
         public Rating TotalRating { get; } = new Rating(new RatingType(1));
 
         /// <summary>Gets the list of <see cref="Character"/>s in this <see cref="Movie"/>.</summary>
-        public CharactersInMovieCollection Characters
+        public PersonAsCharacterCollection Characters
         {
             get
             {
-                if (this.characters.Count == 0)
+                if (this.characters == null)
                 {
+                    this.characters = new PersonAsCharacterCollection(new Parent(this));
                     this.characters.LoadCharacters();
                 }
 
@@ -76,7 +77,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the list of <see cref="Person"/>s in this <see cref="Movie"/>.</summary>
-        public PeopleInMovieCollection People { get; } = new PeopleInMovieCollection();
+        public PersonInRoleCollection People { get; } = new PersonInRoleCollection();
 
         /// <summary>Gets or sets the type of the movie.</summary>
         public MovieType MovieType { get; set; }
@@ -88,15 +89,15 @@ namespace Chaos.Movies.Model
             this.Characters.Save();
         }
         
-        /// <summary>Sets the id of the <see cref="Movie"/> this <see cref="CharactersInMovieCollection"/> belongs to.</summary>
-        /// <param name="movieId">The id of the <see cref="Movie"/> which this <see cref="CharactersInMovieCollection"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The id of the <see cref="Movie"/> can't be changed once set.</exception>
+        /// <summary>Sets the id of the <see cref="Movie"/> this <see cref="PersonAsCharacterCollection"/> belongs to.</summary>
+        /// <param name="movieId">The id of the <see cref="Movie"/> which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="movieId"/> is not valid.</exception>
         private void SetMovieId(int movieId)
         {
             if (movieId <= 0)
             {
-                throw new ArgumentOutOfRangeException("movieId");
+                throw new ArgumentOutOfRangeException(nameof(movieId), "The id of the movie has to be greater than zero.");
             }
 
             if (this.Id != 0)
@@ -105,8 +106,9 @@ namespace Chaos.Movies.Model
             }
 
             this.Id = movieId;
-            this.Characters.SetParentId(this.Id);
-            this.People.SetMovieId(this.Id);
+            var parent = new Parent(this);
+            this.Characters.SetParent(parent);
+            this.People.SetParent(parent);
         }
     }
 }

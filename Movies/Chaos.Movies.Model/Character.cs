@@ -25,9 +25,6 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="Name"/> property.</summary>
         private string name;
 
-        /// <summary>Private part of the <see cref="ImdbId"/> property.</summary>
-        private string imdbId = string.Empty;
-
         /// <summary>Initializes a new instance of the <see cref="Character" /> class.</summary>
         /// <param name="name">The name of the character.</param>
         public Character(string name)
@@ -70,12 +67,8 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Gets the id of the character in IMDB.</summary>
-        public string ImdbId
-        {
-            get => this.imdbId;
-            private set => this.imdbId = value ?? string.Empty;
-        }
+        /// <summary>Gets the id of the <see cref="Character"/> in <see cref="ExternalSource"/>s.</summary>
+        public ExternalLookupCollection ExternalLookup { get; } = new ExternalLookupCollection();
 
         /// <summary>Gets the list of images for the movie and their order as represented by the key.</summary>
         public IEnumerable<Icon> Images => this.images;
@@ -95,7 +88,7 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="CharacterDto"/>.</returns>
         public CharacterDto ToContract()
         {
-            return new CharacterDto { Id = this.Id, Name = this.Name, ImdbId = this.imdbId, Images = this.Images.Select(s => s.ToContract()) };
+            return new CharacterDto { Id = this.Id, Name = this.Name, ExternalLookup = this.ExternalLookup.ToContract(), Images = this.Images.Select(s => s.ToContract()) };
         }
 
         /// <summary>Updates a character from a record.</summary>
@@ -104,10 +97,10 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected void ReadFromRecord(IDataRecord record)
         {
-            Helper.ValidateRecord(record, new[] { "CharacterId", "Name", "ImdbId" });
+            Helper.ValidateRecord(record, new[] { "CharacterId", "Name" });
             this.Id = (int)record["CharacterId"];
             this.Name = record["Name"].ToString();
-            this.ImdbId = record["ImdbId"].ToString();
+            // ToDo get ExternalLookup, Images
         }
 
         /// <summary>Validates that the this <see cref="Character"/> is valid to be saved.</summary>

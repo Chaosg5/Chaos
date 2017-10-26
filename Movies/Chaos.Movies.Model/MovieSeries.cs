@@ -16,6 +16,8 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A series of movies.</summary>
+    /// <remarks>A TV series is considered to be a <see cref="Movie"/> while a series of TV series would be considered to be a <see cref="MovieSeries"/>.
+    /// For example "Star Trek: The Next Generation" is a <see cref="Movie"/> but is part of the "Star Trek" and "Star Trek TV series" <see cref="MovieSeries"/> but not the "Star Trek Movies" <see cref="MovieSeries"/>.</remarks>
     public class MovieSeries
     {
         /// <summary>Private part of the <see cref="Movies"/> property.</summary>
@@ -132,7 +134,7 @@ namespace Chaos.Movies.Model
         {
             this.AddMovie(movie);
 
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesAddMovie", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -171,7 +173,7 @@ namespace Chaos.Movies.Model
         {
             this.RemoveMovie(movie);
 
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesRemoveMovie", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -206,7 +208,7 @@ namespace Chaos.Movies.Model
         /// <param name="series">The movie series to save.</param>
         private static void SaveToDatabase(MovieSeries series)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -230,7 +232,7 @@ namespace Chaos.Movies.Model
         private static void SaveMoviesToDatabase(MovieSeries series)
         {
             // ToDo: This requires a special SQL type
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesSaveMovies", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

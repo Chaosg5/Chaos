@@ -47,7 +47,7 @@ namespace Chaos.Movies.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
         public static IEnumerable<MovieSeriesType> GetAll()
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesTypesGetAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -80,7 +80,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException("idList");
             }
 
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesTypesGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -130,7 +130,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         private static void SaveToDatabase(MovieSeriesType type)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

@@ -70,10 +70,12 @@
     <Compile Include="ExternalLookup.cs" />
     <Compile Include="ExternalRating.cs" />
     <Compile Include="ExternalSource.cs" />
+    <Compile Include="Parent.cs" />
+    <Compile Include="ParentType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MovieSeriesType.cs" />
-    <Compile Include="PeopleInMovieCollection.cs" />
-    <Compile Include="CharactersInMovieCollection.cs" />
+    <Compile Include="PersonInRoleCollection.cs" />
+    <Compile Include="PersonAsCharacterCollection.cs" />
     <Compile Include="Exceptions\CacheInitializationException.cs" />
     <Compile Include="Exceptions\RelationshipException.cs" />
     <Compile Include="Exceptions\SqlResultSyncException.cs" />
@@ -82,9 +84,9 @@
     <Compile Include="Exceptions\PersistentObjectRequiredException.cs" />
     <Compile Include="LanguageTitles.cs" />
     <Compile Include="GlobalCache.cs" />
-    <Compile Include="CharacterInMovie.cs" />
+    <Compile Include="PersonAsCharacter.cs" />
     <Compile Include="PersonUserRating.cs" />
-    <Compile Include="PersonInMovie.cs" />
+    <Compile Include="PersonInRole.cs" />
     <Compile Include="MovieType.cs" />
     <Compile Include="Exceptions\UserChangeNotAllowedException.cs" />
     <Compile Include="MovieSeries.cs" />
@@ -96,7 +98,7 @@
     <Compile Include="Icon.cs" />
     <Compile Include="Movie.cs" />
     <Compile Include="LanguageTitle.cs" />
-    <Compile Include="Persistent.cs" />
+    <Compile Include="BlaBla.cs" />
     <Compile Include="Department.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Role.cs" />

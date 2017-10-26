@@ -113,7 +113,7 @@ namespace Chaos.Movies.Model
         /// <param name="type">The rating type to save.</param>
         private static void SaveToDatabase(RatingType type)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("RatingTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

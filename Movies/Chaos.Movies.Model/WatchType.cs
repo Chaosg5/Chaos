@@ -65,7 +65,7 @@ namespace Chaos.Movies.Model
         /// <param name="type">The watch type to save.</param>
         private static void SaveToDatabase(WatchType type)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("WatchTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

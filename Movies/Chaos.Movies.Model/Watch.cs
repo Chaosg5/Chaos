@@ -13,16 +13,20 @@ namespace Chaos.Movies.Model
     /// <summary>Represents an event where a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
     public class Watch
     {
+        /// <summary>Gets the id and type of the parent which this <see cref="Watch"/> belongs to.</summary>
+        private Parent parent;
+
         /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
-        /// <param name="movieId">The id of the <see cref="Movie"/> that was watched.</param>
+        /// <param name="parent">The parent which this <see cref="Watch"/> belongs to.</param>
         /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
         /// <param name="watchDate">The date when the movie was watched.</param>
         /// <param name="dateUncertain">If the <paramref name="watchDate"/> when the <see cref="Movie"/> was watched is just estimated and thus uncertain.</param>
         /// <param name="watchLocationId">The id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</param>
         /// <param name="watchTypeId">The id of the <see cref="WatchType"/> describing in what format the <see cref="Movie"/> was watched.</param>
-        public Watch(int movieId, int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        public Watch(Parent parent, int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
         {
-            this.MovieId = movieId;
+            this.SetParent(parent);
             this.UserId = userId;
             this.WatchDate = watchDate;
             this.DateUncertain = dateUncertain;
@@ -31,7 +35,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
-        /// <param name="record">The data record containing the data to create the watch type from.</param>
+        /// <param name="record">The data record containing the data to create the <see cref="Watch" /> from.</param>
         public Watch(IDataRecord record)
         {
             ReadFromRecord(this, record);
@@ -39,10 +43,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the id of the watch.</summary>
         public int Id { get; private set; }
-
-        /// <summary>Gets the id of the <see cref="Movie"/> watched.</summary>
-        public int MovieId { get; private set; }
-
+        
         /// <summary>Gets the id of the <see cref="User"/> who watched <see cref="Movie"/>.</summary>
         public int UserId { get; private set; }
 
@@ -66,6 +67,19 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the <see cref="WatchType"/> how the <see cref="Movie"/> was watched.</summary>
         public WatchType WatchType { get; private set; }
+        
+        /// <summary>Sets the parent of this <see cref="PersonAsCharacterCollection"/>.</summary>
+        /// <param name="newParent">The parent which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        public void SetParent(Parent newParent)
+        {
+            if (this.parent != null)
+            {
+                throw new ValueLogicalReadOnlyException("The parent can't be changed once set.");
+            }
+
+            this.parent = newParent;
+        }
 
         /// <summary>Sets the user who watched the <see cref="Movie"/>.</summary>
         /// <param name="user">The user to set.</param>
@@ -116,9 +130,9 @@ namespace Chaos.Movies.Model
         /// <param name="record">The record containing the data for the watch.</param>
         private static void ReadFromRecord(Watch watch, IDataRecord record)
         {
-            Helper.ValidateRecord(record, new[] { "Id", "MovieId", "UserId", "WatchedDate", "DateUncertain" });
+            Helper.ValidateRecord(record, new[] { "Id", "ParentId", "ParentType", "UserId", "WatchedDate", "DateUncertain" });
             watch.Id = (int)record["Id"];
-            watch.MovieId = (int)record["MovieId"];
+            watch.SetParent(new Parent(record));
             watch.UserId = (int)record["UserId"];
 
             DateTime watchDate;

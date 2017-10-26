@@ -69,7 +69,7 @@ namespace Chaos.Movies.Model
         public static IEnumerable<Person> Get(IEnumerable<int> idList)
         {
             var people = new List<Person>();
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("PeopleGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -142,7 +142,7 @@ namespace Chaos.Movies.Model
         /// <param name="person">The person to save.</param>
         private static void SaveToDatabase(Person person)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("PersonSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

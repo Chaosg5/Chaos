@@ -1,11 +1,12 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IGenre.cs" company="Erik Bunnstad">
+// <copyright file="GenreDto.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 namespace Chaos.Movies.Contract
 {
+    using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
 
     /// <summary>A genre of <see cref="MovieDto"/>s.</summary>
@@ -16,13 +17,8 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public int Id { get; set; }
 
-        /// <summary>Gets or sets the id of the genre in IMDB.</summary>
-        [DataMember]
-        public string ImdbId { get; set; }
-
-        /// <summary>Gets or sets the id of the genre in TMDB.</summary>
-        [DataMember]
-        public int TmdbId { get; set; }
+        /// <summary>Gets or sets the id of the <see cref="GenreDto"/> in <see cref="ExternalSourceDto"/>s.</summary>
+        public ReadOnlyCollection<ExternalLookupDto> ExternalLookup { get; set; }
 
         /// <summary>Gets or sets the title of the genre.</summary>
         [DataMember]

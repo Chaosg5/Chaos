@@ -12,11 +12,8 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the id of the genre.</summary>
         public int Id { get; private set; }
 
-        /// <summary>Gets the id of the genre in IMDB.</summary>
-        public string ImdbId { get; private set; }
-
-        /// <summary>Gets the id of the genre in TMDB.</summary>
-        public int TmdbId { get; private set; }
+        /// <summary>Gets the id of the <see cref="Genre"/> in <see cref="ExternalSource"/>s.</summary>
+        public ExternalLookupCollection ExternalLookup { get; } = new ExternalLookupCollection();
 
         /// <summary>Gets the title of the genre.</summary>
         public string Title { get; private set; }

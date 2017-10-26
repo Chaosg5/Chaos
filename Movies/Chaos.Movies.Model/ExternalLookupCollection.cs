@@ -8,7 +8,11 @@ namespace Chaos.Movies.Model
 {
     using System.Collections;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Runtime.Serialization;
+
+    using Chaos.Movies.Contract;
 
     /// <summary>Represents a user.</summary>
     [DataContract]
@@ -25,6 +29,23 @@ namespace Chaos.Movies.Model
         public IEnumerator<ExternalLookup> GetEnumerator()
         {
             return this.externalLookup.GetEnumerator();
+        }
+
+        /// <summary>Converts this <see cref="ExternalLookupCollection"/> to a collection.</summary>
+        /// <returns>The collection.</returns>
+        public ReadOnlyCollection<ExternalLookupDto> ToContract()
+        {
+            return new ReadOnlyCollection<ExternalLookupDto>(this.externalLookup.Select(l => l.ToContract()).ToList());
+        }
+
+        public void SetLookup(ExternalLookup lookup)
+        {
+            
+        }
+
+        public void RemoveLookup(ExternalLookup lookup)
+        {
+            
         }
 
         /// <summary>Returns an enumerator which iterates through this <see cref="ExternalLookupCollection"/>.</summary>

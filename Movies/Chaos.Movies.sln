@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCore", "Chaos.Movies.Api
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebCore", "Chaos.Movies.WebCore\WebCore.csproj", "{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model.Sql", "Chaos.Movies.Model.Sql\Model.Sql.csproj", "{0033A991-1911-46F1-B3DA-889B8F49FF4D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model.Data", "Chaos.Movies.Model.Sql\Model.Data.csproj", "{0033A991-1911-46F1-B3DA-889B8F49FF4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

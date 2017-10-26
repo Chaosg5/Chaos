@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CharacterInMovie.cs">
+// <copyright file="PersonAsCharacter.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -10,15 +10,15 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
-    public class CharacterInMovie
+    public class PersonAsCharacter
     {
-        /// <summary>Initializes a new instance of the <see cref="CharacterInMovie"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="PersonAsCharacter"/> class.</summary>
         /// <param name="person">The person playing the <paramref name="character"/> in the movie.</param>
         /// <param name="character">The character in the movie.</param>
         /// <param name="userRating">The current user's rating.</param>
         /// <exception cref="ArgumentNullException">If any parameter is null.</exception>
         /// <exception cref="PersistentObjectRequiredException">If any of the objects aren't saved.</exception>
-        public CharacterInMovie(Person person, Character character, int userRating)
+        public PersonAsCharacter(Person person, Character character, int userRating)
         {
             if (person == null)
             {

@@ -112,7 +112,7 @@ namespace Chaos.Movies.Model
         /// <param name="location">The watch location to save.</param>
         private static void SaveToDatabase(WatchLocation location)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("WatchLocationSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -134,7 +134,7 @@ namespace Chaos.Movies.Model
         /// <param name="location">The watch location to save.</param>
         private static void SaveAllToDatabase(WatchLocation location)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("WatchLocationSaveAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

@@ -1,10 +1,10 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SqlCharacter.cs" company="Erik Bunnstad">
+// <copyright file="DataCharacter.cs" company="Erik Bunnstad">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model.Sql
+namespace Chaos.Movies.Model.Data
 {
     using System.Collections.Generic;
     using System.Data;
@@ -15,26 +15,26 @@ namespace Chaos.Movies.Model.Sql
     using Chaos.Movies.Model;
     using Chaos.Movies.Model.Exceptions;
 
-    /// <summary>SQL logic and database communication for a <see cref="Character"/>.</summary>
-    public class SqlCharacter : Character
+    /// <summary>Data logic and database communication for a <see cref="Character"/>.</summary>
+    public class DataCharacter : Character
     {
-        /// <summary>Initializes a new instance of the <see cref="SqlCharacter" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="DataCharacter" /> class.</summary>
         /// <param name="name">The name of the character.</param>
-        public SqlCharacter(string name)
+        public DataCharacter(string name)
             : base(name)
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="SqlCharacter" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="DataCharacter" /> class.</summary>
         /// <param name="character">The character to create.</param>
-        public SqlCharacter(CharacterDto character)
+        public DataCharacter(CharacterDto character)
             : base(character)
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="SqlCharacter" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="DataCharacter" /> class.</summary>
         /// <param name="record">The record containing the data for the character.</param>
-        public SqlCharacter(IDataRecord record)
+        public DataCharacter(IDataRecord record)
             : base(record)
         {
         }
@@ -110,7 +110,6 @@ namespace Chaos.Movies.Model.Sql
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@characterId", this.Id);
                 command.Parameters.AddWithValue("@name", this.Name);
-                command.Parameters.AddWithValue("@imdbId", this.ImdbId);
                 await connection.OpenAsync();
                 using (var reader = await command.ExecuteReaderAsync())
                 {

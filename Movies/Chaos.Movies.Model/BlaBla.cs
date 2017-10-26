@@ -11,7 +11,7 @@ namespace Chaos.Movies.Model
 
     /// <summary>Contains generic database persistence handling.</summary>
     [Obsolete]
-    public static class Persistent
+    public static class BlaBla
     {
         /// <summary>The connection string to the database read from configuration application settings.</summary>
         public static readonly string ConnectionString = ConfigurationManager.AppSettings["ConnectionString"];

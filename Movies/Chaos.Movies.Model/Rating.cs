@@ -174,7 +174,7 @@ namespace Chaos.Movies.Model
         /// <summary>Saves this rating to the database.</summary>
         public async void Save()
         {
-            if (Persistent.UseService)
+            if (BlaBla.UseService)
             {
                 throw new ServiceRequiredException();
             }
@@ -187,7 +187,7 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="Task"/>.</returns>
         public async Task SaveAllAsync()
         {
-            if (Persistent.UseService)
+            if (BlaBla.UseService)
             {
                 throw new ServiceRequiredException();
             }
@@ -252,7 +252,7 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="Task"/>.</returns>
         private static async Task SaveToDatabaseAsync(Rating rating)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("RatingSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

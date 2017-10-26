@@ -12,8 +12,8 @@ namespace Chaos.Movies.Service
 
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model;
+    using Chaos.Movies.Model.Data;
     using Chaos.Movies.Model.Exceptions;
-    using Chaos.Movies.Model.Sql;
 
     /// <summary>Internal service for Chaos Movies.</summary>
     public class ChaosMoviesService : IChaosMoviesService
@@ -100,7 +100,7 @@ namespace Chaos.Movies.Service
         public async Task CharacterSaveAsync(UserSessionDto session, CharacterDto character)
         {
             this.ValidateState();
-            await new SqlCharacter(character).SaveAsync(new UserSession(session));
+            await new DataCharacter(character).SaveAsync(new UserSession(session));
         }
 
         /// <summary></summary>
@@ -114,9 +114,9 @@ namespace Chaos.Movies.Service
 
         private void ValidateState()
         {
-            if (Model.Sql.Persistent.UseService)
+            if (Persistent.UseService)
             {
-                throw new ServiceRequiredException($"The {nameof(Model.Sql.Persistent.UseService)} setting has to be set to false.");
+                throw new ServiceRequiredException($"The {nameof(Persistent.UseService)} setting has to be set to false.");
             }
         }
     }

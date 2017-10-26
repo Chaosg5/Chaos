@@ -22,7 +22,7 @@ namespace Chaos.Movies.Model.Sql
                 throw new ArgumentNullException("exception");
             }
 
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var connection = new SqlConnection(BlaBla.ConnectionString))
             using (var command = new SqlCommand("ExceptionLog", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
