@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
@@ -48,10 +49,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Initializes a new instance of the <see cref="RatingType" /> class.</summary>
-        /// <param name="record">The record containing the data for the rating type.</param>
+        /// <param name="record">The record containing the data for the <see cref="RatingType"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public RatingType(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Gets the id of this rating type.</summary>
@@ -77,63 +80,66 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves this rating type to the database.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public void Save()
         {
-            ValidateSaveCandidate(this);
-            SaveToDatabase(this);
+            this.ValidateSaveCandidate();
+            this.SaveToDatabase();
         }
 
-        /// <summary>Validates that the <paramref name="type"/> is valid to be saved.</summary>
-        /// <param name="type">The rating type to validate.</param>
-        private static void ValidateSaveCandidate(RatingType type)
+        /// <summary>Validates that this <see cref="RatingType"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
+        private void ValidateSaveCandidate()
         {
-            if (string.IsNullOrEmpty(type.Name))
+            if (string.IsNullOrEmpty(this.Name))
             {
                 throw new InvalidSaveCandidateException("The 'Name' can not be empty.");
             }
 
-            foreach (var subtype in type.subtypes)
+            foreach (var subtype in this.subtypes)
             {
-                ValidateSaveCandidate(subtype);
+                subtype.ValidateSaveCandidate();
             }
         }
 
-        /// <summary>Updates a rating type from a record.</summary>
-        /// <param name="type">The rating type to update.</param>
-        /// <param name="record">The record containing the data for the rating type.</param>
-        private static void ReadFromRecord(RatingType type, IDataRecord record)
+        /// <summary>Updates this <see cref="RatingType"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="RatingType"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "RatingTypeId", "Name", "Description" });
-            type.Id = (int)record["RatingTypeId"];
-            type.Name = record["Name"].ToString();
-            type.Description = record["Description"].ToString();
+            this.Id = (int)record["RatingTypeId"];
+            this.Name = record["Name"].ToString();
+            this.Description = record["Description"].ToString();
         }
 
-        /// <summary>Saves a rating type to the database.</summary>
-        /// <param name="type">The rating type to save.</param>
-        private static void SaveToDatabase(RatingType type)
+        /// <summary>Saves this <see cref="RatingType"/> to the database.</summary>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        private void SaveToDatabase()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("RatingTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@RatingTypeId", type.Id);
-                command.Parameters.AddWithValue("@Name", type.Name);
-                command.Parameters.AddWithValue("@Description", type.Description);
+                command.Parameters.AddWithValue("@RatingTypeId", this.Id);
+                command.Parameters.AddWithValue("@Name", this.Name);
+                command.Parameters.AddWithValue("@Description", this.Description);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        ReadFromRecord(type, reader);
+                        this.ReadFromRecord(reader);
                     }
                 }
             }
 
-            foreach (var subtype in type.subtypes)
+            foreach (var subtype in this.subtypes)
             {
-                SaveToDatabase(subtype);
+                subtype.SaveToDatabase();
             }
         }
     }

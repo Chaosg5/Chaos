@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Data;
 
     using Chaos.Movies.Model.Exceptions;
@@ -18,9 +19,12 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="PersonUserRating"/> class.</summary>
         /// <param name="record">The record containing the data for the <see cref="PersonUserRating"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
         public PersonUserRating(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
         
         /// <summary>Gets the <see cref="User"/>'s rating of the <see cref="Person"/> in the <see cref="Movie"/>.</summary>
@@ -32,7 +36,7 @@ namespace Chaos.Movies.Model
         /// <summary>Sets the parent of this <see cref="PersonAsCharacterCollection"/>.</summary>
         /// <param name="newParent">The parent which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
         /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        public void SetParent(Parent newParent)
+        internal void SetParent(Parent newParent)
         {
             if (this.parent != null)
             {
@@ -42,15 +46,17 @@ namespace Chaos.Movies.Model
             this.parent = newParent;
         }
 
-        /// <summary>Updates a <see cref="PersonUserRating"/> from a record.</summary>
-        /// <param name="personUserRating">The <see cref="PersonUserRating"/> to update.</param>
+        /// <summary>Updates this <see cref="PersonUserRating"/> from the <paramref name="record"/>.</summary>
         /// <param name="record">The record containing the data for the <see cref="PersonUserRating"/>.</param>
-        private static void ReadFromRecord(PersonUserRating personUserRating, IDataRecord record)
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "Rating", "Watches" });
-            personUserRating.SetParent(new Parent(record));
-            personUserRating.Rating = (int)record["Rating"];
-            personUserRating.Watches = (int)record["Watches"];
+            this.SetParent(new Parent(record));
+            this.Rating = (int)record["Rating"];
+            this.Watches = (int)record["Watches"];
         }
     }
 }

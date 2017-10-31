@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model.Data
+namespace Chaos.Movies.Model
 {
     using System;
     using System.Collections.Generic;
@@ -51,9 +51,9 @@ namespace Chaos.Movies.Model.Data
         /// <summary>Creates a data table containing a single column and rows for each item in <paramref name="ids"/>.</summary>
         /// <param name="ids">The list of ids.</param>
         /// <returns>The created <see cref="DataTable"/>.</returns>
-        public static DataTable CreateIntCollectionTable(IEnumerable<int> ids)
+        public static DataTable CreateIdCollectionTable(IEnumerable<int> ids)
         {
-            return CreateTable(ids, "Item");
+            return CreateTable(ids, "Id");
         }
 
         /// <summary>Creates a data table containing a single column and rows for each item in <paramref name="values"/>.</summary>
@@ -61,7 +61,7 @@ namespace Chaos.Movies.Model.Data
         /// <param name="columnName">The name of the column for the table.</param>
         /// <typeparam name="T">The type of the column for the table.</typeparam>
         /// <returns>The created <see cref="DataTable"/>.</returns>
-        public static DataTable CreateTable<T>(IEnumerable<T> values, string columnName)
+        private static DataTable CreateTable<T>(IEnumerable<T> values, string columnName)
         {
             using (var table = new DataTable())
             {

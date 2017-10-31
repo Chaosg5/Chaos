@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Chaos.Movies.Model\Model.csproj", "{824958AE-121D-49AA-B605-899EF11FF4C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chaos.Movies.Model", "Chaos.Movies.Model\Chaos.Movies.Model.csproj", "{824958AE-121D-49AA-B605-899EF11FF4C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model.Tests", "Model.Tests\Model.Tests.csproj", "{5B768037-DEDF-4B98-9B18-20EACD09D89F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chaos.Movies.Model.Tests", "Model.Tests\Chaos.Movies.Model.Tests.csproj", "{5B768037-DEDF-4B98-9B18-20EACD09D89F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{B30131AD-0B8E-4559-A963-C023BFCD157B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chaos.Movies.Service", "Service\Chaos.Movies.Service.csproj", "{B30131AD-0B8E-4559-A963-C023BFCD157B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contract", "Chaos.Movies.Contract\Contract.csproj", "{91F29319-AF34-4AFD-9A55-EC97245019D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chaos.Movies.Contract", "Chaos.Movies.Contract\Chaos.Movies.Contract.csproj", "{91F29319-AF34-4AFD-9A55-EC97245019D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{98CD6842-EAA0-4CBD-968D-00F595DA3C61}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,11 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 		Docs\ToDo.txt = Docs\ToDo.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCore", "Chaos.Movies.ApiCore\ApiCore.csproj", "{4485B890-3D7B-4E31-AE2D-AFED500B208C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chaos.Movies.ApiCore", "Chaos.Movies.ApiCore\Chaos.Movies.ApiCore.csproj", "{4485B890-3D7B-4E31-AE2D-AFED500B208C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebCore", "Chaos.Movies.WebCore\WebCore.csproj", "{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model.Data", "Chaos.Movies.Model.Sql\Model.Data.csproj", "{0033A991-1911-46F1-B3DA-889B8F49FF4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chaos.Movies.WebCore", "Chaos.Movies.WebCore\Chaos.Movies.WebCore.csproj", "{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +53,6 @@ Global
 		{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0033A991-1911-46F1-B3DA-889B8F49FF4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0033A991-1911-46F1-B3DA-889B8F49FF4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0033A991-1911-46F1-B3DA-889B8F49FF4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0033A991-1911-46F1-B3DA-889B8F49FF4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

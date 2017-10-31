@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model.Sql
+namespace Chaos.Movies.Model
 {
     using System;
     using System.Data;
@@ -19,10 +19,10 @@ namespace Chaos.Movies.Model.Sql
         {
             if (exception == null)
             {
-                throw new ArgumentNullException("exception");
+                throw new ArgumentNullException(nameof(exception));
             }
 
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Model.Persistent.ConnectionString))
             using (var command = new SqlCommand("ExceptionLog", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;

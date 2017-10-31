@@ -26,6 +26,12 @@ namespace Chaos.Movies.Model.ChaosMovieService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CharacterSave", ReplyAction="http://tempuri.org/IChaosMoviesService/CharacterSaveResponse")]
         System.Threading.Tasks.Task CharacterSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CharacterGet", ReplyAction="http://tempuri.org/IChaosMoviesService/CharacterGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.CharacterDto> CharacterGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CharacterGet", ReplyAction="http://tempuri.org/IChaosMoviesService/CharacterGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.CharacterDto>> CharacterGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -69,6 +75,14 @@ namespace Chaos.Movies.Model.ChaosMovieService {
         
         public System.Threading.Tasks.Task CharacterSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character) {
             return base.Channel.CharacterSaveAsync(session, character);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.CharacterDto> CharacterGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.CharacterGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.CharacterDto>> CharacterGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.CharacterGetAsync(session, idList);
         }
     }
 }

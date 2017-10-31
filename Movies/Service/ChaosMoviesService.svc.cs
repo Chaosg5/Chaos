@@ -7,12 +7,13 @@
 namespace Chaos.Movies.Service
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.ServiceModel;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model;
-    using Chaos.Movies.Model.Data;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Internal service for Chaos Movies.</summary>
@@ -39,6 +40,7 @@ namespace Chaos.Movies.Service
         public void MovieSearchNewUpdates(string searchText)
         {
             // var s = new TMDbLib.Client.TMDbClient()
+            //TMDbLib.Objects.People.Person
         }
 
         public void LoadMovie(string movieIdentifier)
@@ -65,7 +67,7 @@ namespace Chaos.Movies.Service
             {
                 if (rating == null)
                 {
-                    throw new ArgumentNullException("rating");
+                    throw new ArgumentNullException(nameof(rating));
                 }
                 
                 rating.Save();
@@ -83,7 +85,7 @@ namespace Chaos.Movies.Service
             {
                 if (rating == null)
                 {
-                    throw new ArgumentNullException("rating");
+                    throw new ArgumentNullException(nameof(rating));
                 }
 
                 await rating.SaveAllAsync();
@@ -99,8 +101,14 @@ namespace Chaos.Movies.Service
 
         public async Task CharacterSaveAsync(UserSessionDto session, CharacterDto character)
         {
-            this.ValidateState();
-            await new DataCharacter(character).SaveAsync(new UserSession(session));
+            this.ValidateStateAndSession(session);
+            await new Character(character).SaveAsync(new UserSession(session));
+        }
+
+        public async Task<IEnumerable<CharacterDto>> CharacterGetAsync(UserSessionDto session, IEnumerable<int> idList)
+        {
+            this.ValidateStateAndSession(session);
+            return (await Character.GetAsync(new UserSession(session), idList)).Select(c => c.ToContract());
         }
 
         /// <summary></summary>
@@ -112,7 +120,7 @@ namespace Chaos.Movies.Service
 
         #endregion
 
-        private void ValidateState()
+        private void ValidateStateAndSession(UserSessionDto session)
         {
             if (Persistent.UseService)
             {

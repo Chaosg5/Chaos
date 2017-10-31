@@ -30,10 +30,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Initializes a new instance of the <see cref="WatchLocation" /> class.</summary>
-        /// <param name="record">The data record containing the data to create the watch location from.</param>
+        /// <param name="record">The record containing the data for the <see cref="WatchLocation"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public WatchLocation(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Gets the id of the location.</summary>
@@ -68,7 +70,7 @@ namespace Chaos.Movies.Model
         {
             if (type == null || type.Id == 0)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (!this.types.Exists(existingType => existingType.Id == type.Id))
@@ -85,85 +87,78 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves this watch location.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="WatchLocation"/> is not valid to be saved.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public void Save()
         {
-            ValidateSaveCandidate(this);
-            SaveToDatabase(this);
+            this.ValidateSaveCandidate();
+            this.SaveToDatabase();
         }
 
         /// <summary>Saves this watch location and connects it to the contained watch types.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="WatchLocation"/> is not valid to be saved.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public void SaveAll()
         {
-            ValidateAllSaveCandidates(this);
-            SaveAllToDatabase(this);
+            this.ValidateAllSaveCandidates();
+            this.SaveAllToDatabase();
         }
 
-        /// <summary>Updates a watch location from a record.</summary>
-        /// <param name="location">The watch location to update.</param>
-        /// <param name="record">The record containing the data for the watch location.</param>
-        private static void ReadFromRecord(WatchLocation location, IDataRecord record)
+        /// <summary>Saves this <see cref="WatchLocation"/> to the database.</summary>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        private void SaveToDatabase()
         {
-            Helper.ValidateRecord(record, new[] { "WatchLocationId", "Name" });
-            location.Id = (int)record["WatchLocationId"];
-            location.Name = record["Name"].ToString();
-        }
-
-        /// <summary>Saves a watch location to the database.</summary>
-        /// <param name="location">The watch location to save.</param>
-        private static void SaveToDatabase(WatchLocation location)
-        {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("WatchLocationSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@WatchLocationId", location.Id);
-                command.Parameters.AddWithValue("@Name", location.Name);
+                command.Parameters.AddWithValue("@WatchLocationId", this.Id);
+                command.Parameters.AddWithValue("@Name", this.Name);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        ReadFromRecord(location, reader);
+                        this.ReadFromRecord(reader);
                     }
                 }
             }
         }
 
-        /// <summary>Saves a watch location and connection to watch types to the database.</summary>
-        /// <param name="location">The watch location to save.</param>
-        private static void SaveAllToDatabase(WatchLocation location)
+        /// <summary>Saves this <see cref="WatchLocation"/> to the database.</summary>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        private void SaveAllToDatabase()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("WatchLocationSaveAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@WatchLocationId", location.Id);
-                command.Parameters.AddWithValue("@Name", location.Name);
-                var types = command.Parameters.AddWithValue("@WatchTypes", GetTypesIdDataTable(location));
-                types.SqlDbType = SqlDbType.Structured;
+                command.Parameters.AddWithValue("@WatchLocationId", this.Id);
+                command.Parameters.AddWithValue("@Name", this.Name);
+                var watchTypes = command.Parameters.AddWithValue("@WatchTypes", this.GetTypesIdDataTable());
+                watchTypes.SqlDbType = SqlDbType.Structured;
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        ReadFromRecord(location, reader);
+                        this.ReadFromRecord(reader);
                     }
                 }
             }
         }
 
-        /// <summary>Extracts the ids of all <see cref="WatchType"/>s in the <param name="location"/> and adds them to a data table.</summary>
-        /// <param name="location">The watch location to extract the <see cref="WatchType"/>'s ids from.</param>
+        /// <summary>Extracts the ids of all <see cref="WatchType"/>s in this <see cref="WatchLocation"/> and adds them to a data table.</summary>
         /// <returns>A data table with the ids of the watch types in this location.</returns>
-        private static DataTable GetTypesIdDataTable(WatchLocation location)
+        private DataTable GetTypesIdDataTable()
         {
             using (var typesTable = new DataTable())
             {
                 typesTable.Locale = CultureInfo.InvariantCulture;
                 typesTable.Columns.Add(new DataColumn("WatchTypeId"));
-                foreach (var type in location.types)
+                foreach (var type in this.types)
                 {
                     typesTable.Rows.Add(type.Id);
                 }
@@ -172,26 +167,36 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Validates that the <paramref name="location"/> is valid to be saved.</summary>
-        /// <param name="location">The watch location to validate.</param>
-        private static void ValidateAllSaveCandidates(WatchLocation location)
+        /// <summary>Validates that this <see cref="WatchLocation"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="WatchLocation"/> is not valid to be saved.</exception>
+        private void ValidateAllSaveCandidates()
         {
-            ValidateSaveCandidate(location);
-            if (location.types.Any(type => type.Id == 0))
+            this.ValidateSaveCandidate();
+            if (this.types.Any(type => type.Id == 0))
             {
                 throw new InvalidSaveCandidateException("The watch location can't contain unsaved watch types.");
             }
         }
 
-        /// <summary>Validates that the <paramref name="location"/> is valid to be saved.</summary>
-        /// <param name="location">The watch location to validate.</param>
-        // ReSharper disable once UnusedParameter.Local
-        private static void ValidateSaveCandidate(WatchLocation location)
+        /// <summary>Validates that this <see cref="WatchLocation"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="WatchLocation"/> is not valid to be saved.</exception>
+        private void ValidateSaveCandidate()
         {
-            if (string.IsNullOrEmpty(location.Name))
+            if (string.IsNullOrEmpty(this.Name))
             {
                 throw new InvalidSaveCandidateException("The name of the watch location cant be empty.");
             }
+        }
+
+        /// <summary>Updates this <see cref="WatchLocation"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="WatchLocation"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
+        {
+            Helper.ValidateRecord(record, new[] { "WatchLocationId", "Name" });
+            this.Id = (int)record["WatchLocationId"];
+            this.Name = record["Name"].ToString();
         }
     }
 }

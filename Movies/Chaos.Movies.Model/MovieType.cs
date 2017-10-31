@@ -10,7 +10,6 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
-    using System.IO;
     using System.Linq;
     using Chaos.Movies.Model.Exceptions;
 
@@ -23,31 +22,28 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Initializes a new instance of the <see cref="MovieType" /> class.</summary>
-        /// <param name="record">The record containing the data for the movie type.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
+        /// <param name="record">The record containing the data for the <see cref="MovieType"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public MovieType(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Gets the id of the type.</summary>
         public int Id { get; private set; }
 
         /// <summary>Gets the list of titles of the movie type in different languages.</summary>
-        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
+        public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
         /// <summary>Loads all movie types from the database.</summary>
         /// <returns>All <see cref="MovieType"/>s.</returns>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
         public static IEnumerable<MovieType> GetAll()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("MovieTypesGetAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -68,19 +64,16 @@ namespace Chaos.Movies.Model
         /// <param name="idList">The list of ids of the <see cref="MovieType"/>s to get.</param>
         /// <returns>The specified <see cref="MovieType"/>s.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="idList"/> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public static IEnumerable<MovieType> Get(IEnumerable<int> idList)
         {
             if (idList == null || !idList.Any())
             {
-                throw new ArgumentNullException("idList");
+                throw new ArgumentNullException(nameof(idList));
             }
 
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("MovieTypesGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -96,72 +89,63 @@ namespace Chaos.Movies.Model
 
         /// <summary>Saves this movie type to the database.</summary>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public void Save()
         {
-            ValidateSaveCandidate(this);
-            SaveToDatabase(this);
+            this.ValidateSaveCandidate();
+            this.SaveToDatabase();
         }
 
-        /// <summary>Validates that the <paramref name="type"/> is valid to be saved.</summary>
-        /// <param name="type">The movie type to validate.</param>
+        /// <summary>Validates that this <see cref="MovieType"/> is valid to be saved.</summary>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
-        private static void ValidateSaveCandidate(MovieType type)
+        private void ValidateSaveCandidate()
         {
-            if (type.Titles.Count == 0)
+            if (this.Titles.Count == 0)
             {
                 throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
         }
 
-        /// <summary>Saves a movie type to the database.</summary>
+        /// <summary>Saves this <see cref="MovieType"/> to the database.</summary>
         /// <remarks>
         /// Uses stored procedure <c>MovieTypeSave</c>.
         /// Result 1 columns: MovieTypeId
         /// Result 2 columns: Language, Title
         /// </remarks>
-        /// <param name="type">The movie type to save.</param>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="SqlException">An exception occurred while executing the command against a locked row. This exception is not generated when you are using Microsoft .NET Framework version 1.0.A timeout occurred during a streaming operation. For more information about streaming, see SqlClient Streaming Support.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
-        private static void SaveToDatabase(MovieType type)
+        private void SaveToDatabase()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("MovieTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@MovieTypeId", type.Id);
-                command.Parameters.AddWithValue("@titles", type.Titles.GetSaveTitles);
+                command.Parameters.AddWithValue("@MovieTypeId", this.Id);
+                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTitles);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        ReadFromRecord(type, reader);
+                        this.ReadFromRecord(reader);
                     }
 
                     if (reader.NextResult())
                     {
-                        type.Titles = new LanguageTitles(reader);
+                        this.Titles = new LanguageTitleCollection(reader);
                     }
                 }
             }
         }
 
-        /// <summary>Updates a movie type from a record.</summary>
-        /// <param name="type">The movie type to update.</param>
-        /// <param name="record">The record containing the data for the movie type.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-        private static void ReadFromRecord(MovieType type, IDataRecord record)
+        /// <summary>Updates this <see cref="MovieType"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="MovieType"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "MovieTypeId" });
-            type.Id = (int)record["MovieTypeId"];
+            this.Id = (int)record["MovieTypeId"];
         }
 
         /// <summary>Creates a list of <see cref="MovieType"/>s from a reader.</summary>

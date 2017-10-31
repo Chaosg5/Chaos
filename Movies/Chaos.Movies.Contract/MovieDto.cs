@@ -27,7 +27,7 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets list of title of the movie in different languages.</summary>
         [DataMember]
-        public LanguageTitlesDto Titles { get; set; }
+        public ReadOnlyCollection<LanguageTitleDto> Titles { get; set; }
 
         /// <summary>Gets or sets list of genres that the movie belongs to.</summary>
         [DataMember]

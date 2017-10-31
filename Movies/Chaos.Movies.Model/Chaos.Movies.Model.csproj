@@ -43,7 +43,6 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Chaos.Movies.Contract, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -70,6 +69,9 @@
     <Compile Include="ExternalLookup.cs" />
     <Compile Include="ExternalRating.cs" />
     <Compile Include="ExternalSource.cs" />
+    <Compile Include="IconType.cs" />
+    <Compile Include="IconCollection.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Parent.cs" />
     <Compile Include="ParentType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -82,7 +84,7 @@
     <Compile Include="Exceptions\MissingResultException.cs" />
     <Compile Include="Exceptions\ServiceRequiredException.cs" />
     <Compile Include="Exceptions\PersistentObjectRequiredException.cs" />
-    <Compile Include="LanguageTitles.cs" />
+    <Compile Include="LanguageTitleCollection.cs" />
     <Compile Include="GlobalCache.cs" />
     <Compile Include="PersonAsCharacter.cs" />
     <Compile Include="PersonUserRating.cs" />
@@ -98,7 +100,7 @@
     <Compile Include="Icon.cs" />
     <Compile Include="Movie.cs" />
     <Compile Include="LanguageTitle.cs" />
-    <Compile Include="BlaBla.cs" />
+    <Compile Include="Persistent.cs" />
     <Compile Include="Department.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Role.cs" />
@@ -133,12 +135,25 @@
     <None Include="Connected Services\ChaosMovieService\ChaosMoviesService3.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Connected Services\ChaosMovieService\ChaosMoviesService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ChaosMovieService\ChaosMoviesService5.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Chaos.Movies.Contract.CharacterDto.datasource" />
     <None Include="Properties\DataSources\Chaos.Movies.Contract.Dto.UserSessionDto.datasource" />
     <None Include="Properties\DataSources\Chaos.Movies.Contract.UserSessionDto.datasource" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Chaos.Movies.Contract\Chaos.Movies.Contract.csproj">
+      <Project>{91f29319-af34-4afd-9a55-ec97245019d6}</Project>
+      <Name>Chaos.Movies.Contract</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\ChaosMovieService\" />
@@ -154,12 +169,6 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Chaos.Movies.Contract\Contract.csproj">
-      <Project>{91f29319-af34-4afd-9a55-ec97245019d6}</Project>
-      <Name>Contract</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -27,14 +27,14 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
         private Department(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Gets the id of the department.</summary>
         public int Id { get; private set; }
 
         /// <summary>Gets the list of titles of the department in different languages.</summary>
-        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
+        public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
         /// <summary>Gets all available person roles.</summary>
         public ReadOnlyCollection<Role> Roles => this.roles.AsReadOnly();
@@ -46,16 +46,13 @@ namespace Chaos.Movies.Model
         /// Result 2 columns: DepartmentId, RoleId
         /// </remarks>
         /// <returns>All departments.</returns>
-        /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
         public static IEnumerable<Department> GetAll()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("DepartmentsGetAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -77,9 +74,6 @@ namespace Chaos.Movies.Model
         /// <param name="idList">The list of ids of the <see cref="Department"/>s to get.</param>
         /// <returns>The specified <see cref="Department"/>s.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="idList"/> is <see langword="null" />.</exception>
-        /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
@@ -87,10 +81,10 @@ namespace Chaos.Movies.Model
         {
             if (idList == null || !idList.Any())
             {
-                throw new ArgumentNullException("idList");
+                throw new ArgumentNullException(nameof(idList));
             }
 
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("DepartmentsGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -108,47 +102,38 @@ namespace Chaos.Movies.Model
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
         public void Save()
         {
-            ValidateSaveCandidate(this);
-            SaveToDatabase(this);
+            this.ValidateSaveCandidate();
+            this.SaveToDatabase();
         }
 
-        /// <summary>Validates that the <paramref name="department"/> is valid to be saved.</summary>
-        /// <param name="department">The department to validate.</param>
-        /// <exception cref="InvalidSaveCandidateException">The <paramref name="department"/> is not valid to be saved.</exception>
-        // ReSharper disable once UnusedParameter.Local
-        private static void ValidateSaveCandidate(Department department)
+        /// <summary>Validates that this <see cref="Department"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
+        private void ValidateSaveCandidate()
         {
-            if (department.Titles.Count == 0)
+            if (this.Titles.Count == 0)
             {
                 throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
         }
 
-        /// <summary>Saves a department to the database.</summary>
+        /// <summary>Saves this <see cref="Department"/> to the database.</summary>
         /// <remarks>
         /// Uses stored procedure <c>DepartmentSave</c>.
         /// Result 1 columns: DepartmentId
         /// Result 2 columns: Language, Title
         /// </remarks>
-        /// <param name="department">The department to save.</param>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="InvalidCastException">A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Binary or VarBinary was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.Stream" />. For more information about streaming, see SqlClient Streaming Support.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Char, NChar, NVarChar, VarChar, or  Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.IO.TextReader" />.A <see cref="P:System.Data.SqlClient.SqlParameter.SqlDbType" /> other than Xml was used when <see cref="P:System.Data.SqlClient.SqlParameter.Value" /> was set to <see cref="T:System.Xml.XmlReader" />.</exception>
-        /// <exception cref="SqlException">A connection-level error occurred while opening the connection. If the <see cref="P:System.Data.SqlClient.SqlException.Number" /> property contains the value 18487 or 18488, this indicates that the specified password has expired or must be reset. See the <see cref="M:System.Data.SqlClient.SqlConnection.ChangePassword(System.String,System.String)" /> method for more information.The <c>system.data.localdb</c> tag in the app.config file has invalid or unknown elements.</exception>
-        /// <exception cref="IOException">An error occurred in a <see cref="T:System.IO.Stream" />, <see cref="T:System.Xml.XmlReader" /> or <see cref="T:System.IO.TextReader" /> object during a streaming operation.  For more information about streaming, see SqlClient Streaming Support.</exception>
-        private static void SaveToDatabase(Department department)
+        private void SaveToDatabase()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("DepartmentSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@DepartmentId", department.Id);
-                command.Parameters.AddWithValue("@titles", department.Titles.GetSaveTitles);
+                command.Parameters.AddWithValue("@DepartmentId", this.Id);
+                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTitles);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
@@ -160,7 +145,7 @@ namespace Chaos.Movies.Model
 
                     if (reader.Read())
                     {
-                        ReadFromRecord(department, reader);
+                        this.ReadFromRecord(reader);
                     }
 
                     if (!reader.NextResult() || !reader.HasRows)
@@ -168,20 +153,19 @@ namespace Chaos.Movies.Model
                         throw new MissingResultException(2, "DepartmentTitles");
                     }
 
-                    department.Titles = new LanguageTitles(reader);
+                    this.Titles = new LanguageTitleCollection(reader);
                 }
             }
         }
-
-        /// <summary>Updates a department from a record.</summary>
-        /// <param name="department">The department to update.</param>
-        /// <param name="record">The record containing the data for the department.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-        private static void ReadFromRecord(Department department, IDataRecord record)
+        
+        /// <summary>Updates this <see cref="Department"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="Department"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "DepartmentId" });
-            department.Id = (int)record["DepartmentId"];
+            this.Id = (int)record["DepartmentId"];
         }
 
         /// <summary>Creates a list of <see cref="Department"/>s from a reader.</summary>

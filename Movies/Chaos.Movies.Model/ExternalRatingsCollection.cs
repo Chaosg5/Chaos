@@ -8,10 +8,8 @@ namespace Chaos.Movies.Model
 {
     using System.Collections;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
 
     /// <summary>Represents a user.</summary>
-    [DataContract]
     public class ExternalRatingsCollection : IReadOnlyCollection<ExternalRating>
     {
         /// <summary>The list of <see cref="ExternalRating"/>s in this <see cref="ExternalRatingsCollection"/>.</summary>
@@ -33,5 +31,6 @@ namespace Chaos.Movies.Model
         {
             return this.GetEnumerator();
         }
+        
     }
 }

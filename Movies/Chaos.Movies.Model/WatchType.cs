@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Data;
     using System.Data.SqlClient;
     using Exceptions;
@@ -25,7 +26,7 @@ namespace Chaos.Movies.Model
         /// <param name="record">The data record containing the data to create the watch type from.</param>
         public WatchType(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Gets the id of this watch type.</summary>
@@ -37,47 +38,46 @@ namespace Chaos.Movies.Model
         /// <summary>Saves this watch type.</summary>
         public void Save()
         {
-            ValidateSaveCandidate(this);
-            SaveToDatabase(this);
+            this.ValidateSaveCandidate();
+            this.SaveToDatabase();
         }
 
-        /// <summary>Updates a watch type from a record.</summary>
-        /// <param name="type">The watch type to update.</param>
-        /// <param name="record">The record containing the data for the watch type.</param>
-        private static void ReadFromRecord(WatchType type, IDataRecord record)
+        /// <summary>Updates this <see cref="WatchType"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="WatchType"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "Id", "Name" });
-            type.Id = (int)record["Id"];
-            type.Name = record["Name"].ToString();
+            this.Id = (int)record["Id"];
+            this.Name = record["Name"].ToString();
         }
 
-        /// <summary>Validates that the <paramref name="type"/> is valid to be saved.</summary>
-        /// <param name="type">The watch type to validate.</param>
-        private static void ValidateSaveCandidate(WatchType type)
+        /// <summary>Validates that this <see cref="WatchType"/> is valid to be saved.</summary>
+        private void ValidateSaveCandidate()
         {
-            if (string.IsNullOrEmpty(type.Name))
+            if (string.IsNullOrEmpty(this.Name))
             {
                 throw new InvalidSaveCandidateException("The name of the watch type cant be empty.");
             }
         }
 
         /// <summary>Saves a watch type to the database.</summary>
-        /// <param name="type">The watch type to save.</param>
-        private static void SaveToDatabase(WatchType type)
+        private void SaveToDatabase()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("WatchTypeSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@Id", type.Id);
-                command.Parameters.AddWithValue("@Name", type.Name);
+                command.Parameters.AddWithValue("@Id", this.Id);
+                command.Parameters.AddWithValue("@Name", this.Name);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        ReadFromRecord(type, reader);
+                        this.ReadFromRecord(reader);
                     }
                 }
             }

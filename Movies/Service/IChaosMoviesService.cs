@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Service
 {
+    using System.Collections.Generic;
     using System.ServiceModel;
     using System.Threading.Tasks;
 
@@ -21,5 +22,8 @@ namespace Chaos.Movies.Service
         
         [OperationContract]
         Task CharacterSaveAsync(UserSessionDto session, CharacterDto character);
+
+        [OperationContract]
+        Task<IEnumerable<CharacterDto>> CharacterGetAsync(UserSessionDto session, IEnumerable<int> idList);
     }
 }

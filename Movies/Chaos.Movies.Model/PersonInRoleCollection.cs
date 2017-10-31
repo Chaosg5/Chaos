@@ -30,7 +30,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="PersonInRoleCollection"/> class.</summary>
         /// <param name="parent">The parent which this <see cref="PersonInRoleCollection"/> belongs to.</param>
-        public PersonInRoleCollection(Parent parent)
+        internal PersonInRoleCollection(Parent parent)
         {
             this.SetParent(parent);
         }
@@ -50,19 +50,6 @@ namespace Chaos.Movies.Model
         public IEnumerator<PersonInRole> GetEnumerator()
         {
             return this.people.GetEnumerator();
-        }
-
-        /// <summary>Sets the parent of this <see cref="PersonInRoleCollection"/>.</summary>
-        /// <param name="newParent">The parent which this <see cref="PersonInRoleCollection"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        public void SetParent(Parent newParent)
-        {
-            if (this.parent != null)
-            {
-                throw new ValueLogicalReadOnlyException("The parent can't be changed once set.");
-            }
-
-            this.parent = newParent;
         }
 
         /// <summary>Removes specified <paramref name="personInRole"/> item to the list.</summary>
@@ -85,20 +72,16 @@ namespace Chaos.Movies.Model
 
         /// <summary>Removes specified <paramref name="personInRole"/> item from the list and saves the change to the database.</summary>
         /// <param name="personInRole">The item to remove.</param>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent"/>.</exception>
         public void AddPersonAndSave(PersonInRole personInRole)
         {
+            this.ValidateParent();
             this.AddPerson(personInRole);
-            if (this.parent == null)
-            {
-                throw new PersistentObjectRequiredException("The movie needs to be saved before adding people.");
-            }
-
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
-            using (var command = new SqlCommand("PersonInMovieAdd", connection))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"PersonIn{this.parent.ParentType}Add", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@parentId", this.parent);
+                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
                 command.Parameters.AddWithValue("@personId", personInRole.Person.Id);
                 command.Parameters.AddWithValue("@departmentId", personInRole.Department.Id);
                 command.Parameters.AddWithValue("@roleId", personInRole.Role.Id);
@@ -129,7 +112,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Removes specified <paramref name="personInRole"/> item from the list and saves the change to the database.</summary>
         /// <param name="personInRole">The item to remove.</param>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent"/>.</exception>
         public void RemovePersonAndSave(PersonInRole personInRole)
         {
             if (!this.RemovePerson(personInRole))
@@ -138,11 +121,11 @@ namespace Chaos.Movies.Model
             }
 
             this.ValidateParent();
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
-            using (var command = new SqlCommand("PersonInMovieRemove", connection))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"PersonIn{this.parent.ParentType}Remove", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@parentId", this.parent);
+                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
                 command.Parameters.AddWithValue("@personId", personInRole.Person.Id);
                 command.Parameters.AddWithValue("@departmentId", personInRole.Department.Id);
                 command.Parameters.AddWithValue("@roleId", personInRole.Role.Id);
@@ -152,7 +135,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves all <see cref="PersonInRole"/> to the database.</summary>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent"/>.</exception>
         public void Save()
         {
             this.ValidateParent();
@@ -162,16 +145,16 @@ namespace Chaos.Movies.Model
                 table.Columns.Add(new DataColumn("PersonId"));
                 table.Columns.Add(new DataColumn("DepartmentId"));
                 table.Columns.Add(new DataColumn("RoleId"));
-                foreach (var personInMovie in this.people)
+                foreach (var person in this.people)
                 {
-                    table.Rows.Add(personInMovie.Person.Id, personInMovie.Department.Id, personInMovie.Role.Id);
+                    table.Rows.Add(person.Person.Id, person.Department.Id, person.Role.Id);
                 }
 
-                using (var connection = new SqlConnection(BlaBla.ConnectionString))
-                using (var command = new SqlCommand("PeopleInMovieSave", connection))
+                using (var connection = new SqlConnection(Persistent.ConnectionString))
+                using (var command = new SqlCommand($"PeopleIn{this.parent.ParentType}Save", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@parentId", this.parent);
+                    command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
                     command.Parameters.AddWithValue("@people", table);
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -179,18 +162,18 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Loads <see cref="Person"/>s for the current movie.</summary>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Movie"/>.</exception>
+        /// <summary>Loads <see cref="Person"/>s for the current <see cref="Parent"/>.</summary>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="parent"/>.</exception>
         /// <exception cref="ArgumentNullException">If any parameter is null.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public void LoadPeople()
         {
             this.ValidateParent();
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
-            using (var command = new SqlCommand("PeopleInMovieGet", connection))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"PeopleIn{this.parent.ParentType}Get", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@parentId", this.parent);
+                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
                 connection.Open();
 
                 var loadData = new List<PersonLoadShell>();
@@ -214,6 +197,19 @@ namespace Chaos.Movies.Model
             }
         }
 
+        /// <summary>Sets the parent of this <see cref="PersonInRoleCollection"/>.</summary>
+        /// <param name="newParent">The parent which this <see cref="PersonInRoleCollection"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        internal void SetParent(Parent newParent)
+        {
+            if (this.parent != null)
+            {
+                throw new ValueLogicalReadOnlyException("The parent can't be changed once set.");
+            }
+
+            this.parent = newParent;
+        }
+
         /// <summary>Validates that the <see cref="parent"/> is set.</summary>
         /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid parent.</exception>
         private void ValidateParent()
@@ -224,16 +220,16 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Temporarily holds ids related to a <see cref="Person"/> in a <see cref="Movie"/> during loaded.</summary>
+        /// <summary>Temporarily holds ids related to a <see cref="Person"/> in a <see cref="Parent"/> during loaded.</summary>
         private class PersonLoadShell
         {
             /// <summary>Initializes a new instance of the <see cref="PersonLoadShell" /> class.</summary>
             /// <param name="record">The record containing the data for the <see cref="PersonLoadShell"/>.</param>
-            /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-            /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
+            /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+            /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
             public PersonLoadShell(IDataRecord record)
             {
-                ReadFromRecord(this, record);
+                this.ReadFromRecord(record);
             }
 
             /// <summary>Gets the id of the <see cref="Person"/>.</summary>
@@ -245,17 +241,16 @@ namespace Chaos.Movies.Model
             /// <summary>Gets the id of the <see cref="Person"/>'s <see cref="RoleId"/>.</summary>
             public int RoleId { get; private set; }
 
-            /// <summary>Updates a <see cref="PersonLoadShell"/> from a record.</summary>
-            /// <param name="person">The <see cref="PersonLoadShell"/> to update.</param>
+            /// <summary>Updates this <see cref="PersonLoadShell"/> from the <paramref name="record"/>.</summary>
             /// <param name="record">The record containing the data for the <see cref="PersonLoadShell"/>.</param>
-            /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-            /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-            private static void ReadFromRecord(PersonLoadShell person, IDataRecord record)
+            /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+            /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+            private void ReadFromRecord(IDataRecord record)
             {
                 Helper.ValidateRecord(record, new[] { "PersonId", "DepartmentId", "RoleId" });
-                person.PersonId = (int)record["PersonId"];
-                person.DepartmentId = (int)record["DepartmentId"];
-                person.RoleId = (int)record["RoleId"];
+                this.PersonId = (int)record["PersonId"];
+                this.DepartmentId = (int)record["DepartmentId"];
+                this.RoleId = (int)record["RoleId"];
             }
         }
     }

@@ -10,14 +10,18 @@ namespace Chaos.Movies.Model
     using System.Data;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A login session for a specific <see cref="User"/>.</summary>
     public class UserSession
     {
         /// <summary>Initializes a new instance of the <see cref="UserSession"/> class.</summary>
-        /// <param name="record">The record.</param>
+        /// <param name="record">The record containing the data for the <see cref="UserSession"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public UserSession(IDataRecord record)
         {
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Initializes a new instance of the <see cref="UserSession"/> class.</summary>
@@ -66,18 +70,19 @@ namespace Chaos.Movies.Model
             // ToDo: Save & get value from Configuration instead?
             this.ActiveTo = DateTime.Now.AddMinutes(minutes);
         }
-        
-        /// <summary>The read from record.</summary>
-        /// <param name="session">The session.</param>
-        /// <param name="record">The record.</param>
-        private static void ReadFromRecord(UserSession session, IDataRecord record)
+
+        /// <summary>Updates this <see cref="UserSession"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="UserSession"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "SessionId", "ClientIp", "UserId", "ActiveFrom", "ActiveTo" });
-            session.SessionId = (Guid)record["SessionId"];
-            session.ClientIp = record["ClientIp"].ToString();
-            session.UserId = (int)record["UserId"];
-            session.ActiveForm = (DateTime)record["ActiveFrom"];
-            session.ActiveTo = (DateTime)record["ActiveTo"];
+            this.SessionId = (Guid)record["SessionId"];
+            this.ClientIp = record["ClientIp"].ToString();
+            this.UserId = (int)record["UserId"];
+            this.ActiveForm = (DateTime)record["ActiveFrom"];
+            this.ActiveTo = (DateTime)record["ActiveTo"];
         }
     }
 }

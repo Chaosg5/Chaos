@@ -73,9 +73,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Chaos.Movies.Model\Model.csproj">
+    <ProjectReference Include="..\Chaos.Movies.Model\Chaos.Movies.Model.csproj">
       <Project>{824958ae-121d-49aa-b605-899ef11ff4c5}</Project>
-      <Name>Model</Name>
+      <Name>Chaos.Movies.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

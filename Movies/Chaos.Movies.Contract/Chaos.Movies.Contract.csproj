@@ -49,11 +49,11 @@
     <Compile Include="ExternalLookupDto.cs" />
     <Compile Include="ExternalRatingsDto.cs" />
     <Compile Include="ExternalSourceDto.cs" />
+    <Compile Include="IconTypeDto.cs" />
     <Compile Include="PersonUserRatingDto.cs" />
     <Compile Include="CharacterInMovieDto.cs" />
     <Compile Include="DepartmentDto.cs" />
     <Compile Include="LanguageTitleDto.cs" />
-    <Compile Include="LanguageTitlesDto.cs" />
     <Compile Include="MovieDto.cs" />
     <Compile Include="MovieSeriesDto.cs" />
     <Compile Include="MovieSeriesTypeDto.cs" />

@@ -29,10 +29,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Initializes a new instance of the <see cref="MovieSeries" /> class.</summary>
-        /// <param name="record">The record containing the data for the movie series.</param>
+        /// <param name="record">The record containing the data for the <see cref="MovieSeries"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public MovieSeries(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Gets the id of the movie series.</summary>
@@ -42,7 +44,7 @@ namespace Chaos.Movies.Model
         public MovieSeriesType MovieSeriesType { get; set; }
 
         /// <summary>Gets the list of title of the movie collection in different languages.</summary>
-        public LanguageTitles Titles { get; } = new LanguageTitles();
+        public LanguageTitleCollection Titles { get; } = new LanguageTitleCollection();
 
         /// <summary>Gets the movies which are a part of this collection with the keys representing their order.</summary>
         public ReadOnlyCollection<Movie> Movies
@@ -75,10 +77,12 @@ namespace Chaos.Movies.Model
         #region Public
 
         /// <summary>Saves this movie series to the database.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public void Save()
         {
-            ValidateSaveCandidate(this);
-            SaveToDatabase(this);
+            this.ValidateSaveCandidate();
+            this.SaveToDatabase();
         }
 
         /// <summary>Saves this movie series and underlying objects to the database.</summary>
@@ -99,7 +103,7 @@ namespace Chaos.Movies.Model
         public void ReorderMoviesAndSave(ICollection<int> newOrder)
         {
             this.ReorderMovies(newOrder);
-            SaveMoviesToDatabase(this);
+            this.SaveMoviesToDatabase();
         }
 
         /// <summary>Adds the specified movie to this series.</summary>
@@ -110,7 +114,7 @@ namespace Chaos.Movies.Model
         {
             if (movie == null)
             {
-                throw new ArgumentNullException("movie");
+                throw new ArgumentNullException(nameof(movie));
             }
 
             if (movie.Id <= 0)
@@ -134,7 +138,7 @@ namespace Chaos.Movies.Model
         {
             this.AddMovie(movie);
 
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesAddMovie", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -154,7 +158,7 @@ namespace Chaos.Movies.Model
         {
             if (movie == null)
             {
-                throw new ArgumentNullException("movie");
+                throw new ArgumentNullException(nameof(movie));
             }
 
             if (movie.Id <= 0)
@@ -173,7 +177,7 @@ namespace Chaos.Movies.Model
         {
             this.RemoveMovie(movie);
 
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesRemoveMovie", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -189,68 +193,68 @@ namespace Chaos.Movies.Model
 
         #region Private
 
-        /// <summary>Validates that the <paramref name="series"/> is valid to be saved.</summary>
-        /// <param name="series">The movie series to validate.</param>
-        private static void ValidateSaveCandidate(MovieSeries series)
+        /// <summary>Validates that this <see cref="MovieSeries"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeries"/> is not valid to be saved.</exception>
+        private void ValidateSaveCandidate()
         {
-            if (series.Titles.Count == 0)
+            if (this.Titles.Count == 0)
             {
                 throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
 
-            if (series.MovieSeriesType == null || series.MovieSeriesType.Id <= 0)
+            if (this.MovieSeriesType == null || this.MovieSeriesType.Id <= 0)
             {
                 throw new InvalidSaveCandidateException("A valid type needs to be specified.");
             }
         }
 
-        /// <summary>Saves a movie series to the database.</summary>
-        /// <param name="series">The movie series to save.</param>
-        private static void SaveToDatabase(MovieSeries series)
+        /// <summary>Saves this <see cref="MovieSeries"/> to the database.</summary>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        private void SaveToDatabase()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieSeriesId", series.Id);
-                command.Parameters.AddWithValue("@movieSeriesTypeId", series.MovieSeriesType.Id);
-                command.Parameters.AddWithValue("@titles", series.Titles.GetSaveTitles);
+                command.Parameters.AddWithValue("@movieSeriesId", this.Id);
+                command.Parameters.AddWithValue("@movieSeriesTypeId", this.MovieSeriesType.Id);
+                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTitles);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        ReadFromRecord(series, reader);
+                        this.ReadFromRecord(reader);
                     }
                 }
             }
         }
 
-        /// <summary>Saves the relations to the movies in this series.</summary>
-        /// <param name="series">The movie series to save movies for.</param>
-        private static void SaveMoviesToDatabase(MovieSeries series)
+        /// <summary>Saves this <see cref="MovieSeries"/> to the database.</summary>
+        private void SaveMoviesToDatabase()
         {
             // ToDo: This requires a special SQL type
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("MovieSeriesSaveMovies", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieSeriesId", series.Id);
-                command.Parameters.AddWithValue("@movieIds", series.GetSaveMovies);
+                command.Parameters.AddWithValue("@movieSeriesId", this.Id);
+                command.Parameters.AddWithValue("@movieIds", this.GetSaveMovies);
                 connection.Open();
 
                 command.ExecuteNonQuery();
             }
         }
 
-        /// <summary>Updates a movie series from a record.</summary>
-        /// <param name="series">The movie series to update.</param>
-        /// <param name="record">The record containing the data for the movie series.</param>
-        private static void ReadFromRecord(MovieSeries series, IDataRecord record)
+        /// <summary>Updates this <see cref="MovieSeries"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="MovieSeries"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "MovieSeriesId" });
-            series.Id = (int)record["MovieSeriesId"];
+            this.Id = (int)record["MovieSeriesId"];
         }
 
         #endregion

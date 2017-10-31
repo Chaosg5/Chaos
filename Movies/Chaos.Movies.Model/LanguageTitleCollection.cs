@@ -7,33 +7,36 @@
 namespace Chaos.Movies.Model
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Globalization;
     using System.Linq;
 
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Exceptions;
+
     /// <summary>The title of a movie.</summary>
-    public class LanguageTitles
+    public class LanguageTitleCollection : IReadOnlyCollection<LanguageTitle>
     {
-        /// <summary>Private part of the <see cref="Titles"/> property.</summary>
+        /// <summary>The list of <see cref="LanguageTitle"/>s in this <see cref="LanguageTitleCollection"/>.</summary>
         private readonly List<LanguageTitle> titles = new List<LanguageTitle>();
 
-        /// <summary>Initializes a new instance of the <see cref="LanguageTitles" /> class.</summary>
-        public LanguageTitles()
+        /// <summary>Initializes a new instance of the <see cref="LanguageTitleCollection" /> class.</summary>
+        public LanguageTitleCollection()
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="LanguageTitles" /> class.</summary>
-        /// <param name="reader">The reader containing the data for the movie series type.</param>
-        public LanguageTitles(IDataReader reader)
+        /// <summary>Initializes a new instance of the <see cref="LanguageTitleCollection" /> class.</summary>
+        /// <param name="reader">The record containing the data for the <see cref="LanguageTitleCollection"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="reader"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="reader"/> is <see langword="null" />.</exception>
+        public LanguageTitleCollection(IDataReader reader)
         {
-            ReadFromRecord(this, reader);
+            this.ReadFromRecord(reader);
         }
-
-        /// <summary>Gets the list of titles in different languages.</summary>
-        public ReadOnlyCollection<LanguageTitle> Titles => this.titles.AsReadOnly();
-
+        
         /// <summary>Gets the number if existing titles.</summary>
         public int Count => this.titles.Count;
 
@@ -59,6 +62,27 @@ namespace Chaos.Movies.Model
                     return table;
                 }
             }
+        }
+
+        /// <summary>Returns an enumerator which iterates through this <see cref="LanguageTitleCollection"/>.</summary>
+        /// <returns>The enumerator.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        /// <summary>Returns an enumerator which iterates through this <see cref="LanguageTitleCollection"/>.</summary>
+        /// <returns>The enumerator.</returns>
+        public IEnumerator<LanguageTitle> GetEnumerator()
+        {
+            return this.titles.GetEnumerator();
+        }
+
+        /// <summary>Converts this <see cref="LanguageTitleCollection"/> to a <see cref="ReadOnlyCollection{LanguageTitleDto}"/>.</summary>
+        /// <returns>The <see cref="ReadOnlyCollection{LanguageTitleDto}"/>.</returns>
+        public ReadOnlyCollection<LanguageTitleDto> ToContract()
+        {
+            return new ReadOnlyCollection<LanguageTitleDto>(this.titles.Select(t => t.ToContract()).ToList());
         }
 
         /// <summary>Gets the title for the specified <paramref name="language"/>.</summary>
@@ -119,15 +143,21 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Updates language titles from a reader.</summary>
-        /// <param name="titles">The language titles to update.</param>
-        /// <param name="reader">The record containing the data for the language titles.</param>
-        private static void ReadFromRecord(LanguageTitles titles, IDataReader reader)
+        /// <summary>Updates this <see cref="LanguageTitleCollection"/> from the <paramref name="reader"/>.</summary>
+        /// <param name="reader">The record containing the data for the <see cref="LanguageTitleCollection"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="reader"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="reader"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataReader reader)
         {
-            titles.titles.Clear();
+            if (reader == null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            this.titles.Clear();
             while (reader.Read())
             {
-                titles.titles.Add(new LanguageTitle(reader));
+                this.titles.Add(new LanguageTitle(reader));
             }
         }
     }

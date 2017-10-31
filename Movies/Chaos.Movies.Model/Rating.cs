@@ -49,6 +49,15 @@ namespace Chaos.Movies.Model
             this.RatingType = ratingType;
         }
 
+        /// <summary>Initializes a new instance of the <see cref="Rating"/> class.</summary>
+        /// <param name="record">The record containing the data for the <see cref="Rating"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        public Rating(IDataRecord record)
+        {
+            this.ReadFromRecord(record);
+        }
+
         #endregion
 
         /// <summary>Gets the id of this rating.</summary>
@@ -174,12 +183,12 @@ namespace Chaos.Movies.Model
         /// <summary>Saves this rating to the database.</summary>
         public async void Save()
         {
-            if (BlaBla.UseService)
+            if (Persistent.UseService)
             {
                 throw new ServiceRequiredException();
             }
 
-            ValidateSaveCandidate(this);
+            this.ValidateSaveCandidate();
             await SaveToDatabaseAsync(this);
         }
 
@@ -187,64 +196,65 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="Task"/>.</returns>
         public async Task SaveAllAsync()
         {
-            if (BlaBla.UseService)
+            if (Persistent.UseService)
             {
                 throw new ServiceRequiredException();
             }
 
-            ValidateAllSaveCandidates(this);
+            this.ValidateAllSaveCandidates();
             await SaveAllToDatabaseAsync(this);
         }
 
         #region Private
-
-        /// <summary>Validates that the <paramref name="rating"/> is valid to be saved.</summary>
-        /// <param name="rating">The rating type to validate.</param>
-        private static void ValidateAllSaveCandidates(Rating rating)
+        
+        /// <summary>Validates that this <see cref="Rating"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Rating"/> is not valid to be saved.</exception>
+        private void ValidateAllSaveCandidates()
         {
-            ValidateSaveCandidate(rating);
-            foreach (var subtype in rating.subRatings)
+            this.ValidateSaveCandidate();
+            foreach (var subtype in this.subRatings)
             {
-                ValidateAllSaveCandidates(subtype);
+                subtype.ValidateAllSaveCandidates();
             }
         }
 
-        /// <summary>Validates that the <paramref name="rating"/> is valid to be saved.</summary>
-        /// <param name="rating">The rating type to validate.</param>
-        private static void ValidateSaveCandidate(Rating rating)
+        /// <summary>Validates that this <see cref="Rating"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Rating"/> is not valid to be saved.</exception>
+        private void ValidateSaveCandidate()
         {
-            if (rating.RatingType.Id == 0)
+            if (this.RatingType.Id == 0)
             {
                 throw new InvalidSaveCandidateException("The id of the rating's type must be greater than zero.");
             }
 
-            if (rating.UserId == 0)
+            if (this.UserId == 0)
             {
                 throw new InvalidSaveCandidateException("The id of the rating's user must be greater than zero.");
             }
 
-            if (rating.ratingValue.Value < 0)
+            if (this.ratingValue.Value < 0)
             {
-                rating.ratingValue.Value = 0;
+                this.ratingValue.Value = 0;
             }
         }
 
-        /// <summary>Updates a rating from a data record.</summary>
-        /// <param name="rating">The rating to update.</param>
-        /// <param name="record">The record containing the data for the rating.</param>
-        private static void ReadFromRecord(Rating rating, IDataRecord record)
+        /// <summary>Updates this <see cref="Rating"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="Rating"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "RatingId", "RatingTypeId", "Value", "UserId" });
-            rating.Id = (int)record["RatingId"];
-            rating.ratingValue.Value = (int)record["Value"];
+            this.Id = (int)record["RatingId"];
+            this.ratingValue.Value = (int)record["Value"];
 
             var ratingTypeId = (int)record["RatingTypeId"];
-            if (rating.RatingType.Id != ratingTypeId)
+            if (this.RatingType.Id != ratingTypeId)
             {
-                rating.RatingType = new RatingType(ratingTypeId);
+                this.RatingType = new RatingType(ratingTypeId);
             }
 
-            rating.UserId = (int)record["UserId"];
+            this.UserId = (int)record["UserId"];
         }
 
         /// <summary>Saves this rating to the database.</summary>
@@ -252,7 +262,7 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="Task"/>.</returns>
         private static async Task SaveToDatabaseAsync(Rating rating)
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("RatingSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -264,7 +274,7 @@ namespace Chaos.Movies.Model
                 {
                     if (await reader.ReadAsync())
                     {
-                        ReadFromRecord(rating, reader);
+                        rating.ReadFromRecord(reader);
                     }
                 }
             }

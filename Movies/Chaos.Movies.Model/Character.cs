@@ -9,6 +9,7 @@ namespace Chaos.Movies.Model
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Data.SqlClient;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -47,7 +48,7 @@ namespace Chaos.Movies.Model
             this.ReadFromRecord(record);
         }
 
-        /// <summary>Gets the id of the character.</summary>
+        /// <summary>Gets the id of the <see cref="Character"/>.</summary>
         public int Id { get; private set; }
 
         /// <summary>Gets the name of the character.</summary>
@@ -73,11 +74,39 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the list of images for the movie and their order as represented by the key.</summary>
         public IEnumerable<Icon> Images => this.images;
 
-        /// <summary>The save async.</summary>
-        /// <param name="session">The session.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
-        public virtual async Task SaveAsync(UserSession session)
+        /// <summary>Gets the specified <see cref="Character"/>s.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <param name="idList">The list of ids of the <see cref="Character"/>s to get.</param>
+        /// <remarks>Uses stored procedure <c>CharactersGet</c>.
+        /// Result 1 columns: CharacterId, Name</remarks>
+        /// <returns>The list of <see cref="Character"/>s.</returns>
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        public static async Task<IEnumerable<Character>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
+            if (!Persistent.UseService)
+            {
+                return await GetFromDatabaseAsync(idList);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                return (await service.CharacterGetAsync(session.ToContract(), idList.ToList())).Select(c => new Character(c));
+            }
+        }
+
+        /// <summary>Saves this <see cref="Character"/> to the database.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Character"/> is not valid to be saved.</exception>
+        /// <returns>No return.</returns>
+        public async Task SaveAsync(UserSession session)
+        {
+            this.ValidateSaveCandidate();
+            if (!Persistent.UseService)
+            {
+                await this.SaveToDatabaseAsync();
+                return;
+            }
+
             using (var service = new ChaosMoviesServiceClient())
             {
                 await service.CharacterSaveAsync(session.ToContract(), this.ToContract());
@@ -88,14 +117,90 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="CharacterDto"/>.</returns>
         public CharacterDto ToContract()
         {
-            return new CharacterDto { Id = this.Id, Name = this.Name, ExternalLookup = this.ExternalLookup.ToContract(), Images = this.Images.Select(s => s.ToContract()) };
+            return new CharacterDto
+            {
+                Id = this.Id,
+                Name = this.Name,
+                ExternalLookup = this.ExternalLookup.ToContract(),
+                Images = this.Images.Select(s => s.ToContract())
+            };
         }
 
-        /// <summary>Updates a character from a record.</summary>
-        /// <param name="record">The record containing the data for the character.</param>
+        public void AddImage()
+        {
+            
+        }
+
+        /// <summary>Gets the specified <see cref="Character"/>s.</summary>
+        /// <param name="idList">The list of ids of the <see cref="Character"/>s to get.</param>
+        /// <remarks>
+        /// Uses stored procedure <c>CharactersGet</c>.
+        /// Result 1 columns: CharacterId, Name
+        /// </remarks>
+        /// <returns>The list of <see cref="Character"/>s.</returns>
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        private static async Task<IEnumerable<Character>> GetFromDatabaseAsync(IEnumerable<int> idList)
+        {
+            var characters = new List<Character>();
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("CharactersGet", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@idList", Persistent.CreateIdCollectionTable(idList));
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (!reader.HasRows)
+                    {
+                        throw new MissingResultException(1, "Characters");
+                    }
+
+                    while (await reader.ReadAsync())
+                    {
+                        characters.Add(new Character(reader));
+                    }
+
+                    if (!await reader.NextResultAsync())
+                    {
+                        throw new MissingResultException(2, "IconsInCharacters");
+                    }
+
+                    while (await reader.ReadAsync())
+                    {
+                    }
+                }
+            }
+
+            return characters;
+        }
+
+        /// <summary>Saves this character to the database.</summary>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <returns>The <see cref="Task"/>.</returns>
+        private async Task SaveToDatabaseAsync()
+        {
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("CharacterSave", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@characterId", this.Id);
+                command.Parameters.AddWithValue("@name", this.Name);
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        this.ReadFromRecord(reader);
+                    }
+                }
+            }
+        }
+
+        /// <summary>Updates this <see cref="Character"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="Character"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected void ReadFromRecord(IDataRecord record)
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "CharacterId", "Name" });
             this.Id = (int)record["CharacterId"];
@@ -105,7 +210,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Validates that the this <see cref="Character"/> is valid to be saved.</summary>
         /// <exception cref="InvalidSaveCandidateException">This <see cref="Character"/> is not valid to be saved.</exception>
-        protected void ValidateSaveCandidate()
+        private void ValidateSaveCandidate()
         {
             if (string.IsNullOrEmpty(this.Name))
             {

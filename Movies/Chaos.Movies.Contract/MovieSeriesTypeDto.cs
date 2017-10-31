@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Contract
 {
+    using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
 
     /// <summary>Represents a user.</summary>
@@ -18,6 +19,6 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets the list of titles of the movie series type in different languages.</summary>
         [DataMember]
-        public LanguageTitlesDto Titles { get; set; }
+        public ReadOnlyCollection<LanguageTitleDto> Titles { get; set; }
     }
 }

@@ -10,6 +10,9 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Globalization;
 
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Exceptions;
+
     /// <summary>The title of a movie.</summary>
     public class LanguageTitle
     {
@@ -35,9 +38,11 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="LanguageTitle"/> class.</summary>
         /// <param name="record">The data record containing the data for the language title.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public LanguageTitle(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Gets or sets the title.</summary>
@@ -46,14 +51,22 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the language of the title.</summary>
         public CultureInfo Language { get; private set; }
 
-        /// <summary>Updates a language title from a record.</summary>
-        /// <param name="title">The language title to update.</param>
-        /// <param name="record">The record containing the data for the language title.</param>
-        private static void ReadFromRecord(LanguageTitle title, IDataRecord record)
+        /// <summary>Converts this <see cref="LanguageTitle"/> to a <see cref="LanguageTitleDto"/>.</summary>
+        /// <returns>The <see cref="LanguageTitleDto"/>.</returns>
+        public LanguageTitleDto ToContract()
+        {
+            return new LanguageTitleDto { Title = this.Title, Language = this.Language };
+        }
+        
+        /// <summary>Updates this <see cref="LanguageTitle"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="LanguageTitle"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "Title", "Language" });
-            title.Title = record["Title"].ToString();
-            title.Language = new CultureInfo(record["Language"].ToString());
+            this.Title = record["Title"].ToString();
+            this.Language = new CultureInfo(record["Language"].ToString());
         }
     }
 }

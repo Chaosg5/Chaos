@@ -17,13 +17,12 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public int Id { get; private set; }
 
-        /// <summary>Gets the list of titles of the department in different languages.</summary>
+        /// <summary>Gets or sets the list of titles of the department in different languages.</summary>
         [DataMember]
-        public LanguageTitlesDto Titles { get; set; }
+        public ReadOnlyCollection<LanguageTitleDto> Titles { get; set; }
 
-        /// <summary>Gets all available person roles.</summary>
+        /// <summary>Gets or sets all available person roles.</summary>
         [DataMember]
         public ReadOnlyCollection<RoleDto> Roles { get; set; }
-
     }
 }

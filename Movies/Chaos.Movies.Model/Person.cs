@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
@@ -34,10 +35,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Initializes a new instance of the <see cref="Person" /> class.</summary>
-        /// <param name="record">The record containing the data for the person.</param>
+        /// <param name="record">The record containing the data for the <see cref="Person"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public Person(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
         }
 
         /// <summary>Gets the id of the person.</summary>
@@ -69,7 +72,7 @@ namespace Chaos.Movies.Model
         public static IEnumerable<Person> Get(IEnumerable<int> idList)
         {
             var people = new List<Person>();
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("PeopleGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -112,49 +115,52 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves this person to the database.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Person"/> is not valid to be saved.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public void Save()
         {
-            ValidateSaveCandidate(this);
-            SaveToDatabase(this);
+            this.ValidateSaveCandidate();
+            this.SaveToDatabase();
         }
 
-        /// <summary>Validates that the <paramref name="person"/> is valid to be saved.</summary>
-        /// <param name="person">The person to validate.</param>
-        private static void ValidateSaveCandidate(Person person)
+        /// <summary>Validates that this <see cref="Person"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Person"/> is not valid to be saved.</exception>
+        private void ValidateSaveCandidate()
         {
-            if (string.IsNullOrEmpty(person.Name))
+            if (string.IsNullOrEmpty(this.Name))
             {
-                throw new InvalidSaveCandidateException("The 'Name' can not be empty.");
+                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can not be empty.");
             }
         }
 
-        /// <summary>Updates a person from a record.</summary>
-        /// <param name="person">The person to update.</param>
-        /// <param name="record">The record containing the data for the person.</param>
-        private static void ReadFromRecord(Person person, IDataRecord record)
+        /// <summary>Updates this <see cref="Person"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="Person"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "PersonId", "Name" });
-            person.Id = (int)record["PersonId"];
-            person.Name = record["Name"].ToString();
+            this.Id = (int)record["PersonId"];
+            this.Name = record["Name"].ToString();
         }
 
-        /// <summary>Saves a person to the database.</summary>
-        /// <param name="person">The person to save.</param>
-        private static void SaveToDatabase(Person person)
+        /// <summary>Saves this <see cref="Person"/> to the database.</summary>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        private void SaveToDatabase()
         {
-            using (var connection = new SqlConnection(BlaBla.ConnectionString))
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand("PersonSave", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@personId", person.Id);
-                command.Parameters.AddWithValue("@name", person.Name);
+                command.Parameters.AddWithValue("@personId", this.Id);
+                command.Parameters.AddWithValue("@name", this.Name);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        ReadFromRecord(person, reader);
+                        this.ReadFromRecord(reader);
                     }
                 }
             }

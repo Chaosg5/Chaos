@@ -25,7 +25,7 @@ namespace Chaos.Movies.Model
         {
             if (person == null)
             {
-                throw new ArgumentNullException("person");
+                throw new ArgumentNullException(nameof(person));
             }
 
             if (person.Id <= 0)
@@ -35,7 +35,7 @@ namespace Chaos.Movies.Model
 
             if (department == null)
             {
-                throw new ArgumentNullException("department");
+                throw new ArgumentNullException(nameof(department));
             }
 
             if (department.Id <= 0)
@@ -45,7 +45,7 @@ namespace Chaos.Movies.Model
 
             if (role == null)
             {
-                throw new ArgumentNullException("role");
+                throw new ArgumentNullException(nameof(role));
             }
 
             if (role.Id <= 0)

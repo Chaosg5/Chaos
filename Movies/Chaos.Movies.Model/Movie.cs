@@ -47,7 +47,7 @@ namespace Chaos.Movies.Model
         public ExternalRatingsCollection ExternalRatings { get; } = new ExternalRatingsCollection();
 
         /// <summary>Gets the list of title of the movie in different languages.</summary>
-        public LanguageTitles Titles { get; private set; } = new LanguageTitles();
+        public LanguageTitleCollection Titles { get; } = new LanguageTitleCollection();
 
         /// <summary>Gets the list of genres that the movie belongs to.</summary>
         public ReadOnlyCollection<Genre> Genres => this.genres.AsReadOnly();

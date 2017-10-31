@@ -17,8 +17,8 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public string Title { get; set; }
 
-        /// <summary>Gets the language of the title.</summary>
+        /// <summary>Gets or sets the language of the title.</summary>
         [DataMember]
-        public CultureInfo Language { get; private set; }
+        public CultureInfo Language { get; set; }
     }
 }

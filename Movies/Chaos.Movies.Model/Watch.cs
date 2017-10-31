@@ -17,16 +17,13 @@ namespace Chaos.Movies.Model
         private Parent parent;
 
         /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
-        /// <param name="parent">The parent which this <see cref="Watch"/> belongs to.</param>
         /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
         /// <param name="watchDate">The date when the movie was watched.</param>
         /// <param name="dateUncertain">If the <paramref name="watchDate"/> when the <see cref="Movie"/> was watched is just estimated and thus uncertain.</param>
         /// <param name="watchLocationId">The id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</param>
         /// <param name="watchTypeId">The id of the <see cref="WatchType"/> describing in what format the <see cref="Movie"/> was watched.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        public Watch(Parent parent, int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
+        public Watch(int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
         {
-            this.SetParent(parent);
             this.UserId = userId;
             this.WatchDate = watchDate;
             this.DateUncertain = dateUncertain;
@@ -35,10 +32,31 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
-        /// <param name="record">The data record containing the data to create the <see cref="Watch" /> from.</param>
+        /// <param name="record">The record containing the data for the <see cref="Watch"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
         public Watch(IDataRecord record)
         {
-            ReadFromRecord(this, record);
+            this.ReadFromRecord(record);
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
+        /// <param name="parent">The parent which this <see cref="Watch"/> belongs to.</param>
+        /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
+        /// <param name="watchDate">The date when the movie was watched.</param>
+        /// <param name="dateUncertain">If the <paramref name="watchDate"/> when the <see cref="Movie"/> was watched is just estimated and thus uncertain.</param>
+        /// <param name="watchLocationId">The id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</param>
+        /// <param name="watchTypeId">The id of the <see cref="WatchType"/> describing in what format the <see cref="Movie"/> was watched.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        internal Watch(Parent parent, int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
+        {
+            this.SetParent(parent);
+            this.UserId = userId;
+            this.WatchDate = watchDate;
+            this.DateUncertain = dateUncertain;
+            this.WatchLocationId = watchLocationId;
+            this.WatchTypeId = watchTypeId;
         }
 
         /// <summary>Gets the id of the watch.</summary>
@@ -71,7 +89,7 @@ namespace Chaos.Movies.Model
         /// <summary>Sets the parent of this <see cref="PersonAsCharacterCollection"/>.</summary>
         /// <param name="newParent">The parent which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
         /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        public void SetParent(Parent newParent)
+        internal void SetParent(Parent newParent)
         {
             if (this.parent != null)
             {
@@ -87,7 +105,7 @@ namespace Chaos.Movies.Model
         {
             if (user == null || user.Id == 0)
             {
-                throw new ArgumentNullException("user");
+                throw new ArgumentNullException(nameof(user));
             }
 
             if (user.Id != this.UserId)
@@ -105,7 +123,7 @@ namespace Chaos.Movies.Model
         {
             if (location == null || location.Id == 0)
             {
-                throw new ArgumentNullException("location");
+                throw new ArgumentNullException(nameof(location));
             }
 
             this.WatchLocationId = location.Id;
@@ -118,22 +136,24 @@ namespace Chaos.Movies.Model
         {
             if (type == null || type.Id == 0)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             this.WatchTypeId = type.Id;
             this.WatchType = type;
         }
 
-        /// <summary>Updates a watch from a record.</summary>
-        /// <param name="watch">The watch to update.</param>
-        /// <param name="record">The record containing the data for the watch.</param>
-        private static void ReadFromRecord(Watch watch, IDataRecord record)
+        /// <summary>Updates this <see cref="Watch"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="Watch"/>.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        private void ReadFromRecord(IDataRecord record)
         {
             Helper.ValidateRecord(record, new[] { "Id", "ParentId", "ParentType", "UserId", "WatchedDate", "DateUncertain" });
-            watch.Id = (int)record["Id"];
-            watch.SetParent(new Parent(record));
-            watch.UserId = (int)record["UserId"];
+            this.Id = (int)record["Id"];
+            this.SetParent(new Parent(record));
+            this.UserId = (int)record["UserId"];
 
             DateTime watchDate;
             if (!DateTime.TryParse(record["WatchedDate"].ToString(), out watchDate))
@@ -141,7 +161,7 @@ namespace Chaos.Movies.Model
                 throw new InvalidRecordValueException();
             }
 
-            watch.WatchDate = watchDate;
+            this.WatchDate = watchDate;
 
             bool dateUncertain;
             if (!bool.TryParse(record["DateUncertain"].ToString(), out dateUncertain))
@@ -149,16 +169,16 @@ namespace Chaos.Movies.Model
                 throw new InvalidRecordValueException();
             }
 
-            watch.DateUncertain = dateUncertain;
+            this.DateUncertain = dateUncertain;
 
             if (record["WatchLocationId"] != null)
             {
-                watch.WatchLocationId = (int)record["WatchLocationId"];
+                this.WatchLocationId = (int)record["WatchLocationId"];
             }
 
             if (record["WatchTypeId"] != null)
             {
-                watch.WatchTypeId = (int)record["WatchTypeId"];
+                this.WatchTypeId = (int)record["WatchTypeId"];
             }
         }
     }

@@ -10,12 +10,10 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Runtime.Serialization;
 
     using Chaos.Movies.Contract;
 
     /// <summary>Represents a user.</summary>
-    [DataContract]
     public class ExternalLookupCollection : IReadOnlyCollection<ExternalLookup>
     {
         /// <summary>The list of <see cref="ExternalLookup"/>s in this <see cref="ExternalLookupCollection"/>.</summary>
@@ -31,8 +29,8 @@ namespace Chaos.Movies.Model
             return this.externalLookup.GetEnumerator();
         }
 
-        /// <summary>Converts this <see cref="ExternalLookupCollection"/> to a collection.</summary>
-        /// <returns>The collection.</returns>
+        /// <summary>Converts this <see cref="ExternalLookupCollection"/> to a <see cref="ReadOnlyCollection{ExternalLookupDto}"/>.</summary>
+        /// <returns>The <see cref="ReadOnlyCollection{ExternalLookupDto}"/>.</returns>
         public ReadOnlyCollection<ExternalLookupDto> ToContract()
         {
             return new ReadOnlyCollection<ExternalLookupDto>(this.externalLookup.Select(l => l.ToContract()).ToList());
