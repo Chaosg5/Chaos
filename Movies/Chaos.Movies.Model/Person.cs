@@ -17,9 +17,6 @@ namespace Chaos.Movies.Model
     public class Person
     {
         /// <summary>Private part of the <see cref="Images"/> property.</summary>
-        private readonly List<Icon> images = new List<Icon>();
-
-        /// <summary>Private part of the <see cref="Images"/> property.</summary>
         private readonly List<PersonUserRating> personUserRatings = new List<PersonUserRating>();
 
         /// <summary>Initializes a new instance of the <see cref="Person" /> class.</summary>
@@ -49,11 +46,8 @@ namespace Chaos.Movies.Model
         /// <summary>Gets or sets name of the person.</summary>
         public string Name { get; set; }
 
-        /// <summary>Gets the list of images for the <see cref="Person"/> and their order as represented by the key.</summary>
-        public ReadOnlyCollection<Icon> Images
-        {
-            get { return this.images.AsReadOnly(); }
-        }
+        /// <summary>Gets the list of images for the <see cref="Person"/> and their order.</summary>
+        public IconCollection Images { get; } = new IconCollection();
 
         /// <summary>Gets the list ratings of this <see cref="Person"/> for the current <see cref="User"/>.</summary>
         public ReadOnlyCollection<PersonUserRating> PersonUserRatings
@@ -76,7 +70,6 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand("PeopleGet", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@userId", GlobalCache.User);
                 command.Parameters.AddWithValue("@idList", idList);
                 connection.Open();
 
@@ -139,7 +132,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         private void ReadFromRecord(IDataRecord record)
         {
-            Helper.ValidateRecord(record, new[] { "PersonId", "Name" });
+            Persistent.ValidateRecord(record, new[] { "PersonId", "Name" });
             this.Id = (int)record["PersonId"];
             this.Name = record["Name"].ToString();
         }

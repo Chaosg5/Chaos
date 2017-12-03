@@ -150,7 +150,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
         private void ReadFromRecord(IDataRecord record)
         {
-            Helper.ValidateRecord(record, new[] { "Id", "ParentId", "ParentType", "UserId", "WatchedDate", "DateUncertain" });
+            Persistent.ValidateRecord(record, new[] { "Id", "ParentId", "ParentType", "UserId", "WatchedDate", "DateUncertain" });
             this.Id = (int)record["Id"];
             this.SetParent(new Parent(record));
             this.UserId = (int)record["UserId"];

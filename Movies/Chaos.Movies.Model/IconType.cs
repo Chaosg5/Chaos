@@ -46,7 +46,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         private void ReadFromRecord(IDataRecord record)
         {
-            Helper.ValidateRecord(record, new[] { "IconTypeId" });
+            Persistent.ValidateRecord(record, new[] { "IconTypeId" });
             this.Id = (int)record["IconTypeId"];
         }
     }

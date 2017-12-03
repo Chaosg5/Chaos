@@ -6,10 +6,13 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Data;
     using System.Data.Linq;
+    using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>An image icon.</summary>
     public class Icon
@@ -54,14 +57,38 @@ namespace Chaos.Movies.Model
             return new IconDto { Id = this.Id, IconType = this.IconType.ToContract(), Data = this.Data, Url = this.Url };
         }
 
-        public void ChangeDataAsync(Binary data)
+        /// <summary>Saves this <see cref="Character"/> to the database.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Character"/> is not valid to be saved.</exception>
+        /// <returns>No return.</returns>
+        public async Task SaveAsync(UserSession session)
         {
-            
+           // this.ValidateSaveCandidate();
+
         }
 
-        public void ChangeDataAndSaveAsync(Binary data)
+        /// <summary>Changes the image data.</summary>
+        /// <param name="newData">The new data to set.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="newData"/> is <see langword="null"/></exception>
+        public void ChangeDataAsync(Binary newData)
         {
-            
+            if (newData == null || newData.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(newData));
+            }
+
+            this.Url = string.Empty;
+            this.Data = newData;
         }
+
+        /// <summary>Changes the image data.</summary>
+        /// <param name="newData">The new data to set.</param>
+        public async Task ChangeDataAndSaveAsync(Binary newData)
+        {
+            this.ChangeDataAsync(newData);
+
+        }
+
+
     }
 }

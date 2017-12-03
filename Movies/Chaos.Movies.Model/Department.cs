@@ -10,19 +10,24 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
-    using System.Data.SqlClient;
-    using System.IO;
+    using System.Data.Common;
     using System.Linq;
+    using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a production department in a <see cref="Movie"/>.</summary>
-    public class Department
+    public sealed class Department : Typeable<Department, DepartmentDto>, ITypeable<Department, DepartmentDto>
     {
+        /// <summary>The database column for <see cref="Id"/>.</summary>
+        private const string DepartmentIdColumn = "DepartmentId";
+
         /// <summary>Private part of the <see cref="Roles"/> property.</summary>
         private readonly List<Role> roles = new List<Role>();
 
-        /// <summary>Initializes a new instance of the <see cref="Department" /> class.</summary>
-        /// <param name="record">The record containing the data for the department.</param>
+        /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
         private Department(IDataRecord record)
@@ -30,151 +35,103 @@ namespace Chaos.Movies.Model
             this.ReadFromRecord(record);
         }
 
+        /// <inheritdoc />
+        private Department()
+        {
+        }
+
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static Department Static { get; } = new Department();
+
         /// <summary>Gets the id of the department.</summary>
         public int Id { get; private set; }
 
         /// <summary>Gets the list of titles of the department in different languages.</summary>
-        public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
+        public LanguageTitleCollection Titles { get; } = new LanguageTitleCollection();
 
         /// <summary>Gets all available person roles.</summary>
         public ReadOnlyCollection<Role> Roles => this.roles.AsReadOnly();
 
-        /// <summary>Loads all departments from the database.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>DepartmentsGetAll</c>.
-        /// Result 1 columns: DepartmentId, Language, Title
-        /// Result 2 columns: DepartmentId, RoleId
-        /// </remarks>
-        /// <returns>All departments.</returns>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
-        public static IEnumerable<Department> GetAll()
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public async Task<IEnumerable<Department>> GetAllAsync(UserSession session)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("DepartmentsGetAll", connection))
+            if (!Persistent.UseService)
             {
-                command.CommandType = CommandType.StoredProcedure;
-                connection.Open();
+                return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync);
+            }
 
-                using (var reader = command.ExecuteReader())
-                {
-                    return ReadFromReader(reader);
-                }
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.<T>GetAsync(session.ToContract(), idList.ToList())).Select(d => new <T>(d));
+                return new List<Department>();
             }
         }
 
-        /// <summary>Loads all <see cref="Department"/>s from the database.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>DepartmentsGet</c>.
-        /// Result 1 columns: DepartmentId, Language, Title
-        /// Result 2 columns: DepartmentId, RoleId
-        /// </remarks>
-        /// <param name="idList">The list of ids of the <see cref="Department"/>s to get.</param>
-        /// <returns>The specified <see cref="Department"/>s.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="idList"/> is <see langword="null" />.</exception>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        public static IEnumerable<Department> Get(IEnumerable<int> idList)
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public async Task<Department> GetAsync(UserSession session, int id)
         {
-            if (idList == null || !idList.Any())
+            return (await this.GetAsync(session, new[] { id })).First();
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public async Task<IEnumerable<Department>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            if (!Persistent.UseService)
             {
-                throw new ArgumentNullException(nameof(idList));
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
             }
 
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("DepartmentsGet", connection))
+            using (var service = new ChaosMoviesServiceClient())
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@idList", idList);
-                command.Parameters.AddWithValue("@idList", idList);
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    return ReadFromReader(reader);
-                }
+                // ToDo: Service
+                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
+                return new List<Department>();
             }
         }
 
-        /// <summary>Saves this department to the database.</summary>
+        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        public void Save()
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
-            this.SaveToDatabase();
+            if (!Persistent.UseService)
+            {
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecord);
+                return;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+            }
         }
 
-        /// <summary>Validates that this <see cref="Department"/> is valid to be saved.</summary>
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
-        private void ValidateSaveCandidate()
+        public async Task SaveAllAsync(UserSession session)
         {
-            if (this.Titles.Count == 0)
-            {
-                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
-            }
-        }
-
-        /// <summary>Saves this <see cref="Department"/> to the database.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>DepartmentSave</c>.
-        /// Result 1 columns: DepartmentId
-        /// Result 2 columns: Language, Title
-        /// </remarks>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        private void SaveToDatabase()
-        {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("DepartmentSave", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@DepartmentId", this.Id);
-                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTitles);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (!reader.HasRows)
-                    {
-                        throw new MissingResultException(1, "Departments");
-                    }
-
-                    if (reader.Read())
-                    {
-                        this.ReadFromRecord(reader);
-                    }
-
-                    if (!reader.NextResult() || !reader.HasRows)
-                    {
-                        throw new MissingResultException(2, "DepartmentTitles");
-                    }
-
-                    this.Titles = new LanguageTitleCollection(reader);
-                }
-            }
+            await this.SaveAsync(session);
         }
         
-        /// <summary>Updates this <see cref="Department"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="Department"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        private void ReadFromRecord(IDataRecord record)
+        /// <inheritdoc />
+        public DepartmentDto ToContract()
         {
-            Helper.ValidateRecord(record, new[] { "DepartmentId" });
-            this.Id = (int)record["DepartmentId"];
+            throw new NotImplementedException();
         }
 
-        /// <summary>Creates a list of <see cref="Department"/>s from a reader.</summary>
-        /// <param name="reader">The reader containing the data for the <see cref="Department"/>s.</param>
-        /// <returns>The list of <see cref="Department"/>s.</returns>
+        /// <inheritdoc />
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        private static IEnumerable<Department> ReadFromReader(SqlDataReader reader)
+        protected override async Task<IEnumerable<Department>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var result = new List<Department>();
             if (!reader.HasRows)
@@ -183,7 +140,7 @@ namespace Chaos.Movies.Model
             }
 
             Department department = null;
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var id = (int)reader["DepartmentId"];
                 if (department == null || department.Id != id)
@@ -199,12 +156,19 @@ namespace Chaos.Movies.Model
                 department.Titles.SetTitle(new LanguageTitle(reader));
             }
 
-            if (!reader.NextResult() || !reader.HasRows)
+            if (!await reader.NextResultAsync() || !reader.HasRows)
             {
                 throw new MissingResultException(2, "DepartmentTitles");
             }
 
-            while (reader.Read())
+            // ToDo: DepartmentTitles
+
+            if (!await reader.NextResultAsync() || !reader.HasRows)
+            {
+                throw new MissingResultException(3, "DepartmentRoles");
+            }
+
+            while (await reader.ReadAsync())
             {
                 var departmentId = (int)reader["DepartmentId"];
                 var roleId = (int)reader["RoleId"];
@@ -214,10 +178,39 @@ namespace Chaos.Movies.Model
                     throw new SqlResultSyncException(departmentId);
                 }
 
-                department.roles.Add(GlobalCache.GetRole(roleId));
+                department.roles.Add(await GlobalCache.GetRoleAsync(roleId));
             }
 
             return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
+        protected override void ValidateSaveCandidate()
+        {
+            if (this.Titles.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(DepartmentIdColumn), this.Id }
+                });
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override void ReadFromRecord(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { "DepartmentId" });
+            this.Id = (int)record["DepartmentId"];
         }
     }
 }

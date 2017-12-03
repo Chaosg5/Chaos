@@ -108,7 +108,7 @@ namespace Chaos.Movies.Service
         public async Task<IEnumerable<CharacterDto>> CharacterGetAsync(UserSessionDto session, IEnumerable<int> idList)
         {
             this.ValidateStateAndSession(session);
-            return (await Character.GetAsync(new UserSession(session), idList)).Select(c => c.ToContract());
+            return (await Character.Static.GetAsync(new UserSession(session), idList)).Select(c => c.ToContract());
         }
 
         /// <summary></summary>

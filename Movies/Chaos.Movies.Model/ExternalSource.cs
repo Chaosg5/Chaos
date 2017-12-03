@@ -6,11 +6,20 @@
 
 namespace Chaos.Movies.Model
 {
+    using System.Data;
+
     using Chaos.Movies.Contract;
 
     /// <summary>Represents a user.</summary>
-    public class ExternalSource
+    public class ExternalSource //// : Persistable<ExternalSource, ExternalSourceDto>, IPersistable<ExternalSource, ExternalSourceDto>
     {
+        /// <summary>Initializes a new instance of the <see cref="ExternalSource"/> class.</summary>
+        /// <param name="record">The record.</param>
+        public ExternalSource(IDataRecord record)
+            ////: base(record)
+        {
+        }
+
         /// <summary>Gets the id of the external source.</summary>
         public int Id { get; private set; }
 
@@ -31,8 +40,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the episode address.</summary>
         public string EpisodeAddress { get; private set; }
-
-
+        
         /// <summary>Converts this <see cref="ExternalSource"/> to a <see cref="ExternalSourceDto"/>.</summary>
         /// <returns>The <see cref="ExternalSourceDto"/>.</returns>
         public ExternalSourceDto ToContract()

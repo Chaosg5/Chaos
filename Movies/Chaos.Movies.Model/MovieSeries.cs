@@ -95,7 +95,7 @@ namespace Chaos.Movies.Model
         /// <param name="newOrder">The order to set based on the indexes of the old order.</param>
         public void ReorderMovies(ICollection<int> newOrder)
         {
-            this.movies = Helper.ReorderList(this.movies, newOrder).ToList();
+            this.movies = Persistent.ReorderList(this.movies, newOrder).ToList();
         }
 
         /// <summary>Sets the order of the movies in this collection and saves the change.</summary>
@@ -253,7 +253,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         private void ReadFromRecord(IDataRecord record)
         {
-            Helper.ValidateRecord(record, new[] { "MovieSeriesId" });
+            Persistent.ValidateRecord(record, new[] { "MovieSeriesId" });
             this.Id = (int)record["MovieSeriesId"];
         }
 

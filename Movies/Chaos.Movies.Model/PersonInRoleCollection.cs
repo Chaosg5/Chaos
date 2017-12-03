@@ -12,6 +12,8 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Data.SqlClient;
     using System.Globalization;
+    using System.Threading.Tasks;
+
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents <see cref="Person"/>s in a movie.</summary>
@@ -81,7 +83,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand($"PersonIn{this.parent.ParentType}Add", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
+                command.Parameters.AddWithValue($"{this.parent.VariableName}Id", this.parent.ParentId);
                 command.Parameters.AddWithValue("@personId", personInRole.Person.Id);
                 command.Parameters.AddWithValue("@departmentId", personInRole.Department.Id);
                 command.Parameters.AddWithValue("@roleId", personInRole.Role.Id);
@@ -125,7 +127,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand($"PersonIn{this.parent.ParentType}Remove", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
+                command.Parameters.AddWithValue($"{this.parent.VariableName}Id", this.parent.ParentId);
                 command.Parameters.AddWithValue("@personId", personInRole.Person.Id);
                 command.Parameters.AddWithValue("@departmentId", personInRole.Department.Id);
                 command.Parameters.AddWithValue("@roleId", personInRole.Role.Id);
@@ -136,7 +138,8 @@ namespace Chaos.Movies.Model
 
         /// <summary>Saves all <see cref="PersonInRole"/> to the database.</summary>
         /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent"/>.</exception>
-        public void Save()
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task SaveAsync()
         {
             this.ValidateParent();
             using (var table = new DataTable())
@@ -154,10 +157,10 @@ namespace Chaos.Movies.Model
                 using (var command = new SqlCommand($"PeopleIn{this.parent.ParentType}Save", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
+                    command.Parameters.AddWithValue($"{this.parent.VariableName}Id", this.parent.ParentId);
                     command.Parameters.AddWithValue("@people", table);
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
@@ -173,7 +176,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand($"PeopleIn{this.parent.ParentType}Get", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
+                command.Parameters.AddWithValue($"{this.parent.VariableName}Id", this.parent.ParentId);
                 connection.Open();
 
                 var loadData = new List<PersonLoadShell>();
@@ -247,7 +250,7 @@ namespace Chaos.Movies.Model
             /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
             private void ReadFromRecord(IDataRecord record)
             {
-                Helper.ValidateRecord(record, new[] { "PersonId", "DepartmentId", "RoleId" });
+                Persistent.ValidateRecord(record, new[] { "PersonId", "DepartmentId", "RoleId" });
                 this.PersonId = (int)record["PersonId"];
                 this.DepartmentId = (int)record["DepartmentId"];
                 this.RoleId = (int)record["RoleId"];

@@ -8,8 +8,9 @@ namespace Chaos.Movies.Model
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Data;
-    using System.Data.SqlClient;
+    using System.Data.Common;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -18,35 +19,46 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
-    public class Character
+    public sealed class Character : Readable<Character, CharacterDto>, IReadable<Character, CharacterDto>
     {
-        /// <summary>Private part of the <see cref="Images"/> property.</summary>
-        private readonly List<Icon> images = new List<Icon>();
+        /// <summary>The database column for <see cref="Id"/>.</summary>
+        private const string CharacterIdColumn = "CharacterId";
+
+        /// <summary>The database column for <see cref="Name"/>.</summary>
+        private const string NameColumn = "Name";
 
         /// <summary>Private part of the <see cref="Name"/> property.</summary>
         private string name;
 
-        /// <summary>Initializes a new instance of the <see cref="Character" /> class.</summary>
-        /// <param name="name">The name of the character.</param>
+        /// <inheritdoc />
         public Character(string name)
         {
             this.Name = name;
         }
-        
-        /// <summary>Initializes a new instance of the <see cref="Character" /> class.</summary>
-        /// <param name="character">The character to create.</param>
+
+        /// <inheritdoc />
         public Character(CharacterDto character)
+            : base(character)
         {
             this.Id = character.Id;
             this.Name = character.Name;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Character" /> class.</summary>
-        /// <param name="record">The record containing the data for the character.</param>
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public Character(IDataRecord record)
+            : base(record)
         {
             this.ReadFromRecord(record);
         }
+
+        /// <inheritdoc />
+        private Character()
+        {
+        }
+
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static Character Static { get; } = new Character();
 
         /// <summary>Gets the id of the <see cref="Character"/>.</summary>
         public int Id { get; private set; }
@@ -71,21 +83,25 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the id of the <see cref="Character"/> in <see cref="ExternalSource"/>s.</summary>
         public ExternalLookupCollection ExternalLookup { get; } = new ExternalLookupCollection();
 
-        /// <summary>Gets the list of images for the movie and their order as represented by the key.</summary>
-        public IEnumerable<Icon> Images => this.images;
+        /// <summary>Gets the list of images for this <see cref="Character"/> and their order.</summary>
+        public IconCollection Images { get; } = new IconCollection();
 
-        /// <summary>Gets the specified <see cref="Character"/>s.</summary>
-        /// <param name="session">The <see cref="UserSession"/>.</param>
-        /// <param name="idList">The list of ids of the <see cref="Character"/>s to get.</param>
-        /// <remarks>Uses stored procedure <c>CharactersGet</c>.
-        /// Result 1 columns: CharacterId, Name</remarks>
-        /// <returns>The list of <see cref="Character"/>s.</returns>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        public static async Task<IEnumerable<Character>> GetAsync(UserSession session, IEnumerable<int> idList)
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public async Task<Character> GetAsync(UserSession session, int id)
+        {
+            return (await this.GetAsync(session, new[] { id })).First();
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public async Task<IEnumerable<Character>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
             if (!Persistent.UseService)
             {
-                return await GetFromDatabaseAsync(idList);
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
             }
 
             using (var service = new ChaosMoviesServiceClient())
@@ -94,16 +110,15 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Saves this <see cref="Character"/> to the database.</summary>
-        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Character"/> is not valid to be saved.</exception>
-        /// <returns>No return.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync();
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecord);
                 return;
             }
 
@@ -113,8 +128,15 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Converts this <see cref="Character"/> to a <see cref="CharacterDto"/>.</summary>
-        /// <returns>The <see cref="CharacterDto"/>.</returns>
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="T:Chaos.Movies.Model.Character" /> is not valid to be saved.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public async Task SaveAllAsync(UserSession session)
+        {
+            await this.SaveAsync(session);
+        }
+
+        /// <inheritdoc />
         public CharacterDto ToContract()
         {
             return new CharacterDto
@@ -126,91 +148,84 @@ namespace Chaos.Movies.Model
             };
         }
 
-        public void AddImage()
-        {
-            
-        }
-
-        /// <summary>Gets the specified <see cref="Character"/>s.</summary>
-        /// <param name="idList">The list of ids of the <see cref="Character"/>s to get.</param>
-        /// <remarks>
-        /// Uses stored procedure <c>CharactersGet</c>.
-        /// Result 1 columns: CharacterId, Name
-        /// </remarks>
-        /// <returns>The list of <see cref="Character"/>s.</returns>
+        /// <inheritdoc />
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        private static async Task<IEnumerable<Character>> GetFromDatabaseAsync(IEnumerable<int> idList)
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <returns>The <see cref="Task"/>.</returns>
+        protected override async Task<IEnumerable<Character>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var characters = new List<Character>();
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("CharactersGet", connection))
+            if (!reader.HasRows)
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@idList", Persistent.CreateIdCollectionTable(idList));
-                await connection.OpenAsync();
-                using (var reader = await command.ExecuteReaderAsync())
+                throw new MissingResultException(1, "Characters");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                characters.Add(new Character(reader));
+            }
+
+            if (!await reader.NextResultAsync())
+            {
+                throw new MissingResultException(2, "IconsInCharacters");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var characterId = (int)reader[CharacterIdColumn];
+                var character = characters.Find(c => c.Id == characterId);
+                if (character == null)
                 {
-                    if (!reader.HasRows)
-                    {
-                        throw new MissingResultException(1, "Characters");
-                    }
-
-                    while (await reader.ReadAsync())
-                    {
-                        characters.Add(new Character(reader));
-                    }
-
-                    if (!await reader.NextResultAsync())
-                    {
-                        throw new MissingResultException(2, "IconsInCharacters");
-                    }
-
-                    while (await reader.ReadAsync())
-                    {
-                    }
+                    throw new MissingResultException($"The character id {characterId} in the icons was missing.");
                 }
+
+                character.Images.AddIcon(new Icon(reader));
+            }
+
+            if (!await reader.NextResultAsync())
+            {
+                throw new MissingResultException(3, "CharacterExternalLookup");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var characterId = (int)reader[CharacterIdColumn];
+                var character = characters.Find(c => c.Id == characterId);
+                if (character == null)
+                {
+                    throw new MissingResultException($"The character id {characterId} in the icons was missing.");
+                }
+
+                character.ExternalLookup.SetLookup(new ExternalLookup(reader));
             }
 
             return characters;
         }
 
-        /// <summary>Saves this character to the database.</summary>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <returns>The <see cref="Task"/>.</returns>
-        private async Task SaveToDatabaseAsync()
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("CharacterSave", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@characterId", this.Id);
-                command.Parameters.AddWithValue("@name", this.Name);
-                await connection.OpenAsync();
-                using (var reader = await command.ExecuteReaderAsync())
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
                 {
-                    if (await reader.ReadAsync())
-                    {
-                        this.ReadFromRecord(reader);
-                    }
-                }
-            }
+                    { Persistent.ColumnToVariable(CharacterIdColumn), this.Id },
+                    { Persistent.ColumnToVariable(NameColumn), this.Name }
+                });
         }
 
-        /// <summary>Updates this <see cref="Character"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="Character"/>.</param>
+        /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        private void ReadFromRecord(IDataRecord record)
+        protected override void ReadFromRecord(IDataRecord record)
         {
-            Helper.ValidateRecord(record, new[] { "CharacterId", "Name" });
-            this.Id = (int)record["CharacterId"];
-            this.Name = record["Name"].ToString();
-            // ToDo get ExternalLookup, Images
+            Persistent.ValidateRecord(record, new[] { CharacterIdColumn, NameColumn });
+            this.Id = (int)record[CharacterIdColumn];
+            this.Name = record[NameColumn].ToString();
         }
 
-        /// <summary>Validates that the this <see cref="Character"/> is valid to be saved.</summary>
+        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">This <see cref="Character"/> is not valid to be saved.</exception>
-        private void ValidateSaveCandidate()
+        protected override void ValidateSaveCandidate()
         {
             if (string.IsNullOrEmpty(this.Name))
             {

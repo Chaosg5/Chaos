@@ -60,7 +60,7 @@ namespace Chaos.Movies.Model
         public ParentType ParentType { get; private set; }
 
         /// <summary>The <see cref="ParentType"/> as a variable name.</summary>
-        public string VariableName => char.ToLowerInvariant(ParentType.ToString()[0]) + ParentType.ToString().Substring(1);
+        public string VariableName => Persistent.ColumnToVariable(ParentType.ToString());
 
         /// <summary>Gets the id of the parent.</summary>
         /// <exception cref="PersistentObjectRequiredException" accessor="set">The parent needs to be saved.</exception>
@@ -85,14 +85,14 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         private void ReadFromRecord(IDataRecord record)
         {
-            Helper.ValidateRecord(record, new[] { "ParentType" });
+            Persistent.ValidateRecord(record, new[] { "ParentType" });
             if (!Enum.TryParse((string)record["ParentType"], out ParentType parentType) || !Enum.IsDefined(typeof(ParentType), parentType))
             {
                 // ReSharper disable once ExceptionNotDocumented - This should not occur, unless database is out of sync with the application and documentation is not needed
                 throw new ArgumentOutOfRangeException(nameof(ParentType), $"The value '{(string)record["ParentType"]}' is not a valid {nameof(ParentType)}.");
             }
 
-            Helper.ValidateRecord(record, new[] { $"{parentType}Id" });
+            Persistent.ValidateRecord(record, new[] { $"{parentType}Id" });
             this.ParentType = parentType;
             // ReSharper disable once ExceptionNotDocumented - This should not occur since all id columns are identity(1) and documentation is not needed
             this.ParentId = (int)record[$"{parentType}Id"];

@@ -43,6 +43,9 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ParallelExtensionsExtras, Version=1.2.3.0, Culture=neutral, PublicKeyToken=665f4d61f853b5a9, processorArchitecture=MSIL">
+      <HintPath>..\packages\ParallelExtensionsExtras.1.2.0.0\lib\net40\ParallelExtensionsExtras.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -71,11 +74,13 @@
     <Compile Include="ExternalSource.cs" />
     <Compile Include="IconType.cs" />
     <Compile Include="IconCollection.cs" />
+    <Compile Include="IPersistable.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Parent.cs" />
     <Compile Include="ParentType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MovieSeriesType.cs" />
+    <Compile Include="Persistable.cs" />
     <Compile Include="PersonInRoleCollection.cs" />
     <Compile Include="PersonAsCharacterCollection.cs" />
     <Compile Include="Exceptions\CacheInitializationException.cs" />
@@ -96,11 +101,10 @@
     <Compile Include="Exceptions\MissingColumnException.cs" />
     <Compile Include="Exceptions\InvalidSaveCandidateException.cs" />
     <Compile Include="Genre.cs" />
-    <Compile Include="Helper.cs" />
+    <Compile Include="Persistent.cs" />
     <Compile Include="Icon.cs" />
     <Compile Include="Movie.cs" />
     <Compile Include="LanguageTitle.cs" />
-    <Compile Include="Persistent.cs" />
     <Compile Include="Department.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Role.cs" />

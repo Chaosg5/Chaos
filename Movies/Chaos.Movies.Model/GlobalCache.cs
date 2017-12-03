@@ -8,89 +8,48 @@ namespace Chaos.Movies.Model
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Configuration;
-    using System.Data.SqlClient;
     using System.Globalization;
-    using System.IO;
-    using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
 
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Provides a global cache of objects.</summary>
-    public static class GlobalCache
+    internal static class GlobalCache
     {
-        /// <summary>Private part of the <see cref="Characters"/> property.</summary>
-        private static readonly List<Character> CharactersField = new List<Character>();
-
-        /// <summary>Private part of the <see cref="Departments"/> property.</summary>
-        private static readonly List<Department> DepartmentsField = new List<Department>();
-
-        /// <summary>Private part of the <see cref="MovieSeriesTypes"/> property.</summary>
-        private static readonly List<MovieSeriesType> MovieSeriesTypesField = new List<MovieSeriesType>();
-
-        /// <summary>Private part of the <see cref="People"/> property.</summary>
-        private static readonly List<Person> PeopleField = new List<Person>();
-
-        /// <summary>Private part of the <see cref="Roles"/> property.</summary>
-        private static readonly List<Role> RolesField = new List<Role>();
-
-        /// <summary>Private part of the <see cref="DefaultLanguage"/> property.</summary>
-        private static readonly CultureInfo DefaultLanguageField = new CultureInfo("en-US");
-
-        /// <summary>Private part of the <see cref="User"/> property.</summary>
-        private static User userField;
-
-        ////public static AsyncCache<int, Character> Characters = new AsyncCache<int, Character>();
-
         /// <summary>Gets all available characters.</summary>
-        public static ReadOnlyCollection<Character> Characters => CharactersField.AsReadOnly();
-
+        private static readonly AsyncCache<int, Character> Characters = new AsyncCache<int, Character>(i => Character.Static.GetAsync(session, i));
+        
         /// <summary>Gets all available movie departments.</summary>
-        public static ReadOnlyCollection<Department> Departments => DepartmentsField.AsReadOnly();
+        private static readonly AsyncCache<int, Department> Departments = new AsyncCache<int, Department>(i => Department.Static.GetAsync(session, i));
 
         /// <summary>Gets all available movie series types.</summary>
-        public static ReadOnlyCollection<MovieSeriesType> MovieSeriesTypes => MovieSeriesTypesField.AsReadOnly();
+        private static readonly AsyncCache<int, MovieSeriesType> MovieSeriesTypes = new AsyncCache<int, MovieSeriesType>(i => MovieSeriesType.GetAsync(session, i));
 
         /// <summary>Gets all available people.</summary>
-        public static ReadOnlyCollection<Person> People => PeopleField.AsReadOnly();
+        private static readonly AsyncCache<int, Person> People = new AsyncCache<int, Person>(i => Person.GetAsync(session, i));
 
         /// <summary>Gets all available person roles.</summary>
-        public static ReadOnlyCollection<Role> Roles => RolesField.AsReadOnly();
-
-        /// <summary>Gets the id of the current user.</summary>
-        /// <exception cref="InvalidOperationException" accessor="get">The user has not been initialized.</exception>
-        public static User User
-        {
-            get
-            {
-                if (userField == null)
-                {
-                    // ToDo: Code Analysis remove this exception
-                    throw new InvalidOperationException("The user has not been initialized.");
-                }
-
-                return userField;
-            }
-        }
+        private static readonly AsyncCache<int, Role> Roles = new AsyncCache<int, Role>(i => Role.GetAsync(session, i));
 
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
+        /// <summary>The session.</summary>
+        private static UserSession session;
+
         /// <summary>Gets the default system language.</summary>
-        public static CultureInfo DefaultLanguage => DefaultLanguageField;
+        public static CultureInfo DefaultLanguage { get; } = new CultureInfo("en-US");
 
         /// <summary>Initializes a new instance of the <see cref="GlobalCache"/> class.</summary>
-        /// <param name="user">The current user.</param>
+        /// <param name="userSession">The session.</param>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        public static void InitCache(User user)
+        public static async Task InitCacheAsync(UserSession userSession)
         {
-            userField = user;
-            MovieSeriesTypesLoad();
-            RolesLoad();
-            DepartmentsLoad();
+            MovieSeriesTypesLoadAllAsync();
+            RolesLoadAllAsync();
+            await DepartmentsLoadAllAsync();
         }
 
         /// <summary>Clears all cache objects.</summary>
@@ -120,210 +79,126 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the specified <see cref="Character"/>.</summary>
         /// <param name="id">The id of the <see cref="Character"/> to get.</param>
         /// <returns>The specified <see cref="Character"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">If the <see cref="Character"/> with the specified id doesn't exist.</exception>
-        public static Character GetCharacter(int id)
+        public static async Task<Character> GetCharacterAsync(int id)
         {
-            var character = CharactersField.Find(d => d.Id == id);
-            if (character == null)
-            {
-                // ToDo:
-                ////character = Character.GetAsync(new[] { id }).First();
-                ////if (character == null)
-                ////{
-                ////    throw new ArgumentOutOfRangeException("id");
-                ////}
-
-                ////CharactersField.Add(character);
-            }
-
-            if (character == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id));
-            }
-
-            return character;
+            return await Characters.GetValue(id);
         }
 
         /// <summary>Gets the specified <see cref="Department"/>.</summary>
         /// <param name="id">The id of the <see cref="Department"/> to get.</param>
         /// <returns>The specified <see cref="Department"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">If the <see cref="Department"/> with the specified id doesn't exist.</exception>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        public static Department GetDepartment(int id)
+        public static async Task<Department> GetDepartmentAsync(int id)
         {
-            var department = DepartmentsField.Find(d => d.Id == id);
-            if (department == null)
-            {
-                department = Department.Get(new[] { id }).First();
-                if (department == null)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(id));
-                }
-
-                DepartmentsField.Add(department);
-            }
-
-            if (department == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id));
-            }
-
-            return department;
+            return await Departments.GetValue(id);
         }
 
-        /// <summary>Gets the specified <see cref="Department"/>.</summary>
-        /// <param name="departmentTitle">The title of the <see cref="Department"/> to find.</param>
-        /// <param name="language">The language of the <see cref="departmentTitle"/>.</param>
-        /// <returns>The specified <see cref="Department"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">If the <see cref="Department"/> with the specified <paramref name="departmentTitle"/> does not exists.</exception>
-        public static Department GetDepartment(string departmentTitle, CultureInfo language)
-        {
-            var department = DepartmentsField.Find(d => d.Titles.GetTitle(language).Title == departmentTitle);
-            if (department == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(departmentTitle));
-            }
+        /////// <summary>Gets the specified <see cref="Department"/>.</summary>
+        /////// <param name="departmentTitle">The title of the <see cref="Department"/> to find.</param>
+        /////// <param name="language">The language of the <see cref="departmentTitle"/>.</param>
+        /////// <returns>The specified <see cref="Department"/>.</returns>
+        /////// <exception cref="ArgumentOutOfRangeException">If the <see cref="Department"/> with the specified <paramref name="departmentTitle"/> does not exists.</exception>
+        ////public static Department GetDepartment(string departmentTitle, CultureInfo language)
+        ////{
+        ////    var department = Departments.Find(d => d.Titles.GetTitle(language).Title == departmentTitle);
+        ////    if (department == null)
+        ////    {
+        ////        throw new ArgumentOutOfRangeException(nameof(departmentTitle));
+        ////    }
 
-            return department;
-        }
+        ////    return department;
+        ////}
 
         /// <summary>Gets the specified <see cref="MovieSeriesType"/>.</summary>
         /// <param name="id">The id of the <see cref="MovieSeriesType"/> to get.</param>
         /// <returns>The specified <see cref="MovieSeriesType"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">If the <see cref="MovieSeriesType"/> with the specified id doesn't exist.</exception>
-        public static MovieSeriesType GetMovieSeriesType(int id)
+        public static async Task<MovieSeriesType> GetMovieSeriesTypeAsync(int id)
         {
-            var type = MovieSeriesTypesField.Find(t => t.Id == id);
-            if (type == null)
-            {
-                type = MovieSeriesType.Get(new[] { id }).First();
-                if (type == null)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(id));
-                }
-
-                MovieSeriesTypesField.Add(type);
-            }
-
-            if (type == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id));
-            }
-
-            return type;
+            return await MovieSeriesTypes.GetValue(id);
         }
 
         /// <summary>Gets the specified <see cref="Person"/>.</summary>
         /// <param name="id">The id of the <see cref="Person"/> to get.</param>
         /// <returns>The specified <see cref="Person"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">If the <see cref="Person"/> with the specified id doesn't exist.</exception>
-        public static Person GetPerson(int id)
+        public static async Task<Person> GetPersonAsync(int id)
         {
-            var person = PeopleField.Find(d => d.Id == id);
-            if (person == null)
-            {
-                person = Person.Get(new[] { id }).First();
-                if (person == null)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(id));
-                }
-
-                PeopleField.Add(person);
-            }
-
-            if (person == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id));
-            }
-
-            return person;
+            return await People.GetValue(id);
         }
 
         /// <summary>Gets the specified <see cref="Role"/>.</summary>
         /// <param name="id">The id of the <see cref="Role"/> to get.</param>
         /// <returns>The specified <see cref="Role"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">If the <see cref="Role"/> with the specified id doesn't exist.</exception>
-        public static Role GetRole(int id)
+        public static async Task<Role> GetRoleAsync(int id)
         {
-            var role = RolesField.Find(r => r.Id == id);
-            if (role == null)
-            {
-                role = Role.Get(new[] { id }).First();
-                if (role == null)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(id));
-                }
-
-                RolesField.Add(role);
-            }
-
-            if (role == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id));
-            }
-
-            return role;
+            return await Roles.GetValue(id);
         }
+        
+        /////// <summary>Gets the specified <see cref="Role"/> by title and <see cref="Department"/> title.</summary>
+        /////// <param name="roleTitle">The title of the <see cref="Role"/> to get.</param>
+        /////// <param name="departmentTitle">The title of the <see cref="Department"/> that the role belongs to.</param>
+        /////// <param name="language">The language of the titles.</param>
+        /////// <returns>The found role.</returns>
+        /////// <exception cref="ArgumentOutOfRangeException">If the role or department wasn't found.</exception>
+        ////public static Role GetRole(string roleTitle, string departmentTitle, CultureInfo language)
+        ////{
+        ////    var role = GetDepartment(departmentTitle, language).Roles.First(r => r.Titles.GetTitle(language).Title == roleTitle);
+        ////    if (role == null)
+        ////    {
+        ////        throw new ArgumentOutOfRangeException(nameof(roleTitle));
+        ////    }
 
-        /// <summary>Gets the specified <see cref="Role"/> by title and <see cref="Department"/> title.</summary>
-        /// <param name="roleTitle">The title of the <see cref="Role"/> to get.</param>
-        /// <param name="departmentTitle">The title of the <see cref="Department"/> that the role belongs to.</param>
-        /// <param name="language">The language of the titles.</param>
-        /// <returns>The found role.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">If the role or department wasn't found.</exception>
-        public static Role GetRole(string roleTitle, string departmentTitle, CultureInfo language)
-        {
-            var role = GetDepartment(departmentTitle, language).Roles.First(r => r.Titles.GetTitle(language).Title == roleTitle);
-            if (role == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(roleTitle));
-            }
-
-            return role;
-        }
+        ////    return role;
+        ////}
 
         /// <summary>Loads the <see cref="Character"/>s with the specified ids from the database.</summary>
         /// <param name="idList">The list of ids of the <see cref="Character"/>s to load.</param>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         private static void CharactersLoad(IEnumerable<int> idList)
         {
-            CharactersField.RemoveAll(c => idList.Contains(c.Id));
-            // ToDO:
-            ////CharactersField.AddRange(Character.GetAsync(idList));
-        }
-
-        /// <summary>Loads all <see cref="Department"/>s from the database.</summary>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        private static void DepartmentsLoad()
-        {
-            DepartmentsField.Clear();
-            DepartmentsField.AddRange(Department.GetAll());
-        }
-
-        /// <summary>Loads all <see cref="MovieSeriesType"/>s from the database.</summary>
-        private static void MovieSeriesTypesLoad()
-        {
-            MovieSeriesTypesField.Clear();
-            MovieSeriesTypesField.AddRange(MovieSeriesType.GetAll());
+            foreach (var person in Person.Get(idList))
+            {
+                People.SetValue(person.Id, person);
+            }
         }
 
         /// <summary>Loads the <see cref="Person"/>s with the specified ids from the database.</summary>
         /// <param name="idList">The list of ids of the <see cref="Person"/>s to load.</param>
         private static void PeopleLoad(IEnumerable<int> idList)
         {
-            PeopleField.RemoveAll(p => idList.Contains(p.Id));
-            PeopleField.AddRange(Person.Get(idList));
+            foreach (var person in Person.Get(idList))
+            {
+                People.SetValue(person.Id, person);
+            }
+        }
+
+        /// <summary>Loads all <see cref="Department"/>s from the database.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static async Task DepartmentsLoadAllAsync()
+        {
+            Departments.Clear();
+            foreach (var department in await Department.Static.GetAllAsync(session))
+            {
+                Departments.SetValue(department.Id, department);
+            }
+        }
+
+        /// <summary>Loads all <see cref="MovieSeriesType"/>s from the database.</summary>
+        private static void MovieSeriesTypesLoadAllAsync()
+        {
+            MovieSeriesTypes.Clear();
+            foreach (var movieSeriesType in MovieSeriesType.GetAll())
+            {
+                MovieSeriesTypes.SetValue(movieSeriesType.Id, movieSeriesType);
+            }
         }
 
         /// <summary>Loads all <see cref="Role"/>s from the database.</summary>
-        private static void RolesLoad()
+        private static void RolesLoadAllAsync()
         {
-            RolesField.Clear();
-            RolesField.AddRange(Role.GetAll());
+            Roles.Clear();
+            foreach (var role in Role.GetAll())
+            {
+                Roles.SetValue(role.Id, role);
+            }
         }
     }
 }

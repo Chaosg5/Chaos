@@ -13,6 +13,7 @@ namespace Chaos.Movies.Model
     using System.Data.SqlClient;
     using System.Globalization;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Chaos.Movies.Model.Exceptions;
 
@@ -86,7 +87,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand($"CharacterIn{this.parent.ParentType}Add", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
+                command.Parameters.AddWithValue($"{this.parent.VariableName}Id", this.parent.ParentId);
                 command.Parameters.AddWithValue("@characterId", personAsCharacter.Character.Id);
                 command.Parameters.AddWithValue("@personId", personAsCharacter.Person.Id);
                 connection.Open();
@@ -131,7 +132,7 @@ namespace Chaos.Movies.Model
             using (var command = new SqlCommand($"CharacterIn{this.parent.ParentType}Remove", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
+                command.Parameters.AddWithValue($"{this.parent.VariableName}Id", this.parent.ParentId);
                 command.Parameters.AddWithValue("@characterId", personAsCharacter.Character.Id);
                 command.Parameters.AddWithValue("@personId", personAsCharacter.Person.Id);
                 connection.Open();
@@ -141,7 +142,8 @@ namespace Chaos.Movies.Model
 
         /// <summary>Saves all <see cref="PersonAsCharacter"/> to the database.</summary>
         /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid parent.</exception>
-        public void Save()
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task SaveAsync()
         {
             this.ValidateParent();
             using (var table = new DataTable())
@@ -158,39 +160,45 @@ namespace Chaos.Movies.Model
                 using (var command = new SqlCommand($"CharactersIn{this.parent.ParentType}Save", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
+                    command.Parameters.AddWithValue($"{this.parent.VariableName}Id", this.parent.ParentId);
                     command.Parameters.AddWithValue("@characters", table);
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
 
         /// <summary>Loads <see cref="Character"/>s for the current <see cref="Parent"/>.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid parent.</exception>
-        public void LoadCharacters()
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task LoadCharactersAsync(UserSession session)
         {
             this.ValidateParent();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand($"CharactersIn{this.parent.ParentType}Get", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue($"@{this.parent.VariableName}Id", this.parent.ParentId);
+                command.Parameters.AddWithValue($"{this.parent.VariableName}Id", this.parent.ParentId);
                 connection.Open();
 
                 var loadData = new List<CharacterLoadShell>();
-                using (var reader = command.ExecuteReader())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         loadData.Add(new CharacterLoadShell(reader));
                     }
                 }
 
                 this.characters.Clear();
-                this.characters.AddRange(
-                    loadData.Select(
-                        c => new PersonAsCharacter(GlobalCache.GetPerson(c.PersonId), GlobalCache.GetCharacter(c.CharacterId), c.UserRating)));
+                foreach (var c in loadData)
+                {
+                    var p = new PersonAsCharacter(await GlobalCache.GetPersonAsync(c.PersonId), await GlobalCache.GetCharacterAsync(c.CharacterId), c.UserRating);
+                    this.characters.Add(p);
+                }
+
             }
         }
 
@@ -244,7 +252,7 @@ namespace Chaos.Movies.Model
             /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
             private void ReadFromRecord(IDataRecord record)
             {
-                Helper.ValidateRecord(record, new[] { "CharacterId", "PersonId", "Rating" });
+                Persistent.ValidateRecord(record, new[] { "CharacterId", "PersonId", "Rating" });
                 this.CharacterId = (int)record["CharacterId"];
                 this.PersonId = (int)record["PersonId"];
                 this.UserRating = (int)record["Rating"];

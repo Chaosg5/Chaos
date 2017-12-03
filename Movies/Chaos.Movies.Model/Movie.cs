@@ -12,6 +12,8 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Data.SqlClient;
     using System.Linq;
+    using System.Threading.Tasks;
+
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A movie or a series.</summary>
@@ -52,8 +54,8 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the list of genres that the movie belongs to.</summary>
         public ReadOnlyCollection<Genre> Genres => this.genres.AsReadOnly();
 
-        /// <summary>Gets the list of images for the movie and their order as represented by the key.</summary>
-        public ReadOnlyCollection<Icon> Images => this.images.AsReadOnly();
+        /// <summary>Gets the list of images for this <see cref="Movie"/> and their order.</summary>
+        public IconCollection Images { get; } = new IconCollection();
 
         /// <summary>Gets the total rating score from the current user.</summary>
         public Rating UserRating { get; } = new Rating(new RatingType(1));
@@ -68,8 +70,9 @@ namespace Chaos.Movies.Model
             {
                 if (this.characters == null)
                 {
-                    this.characters = new PersonAsCharacterCollection(new Parent(this));
-                    this.characters.LoadCharacters();
+                    // ToDo: Obsolete needs a session...
+                    ////this.characters = new PersonAsCharacterCollection(new Parent(this));
+                    ////this.characters.LoadCharacters();
                 }
 
                 return this.characters;
@@ -82,22 +85,24 @@ namespace Chaos.Movies.Model
         /// <summary>Gets or sets the type of the movie.</summary>
         public MovieType MovieType { get; set; }
         
+        /// <summary>The save all async.</summary>
         /// <exception cref="PersistentObjectRequiredException">If the <see cref="Id"/> is not a valid id of a <see cref="Movie"/>.</exception>
-        public void SaveAll()
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task SaveAllAsync()
         {
-            this.People.Save();
-            this.Characters.Save();
+            await this.People.SaveAsync();
+            await this.Characters.SaveAsync();
         }
-        
+
         /// <summary>Sets the id of the <see cref="Movie"/> this <see cref="PersonAsCharacterCollection"/> belongs to.</summary>
         /// <param name="movieId">The id of the <see cref="Movie"/> which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
         /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="movieId"/> is not valid.</exception>
+        /// <exception cref="PersistentObjectRequiredException">The <paramref name="movieId"/> is not valid.</exception>
         private void SetMovieId(int movieId)
         {
             if (movieId <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(movieId), "The id of the movie has to be greater than zero.");
+                throw new PersistentObjectRequiredException($"The id '{nameof(movieId)}' of the movie has to be greater than zero.");
             }
 
             if (this.Id != 0)

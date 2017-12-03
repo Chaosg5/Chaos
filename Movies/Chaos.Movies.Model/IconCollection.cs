@@ -31,6 +31,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="IconCollection" /> class.</summary>
         /// <param name="reader">The reader containing the data for the movie series type.</param>
+        /// <exception cref="MissingColumnException">A required column is missing in the reader.</exception>
         public IconCollection(IDataReader reader)
         {
             this.ReadFromRecord(reader);
@@ -38,7 +39,12 @@ namespace Chaos.Movies.Model
         
         /// <summary>Gets the number if existing titles.</summary>
         public int Count => this.icons.Count;
-        
+
+        public void AddIcon(Icon icon)
+        {
+            
+        }
+
         /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
         /// <returns>A table containing the title and language as columns for each title.</returns>
         public DataTable GetSaveIcons
