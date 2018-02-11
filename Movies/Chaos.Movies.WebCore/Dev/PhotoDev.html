@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+        #photoRegion {
+            background-color: red;
+        }
+
+            #photoRegion.full16x9 {
+                width: 112em;
+                height: 63em;
+            }
+
+            #photoRegion.full16x10 {
+                width: 96em;
+                height: 60em;
+            }
+
+            #photoRegion.full14x3 {
+                width: 80em;
+                height: 60em;
+            }
+
+        .photo {
+            background-color: white;
+            float: left;
+            margin: 0;
+            padding: 0;
+        }
+
+            .photo img {
+            }
+
+            .photo.photo4x4 {
+                width: 50%;
+                height: 50%;
+            }
+    </style>
+</head>
+<body>
+    <div id="photoRegion" class="full16x9">
+        <div class="photo photo4x4">
+            <img src="../wwwroot/images/AnduinLothar.jpg"/>
+        </div>
+        <div class="photo photo4x4">
+            <img src="../wwwroot/images/AnduinLothar.jpg" />
+        </div>
+        <div class="photo photo4x4">
+            <img src="../wwwroot/images/AnduinLothar.jpg" />
+        </div>
+        <div class="photo photo4x4">
+            <img src="../wwwroot/images/AnduinLothar.jpg" />
+        </div>
+    </div>
+</body>
+</html>

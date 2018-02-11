@@ -11,12 +11,13 @@ namespace Chaos.Movies.Model
     using Exceptions;
 
     /// <summary>Represents an event where a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
-    public class Watch
+    /// <typeparam name="TParent">The type of the parent class.</typeparam>
+    public class Watch<TParent>
     {
-        /// <summary>Gets the id and type of the parent which this <see cref="Watch"/> belongs to.</summary>
-        private Parent parent;
+        /// <summary>Gets the id and type of the parent which this <see cref="Watch{TParent}"/> belongs to.</summary>
+        private Parent<TParent> parent;
 
-        /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="Watch{TParent}" /> class.</summary>
         /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
         /// <param name="watchDate">The date when the movie was watched.</param>
         /// <param name="dateUncertain">If the <paramref name="watchDate"/> when the <see cref="Movie"/> was watched is just estimated and thus uncertain.</param>
@@ -31,25 +32,25 @@ namespace Chaos.Movies.Model
             this.WatchTypeId = watchTypeId;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="Watch"/>.</param>
+        /// <summary>Initializes a new instance of the <see cref="Watch{TParent}" /> class.</summary>
+        /// <param name="record">The record containing the data for the <see cref="Watch{TParent}"/>.</param>
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
         public Watch(IDataRecord record)
         {
             this.ReadFromRecord(record);
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Watch" /> class.</summary>
-        /// <param name="parent">The parent which this <see cref="Watch"/> belongs to.</param>
+        /// <summary>Initializes a new instance of the <see cref="Watch{TParent}" /> class.</summary>
+        /// <param name="parent">The parent which this <see cref="Watch{TParent}"/> belongs to.</param>
         /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
         /// <param name="watchDate">The date when the movie was watched.</param>
         /// <param name="dateUncertain">If the <paramref name="watchDate"/> when the <see cref="Movie"/> was watched is just estimated and thus uncertain.</param>
         /// <param name="watchLocationId">The id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</param>
         /// <param name="watchTypeId">The id of the <see cref="WatchType"/> describing in what format the <see cref="Movie"/> was watched.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        internal Watch(Parent parent, int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
+        internal Watch(Parent<TParent> parent, int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
         {
             this.SetParent(parent);
             this.UserId = userId;
@@ -85,11 +86,11 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the <see cref="WatchType"/> how the <see cref="Movie"/> was watched.</summary>
         public WatchType WatchType { get; private set; }
-        
-        /// <summary>Sets the parent of this <see cref="PersonAsCharacterCollection"/>.</summary>
-        /// <param name="newParent">The parent which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        internal void SetParent(Parent newParent)
+
+        /// <summary>Sets the parent of this <see cref="Watch{TParent}"/>.</summary>
+        /// <param name="newParent">The parent which this <see cref="Watch{TParent}"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
+        internal void SetParent(Parent<TParent> newParent)
         {
             if (this.parent != null)
             {
@@ -152,7 +153,7 @@ namespace Chaos.Movies.Model
         {
             Persistent.ValidateRecord(record, new[] { "Id", "ParentId", "ParentType", "UserId", "WatchedDate", "DateUncertain" });
             this.Id = (int)record["Id"];
-            this.SetParent(new Parent(record));
+            this.SetParent(new Parent<TParent>(record));
             this.UserId = (int)record["UserId"];
 
             DateTime watchDate;

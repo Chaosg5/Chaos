@@ -14,11 +14,6 @@ namespace Chaos.Movies.Model
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     public interface IReadable<T, TDto> : IPersistable<T, TDto>
     {
-        /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
-        /// <param name="session">The <see cref="UserSession"/>.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
-        Task SaveAllAsync(UserSession session);
-
         /// <summary>Gets the specified <typeparamref name="T"/>.</summary>
         /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <param name="id">The id of the <typeparamref name="T"/> to get.</param>

@@ -11,6 +11,7 @@ namespace Chaos.Movies.Model
     /// <summary>Represents an object that can be communicated over a service.</summary>
     /// <typeparam name="T">The base model logic type.</typeparam>
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
+    // ReSharper disable once UnusedTypeParameter
     public abstract class Communicable<T, TDto>
     {
         /// <summary>Initializes a new instance of the <see cref="Communicable{T,TDto}"/> class.</summary>

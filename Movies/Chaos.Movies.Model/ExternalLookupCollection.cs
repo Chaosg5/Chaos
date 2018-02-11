@@ -6,51 +6,44 @@
 
 namespace Chaos.Movies.Model
 {
-    using System.Collections;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Data;
+    using System.Globalization;
     using System.Linq;
 
     using Chaos.Movies.Contract;
 
     /// <summary>Represents a user.</summary>
-    public class ExternalLookupCollection : IReadOnlyCollection<ExternalLookup>
+    /// <remarks>This does only support a single entry for each <see cref="ExternalSource"/>.</remarks>
+    public class ExternalLookupCollection
+        : Listable<ExternalLookup, ExternalLookupDto>,
+            IListable<ExternalLookup>,
+            ICommunicable<ExternalLookupCollection, ReadOnlyCollection<ExternalLookupDto>>
     {
-        /// <summary>The list of <see cref="ExternalLookup"/>s in this <see cref="ExternalLookupCollection"/>.</summary>
-        private readonly List<ExternalLookup> externalLookup = new List<ExternalLookup>();
-
-        /// <summary>Gets the number of elements contained in this <see cref="ExternalLookupCollection"/>.</summary>
-        public int Count => this.externalLookup.Count;
-
-        /// <summary>Returns an enumerator which iterates through this <see cref="ExternalLookupCollection"/>.</summary>
-        /// <returns>The enumerator.</returns>
-        public IEnumerator<ExternalLookup> GetEnumerator()
+        /// <inheritdoc />
+        public DataTable GetSaveTable
         {
-            return this.externalLookup.GetEnumerator();
-        }
+            get
+            {
+                using (var table = new DataTable())
+                {
+                    table.Locale = CultureInfo.InvariantCulture;
+                    table.Columns.Add(new DataColumn(ExternalSource.ExternalSourceIdColumn, typeof(int)));
+                    table.Columns.Add(new DataColumn(ExternalLookup.ExternalIdColumn, typeof(string)));
+                    foreach (var lookup in this.Items)
+                    {
+                        table.Rows.Add(lookup.ExternalSource.Id, lookup.ExternalId);
+                    }
 
-        /// <summary>Converts this <see cref="ExternalLookupCollection"/> to a <see cref="ReadOnlyCollection{ExternalLookupDto}"/>.</summary>
-        /// <returns>The <see cref="ReadOnlyCollection{ExternalLookupDto}"/>.</returns>
+                    return table;
+                }
+            }
+        }
+        
+        /// <inheritdoc />
         public ReadOnlyCollection<ExternalLookupDto> ToContract()
         {
-            return new ReadOnlyCollection<ExternalLookupDto>(this.externalLookup.Select(l => l.ToContract()).ToList());
-        }
-
-        public void SetLookup(ExternalLookup lookup)
-        {
-            
-        }
-
-        public void RemoveLookup(ExternalLookup lookup)
-        {
-            
-        }
-
-        /// <summary>Returns an enumerator which iterates through this <see cref="ExternalLookupCollection"/>.</summary>
-        /// <returns>The enumerator.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
+            return new ReadOnlyCollection<ExternalLookupDto>(this.Items.Select(item => item.ToContract()).ToList());
         }
     }
 }

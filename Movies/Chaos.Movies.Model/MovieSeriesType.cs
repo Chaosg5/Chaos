@@ -9,85 +9,32 @@ namespace Chaos.Movies.Model
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Data.Common;
     using System.Data.SqlClient;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a type of a movie series.</summary>
-    public class MovieSeriesType
+    public class MovieSeriesType : Typeable<MovieSeriesType, MovieSeriesTypeDto>, ITypeable<MovieSeriesType, MovieSeriesTypeDto>
     {
         /// <summary>Initializes a new instance of the <see cref="MovieSeriesType" /> class.</summary>
         public MovieSeriesType()
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="MovieSeriesType" /> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="MovieSeriesType"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public MovieSeriesType(IDataRecord record)
-        {
-            this.ReadFromRecord(record);
-        }
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static MovieSeriesType Static { get; } = new MovieSeriesType();
 
         /// <summary>Gets the id of the type.</summary>
         public int Id { get; private set; }
 
         /// <summary>Gets the list of titles of the movie series type in different languages.</summary>
         public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
-
-        /// <summary>Loads all movie series types from the database.</summary>
-        /// <returns>All <see cref="MovieSeriesType"/>s.</returns>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
-        public static IEnumerable<MovieSeriesType> GetAll()
-        {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieSeriesTypesGetAll", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    return ReadFromReader(reader);
-                }
-            }
-        }
-
-        /// <summary>Gets the specified <see cref="MovieSeriesType"/>s.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>MovieSeriesTypesGet</c>.
-        /// Result 1 columns: MovieSeriesTypeId, Language, Title
-        /// </remarks>
-        /// <param name="idList">The list of ids of the <see cref="MovieSeriesType"/>s to get.</param>
-        /// <returns>The specified <see cref="MovieSeriesType"/>s.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="idList"/> is <see langword="null" />.</exception>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public static IEnumerable<MovieSeriesType> Get(IEnumerable<int> idList)
-        {
-            if (idList == null || !idList.Any())
-            {
-                throw new ArgumentNullException(nameof(idList));
-            }
-
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieSeriesTypesGet", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@idList", idList);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    return ReadFromReader(reader);
-                }
-            }
-        }
-
+       
         /// <summary>Saves this movie series type to the database.</summary>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeriesType"/> is not valid to be saved.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
@@ -99,12 +46,17 @@ namespace Chaos.Movies.Model
 
         /// <summary>Validates that this <see cref="MovieSeriesType"/> is valid to be saved.</summary>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeriesType"/> is not valid to be saved.</exception>
-        private void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (this.Titles.Count == 0)
             {
                 throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
+        }
+
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>Saves this <see cref="MovieSeriesType"/> to the database.</summary>
@@ -121,14 +73,14 @@ namespace Chaos.Movies.Model
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@movieSeriesTypeId", this.Id);
-                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTitles);
+                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTable);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        this.ReadFromRecord(reader);
+                      ////  await this.ReadFromRecordAsync(reader);
                     }
 
                     if (reader.NextResult())
@@ -139,14 +91,13 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Updates this <see cref="MovieSeriesType"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="MovieSeriesType"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        private void ReadFromRecord(IDataRecord record)
+        /// <inheritdoc />
+        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
+        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
+        public override Task<MovieSeriesType> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "MovieSeriesTypeId" });
-            this.Id = (int)record["MovieSeriesTypeId"];
+            return Task.FromResult(new MovieSeriesType { Id = (int)record["MovieSeriesTypeId"] });
         }
 
         /// <summary>Creates a list of <see cref="MovieSeriesType"/>s from a reader.</summary>
@@ -154,7 +105,7 @@ namespace Chaos.Movies.Model
         /// <returns>The list of <see cref="MovieSeriesType"/>s.</returns>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        private static IEnumerable<MovieSeriesType> ReadFromReader(SqlDataReader reader)
+        protected override async Task<IEnumerable<MovieSeriesType>> ReadFromRecordsAsync(DbDataReader reader)
         {
             if (!reader.HasRows)
             {
@@ -171,7 +122,7 @@ namespace Chaos.Movies.Model
                     type = result.Find(t => t.Id == id);
                     if (type == null)
                     {
-                        type = new MovieSeriesType(reader);
+                        type = await this.ReadFromRecordAsync(reader);
                         result.Add(type);
                     }
                 }
@@ -180,6 +131,36 @@ namespace Chaos.Movies.Model
             }
 
             return result;
+        }
+
+        public MovieSeriesTypeDto ToContract()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task SaveAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<MovieSeriesType> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<MovieSeriesType>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task SaveAllAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<MovieSeriesType>> GetAllAsync(UserSession session)
+        {
+            throw new NotImplementedException();
         }
     }
 }

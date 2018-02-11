@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CharactersInMovieCollection.cs">
+// <copyright file="PersonAsCharacterCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -12,44 +12,44 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Data.SqlClient;
     using System.Globalization;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Model.Exceptions;
 
-    /// <summary>Represents <see cref="Character"/>s in a <see cref="Parent"/>.</summary>
-    public class PersonAsCharacterCollection : IReadOnlyCollection<PersonAsCharacter>
+    /// <summary>Represents <see cref="Character"/>s in a <see cref="Parent{TParent}"/>.</summary>
+    /// <typeparam name="TParent">The type of the parent class.</typeparam>
+    public class PersonAsCharacterCollection<TParent> : IReadOnlyCollection<PersonAsCharacter>
     {
-        /// <summary>The list of <see cref="Character"/>s in this <see cref="PersonAsCharacterCollection"/>.</summary>
+        /// <summary>The list of <see cref="Character"/>s in this <see cref="PersonAsCharacterCollection{TParent}"/>.</summary>
         private readonly List<PersonAsCharacter> characters = new List<PersonAsCharacter>();
 
-        /// <summary>Gets the id and type of the parent which this <see cref="PersonAsCharacterCollection"/> belongs to.</summary>
-        private Parent parent;
+        /// <summary>Gets the id and type of the parent which this <see cref="PersonAsCharacterCollection{TParent}"/> belongs to.</summary>
+        private Parent<TParent> parent;
 
-        /// <summary>Initializes a new instance of the <see cref="PersonAsCharacterCollection"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="PersonAsCharacterCollection{TParent}"/> class.</summary>
         public PersonAsCharacterCollection()
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="PersonAsCharacterCollection"/> class.</summary>
-        /// <param name="parent">The parent which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        internal PersonAsCharacterCollection(Parent parent)
+        /// <summary>Initializes a new instance of the <see cref="PersonAsCharacterCollection{TParent}"/> class.</summary>
+        /// <param name="parent">The parent which this <see cref="PersonAsCharacterCollection{TParent}"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
+        internal PersonAsCharacterCollection(Parent<TParent> parent)
         {
             this.SetParent(parent);
         }
 
-        /// <summary>Gets the number of elements contained in this <see cref="PersonAsCharacterCollection"/>.</summary>
+        /// <summary>Gets the number of elements contained in this <see cref="PersonAsCharacterCollection{TParent}"/>.</summary>
         public int Count => this.characters.Count;
 
-        /// <summary>Returns an enumerator which iterates through this <see cref="PersonAsCharacterCollection"/>.</summary>
+        /// <summary>Returns an enumerator which iterates through this <see cref="PersonAsCharacterCollection{TParent}"/>.</summary>
         /// <returns>The enumerator.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
 
-        /// <summary>Returns an enumerator which iterates through this <see cref="PersonAsCharacterCollection"/>.</summary>
+        /// <summary>Returns an enumerator which iterates through this <see cref="PersonAsCharacterCollection{TParent}"/>.</summary>
         /// <returns>The enumerator.</returns>
         public IEnumerator<PersonAsCharacter> GetEnumerator()
         {
@@ -168,7 +168,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Loads <see cref="Character"/>s for the current <see cref="Parent"/>.</summary>
+        /// <summary>Loads <see cref="Character"/>s for the current <see cref="Parent{TParent}"/>.</summary>
         /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid parent.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
@@ -202,10 +202,10 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Sets the parent of this <see cref="PersonAsCharacterCollection"/>.</summary>
-        /// <param name="newParent">The parent which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        internal void SetParent(Parent newParent)
+        /// <summary>Sets the parent of this <see cref="PersonAsCharacterCollection{TParent}"/>.</summary>
+        /// <param name="newParent">The parent which this <see cref="PersonAsCharacterCollection{TParent}"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
+        internal void SetParent(Parent<TParent> newParent)
         {
             if (this.parent != null)
             {
@@ -225,7 +225,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Temporarily holds ids related to a <see cref="Character"/> in a <see cref="Parent"/> during loaded.</summary>
+        /// <summary>Temporarily holds ids related to a <see cref="Character"/> in a <see cref="Parent{TParent}"/> during loaded.</summary>
         private class CharacterLoadShell
         {
             /// <summary>Initializes a new instance of the <see cref="CharacterLoadShell" /> class.</summary>
@@ -243,7 +243,7 @@ namespace Chaos.Movies.Model
             /// <summary>Gets the id of the <see cref="Person"/> playing the <see cref="Character"/>.</summary>
             public int PersonId { get; private set; }
 
-            /// <summary>Gets the current user's rating of the <see cref="Character"/> in the <see cref="Parent"/>.</summary>
+            /// <summary>Gets the current user's rating of the <see cref="Character"/> in the <see cref="Parent{TParent}"/>.</summary>
             public int UserRating { get; private set; }
 
             /// <summary>Updates this <see cref="CharacterLoadShell"/> from the <paramref name="record"/>.</summary>

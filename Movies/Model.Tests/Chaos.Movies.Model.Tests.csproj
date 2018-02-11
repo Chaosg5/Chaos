@@ -64,6 +64,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="RolesTest.cs" />
     <Compile Include="LanguageTest.cs" />
     <Compile Include="UserLoginTest.cs" />
     <Compile Include="RatingTest.cs" />
@@ -73,6 +74,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Chaos.Movies.Contract\Chaos.Movies.Contract.csproj">
+      <Project>{91F29319-AF34-4AFD-9A55-EC97245019D6}</Project>
+      <Name>Chaos.Movies.Contract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Chaos.Movies.Model\Chaos.Movies.Model.csproj">
       <Project>{824958ae-121d-49aa-b605-899ef11ff4c5}</Project>
       <Name>Chaos.Movies.Model</Name>

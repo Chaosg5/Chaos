@@ -32,11 +32,12 @@ namespace Chaos.Movies.Model
         private readonly List<Icon> images = new List<Icon>();
 
         /// <summary>Private part of the <see cref="Characters"/> property.</summary>
-        private PersonAsCharacterCollection characters;
+        private PersonAsCharacterCollection<Movie> characters;
 
         /// <summary>Initializes a new instance of the <see cref="Movie" /> class.</summary>
         public Movie()
         {
+            this.characters = new PersonAsCharacterCollection<Movie>();
         }
 
         /// <summary>Gets the id of the movie.</summary>
@@ -64,7 +65,7 @@ namespace Chaos.Movies.Model
         public Rating TotalRating { get; } = new Rating(new RatingType(1));
 
         /// <summary>Gets the list of <see cref="Character"/>s in this <see cref="Movie"/>.</summary>
-        public PersonAsCharacterCollection Characters
+        public PersonAsCharacterCollection<Movie> Characters
         {
             get
             {
@@ -80,7 +81,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the list of <see cref="Person"/>s in this <see cref="Movie"/>.</summary>
-        public PersonInRoleCollection People { get; } = new PersonInRoleCollection();
+        public PersonInRoleCollection<Movie> People { get; } = new PersonInRoleCollection<Movie>();
 
         /// <summary>Gets or sets the type of the movie.</summary>
         public MovieType MovieType { get; set; }
@@ -94,9 +95,9 @@ namespace Chaos.Movies.Model
             await this.Characters.SaveAsync();
         }
 
-        /// <summary>Sets the id of the <see cref="Movie"/> this <see cref="PersonAsCharacterCollection"/> belongs to.</summary>
-        /// <param name="movieId">The id of the <see cref="Movie"/> which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        /// <summary>Sets the id of the <see cref="Movie"/> this <see cref="PersonAsCharacterCollection{Movie}"/> belongs to.</summary>
+        /// <param name="movieId">The id of the <see cref="Movie"/> which this <see cref="PersonAsCharacterCollection{Movie}"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{Movie}"/> can't be changed once set.</exception>
         /// <exception cref="PersistentObjectRequiredException">The <paramref name="movieId"/> is not valid.</exception>
         private void SetMovieId(int movieId)
         {
@@ -111,7 +112,7 @@ namespace Chaos.Movies.Model
             }
 
             this.Id = movieId;
-            var parent = new Parent(this);
+            var parent = new Parent<Movie>(this.Id);
             this.Characters.SetParent(parent);
             this.People.SetParent(parent);
         }

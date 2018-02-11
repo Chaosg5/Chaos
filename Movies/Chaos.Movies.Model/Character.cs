@@ -27,10 +27,17 @@ namespace Chaos.Movies.Model
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
 
+        /// <summary>The database column for <see cref="ExternalLookupCollection"/>.</summary>
+        private const string ExternalLookupColumn = "ExternalLookup";
+
+        /// <summary>The database column for <see cref="Images"/>.</summary>
+        private const string IconsColumn = "Icons";
+
         /// <summary>Private part of the <see cref="Name"/> property.</summary>
         private string name;
 
         /// <inheritdoc />
+        /// <param name="name">The value to set for <see cref="Name"/>.</param>
         public Character(string name)
         {
             this.Name = name;
@@ -43,15 +50,7 @@ namespace Chaos.Movies.Model
             this.Id = character.Id;
             this.Name = character.Name;
         }
-
-        /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public Character(IDataRecord record)
-            : base(record)
-        {
-            this.ReadFromRecord(record);
-        }
-
+        
         /// <inheritdoc />
         private Character()
         {
@@ -81,7 +80,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the id of the <see cref="Character"/> in <see cref="ExternalSource"/>s.</summary>
-        public ExternalLookupCollection ExternalLookup { get; } = new ExternalLookupCollection();
+        public ExternalLookupCollection ExternalLookupCollection { get; } = new ExternalLookupCollection();
 
         /// <summary>Gets the list of images for this <see cref="Character"/> and their order.</summary>
         public IconCollection Images { get; } = new IconCollection();
@@ -118,7 +117,7 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecord);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
                 return;
             }
 
@@ -143,7 +142,7 @@ namespace Chaos.Movies.Model
             {
                 Id = this.Id,
                 Name = this.Name,
-                ExternalLookup = this.ExternalLookup.ToContract(),
+                ExternalLookup = this.ExternalLookupCollection.ToContract(),
                 Images = this.Images.Select(s => s.ToContract())
             };
         }
@@ -162,7 +161,7 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                characters.Add(new Character(reader));
+                characters.Add(await this.ReadFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync())
@@ -195,11 +194,21 @@ namespace Chaos.Movies.Model
                 {
                     throw new MissingResultException($"The character id {characterId} in the icons was missing.");
                 }
-
-                character.ExternalLookup.SetLookup(new ExternalLookup(reader));
+                
+                character.ExternalLookupCollection.Add(await ExternalLookup.Static.ReadFromRecordAsync(reader));
             }
 
             return characters;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">This <see cref="Character"/> is not valid to be saved.</exception>
+        public override void ValidateSaveCandidate()
+        {
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can't be empty.");
+            }
         }
 
         /// <inheritdoc />
@@ -209,28 +218,19 @@ namespace Chaos.Movies.Model
                 new Dictionary<string, object>
                 {
                     { Persistent.ColumnToVariable(CharacterIdColumn), this.Id },
-                    { Persistent.ColumnToVariable(NameColumn), this.Name }
+                    { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(ExternalLookupColumn), this.ExternalLookupCollection.GetSaveTable },
+                    { Persistent.ColumnToVariable(IconsColumn), this.Images.GetSaveTable }
                 });
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override void ReadFromRecord(IDataRecord record)
+        public override Task<Character> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { CharacterIdColumn, NameColumn });
-            this.Id = (int)record[CharacterIdColumn];
-            this.Name = record[NameColumn].ToString();
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="InvalidSaveCandidateException">This <see cref="Character"/> is not valid to be saved.</exception>
-        protected override void ValidateSaveCandidate()
-        {
-            if (string.IsNullOrEmpty(this.Name))
-            {
-                throw new InvalidSaveCandidateException("The character's name can not be empty.");
-            }
+            return Task.FromResult(new Character { Id = (int)record[CharacterIdColumn], Name = record[NameColumn].ToString() });
         }
     }
 }

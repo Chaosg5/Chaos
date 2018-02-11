@@ -15,19 +15,8 @@ namespace Chaos.Movies.Model
     /// <summary>Represents a persitable object that can be saved to the database.</summary>
     /// <typeparam name="T">The base model logic type.</typeparam>
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
-    public abstract class Persistable<T, TDto> : Communicable<T, TDto>
+    public abstract class Persistable<T, TDto> : Loadable<T, TDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="Persistable{T,TDto}"/> class.</summary>
-        /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null"/></exception>
-        protected Persistable(IDataRecord record)
-        {
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
-        }
-
         /// <summary>Initializes a new instance of the <see cref="Persistable{T,TDto}"/> class.</summary>
         /// <param name="dto">The <typeparamref name="TDto"/> to create the <typeparamref name="T"/> from.</param>
         protected Persistable(TDto dto)
@@ -40,13 +29,13 @@ namespace Chaos.Movies.Model
         {
         }
 
-        /// <summary>Saves this character to the database.</summary>
+        /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecord">The callback method to use for reading the <typeparamref name="T"/> from data to object after being saved.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <parmref name="readFromRecord"/> is <see langword="null"/></exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        protected async Task SaveToDatabaseAsync(IReadOnlyDictionary<string, object> commandParameters, Action<IDataRecord> readFromRecord)
+        protected async Task SaveToDatabaseAsync(IReadOnlyDictionary<string, object> commandParameters, Func<IDataRecord, Task> readFromRecord)
         {
             if (commandParameters == null)
             {
@@ -77,16 +66,9 @@ namespace Chaos.Movies.Model
                 }
             }
         }
-        
-        /// <summary>Validates that the this <typeparamref name="T"/> is valid to be saved.</summary>
-        protected abstract void ValidateSaveCandidate();
 
         /// <summary>Gets SQL parameters to use for <see cref="IPersistable{T,TDto}.SaveAsync"/>.</summary>
         /// <returns>The list of SQL parameters.</returns>
         protected abstract IReadOnlyDictionary<string, object> GetSaveParameters();
-
-        /// <summary>Updates this <typeparamref name="T"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
-        protected abstract void ReadFromRecord(IDataRecord record);
     }
 }

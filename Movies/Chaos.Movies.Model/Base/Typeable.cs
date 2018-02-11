@@ -19,17 +19,6 @@ namespace Chaos.Movies.Model
     public abstract class Typeable<T, TDto> : Readable<T, TDto>
     {
         /// <summary>Initializes a new instance of the <see cref="Typeable{T,TDto}"/> class.</summary>
-        /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null"/></exception>
-        protected Typeable(IDataRecord record)
-        {
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="Typeable{T,TDto}"/> class.</summary>
         /// <param name="dto">The <typeparamref name="TDto"/> to create the <typeparamref name="T"/> from.</param>
         protected Typeable(TDto dto)
             : base(dto)

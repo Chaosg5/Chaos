@@ -24,13 +24,16 @@ namespace Chaos.Movies.Model
         private static readonly AsyncCache<int, Department> Departments = new AsyncCache<int, Department>(i => Department.Static.GetAsync(session, i));
 
         /// <summary>Gets all available movie series types.</summary>
-        private static readonly AsyncCache<int, MovieSeriesType> MovieSeriesTypes = new AsyncCache<int, MovieSeriesType>(i => MovieSeriesType.GetAsync(session, i));
+        private static readonly AsyncCache<int, MovieSeriesType> MovieSeriesTypes = new AsyncCache<int, MovieSeriesType>(i => MovieSeriesType.Static.GetAsync(session, i));
 
         /// <summary>Gets all available people.</summary>
-        private static readonly AsyncCache<int, Person> People = new AsyncCache<int, Person>(i => Person.GetAsync(session, i));
+        private static readonly AsyncCache<int, Person> People = new AsyncCache<int, Person>(i => Person.Static.GetAsync(session, i));
 
         /// <summary>Gets all available person roles.</summary>
-        private static readonly AsyncCache<int, Role> Roles = new AsyncCache<int, Role>(i => Role.GetAsync(session, i));
+        private static readonly AsyncCache<int, Role> Roles = new AsyncCache<int, Role>(i => Role.Static.GetAsync(session, i));
+
+        /// <summary>Gets all available external sources.</summary>
+        private static readonly AsyncCache<int, ExternalSource> ExternalSources = new AsyncCache<int, ExternalSource>(i => ExternalSource.Static.GetAsync(session, i));
 
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
@@ -42,13 +45,12 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="GlobalCache"/> class.</summary>
         /// <param name="userSession">The session.</param>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <returns>The <see cref="Task"/>.</returns>
         public static async Task InitCacheAsync(UserSession userSession)
         {
-            MovieSeriesTypesLoadAllAsync();
-            RolesLoadAllAsync();
+            await MovieSeriesTypesLoadAllAsync();
+            await RolesLoadAllAsync();
             await DepartmentsLoadAllAsync();
         }
 
@@ -131,7 +133,15 @@ namespace Chaos.Movies.Model
         {
             return await Roles.GetValue(id);
         }
-        
+
+        /// <summary>Gets the specified <see cref="ExternalSource"/>.</summary>
+        /// <param name="id">The id of the <see cref="ExternalSource"/> to get.</param>
+        /// <returns>The specified <see cref="ExternalSource"/>.</returns>
+        public static async Task<ExternalSource> GetExternalSourceAsync(int id)
+        {
+            return await ExternalSources.GetValue(id);
+        }
+
         /////// <summary>Gets the specified <see cref="Role"/> by title and <see cref="Department"/> title.</summary>
         /////// <param name="roleTitle">The title of the <see cref="Role"/> to get.</param>
         /////// <param name="departmentTitle">The title of the <see cref="Department"/> that the role belongs to.</param>
@@ -182,20 +192,22 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Loads all <see cref="MovieSeriesType"/>s from the database.</summary>
-        private static void MovieSeriesTypesLoadAllAsync()
+        /// <returns>The <see cref="Task"/>.</returns>
+        private static async Task MovieSeriesTypesLoadAllAsync()
         {
             MovieSeriesTypes.Clear();
-            foreach (var movieSeriesType in MovieSeriesType.GetAll())
+            foreach (var movieSeriesType in await MovieSeriesType.Static.GetAllAsync(session))
             {
                 MovieSeriesTypes.SetValue(movieSeriesType.Id, movieSeriesType);
             }
         }
 
         /// <summary>Loads all <see cref="Role"/>s from the database.</summary>
-        private static void RolesLoadAllAsync()
+        /// <returns>The <see cref="Task"/>.</returns>
+        private static async Task RolesLoadAllAsync()
         {
             Roles.Clear();
-            foreach (var role in Role.GetAll())
+            foreach (var role in await Role.Static.GetAllAsync(session))
             {
                 Roles.SetValue(role.Id, role);
             }

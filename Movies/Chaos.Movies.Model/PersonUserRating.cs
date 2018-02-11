@@ -12,16 +12,17 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a <see cref="User"/>'s rating of a <see cref="Person"/> in a <see cref="Movie"/>.</summary>
-    public class PersonUserRating
+    /// <typeparam name="TParent">The type of the parent class.</typeparam>
+    public class PersonUserRating<TParent>
     {
         /// <summary>Gets the id and type of the parent which this <see cref="Watch"/> belongs to.</summary>
-        private Parent parent;
+        private Parent<TParent> parent;
 
-        /// <summary>Initializes a new instance of the <see cref="PersonUserRating"/> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="PersonUserRating"/>.</param>
+        /// <summary>Initializes a new instance of the <see cref="PersonUserRating{TParent}"/> class.</summary>
+        /// <param name="record">The record containing the data for the <see cref="PersonUserRating{TParent}"/>.</param>
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
         public PersonUserRating(IDataRecord record)
         {
             this.ReadFromRecord(record);
@@ -33,10 +34,10 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the number of times the <see cref="User"/> has watched the <see cref="Movie"/>.</summary>
         public int Watches { get; private set; }
 
-        /// <summary>Sets the parent of this <see cref="PersonAsCharacterCollection"/>.</summary>
-        /// <param name="newParent">The parent which this <see cref="PersonAsCharacterCollection"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        internal void SetParent(Parent newParent)
+        /// <summary>Sets the parent of this <see cref="PersonAsCharacterCollection{TParent}"/>.</summary>
+        /// <param name="newParent">The parent which this <see cref="PersonAsCharacterCollection{TParent}"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
+        internal void SetParent(Parent<TParent> newParent)
         {
             if (this.parent != null)
             {
@@ -46,15 +47,15 @@ namespace Chaos.Movies.Model
             this.parent = newParent;
         }
 
-        /// <summary>Updates this <see cref="PersonUserRating"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="PersonUserRating"/>.</param>
+        /// <summary>Updates this <see cref="PersonUserRating{TParent}"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <see cref="PersonUserRating{TParent}"/>.</param>
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
         private void ReadFromRecord(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "Rating", "Watches" });
-            this.SetParent(new Parent(record));
+            this.SetParent(new Parent<TParent>(record));
             this.Rating = (int)record["Rating"];
             this.Watches = (int)record["Watches"];
         }

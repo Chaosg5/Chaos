@@ -6,19 +6,48 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Data;
+    using System.Data.Common;
+    using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.ChaosMovieService;
+    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a user.</summary>
-    public class ExternalSource //// : Persistable<ExternalSource, ExternalSourceDto>, IPersistable<ExternalSource, ExternalSourceDto>
+    public sealed class ExternalSource : Readable<ExternalSource, ExternalSourceDto>, IReadable<ExternalSource, ExternalSourceDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="ExternalSource"/> class.</summary>
-        /// <param name="record">The record.</param>
-        public ExternalSource(IDataRecord record)
-            ////: base(record)
+        /// <summary>The database column for <see cref="Id"/>.</summary>
+        public const string ExternalSourceIdColumn = "ExternalSourceId";
+
+        /// <summary>The database column for <see cref="Name"/>.</summary>
+        private const string NameColumn = "Name";
+
+        /// <summary>The database column for <see cref="BaseAddress"/>.</summary>
+        private const string BaseAddressColumn = "BaseAddress";
+
+        /// <summary>The database column for <see cref="PeopleAddress"/>.</summary>
+        private const string PeopleAddressColumn = "PeopleAddress";
+
+        /// <summary>The database column for <see cref="CharacterAddress"/>.</summary>
+        private const string CharacterAddressColumn = "CharacterAddress";
+
+        /// <summary>The database column for <see cref="GenreAddress"/>.</summary>
+        private const string GenreAddressColumn = "GenreAddress";
+
+        /// <summary>The database column for <see cref="EpisodeAddress"/>.</summary>
+        private const string EpisodeAddressColumn = "EpisodeAddress";
+        
+        /// <summary>Prevents a default instance of the <see cref="ExternalSource"/> class from being created.</summary>
+        private ExternalSource()
         {
         }
+
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static ExternalSource Static { get; } = new ExternalSource();
 
         /// <summary>Gets the id of the external source.</summary>
         public int Id { get; private set; }
@@ -40,7 +69,33 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the episode address.</summary>
         public string EpisodeAddress { get; private set; }
-        
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="ExternalSource"/> is not valid to be saved.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public async Task SaveAsync(UserSession session)
+        {
+            this.ValidateSaveCandidate();
+            if (!Persistent.UseService)
+            {
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                return;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="ExternalSource"/> is not valid to be saved.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public async Task SaveAllAsync(UserSession session)
+        {
+            await this.SaveAsync(session);
+        }
+
         /// <summary>Converts this <see cref="ExternalSource"/> to a <see cref="ExternalSourceDto"/>.</summary>
         /// <returns>The <see cref="ExternalSourceDto"/>.</returns>
         public ExternalSourceDto ToContract()
@@ -55,6 +110,83 @@ namespace Chaos.Movies.Model
                 GenreAddress = this.GenreAddress,
                 EpisodeAddress = this.EpisodeAddress
             };
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">This <see cref="ExternalSource"/> is not valid to be saved.</exception>
+        public override void ValidateSaveCandidate()
+        {
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can't be empty.");
+            }
+
+            if (string.IsNullOrEmpty(this.BaseAddress))
+            {
+                throw new InvalidSaveCandidateException($"The {nameof(this.BaseAddress)} can't be empty.");
+            }
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(ExternalSourceIdColumn), this.Id },
+                    { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(BaseAddressColumn), this.BaseAddress },
+                    { Persistent.ColumnToVariable(PeopleAddressColumn), this.PeopleAddress },
+                    { Persistent.ColumnToVariable(CharacterAddressColumn), this.CharacterAddress },
+                    { Persistent.ColumnToVariable(GenreAddressColumn), this.GenreAddress },
+                    { Persistent.ColumnToVariable(EpisodeAddressColumn), this.EpisodeAddress }
+                });
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        public override Task<ExternalSource> ReadFromRecordAsync(IDataRecord record)
+        {
+            var requiredColumns = new[]
+            {
+                ExternalSourceIdColumn,
+                NameColumn,
+                BaseAddressColumn,
+                PeopleAddressColumn,
+                CharacterAddressColumn,
+                GenreAddressColumn,
+                EpisodeAddressColumn
+            };
+            Persistent.ValidateRecord(
+                record,
+                requiredColumns);
+            var externalSource = new ExternalSource
+            {
+                Id = (int)record[ExternalSourceIdColumn],
+                Name = record[NameColumn].ToString(),
+                BaseAddress = record[BaseAddressColumn].ToString(),
+                PeopleAddress = record[PeopleAddressColumn].ToString(),
+                CharacterAddress = record[CharacterAddressColumn].ToString(),
+                GenreAddress = record[GenreAddressColumn].ToString(),
+                EpisodeAddress = record[EpisodeAddressColumn].ToString()
+            };
+            return Task.FromResult(externalSource);
+        }
+
+        protected override Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ExternalSource> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ExternalSource>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
         }
     }
 }

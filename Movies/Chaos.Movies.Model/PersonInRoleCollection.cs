@@ -17,37 +17,39 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents <see cref="Person"/>s in a movie.</summary>
-    public class PersonInRoleCollection : IReadOnlyCollection<PersonInRole>
+    /// <typeparam name="TParent">The type of the parent class.</typeparam>
+    public class PersonInRoleCollection<TParent> : IReadOnlyCollection<PersonInRole>
     {
-        /// <summary>The list of <see cref="Person"/>s in this <see cref="PersonInRoleCollection"/>.</summary>
+        /// <summary>The list of <see cref="Person"/>s in this <see cref="PersonInRoleCollection{TParent}"/>.</summary>
         private readonly List<PersonInRole> people = new List<PersonInRole>();
 
-        /// <summary>Gets the id and type of the parent which this <see cref="PersonInRoleCollection"/> belongs to.</summary>
-        private Parent parent;
+        /// <summary>Gets the id and type of the parent which this <see cref="PersonInRoleCollection{TParent}"/> belongs to.</summary>
+        private Parent<TParent> parent;
 
-        /// <summary>Initializes a new instance of the <see cref="PersonInRoleCollection"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="PersonInRoleCollection{TParent}"/> class.</summary>
         public PersonInRoleCollection()
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="PersonInRoleCollection"/> class.</summary>
-        /// <param name="parent">The parent which this <see cref="PersonInRoleCollection"/> belongs to.</param>
-        internal PersonInRoleCollection(Parent parent)
+        /// <summary>Initializes a new instance of the <see cref="PersonInRoleCollection{TParent}"/> class.</summary>
+        /// <param name="parent">The parent which this <see cref="PersonInRoleCollection{TParent}"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
+        internal PersonInRoleCollection(Parent<TParent> parent)
         {
             this.SetParent(parent);
         }
 
-        /// <summary>Gets the number of elements contained in this <see cref="PersonInRoleCollection"/>.</summary>
+        /// <summary>Gets the number of elements contained in this <see cref="PersonInRoleCollection{TParent}"/>.</summary>
         public int Count => this.people.Count;
 
-        /// <summary>Returns an enumerator which iterates through this <see cref="PersonInRoleCollection"/>.</summary>
+        /// <summary>Returns an enumerator which iterates through this <see cref="PersonInRoleCollection{TParent}"/>.</summary>
         /// <returns>The enumerator.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
 
-        /// <summary>Returns an enumerator which iterates through this <see cref="PersonInRoleCollection"/>.</summary>
+        /// <summary>Returns an enumerator which iterates through this <see cref="PersonInRoleCollection{TParent}"/>.</summary>
         /// <returns>The enumerator.</returns>
         public IEnumerator<PersonInRole> GetEnumerator()
         {
@@ -74,7 +76,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Removes specified <paramref name="personInRole"/> item from the list and saves the change to the database.</summary>
         /// <param name="personInRole">The item to remove.</param>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent{TParent}"/>.</exception>
         public void AddPersonAndSave(PersonInRole personInRole)
         {
             this.ValidateParent();
@@ -114,7 +116,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Removes specified <paramref name="personInRole"/> item from the list and saves the change to the database.</summary>
         /// <param name="personInRole">The item to remove.</param>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent{TParent}"/>.</exception>
         public void RemovePersonAndSave(PersonInRole personInRole)
         {
             if (!this.RemovePerson(personInRole))
@@ -137,7 +139,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Saves all <see cref="PersonInRole"/> to the database.</summary>
-        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent"/>.</exception>
+        /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="Parent{TParent}"/>.</exception>
         /// <returns>The <see cref="Task"/>.</returns>
         public async Task SaveAsync()
         {
@@ -165,7 +167,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Loads <see cref="Person"/>s for the current <see cref="Parent"/>.</summary>
+        /// <summary>Loads <see cref="Person"/>s for the current <see cref="Parent{TParent}"/>.</summary>
         /// <exception cref="PersistentObjectRequiredException">If the <see cref="parent"/> is not a valid id of a <see cref="parent"/>.</exception>
         /// <exception cref="ArgumentNullException">If any parameter is null.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
@@ -200,10 +202,10 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Sets the parent of this <see cref="PersonInRoleCollection"/>.</summary>
-        /// <param name="newParent">The parent which this <see cref="PersonInRoleCollection"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        internal void SetParent(Parent newParent)
+        /// <summary>Sets the parent of this <see cref="PersonInRoleCollection{TParent}"/>.</summary>
+        /// <param name="newParent">The parent which this <see cref="PersonInRoleCollection{TParent}"/> belongs to.</param>
+        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
+        internal void SetParent(Parent<TParent> newParent)
         {
             if (this.parent != null)
             {
@@ -223,7 +225,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Temporarily holds ids related to a <see cref="Person"/> in a <see cref="Parent"/> during loaded.</summary>
+        /// <summary>Temporarily holds ids related to a <see cref="Person"/> in a <see cref="Parent{TParent}"/> during loaded.</summary>
         private class PersonLoadShell
         {
             /// <summary>Initializes a new instance of the <see cref="PersonLoadShell" /> class.</summary>

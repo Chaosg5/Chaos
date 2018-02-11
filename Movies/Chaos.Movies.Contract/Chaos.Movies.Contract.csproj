@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICharacter.cs" />
     <Compile Include="CharacterDto.cs" />
     <Compile Include="ExternalLookupDto.cs" />
     <Compile Include="ExternalRatingsDto.cs" />

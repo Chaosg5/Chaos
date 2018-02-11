@@ -15,22 +15,11 @@ namespace Chaos.Movies.Model
 
     using Chaos.Movies.Model.Exceptions;
 
-    /// <summary>Represents a persitable object that can be saved to the database.</summary>
+    /// <summary>Represents a persitable object that can be saved to the database and then read up again as a self-containing entity.</summary>
     /// <typeparam name="T">The base model logic type.</typeparam>
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     public abstract class Readable<T, TDto> : Persistable<T, TDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="Readable{T,TDto}"/> class.</summary>
-        /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null"/></exception>
-        protected Readable(IDataRecord record)
-        {
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
-        }
-
         /// <summary>Initializes a new instance of the <see cref="Readable{T,TDto}"/> class.</summary>
         /// <param name="dto">The <typeparamref name="TDto"/> to create the <typeparamref name="T"/> from.</param>
         protected Readable(TDto dto)

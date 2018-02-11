@@ -218,7 +218,7 @@ namespace Chaos.Movies.Model
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@movieSeriesId", this.Id);
                 command.Parameters.AddWithValue("@movieSeriesTypeId", this.MovieSeriesType.Id);
-                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTitles);
+                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTable);
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())

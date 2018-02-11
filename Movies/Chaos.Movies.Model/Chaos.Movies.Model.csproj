@@ -61,6 +61,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenreCollection.cs" />
+    <Compile Include="Base\ILoadable.cs" />
+    <Compile Include="Base\Listable.cs" />
+    <Compile Include="Base\ICollectable.cs" />
+    <Compile Include="Base\Collectable.cs" />
+    <Compile Include="Base\Loadable.cs" />
+    <Compile Include="RolesCollection.cs" />
+    <Compile Include="Base\ICommunicable.cs" />
     <Compile Include="Connected Services\ChaosMovieService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -74,13 +82,18 @@
     <Compile Include="ExternalSource.cs" />
     <Compile Include="IconType.cs" />
     <Compile Include="IconCollection.cs" />
-    <Compile Include="IPersistable.cs" />
+    <Compile Include="Base\IListable.cs" />
+    <Compile Include="Base\IReadable.cs" />
+    <Compile Include="Base\ITypeable.cs" />
+    <Compile Include="Base\IPersistable.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Parent.cs" />
-    <Compile Include="ParentType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MovieSeriesType.cs" />
-    <Compile Include="Persistable.cs" />
+    <Compile Include="Base\Communicable.cs" />
+    <Compile Include="Base\Typeable.cs" />
+    <Compile Include="Base\Readable.cs" />
+    <Compile Include="Base\Persistable.cs" />
     <Compile Include="PersonInRoleCollection.cs" />
     <Compile Include="PersonAsCharacterCollection.cs" />
     <Compile Include="Exceptions\CacheInitializationException.cs" />
@@ -174,6 +187,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

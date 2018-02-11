@@ -18,7 +18,7 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets the external rating.</summary>
         [DataMember]
-        public double ExternalRating { get; set; }
+        public double Rating { get; set; }
 
         /// <summary>Gets or sets the count of votes for the rating.</summary>
         [DataMember]

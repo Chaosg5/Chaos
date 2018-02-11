@@ -24,17 +24,12 @@ namespace Chaos.Movies.Model
         /// <summary>The database column for <see cref="Id"/>.</summary>
         private const string DepartmentIdColumn = "DepartmentId";
 
-        /// <summary>Private part of the <see cref="Roles"/> property.</summary>
-        private readonly List<Role> roles = new List<Role>();
+        /// <summary>The database column for <see cref="Titles"/>.</summary>
+        private const string TitlesColumn = "Titles";
 
-        /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-        private Department(IDataRecord record)
-        {
-            this.ReadFromRecord(record);
-        }
-
+        /// <summary>The database column for <see cref="Roles"/>.</summary>
+        private const string RolesColumn = "Roles";
+        
         /// <inheritdoc />
         private Department()
         {
@@ -50,7 +45,7 @@ namespace Chaos.Movies.Model
         public LanguageTitleCollection Titles { get; } = new LanguageTitleCollection();
 
         /// <summary>Gets all available person roles.</summary>
-        public ReadOnlyCollection<Role> Roles => this.roles.AsReadOnly();
+        public RolesCollection Roles { get; } = new RolesCollection();
 
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
@@ -103,7 +98,7 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecord);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
                 return;
             }
 
@@ -124,7 +119,12 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         public DepartmentDto ToContract()
         {
-            throw new NotImplementedException();
+            return new DepartmentDto
+            {
+                Id = this.Id,
+                Titles = this.Titles.ToContract(),
+                Roles = new ReadOnlyCollection<RoleDto>(this.Roles.Select(r => r.ToContract()).ToList())
+            };
         }
 
         /// <inheritdoc />
@@ -148,7 +148,7 @@ namespace Chaos.Movies.Model
                     department = result.Find(t => t.Id == id);
                     if (department == null)
                     {
-                        department = new Department(reader);
+                        department = await this.ReadFromRecordAsync(reader);
                         result.Add(department);
                     }
                 }
@@ -178,7 +178,7 @@ namespace Chaos.Movies.Model
                     throw new SqlResultSyncException(departmentId);
                 }
 
-                department.roles.Add(await GlobalCache.GetRoleAsync(roleId));
+                department.Roles.Add(await GlobalCache.GetRoleAsync(roleId));
             }
 
             return result;
@@ -186,7 +186,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
-        protected override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (this.Titles.Count == 0)
             {
@@ -200,17 +200,19 @@ namespace Chaos.Movies.Model
             return new ReadOnlyDictionary<string, object>(
                 new Dictionary<string, object>
                 {
-                    { Persistent.ColumnToVariable(DepartmentIdColumn), this.Id }
+                    { Persistent.ColumnToVariable(DepartmentIdColumn), this.Id },
+                    { Persistent.ColumnToVariable(TitlesColumn), this.Titles.GetSaveTable },
+                    { Persistent.ColumnToVariable(RolesColumn), this.Roles.GetSaveTable }
                 });
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override void ReadFromRecord(IDataRecord record)
+        public override Task<Department> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "DepartmentId" });
-            this.Id = (int)record["DepartmentId"];
+            return Task.FromResult(new Department { Id = (int)record["DepartmentId"] });
         }
     }
 }

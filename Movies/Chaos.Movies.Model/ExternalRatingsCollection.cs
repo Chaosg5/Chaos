@@ -6,31 +6,44 @@
 
 namespace Chaos.Movies.Model
 {
-    using System.Collections;
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Data;
+    using System.Globalization;
+    using System.Linq;
+
+    using Chaos.Movies.Contract;
 
     /// <summary>Represents a user.</summary>
-    public class ExternalRatingsCollection : IReadOnlyCollection<ExternalRating>
+    public class ExternalRatingsCollection
+        : Listable<ExternalRating, ExternalRatingsDto>,
+            IListable<ExternalRating>,
+            ICommunicable<ExternalRatingsCollection, ReadOnlyCollection<ExternalRatingsDto>>
     {
-        /// <summary>The list of <see cref="ExternalRating"/>s in this <see cref="ExternalRatingsCollection"/>.</summary>
-        private readonly List<ExternalRating> externalRatings = new List<ExternalRating>();
-
-        /// <summary>Gets the number of elements contained in this <see cref="ExternalRatingsCollection"/>.</summary>
-        public int Count => this.externalRatings.Count;
-
-        /// <summary>Returns an enumerator which iterates through this <see cref="ExternalRatingsCollection"/>.</summary>
-        /// <returns>The enumerator.</returns>
-        public IEnumerator<ExternalRating> GetEnumerator()
+        /// <inheritdoc />
+        public DataTable GetSaveTable
         {
-            return this.externalRatings.GetEnumerator();
+            get
+            {
+                using (var table = new DataTable())
+                {
+                    table.Locale = CultureInfo.InvariantCulture;
+                    table.Columns.Add(new DataColumn(ExternalSource.ExternalSourceIdColumn, typeof(int)));
+                    table.Columns.Add(new DataColumn(ExternalRating.ExternalRatingColumn, typeof(double)));
+                    table.Columns.Add(new DataColumn(ExternalRating.RatingCountColumn, typeof(int)));
+                    foreach (var rating in this.Items)
+                    {
+                        table.Rows.Add(rating.ExternalSource.Id, rating.Rating, rating.RatingCount);
+                    }
+
+                    return table;
+                }
+            }
         }
 
-        /// <summary>Returns an enumerator which iterates through this <see cref="ExternalRatingsCollection"/>.</summary>
-        /// <returns>The enumerator.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
+        /// <inheritdoc />
+        public ReadOnlyCollection<ExternalRatingsDto> ToContract()
         {
-            return this.GetEnumerator();
+            return new ReadOnlyCollection<ExternalRatingsDto>(this.Items.Select(item => item.ToContract()).ToList());
         }
-        
     }
 }

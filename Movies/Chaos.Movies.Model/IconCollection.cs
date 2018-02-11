@@ -45,14 +45,19 @@ namespace Chaos.Movies.Model
             
         }
 
+        // ToDo: IOrderable + ReorderList
+
+        // ToDo: IListable + GetSaveTable
+
         /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
         /// <returns>A table containing the title and language as columns for each title.</returns>
-        public DataTable GetSaveIcons
+        public DataTable GetSaveTable
         {
             get
             {
                 using (var table = new DataTable())
                 {
+                    // ToDo: Constants
                     table.Locale = CultureInfo.InvariantCulture;
                     table.Columns.Add(new DataColumn("IconId", typeof(int)));
                     table.Columns.Add(new DataColumn("IconTypeId", typeof(int)));

@@ -13,9 +13,9 @@ namespace Chaos.Movies.Contract
     [DataContract]
     public class DepartmentDto
     {
-        /// <summary>Gets the id of the department.</summary>
+        /// <summary>Gets or sets the id of the department.</summary>
         [DataMember]
-        public int Id { get; private set; }
+        public int Id { get; set; }
 
         /// <summary>Gets or sets the list of titles of the department in different languages.</summary>
         [DataMember]
