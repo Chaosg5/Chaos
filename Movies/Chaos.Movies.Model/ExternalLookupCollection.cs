@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Globalization;
@@ -15,13 +16,10 @@ namespace Chaos.Movies.Model
 
     /// <summary>Represents a user.</summary>
     /// <remarks>This does only support a single entry for each <see cref="ExternalSource"/>.</remarks>
-    public class ExternalLookupCollection
-        : Listable<ExternalLookup, ExternalLookupDto>,
-            IListable<ExternalLookup>,
-            ICommunicable<ExternalLookupCollection, ReadOnlyCollection<ExternalLookupDto>>
+    public class ExternalLookupCollection : Listable<ExternalLookup, ExternalLookupDto, ExternalLookupCollection>
     {
         /// <inheritdoc />
-        public DataTable GetSaveTable
+        public override DataTable GetSaveTable
         {
             get
             {
@@ -39,9 +37,9 @@ namespace Chaos.Movies.Model
                 }
             }
         }
-        
+
         /// <inheritdoc />
-        public ReadOnlyCollection<ExternalLookupDto> ToContract()
+        public override ReadOnlyCollection<ExternalLookupDto> ToContract()
         {
             return new ReadOnlyCollection<ExternalLookupDto>(this.Items.Select(item => item.ToContract()).ToList());
         }

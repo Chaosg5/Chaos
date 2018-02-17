@@ -19,9 +19,9 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
-    public sealed class Character : Readable<Character, CharacterDto>, IReadable<Character, CharacterDto>
+    public sealed class Character : Readable<Character, CharacterDto>
     {
-        /// <summary>The database column for <see cref="Id"/>.</summary>
+        /// <summary>The database column for <see cref="Readable{T,TDto}.Id"/>.</summary>
         private const string CharacterIdColumn = "CharacterId";
 
         /// <summary>The database column for <see cref="Name"/>.</summary>
@@ -58,10 +58,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Character Static { get; } = new Character();
-
-        /// <summary>Gets the id of the <see cref="Character"/>.</summary>
-        public int Id { get; private set; }
-
+        
         /// <summary>Gets the name of the character.</summary>
         /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value"/> is <see langword="null" />.</exception>
         public string Name
@@ -88,7 +85,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task<Character> GetAsync(UserSession session, int id)
+        public override async Task<Character> GetAsync(UserSession session, int id)
         {
             return (await this.GetAsync(session, new[] { id })).First();
         }
@@ -96,7 +93,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task<IEnumerable<Character>> GetAsync(UserSession session, IEnumerable<int> idList)
+        public override async Task<IEnumerable<Character>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
             if (!Persistent.UseService)
             {
@@ -112,7 +109,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Character"/> is not valid to be saved.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task SaveAsync(UserSession session)
+        public override async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
@@ -130,13 +127,13 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="T:Chaos.Movies.Model.Character" /> is not valid to be saved.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task SaveAllAsync(UserSession session)
+        public override async Task SaveAllAsync(UserSession session)
         {
             await this.SaveAsync(session);
         }
 
         /// <inheritdoc />
-        public CharacterDto ToContract()
+        public override CharacterDto ToContract()
         {
             return new CharacterDto
             {
@@ -145,6 +142,25 @@ namespace Chaos.Movies.Model
                 ExternalLookup = this.ExternalLookupCollection.ToContract(),
                 Images = this.Images.Select(s => s.ToContract())
             };
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">This <see cref="Character"/> is not valid to be saved.</exception>
+        public override void ValidateSaveCandidate()
+        {
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can't be empty.");
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        public override Task<Character> ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { CharacterIdColumn, NameColumn });
+            return Task.FromResult(new Character { Id = (int)record[CharacterIdColumn], Name = record[NameColumn].ToString() });
         }
 
         /// <inheritdoc />
@@ -178,7 +194,7 @@ namespace Chaos.Movies.Model
                     throw new MissingResultException($"The character id {characterId} in the icons was missing.");
                 }
 
-                character.Images.AddIcon(new Icon(reader));
+                character.Images.Add(new Icon(reader));
             }
 
             if (!await reader.NextResultAsync())
@@ -202,16 +218,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="InvalidSaveCandidateException">This <see cref="Character"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
-        {
-            if (string.IsNullOrEmpty(this.Name))
-            {
-                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can't be empty.");
-            }
-        }
-
-        /// <inheritdoc />
         protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
             return new ReadOnlyDictionary<string, object>(
@@ -222,15 +228,6 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(ExternalLookupColumn), this.ExternalLookupCollection.GetSaveTable },
                     { Persistent.ColumnToVariable(IconsColumn), this.Images.GetSaveTable }
                 });
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override Task<Character> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { CharacterIdColumn, NameColumn });
-            return Task.FromResult(new Character { Id = (int)record[CharacterIdColumn], Name = record[NameColumn].ToString() });
         }
     }
 }

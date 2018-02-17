@@ -18,7 +18,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a person.</summary>
-    public class Person : Readable<Person, PersonDto>, IReadable<Person, PersonDto>
+    public class Person : Readable<Person, PersonDto>
     {
         /// <summary>Private part of the <see cref="Images"/> property.</summary>
         private readonly List<PersonUserRating<Person>> personUserRatings = new List<PersonUserRating<Person>>();
@@ -37,9 +37,6 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Person Static { get; } = new Person();
-
-        /// <summary>Gets the id of the person.</summary>
-        public int Id { get; private set; }
 
         /// <summary>Gets or sets name of the person.</summary>
         public string Name { get; set; }
@@ -105,15 +102,6 @@ namespace Chaos.Movies.Model
             return people;
         }
 
-        /// <summary>Saves this person to the database.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Person"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public void Save()
-        {
-            this.ValidateSaveCandidate();
-            this.SaveToDatabase();
-        }
-
         /// <inheritdoc />
         /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
@@ -136,60 +124,45 @@ namespace Chaos.Movies.Model
                 throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can not be empty.");
             }
         }
+        
+        /// <inheritdoc />
+        public override PersonDto ToContract()
+        {
+            throw new NotImplementedException();
+        }
 
+        /// <inheritdoc />
+        public override Task SaveAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<Person> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<IEnumerable<Person>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task SaveAllAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
             throw new NotImplementedException();
         }
 
-        /// <summary>Saves this <see cref="Person"/> to the database.</summary>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        private void SaveToDatabase()
-        {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("PersonSave", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@personId", this.Id);
-                command.Parameters.AddWithValue("@name", this.Name);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                       /// await this.ReadFromRecordAsync(reader);
-                    }
-                }
-            }
-        }
-
+        /// <inheritdoc />
         protected override Task<IEnumerable<Person>> ReadFromRecordsAsync(DbDataReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        public PersonDto ToContract()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveAsync(UserSession session)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Person> GetAsync(UserSession session, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Person>> GetAsync(UserSession session, IEnumerable<int> idList)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveAllAsync(UserSession session)
         {
             throw new NotImplementedException();
         }

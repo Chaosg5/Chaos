@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Linq;
@@ -13,12 +14,13 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Contract;
 
     /// <summary>A genre of <see cref="Movie"/>s.</summary>
-    public class GenreCollection : Listable<Genre, GenreDto>, IListable<Genre>, ICommunicable<GenreCollection, ReadOnlyCollection<GenreDto>>
+    public class GenreCollection : Listable<Genre, GenreDto, GenreCollection>
     {
-        public DataTable GetSaveTable { get; }
-        
         /// <inheritdoc />
-        public ReadOnlyCollection<GenreDto> ToContract()
+        public override DataTable GetSaveTable { get; }
+
+        /// <inheritdoc />
+        public override ReadOnlyCollection<GenreDto> ToContract()
         {
             return new ReadOnlyCollection<GenreDto>(this.Items.Select(item => item.ToContract()).ToList());
         }

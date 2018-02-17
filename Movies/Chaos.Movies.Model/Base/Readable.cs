@@ -32,6 +32,18 @@ namespace Chaos.Movies.Model
         {
         }
 
+        /// <summary>Gets the specified <typeparamref name="T"/>.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <param name="id">The id of the <typeparamref name="T"/> to get.</param>
+        /// <returns>The list of <typeparamref name="T"/>s.</returns>
+        public abstract Task<T> GetAsync(UserSession session, int id);
+
+        /// <summary>Gets the specified <typeparamref name="T"/>s.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <param name="idList">The list of ids of the <typeparamref name="T"/>s to get.</param>
+        /// <returns>The list of <typeparamref name="T"/>s.</returns>
+        public abstract Task<IEnumerable<T>> GetAsync(UserSession session, IEnumerable<int> idList);
+
         /// <summary>Gets the specified <typeparamref name="T"/>s.</summary>
         /// <param name="idList">The list of ids of the <typeparamref name="T"/>s to get.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>

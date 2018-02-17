@@ -14,7 +14,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a rating of an item in an <see cref="ExternalSource"/>.</summary>
-    public class ExternalRating : Loadable<ExternalRating, ExternalRatingsDto>, ILoadable<ExternalRating, ExternalRatingsDto>
+    public class ExternalRating : Loadable<ExternalRating, ExternalRatingsDto>
     {
         /// <summary>The database column for <see cref="Rating"/>.</summary>
         public const string ExternalRatingColumn = "ExternalRating";
@@ -108,7 +108,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public ExternalRatingsDto ToContract()
+        public override ExternalRatingsDto ToContract()
         {
             return new ExternalRatingsDto
             {

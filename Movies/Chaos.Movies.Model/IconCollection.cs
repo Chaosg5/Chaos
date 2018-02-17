@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Icons.cs">
+// <copyright file="IconCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -7,7 +7,6 @@
 namespace Chaos.Movies.Model
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
@@ -16,10 +15,9 @@ namespace Chaos.Movies.Model
     using System.Linq;
 
     using Chaos.Movies.Contract;
-    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class IconCollection : IReadOnlyCollection<Icon>
+    public class IconCollection : Listable<Icon, IconDto, IconCollection>
     {
         /// <summary>The list of <see cref="Icon"/>s in this <see cref="IconCollection"/>.</summary>
         private readonly List<Icon> icons = new List<Icon>();
@@ -31,19 +29,12 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="IconCollection" /> class.</summary>
         /// <param name="reader">The reader containing the data for the movie series type.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the reader.</exception>
         public IconCollection(IDataReader reader)
         {
             this.ReadFromRecord(reader);
         }
-        
-        /// <summary>Gets the number if existing titles.</summary>
-        public int Count => this.icons.Count;
 
-        public void AddIcon(Icon icon)
-        {
-            
-        }
+        // ToDo: ReadFromReader?????
 
         // ToDo: IOrderable + ReorderList
 
@@ -51,7 +42,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
         /// <returns>A table containing the title and language as columns for each title.</returns>
-        public DataTable GetSaveTable
+        public override DataTable GetSaveTable
         {
             get
             {
@@ -73,31 +64,16 @@ namespace Chaos.Movies.Model
                 }
             }
         }
-
-        /// <summary>Returns an enumerator which iterates through this <see cref="IconCollection"/>.</summary>
-        /// <returns>The enumerator.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        /// <summary>Returns an enumerator which iterates through this <see cref="IconCollection"/>.</summary>
-        /// <returns>The enumerator.</returns>
-        public IEnumerator<Icon> GetEnumerator()
-        {
-            return this.icons.GetEnumerator();
-        }
-
+        
         /// <summary>Converts this <see cref="IconCollection"/> to a <see cref="ReadOnlyCollection{IconDto}"/>.</summary>
         /// <returns>The <see cref="ReadOnlyCollection{IconDto}"/>.</returns>
-        public ReadOnlyCollection<IconDto> ToContract()
+        public override ReadOnlyCollection<IconDto> ToContract()
         {
             return new ReadOnlyCollection<IconDto>(this.icons.Select(i => i.ToContract()).ToList());
         }
 
         /// <summary>Updates this <see cref="IconCollection"/> from the <paramref name="reader"/>.</summary>
         /// <param name="reader">The reader containing the data for the <see cref="IconCollection"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="reader"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="reader"/> is <see langword="null" />.</exception>
         private void ReadFromRecord(IDataReader reader)
         {

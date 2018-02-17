@@ -30,6 +30,11 @@ namespace Chaos.Movies.Model
         {
         }
 
+        /// <summary>Gets the all <typeparamref name="T"/>.</summary>
+        /// <param name="session">The session.</param>
+        /// <returns>The list of <typeparamref name="T"/>s.</returns>
+        public abstract Task<IEnumerable<T>> GetAllAsync(UserSession session);
+
         /// <summary>Loads all <typeparamref name="T"/>s from the database.</summary>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
         /// <returns>All <typeparamref name="T"/>s.</returns>

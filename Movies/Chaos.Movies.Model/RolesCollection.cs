@@ -13,13 +13,13 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Contract;
 
     /// <summary>A list of <see cref="Role"/>s.</summary>
-    public class RolesCollection : Listable<Role, RoleDto>, IListable<Role>, ICommunicable<RolesCollection, ReadOnlyCollection<RoleDto>>
+    public class RolesCollection : Listable<Role, RoleDto, RolesCollection>
     {
         /// <inheritdoc />
-        public DataTable GetSaveTable { get; }
-        
+        public override DataTable GetSaveTable { get; }
+
         /// <inheritdoc />
-        public ReadOnlyCollection<RoleDto> ToContract()
+        public override ReadOnlyCollection<RoleDto> ToContract()
         {
             return new ReadOnlyCollection<RoleDto>(this.Items.Select(item => item.ToContract()).ToList());
         }

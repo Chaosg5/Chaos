@@ -29,5 +29,9 @@ namespace Chaos.Movies.Model
         protected Communicable()
         {
         }
+
+        /// <summary>Converts this <typeparamref name="T"/> to a <typeparamref name="TDto"/>.</summary>
+        /// <returns>The <typeparamref name="TDto"/>.</returns>
+        public abstract TDto ToContract();
     }
 }

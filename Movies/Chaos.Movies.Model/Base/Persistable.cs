@@ -29,6 +29,19 @@ namespace Chaos.Movies.Model
         {
         }
 
+        /// <summary>Gets or sets the id of this <typeparamref name="T"/>.</summary>
+        public int Id { get; protected set; }
+
+        /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public abstract Task SaveAsync(UserSession session);
+
+        /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public abstract Task SaveAllAsync(UserSession session);
+
         /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecord">The callback method to use for reading the <typeparamref name="T"/> from data to object after being saved.</param>

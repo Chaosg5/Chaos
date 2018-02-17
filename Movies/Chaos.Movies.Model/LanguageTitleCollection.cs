@@ -7,6 +7,7 @@
 namespace Chaos.Movies.Model
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Globalization;
@@ -16,8 +17,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class LanguageTitleCollection
-        : Listable<LanguageTitle, LanguageTitleDto>, ICommunicable<LanguageTitleCollection, ReadOnlyCollection<LanguageTitleDto>>
+    public class LanguageTitleCollection : Listable<LanguageTitle, LanguageTitleDto, LanguageTitleCollection>
     {
         /// <summary>Initializes a new instance of the <see cref="LanguageTitleCollection" /> class.</summary>
         public LanguageTitleCollection()
@@ -38,7 +38,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
         /// <returns>A table containing the title and language as columns for each title.</returns>
-        public DataTable GetSaveTable
+        public override DataTable GetSaveTable
         {
             get
             {
@@ -59,7 +59,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Converts this <see cref="LanguageTitleCollection"/> to a <see cref="ReadOnlyCollection{LanguageTitleDto}"/>.</summary>
         /// <returns>The <see cref="ReadOnlyCollection{LanguageTitleDto}"/>.</returns>
-        public ReadOnlyCollection<LanguageTitleDto> ToContract()
+        public override ReadOnlyCollection<LanguageTitleDto> ToContract()
         {
             return new ReadOnlyCollection<LanguageTitleDto>(this.Items.Select(t => t.ToContract()).ToList());
         }

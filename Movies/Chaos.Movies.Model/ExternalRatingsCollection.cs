@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Globalization;
@@ -14,13 +15,10 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Contract;
 
     /// <summary>Represents a user.</summary>
-    public class ExternalRatingsCollection
-        : Listable<ExternalRating, ExternalRatingsDto>,
-            IListable<ExternalRating>,
-            ICommunicable<ExternalRatingsCollection, ReadOnlyCollection<ExternalRatingsDto>>
+    public class ExternalRatingsCollection : Listable<ExternalRating, ExternalRatingsDto, ExternalRatingsCollection>
     {
         /// <inheritdoc />
-        public DataTable GetSaveTable
+        public override DataTable GetSaveTable
         {
             get
             {
@@ -41,7 +39,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public ReadOnlyCollection<ExternalRatingsDto> ToContract()
+        public override ReadOnlyCollection<ExternalRatingsDto> ToContract()
         {
             return new ReadOnlyCollection<ExternalRatingsDto>(this.Items.Select(item => item.ToContract()).ToList());
         }

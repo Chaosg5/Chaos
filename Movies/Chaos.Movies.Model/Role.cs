@@ -18,7 +18,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a role of a person in a movie.</summary>
-    public sealed class Role : Typeable<Role, RoleDto>, ITypeable<Role, RoleDto>
+    public sealed class Role : Typeable<Role, RoleDto>
     {
         /// <summary>The database column for <see cref="Id"/>.</summary>
         private const string RoleIdColumn = "RoleId";
@@ -49,7 +49,7 @@ namespace Chaos.Movies.Model
         public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
         
         /// <inheritdoc />
-        public RoleDto ToContract()
+        public override RoleDto ToContract()
         {
             return new RoleDto
             {
@@ -67,6 +67,51 @@ namespace Chaos.Movies.Model
                 throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
         }
+        
+        /// <inheritdoc />
+        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
+        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
+        public override Task<Role> ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { "RoleId" });
+            return Task.FromResult(new Role { Id = (int)record["RoleId"] });
+        }
+
+        /// <inheritdoc />
+        public override Task SaveAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<Role> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<IEnumerable<Role>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task SaveAllAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<IEnumerable<Role>> GetAllAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        protected override Task<IEnumerable<Role>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <inheritdoc />
         protected override IReadOnlyDictionary<string, object> GetSaveParameters()
@@ -77,47 +122,6 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(RoleIdColumn), this.Id },
                     { Persistent.ColumnToVariable(TitlesColumn), this.Titles.GetSaveTable }
                 });
-        }
-
-        /// <summary>Saves this <see cref="Role"/> to the database.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>RoleSave</c>.
-        /// Result 1 columns: RoleId
-        /// Result 2 columns: Language, Title
-        /// </remarks>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        private void SaveToDatabase()
-        {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("RoleSave", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@RoleId", this.Id);
-                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTable);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                      ////  await this.ReadFromRecordAsync(reader);
-                    }
-
-                    if (reader.NextResult())
-                    {
-                        this.Titles = new LanguageTitleCollection(reader);
-                    }
-                }
-            }
-        }
-        
-        /// <inheritdoc />
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
-        public override Task<Role> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { "RoleId" });
-            return Task.FromResult(new Role { Id = (int)record["RoleId"] });
         }
 
         /// <summary>Creates a list of <see cref="Role"/>s from a reader.</summary>
@@ -151,34 +155,36 @@ namespace Chaos.Movies.Model
             return result;
         }
 
-        protected override Task<IEnumerable<Role>> ReadFromRecordsAsync(DbDataReader reader)
+        /// <summary>Saves this <see cref="Role"/> to the database.</summary>
+        /// <remarks>
+        /// Uses stored procedure <c>RoleSave</c>.
+        /// Result 1 columns: RoleId
+        /// Result 2 columns: Language, Title
+        /// </remarks>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        private void SaveToDatabase()
         {
-            throw new NotImplementedException();
-        }
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("RoleSave", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@RoleId", this.Id);
+                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTable);
+                connection.Open();
 
-        public Task SaveAsync(UserSession session)
-        {
-            throw new NotImplementedException();
-        }
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                      ////  await this.ReadFromRecordAsync(reader);
+                    }
 
-        public Task<Role> GetAsync(UserSession session, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Role>> GetAsync(UserSession session, IEnumerable<int> idList)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveAllAsync(UserSession session)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Role>> GetAllAsync(UserSession session)
-        {
-            throw new NotImplementedException();
+                    if (reader.NextResult())
+                    {
+                        this.Titles = new LanguageTitleCollection(reader);
+                    }
+                }
+            }
         }
     }
 }

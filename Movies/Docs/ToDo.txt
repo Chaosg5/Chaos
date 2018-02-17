@@ -4,6 +4,8 @@ Musik - Importera iTunes biblotek!!!!!
 Boxoffice - Integration
 Filmmusik
 
+Uträknade (ärvda) betyg borde vara gråare, satta starkare så att man kan se vilka man har satt
+
 Ratings:
 
 - People

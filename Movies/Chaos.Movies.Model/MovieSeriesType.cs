@@ -19,7 +19,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a type of a movie series.</summary>
-    public class MovieSeriesType : Typeable<MovieSeriesType, MovieSeriesTypeDto>, ITypeable<MovieSeriesType, MovieSeriesTypeDto>
+    public class MovieSeriesType : Typeable<MovieSeriesType, MovieSeriesTypeDto>
     {
         /// <summary>Initializes a new instance of the <see cref="MovieSeriesType" /> class.</summary>
         public MovieSeriesType()
@@ -54,43 +54,6 @@ namespace Chaos.Movies.Model
             }
         }
 
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Saves this <see cref="MovieSeriesType"/> to the database.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>MovieSeriesTypeSave</c>.
-        /// Result 1 columns: MovieSeriesTypeId
-        /// Result 2 columns: Language, Title
-        /// </remarks>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        private void SaveToDatabase()
-        {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieSeriesTypeSave", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieSeriesTypeId", this.Id);
-                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTable);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                      ////  await this.ReadFromRecordAsync(reader);
-                    }
-
-                    if (reader.NextResult())
-                    {
-                        this.Titles = new LanguageTitleCollection(reader);
-                    }
-                }
-            }
-        }
-
         /// <inheritdoc />
         /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
@@ -98,6 +61,48 @@ namespace Chaos.Movies.Model
         {
             Persistent.ValidateRecord(record, new[] { "MovieSeriesTypeId" });
             return Task.FromResult(new MovieSeriesType { Id = (int)record["MovieSeriesTypeId"] });
+        }
+
+        /// <inheritdoc />
+        public override MovieSeriesTypeDto ToContract()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override async Task SaveAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override async Task<MovieSeriesType> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override async Task<IEnumerable<MovieSeriesType>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override async Task SaveAllAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override async Task<IEnumerable<MovieSeriesType>> GetAllAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>Creates a list of <see cref="MovieSeriesType"/>s from a reader.</summary>
@@ -133,34 +138,36 @@ namespace Chaos.Movies.Model
             return result;
         }
 
-        public MovieSeriesTypeDto ToContract()
+        /// <summary>Saves this <see cref="MovieSeriesType"/> to the database.</summary>
+        /// <remarks>
+        /// Uses stored procedure <c>MovieSeriesTypeSave</c>.
+        /// Result 1 columns: MovieSeriesTypeId
+        /// Result 2 columns: Language, Title
+        /// </remarks>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        private void SaveToDatabase()
         {
-            throw new NotImplementedException();
-        }
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand("MovieSeriesTypeSave", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@movieSeriesTypeId", this.Id);
+                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTable);
+                connection.Open();
 
-        public async Task SaveAsync(UserSession session)
-        {
-            throw new NotImplementedException();
-        }
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        ////  await this.ReadFromRecordAsync(reader);
+                    }
 
-        public async Task<MovieSeriesType> GetAsync(UserSession session, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<MovieSeriesType>> GetAsync(UserSession session, IEnumerable<int> idList)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task SaveAllAsync(UserSession session)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<MovieSeriesType>> GetAllAsync(UserSession session)
-        {
-            throw new NotImplementedException();
+                    if (reader.NextResult())
+                    {
+                        this.Titles = new LanguageTitleCollection(reader);
+                    }
+                }
+            }
         }
     }
 }

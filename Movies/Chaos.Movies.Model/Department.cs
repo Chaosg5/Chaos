@@ -19,7 +19,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a production department in a <see cref="Movie"/>.</summary>
-    public sealed class Department : Typeable<Department, DepartmentDto>, ITypeable<Department, DepartmentDto>
+    public sealed class Department : Typeable<Department, DepartmentDto>
     {
         /// <summary>The database column for <see cref="Id"/>.</summary>
         private const string DepartmentIdColumn = "DepartmentId";
@@ -31,16 +31,19 @@ namespace Chaos.Movies.Model
         private const string RolesColumn = "Roles";
         
         /// <inheritdoc />
-        private Department()
+        public Department(DepartmentDto department)
+            : base(department)
+        {
+        }
+
+        /// <inheritdoc />
+        public Department()
         {
         }
 
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Department Static { get; } = new Department();
-
-        /// <summary>Gets the id of the department.</summary>
-        public int Id { get; private set; }
-
+        
         /// <summary>Gets the list of titles of the department in different languages.</summary>
         public LanguageTitleCollection Titles { get; } = new LanguageTitleCollection();
 
@@ -49,7 +52,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task<IEnumerable<Department>> GetAllAsync(UserSession session)
+        public override async Task<IEnumerable<Department>> GetAllAsync(UserSession session)
         {
             if (!Persistent.UseService)
             {
@@ -67,7 +70,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
-        public async Task<Department> GetAsync(UserSession session, int id)
+        public override async Task<Department> GetAsync(UserSession session, int id)
         {
             return (await this.GetAsync(session, new[] { id })).First();
         }
@@ -75,7 +78,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
-        public async Task<IEnumerable<Department>> GetAsync(UserSession session, IEnumerable<int> idList)
+        public override async Task<IEnumerable<Department>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
             if (!Persistent.UseService)
             {
@@ -93,7 +96,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task SaveAsync(UserSession session)
+        public override async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
@@ -111,13 +114,13 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
-        public async Task SaveAllAsync(UserSession session)
+        public override async Task SaveAllAsync(UserSession session)
         {
             await this.SaveAsync(session);
         }
-        
+
         /// <inheritdoc />
-        public DepartmentDto ToContract()
+        public override DepartmentDto ToContract()
         {
             return new DepartmentDto
             {

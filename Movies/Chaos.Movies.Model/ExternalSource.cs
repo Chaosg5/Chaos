@@ -18,7 +18,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a user.</summary>
-    public sealed class ExternalSource : Readable<ExternalSource, ExternalSourceDto>, IReadable<ExternalSource, ExternalSourceDto>
+    public sealed class ExternalSource : Readable<ExternalSource, ExternalSourceDto>
     {
         /// <summary>The database column for <see cref="Id"/>.</summary>
         public const string ExternalSourceIdColumn = "ExternalSourceId";
@@ -40,18 +40,15 @@ namespace Chaos.Movies.Model
 
         /// <summary>The database column for <see cref="EpisodeAddress"/>.</summary>
         private const string EpisodeAddressColumn = "EpisodeAddress";
-        
-        /// <summary>Prevents a default instance of the <see cref="ExternalSource"/> class from being created.</summary>
+
+        /// <inheritdoc />
         private ExternalSource()
         {
         }
 
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static ExternalSource Static { get; } = new ExternalSource();
-
-        /// <summary>Gets the id of the external source.</summary>
-        public int Id { get; private set; }
-
+        
         /// <summary>Gets the name.</summary>
         public string Name { get; private set; }
 
@@ -73,7 +70,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="ExternalSource"/> is not valid to be saved.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task SaveAsync(UserSession session)
+        public override async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
@@ -91,14 +88,14 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="ExternalSource"/> is not valid to be saved.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task SaveAllAsync(UserSession session)
+        public override async Task SaveAllAsync(UserSession session)
         {
             await this.SaveAsync(session);
         }
 
         /// <summary>Converts this <see cref="ExternalSource"/> to a <see cref="ExternalSourceDto"/>.</summary>
         /// <returns>The <see cref="ExternalSourceDto"/>.</returns>
-        public ExternalSourceDto ToContract()
+        public override ExternalSourceDto ToContract()
         {
             return new ExternalSourceDto
             {
@@ -125,22 +122,6 @@ namespace Chaos.Movies.Model
             {
                 throw new InvalidSaveCandidateException($"The {nameof(this.BaseAddress)} can't be empty.");
             }
-        }
-
-        /// <inheritdoc />
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
-        {
-            return new ReadOnlyDictionary<string, object>(
-                new Dictionary<string, object>
-                {
-                    { Persistent.ColumnToVariable(ExternalSourceIdColumn), this.Id },
-                    { Persistent.ColumnToVariable(NameColumn), this.Name },
-                    { Persistent.ColumnToVariable(BaseAddressColumn), this.BaseAddress },
-                    { Persistent.ColumnToVariable(PeopleAddressColumn), this.PeopleAddress },
-                    { Persistent.ColumnToVariable(CharacterAddressColumn), this.CharacterAddress },
-                    { Persistent.ColumnToVariable(GenreAddressColumn), this.GenreAddress },
-                    { Persistent.ColumnToVariable(EpisodeAddressColumn), this.EpisodeAddress }
-                });
         }
 
         /// <inheritdoc />
@@ -174,17 +155,36 @@ namespace Chaos.Movies.Model
             return Task.FromResult(externalSource);
         }
 
+        /// <inheritdoc />
+        public override Task<ExternalSource> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<IEnumerable<ExternalSource>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(ExternalSourceIdColumn), this.Id },
+                    { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(BaseAddressColumn), this.BaseAddress },
+                    { Persistent.ColumnToVariable(PeopleAddressColumn), this.PeopleAddress },
+                    { Persistent.ColumnToVariable(CharacterAddressColumn), this.CharacterAddress },
+                    { Persistent.ColumnToVariable(GenreAddressColumn), this.GenreAddress },
+                    { Persistent.ColumnToVariable(EpisodeAddressColumn), this.EpisodeAddress }
+                });
+        }
+
+        /// <inheritdoc />
         protected override Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ExternalSource> GetAsync(UserSession session, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ExternalSource>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
             throw new NotImplementedException();
         }

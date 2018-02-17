@@ -7,17 +7,14 @@
 namespace Chaos.Movies.Model
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Data;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
-    using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Holds an id of an item in an <see cref="ExternalSource"/>.</summary>
-    public sealed class ExternalLookup : Loadable<ExternalLookup, ExternalLookupDto>, ILoadable<ExternalLookup, ExternalLookupDto>
+    public sealed class ExternalLookup : Loadable<ExternalLookup, ExternalLookupDto>
     {
         /// <summary>The database column for <see cref="ExternalId"/>.</summary>
         public const string ExternalIdColumn = "ExternalId";
@@ -82,9 +79,9 @@ namespace Chaos.Movies.Model
                 this.externalId = value;
             }
         }
-        
+
         /// <inheritdoc />
-        public ExternalLookupDto ToContract()
+        public override ExternalLookupDto ToContract()
         {
             return new ExternalLookupDto { ExternalSource = this.ExternalSource.ToContract(), ExternalId = this.ExternalId };
         }

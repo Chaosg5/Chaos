@@ -25,7 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
     <DocumentationFile>bin\Debug\Chaos.Movies.Model.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -35,8 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>
-    </LangVersion>
+    <LangVersion>latest</LangVersion>
     <DocumentationFile>bin\Release\Chaos.Movies.Model.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
@@ -62,13 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GenreCollection.cs" />
-    <Compile Include="Base\ILoadable.cs" />
     <Compile Include="Base\Listable.cs" />
-    <Compile Include="Base\ICollectable.cs" />
     <Compile Include="Base\Collectable.cs" />
     <Compile Include="Base\Loadable.cs" />
     <Compile Include="RolesCollection.cs" />
-    <Compile Include="Base\ICommunicable.cs" />
     <Compile Include="Connected Services\ChaosMovieService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -82,10 +78,6 @@
     <Compile Include="ExternalSource.cs" />
     <Compile Include="IconType.cs" />
     <Compile Include="IconCollection.cs" />
-    <Compile Include="Base\IListable.cs" />
-    <Compile Include="Base\IReadable.cs" />
-    <Compile Include="Base\ITypeable.cs" />
-    <Compile Include="Base\IPersistable.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Parent.cs" />
     <Compile Include="GlobalSuppressions.cs" />
