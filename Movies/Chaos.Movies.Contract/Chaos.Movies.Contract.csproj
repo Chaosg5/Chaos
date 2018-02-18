@@ -48,7 +48,7 @@
     <Compile Include="ICharacter.cs" />
     <Compile Include="CharacterDto.cs" />
     <Compile Include="ExternalLookupDto.cs" />
-    <Compile Include="ExternalRatingsDto.cs" />
+    <Compile Include="ExternalRatingDto.cs" />
     <Compile Include="ExternalSourceDto.cs" />
     <Compile Include="IconTypeDto.cs" />
     <Compile Include="PersonUserRatingDto.cs" />

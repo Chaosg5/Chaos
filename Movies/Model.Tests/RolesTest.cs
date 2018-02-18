@@ -15,7 +15,7 @@ namespace Chaos.Movies.Model.Tests
         [Test]
         public static void TestRoleCollection()
         {
-            var collection = new RolesCollection();
+            var collection = new RoleCollection();
             Assert.IsTrue(collection.Count == 0);
             collection.Add(new Role());
             Assert.IsTrue(collection.Count == 1);

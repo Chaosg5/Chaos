@@ -6,18 +6,18 @@
 
 namespace Chaos.Movies.Model
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
-    using System.Data.SqlClient;
-    using System.Linq;
+    using System.Data.Common;
     using System.Threading.Tasks;
 
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A movie or a series.</summary>
-    public class Movie
+    public class Movie : Readable<Movie, MovieDto>
     {
         /// <summary>The department for cast members.</summary>
         ////private static Department castDepartment = GlobalCache.GetDepartment("Cast", GlobalCache.DefaultLanguage);
@@ -40,14 +40,14 @@ namespace Chaos.Movies.Model
             this.characters = new PersonAsCharacterCollection<Movie>();
         }
 
-        /// <summary>Gets the id of the movie.</summary>
-        public int Id { get; private set; }
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static Movie Static { get; } = new Movie();
 
         /// <summary>Gets the id of the <see cref="Movie"/> in <see cref="ExternalSource"/>s.</summary>
-        public ExternalLookupCollection ExternalLookup { get; } = new ExternalLookupCollection();
+        public ExternalLookupCollection ExternalLookups { get; } = new ExternalLookupCollection();
     
         /// <summary>Gets the ratings of the movie in <see cref="ExternalSource"/>s.</summary>
-        public ExternalRatingsCollection ExternalRatings { get; } = new ExternalRatingsCollection();
+        public ExternalRatingCollection ExternalRating { get; } = new ExternalRatingCollection();
 
         /// <summary>Gets the list of title of the movie in different languages.</summary>
         public LanguageTitleCollection Titles { get; } = new LanguageTitleCollection();
@@ -93,6 +93,60 @@ namespace Chaos.Movies.Model
         {
             await this.People.SaveAsync();
             await this.Characters.SaveAsync();
+        }
+
+        /// <inheritdoc />
+        public override MovieDto ToContract()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Movie FromContract(MovieDto contract)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<Movie> ReadFromRecordAsync(IDataRecord record)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override void ValidateSaveCandidate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<Movie> GetAsync(UserSession session, int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task<IEnumerable<Movie>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override Task SaveAsync(UserSession session)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        protected override Task<IEnumerable<Movie>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>Sets the id of the <see cref="Movie"/> this <see cref="PersonAsCharacterCollection{Movie}"/> belongs to.</summary>

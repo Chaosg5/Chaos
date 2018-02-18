@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model
+namespace Chaos.Movies.Model.Base
 {
     using System;
     using System.Collections.Generic;
@@ -29,6 +29,9 @@ namespace Chaos.Movies.Model
         {
         }
 
+        /// <summary>The database column for the id of the <typeparamref name="T"/>.</summary>
+        public static string IdColumn => $"{typeof(T).Name}Id";
+
         /// <summary>Gets or sets the id of this <typeparamref name="T"/>.</summary>
         public int Id { get; protected set; }
 
@@ -36,11 +39,6 @@ namespace Chaos.Movies.Model
         /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         public abstract Task SaveAsync(UserSession session);
-
-        /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
-        /// <param name="session">The <see cref="UserSession"/>.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
-        public abstract Task SaveAllAsync(UserSession session);
 
         /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
@@ -74,13 +72,13 @@ namespace Chaos.Movies.Model
                 {
                     if (await reader.ReadAsync())
                     {
-                        readFromRecord(reader);
+                        await readFromRecord(reader);
                     }
                 }
             }
         }
 
-        /// <summary>Gets SQL parameters to use for <see cref="IPersistable{T,TDto}.SaveAsync"/>.</summary>
+        /// <summary>Gets SQL parameters to use for <see cref="Persistable{T,TDto}.SaveAsync"/>.</summary>
         /// <returns>The list of SQL parameters.</returns>
         protected abstract IReadOnlyDictionary<string, object> GetSaveParameters();
     }

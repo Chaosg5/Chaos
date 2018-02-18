@@ -11,13 +11,14 @@ namespace Chaos.Movies.Model
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a rating of an item in an <see cref="ExternalSource"/>.</summary>
-    public class ExternalRating : Loadable<ExternalRating, ExternalRatingsDto>
+    public class ExternalRating : Loadable<ExternalRating, ExternalRatingDto>
     {
         /// <summary>The database column for <see cref="Rating"/>.</summary>
-        public const string ExternalRatingColumn = "ExternalRating";
+        public const string RatingColumn = "ExternalRating";
 
         /// <summary>The database column for <see cref="RatingCount"/>.</summary>
         public const string RatingCountColumn = "RatingCount";
@@ -60,7 +61,7 @@ namespace Chaos.Movies.Model
                 if (value == null)
                 {
                     // ReSharper disable once ExceptionNotDocumented
-                    throw new ArgumentNullException(nameof(this.ExternalSource));
+                    throw new ArgumentNullException(nameof(value));
                 }
 
                 if (value.Id <= 0)
@@ -108,16 +109,27 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override ExternalRatingsDto ToContract()
+        public override ExternalRatingDto ToContract()
         {
-            return new ExternalRatingsDto
+            return new ExternalRatingDto
             {
                 ExternalSource = this.ExternalSource.ToContract(),
                 Rating = this.Rating,
                 RatingCount = this.RatingCount
             };
         }
-        
+
+        /// <inheritdoc />
+        public override ExternalRating FromContract(ExternalRatingDto contract)
+        {
+            return new ExternalRating
+            {
+                ExternalSource = this.ExternalSource.FromContract(contract.ExternalSource),
+                Rating = contract.Rating,
+                RatingCount = contract.RatingCount
+            };
+        }
+
         /// <inheritdoc />
         public override void ValidateSaveCandidate()
         {
@@ -128,10 +140,10 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public override async Task<ExternalRating> ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { ExternalSource.ExternalSourceIdColumn, ExternalRatingColumn, RatingCountColumn });
+            Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, RatingColumn, RatingCountColumn });
             return new ExternalRating(
-                await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.ExternalSourceIdColumn]),
-                (double)record[ExternalRatingColumn],
+                await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]),
+                (double)record[RatingColumn],
                 (int)record[RatingCountColumn]);
         }
     }

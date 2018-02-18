@@ -4,13 +4,14 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model
+namespace Chaos.Movies.Model.Base
 {
     using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Data.Common;
     using System.Data.SqlClient;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Model.Exceptions;
@@ -43,6 +44,24 @@ namespace Chaos.Movies.Model
         /// <param name="idList">The list of ids of the <typeparamref name="T"/>s to get.</param>
         /// <returns>The list of <typeparamref name="T"/>s.</returns>
         public abstract Task<IEnumerable<T>> GetAsync(UserSession session, IEnumerable<int> idList);
+
+        /// <summary>Gets a <typeparamref name="T"/> from the <paramref name="items"/> with the id specified in the <paramref name="record"/>.</summary>
+        /// <param name="items">The list of <typeparamref name="T"/>s.</param>
+        /// <param name="record">The record.</param>
+        /// <param name="idColumnName">The name of the id column.</param>
+        /// <returns>The <typeparamref name="T"/>.</returns>
+        /// <exception cref="SqlResultSyncException">The specified <typeparamref name="T"/> was not found in the <paramref name="items"/>.</exception>
+        protected Persistable<T, TDto> GetFromResultsByIdInRecord(IEnumerable<Persistable<T, TDto>> items, IDataRecord record, string idColumnName)
+        {
+            var id = (int)record[idColumnName];
+            var item = items.FirstOrDefault(t => t.Id == id);
+            if (item == null)
+            {
+                throw new SqlResultSyncException(id, typeof(T));
+            }
+
+            return item;
+        }
 
         /// <summary>Gets the specified <typeparamref name="T"/>s.</summary>
         /// <param name="idList">The list of ids of the <typeparamref name="T"/>s to get.</param>

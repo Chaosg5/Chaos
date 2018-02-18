@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="LanguageTitle.cs">
+// <copyright file="LanguageDescription.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -16,22 +16,23 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class LanguageTitle : Loadable<LanguageTitle, LanguageTitleDto>
+    public class LanguageDescription : Loadable<LanguageDescription, LanguageDescriptionDto>
     {
-        /// <summary>The database column for <see cref="Title"/>.</summary>
-        public const string TitleColumn = "Title";
-
-        /// <summary>The database column for <see cref="Language"/>.</summary>
-        public const string LanguageColumn = "Language";
+        /// <summary>The database column for <see cref="Description"/>.</summary>
+        public const string DescriptionColumn = "Description";
 
         /// <summary>Private part of the <see cref="Title"/> property.</summary>
         private string title;
 
-        /// <summary>Initializes a new instance of the <see cref="LanguageTitle"/> class.</summary>
-        /// <param name="title">The title to set.</param>
-        /// <param name="language">The language to set.</param>
+        /// <summary>Private part of the <see cref="Description"/> property.</summary>
+        private string description;
+
+        /// <summary>Initializes a new instance of the <see cref="LanguageDescription"/> class.</summary>
+        /// <param name="title">The <see cref="Title"/> to set.</param>
+        /// <param name="description">The <see cref="Description"/> to set.</param>
+        /// <param name="language">The <see cref="Language"/> to set.</param>
         /// <exception cref="ArgumentNullException"><paramref name="title"/> or <paramref name="language"/> is <see langword="null"/></exception>
-        public LanguageTitle(string title, CultureInfo language)
+        public LanguageDescription(string title, string description, CultureInfo language)
         {
             if (string.IsNullOrEmpty(title))
             {
@@ -39,16 +40,17 @@ namespace Chaos.Movies.Model
             }
 
             this.Title = title;
+            this.Description = description;
             this.Language = language ?? throw new ArgumentNullException(nameof(language));
         }
 
-        /// <summary>Prevents a default instance of the <see cref="LanguageTitle"/> class from being created.</summary>
-        private LanguageTitle()
+        /// <summary>Prevents a default instance of the <see cref="LanguageDescription"/> class from being created.</summary>
+        private LanguageDescription()
         {
         }
 
         /// <summary>Gets a reference to simulate static methods.</summary>
-        public static LanguageTitle Static { get; } = new LanguageTitle();
+        public static LanguageDescription Static { get; } = new LanguageDescription();
 
         /// <summary>Gets or sets the title.</summary>
         public string Title
@@ -66,28 +68,35 @@ namespace Chaos.Movies.Model
             }
         }
 
+        /// <summary>Gets or sets the title.</summary>
+        public string Description
+        {
+            get => this.description;
+            set => this.description = value ?? string.Empty;
+        }
+
         /// <summary>Gets the language of the title.</summary>
         public CultureInfo Language { get; private set; }
 
         /// <inheritdoc />
-        public override LanguageTitleDto ToContract()
+        public override LanguageDescriptionDto ToContract()
         {
-            return new LanguageTitleDto { Title = this.Title, Language = this.Language };
+            return new LanguageDescriptionDto { Title = this.Title, Description = this.Description, Language = this.Language };
         }
 
         /// <inheritdoc />
-        public override LanguageTitle FromContract(LanguageTitleDto contract)
+        public override LanguageDescription FromContract(LanguageDescriptionDto contract)
         {
-            return new LanguageTitle { Title = contract.Title, Language = contract.Language };
+            return new LanguageDescription { Title = contract.Title, Description = contract.Description, Language = contract.Language };
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override Task<LanguageTitle> ReadFromRecordAsync(IDataRecord record)
+        public override Task<LanguageDescription> ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { TitleColumn, LanguageColumn });
-            return Task.FromResult(new LanguageTitle(record[TitleColumn].ToString(), new CultureInfo(record[LanguageColumn].ToString())));
+            Persistent.ValidateRecord(record, new[] { LanguageTitle.TitleColumn, DescriptionColumn, LanguageTitle.LanguageColumn });
+            return Task.FromResult(new LanguageDescription(record[LanguageTitle.TitleColumn].ToString(), record[DescriptionColumn].ToString(), new CultureInfo(record[LanguageTitle.LanguageColumn].ToString())));
         }
 
         /// <inheritdoc />

@@ -13,6 +13,7 @@ namespace Chaos.Movies.Model
     using System.Globalization;
     using System.Linq;
 
+    using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Contains help methods for <see cref="Persistable{T,TDto}"/>.</summary>

@@ -18,10 +18,11 @@ namespace Chaos.Movies.Contract
         public int Id { get; set; }
 
         /// <summary>Gets or sets the id of the <see cref="GenreDto"/> in <see cref="ExternalSourceDto"/>s.</summary>
-        public ReadOnlyCollection<ExternalLookupDto> ExternalLookup { get; set; }
-
-        /// <summary>Gets or sets the title of the genre.</summary>
         [DataMember]
-        public string Title { get; set; }
+        public ReadOnlyCollection<ExternalLookupDto> ExternalLookups { get; set; }
+
+        /// <summary>Gets or sets the list of titles of this <see cref="GenreDto"/> in different languages.</summary>
+        [DataMember]
+        public ReadOnlyCollection<LanguageTitleDto> Titles { get; set; }
     }
 }

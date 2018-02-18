@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="LanguageTitleCollection.cs">
+// <copyright file="LanguageDescriptionCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -17,9 +17,9 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class LanguageTitleCollection : Listable<LanguageTitle, LanguageTitleDto, LanguageTitleCollection>
+    public class LanguageDescriptionCollection : Listable<LanguageDescription, LanguageDescriptionDto, LanguageDescriptionCollection>
     {
-        /// <summary>The database column for this <see cref="LanguageTitleCollection"/>.</summary>
+        /// <summary>The database column for this <see cref="LanguageDescriptionCollection"/>.</summary>
         public const string TitlesColumn = "Titles";
 
         /// <summary>Gets the base title.</summary>
@@ -36,9 +36,10 @@ namespace Chaos.Movies.Model
                     table.Locale = CultureInfo.InvariantCulture;
                     table.Columns.Add(new DataColumn(LanguageTitle.LanguageColumn));
                     table.Columns.Add(new DataColumn(LanguageTitle.TitleColumn));
-                    foreach (var languageTitle in this.Items)
+                    table.Columns.Add(new DataColumn(LanguageDescription.DescriptionColumn));
+                    foreach (var languageDescription in this.Items)
                     {
-                        table.Rows.Add(languageTitle.Language.Name, languageTitle.Title);
+                        table.Rows.Add(languageDescription.Language.Name, languageDescription.Title, languageDescription.Description);
                     }
 
                     return table;
@@ -46,21 +47,21 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Converts this <see cref="LanguageTitleCollection"/> to a <see cref="ReadOnlyCollection{LanguageTitleDto}"/>.</summary>
-        /// <returns>The <see cref="ReadOnlyCollection{LanguageTitleDto}"/>.</returns>
-        public override ReadOnlyCollection<LanguageTitleDto> ToContract()
+        /// <summary>Converts this <see cref="LanguageDescriptionCollection"/> to a <see cref="ReadOnlyCollection{LanguageDescriptionDto}"/>.</summary>
+        /// <returns>The <see cref="ReadOnlyCollection{LanguageDescriptionDto}"/>.</returns>
+        public override ReadOnlyCollection<LanguageDescriptionDto> ToContract()
         {
-            return new ReadOnlyCollection<LanguageTitleDto>(this.Items.Select(t => t.ToContract()).ToList());
+            return new ReadOnlyCollection<LanguageDescriptionDto>(this.Items.Select(t => t.ToContract()).ToList());
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        public override LanguageTitleCollection FromContract(ReadOnlyCollection<LanguageTitleDto> contract)
+        public override LanguageDescriptionCollection FromContract(ReadOnlyCollection<LanguageDescriptionDto> contract)
         {
-            var list = new LanguageTitleCollection();
+            var list = new LanguageDescriptionCollection();
             foreach (var item in contract)
             {
-                list.Add(LanguageTitle.Static.FromContract(item));
+                list.Add(LanguageDescription.Static.FromContract(item));
             }
 
             return list;
@@ -69,11 +70,11 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the title for the specified <paramref name="language"/>.</summary>
         /// <param name="language">The language to get the title for.</param>
         /// <returns>The title of the specified language; else the title of the default language</returns>
-        public LanguageTitle GetTitle(CultureInfo language)
+        public LanguageDescription GetTitle(CultureInfo language)
         {
             if (this.Count == 0)
             {
-                return new LanguageTitle(string.Empty, language ?? CultureInfo.InvariantCulture);
+                return new LanguageDescription(string.Empty, string.Empty, language ?? CultureInfo.InvariantCulture);
             }
 
             var languageName = "en-US";
@@ -89,22 +90,23 @@ namespace Chaos.Movies.Model
         /// <param name="title">The title to set.</param>
         /// <exception cref="ArgumentNullException"><paramref name="title"/> is <see langword="null"/></exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        public void SetTitle(LanguageTitle title)
+        public void SetTitle(LanguageDescription title)
         {
             if (title == null)
             {
                 throw new ArgumentNullException(nameof(title));
             }
 
-            this.SetTitle(title.Title, title.Language);
+            this.SetTitle(title.Title, title.Description, title.Language);
         }
 
         /// <summary>Changes the title of this movie series type.</summary>
         /// <param name="title">The title to set for the specified <paramref name="language"/>.</param>
+        /// <param name="description">The description to set for the specified <paramref name="language"/>.</param>
         /// <param name="language">The language of the specified <paramref name="title"/>.</param>
         /// <exception cref="ArgumentNullException">If the <paramref name="title"/> or <paramref name="language"/> is null.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        public void SetTitle(string title, CultureInfo language)
+        public void SetTitle(string title, string description, CultureInfo language)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
@@ -116,14 +118,15 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(language));
             }
 
-            var existingTitle = this.Items.FirstOrDefault(t => t.Language.Name == language.Name);
-            if (existingTitle != null)
+            var languageDescription = this.Items.FirstOrDefault(t => t.Language.Name == language.Name);
+            if (languageDescription != null)
             {
-                existingTitle.Title = title;
+                languageDescription.Title = title;
+                languageDescription.Description = description;
             }
             else
             {
-                this.Add(new LanguageTitle(title, language));
+                this.Add(new LanguageDescription(title, description, language));
             }
         }
     }

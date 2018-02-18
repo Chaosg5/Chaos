@@ -64,14 +64,14 @@
     <Compile Include="Base\Listable.cs" />
     <Compile Include="Base\Collectable.cs" />
     <Compile Include="Base\Loadable.cs" />
-    <Compile Include="RolesCollection.cs" />
+    <Compile Include="RoleCollection.cs" />
     <Compile Include="Connected Services\ChaosMovieService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Exceptions\ValueLogicalReadOnlyException.cs" />
-    <Compile Include="ExternalRatingsCollection.cs" />
+    <Compile Include="ExternalRatingCollection.cs" />
     <Compile Include="ExternalLookupCollection.cs" />
     <Compile Include="ExternalLookup.cs" />
     <Compile Include="ExternalRating.cs" />

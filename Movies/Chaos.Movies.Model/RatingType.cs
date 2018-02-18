@@ -16,8 +16,6 @@ namespace Chaos.Movies.Model
     /// <summary>A sub rating with a defined type.</summary>
     public class RatingType
     {
-        // ToDo: Split Save to Save and SaveAll
-
         /// <summary>The sub types of this rating type.</summary>
         private readonly List<RatingType> subtypes = new List<RatingType>();
 

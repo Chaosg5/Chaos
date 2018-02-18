@@ -15,23 +15,15 @@ namespace Chaos.Movies.Model
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
     public sealed class Character : Readable<Character, CharacterDto>
     {
-        /// <summary>The database column for <see cref="Readable{T,TDto}.Id"/>.</summary>
-        private const string CharacterIdColumn = "CharacterId";
-
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
-
-        /// <summary>The database column for <see cref="ExternalLookupCollection"/>.</summary>
-        private const string ExternalLookupColumn = "ExternalLookup";
-
-        /// <summary>The database column for <see cref="Images"/>.</summary>
-        private const string IconsColumn = "Icons";
 
         /// <summary>Private part of the <see cref="Name"/> property.</summary>
         private string name;
@@ -77,10 +69,10 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the id of the <see cref="Character"/> in <see cref="ExternalSource"/>s.</summary>
-        public ExternalLookupCollection ExternalLookupCollection { get; } = new ExternalLookupCollection();
+        public ExternalLookupCollection ExternalLookups { get; private set; } = new ExternalLookupCollection();
 
         /// <summary>Gets the list of images for this <see cref="Character"/> and their order.</summary>
-        public IconCollection Images { get; } = new IconCollection();
+        public IconCollection Images { get; private set; } = new IconCollection();
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
@@ -125,22 +117,26 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="T:Chaos.Movies.Model.Character" /> is not valid to be saved.</exception>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public override async Task SaveAllAsync(UserSession session)
-        {
-            await this.SaveAsync(session);
-        }
-
-        /// <inheritdoc />
         public override CharacterDto ToContract()
         {
             return new CharacterDto
             {
                 Id = this.Id,
                 Name = this.Name,
-                ExternalLookup = this.ExternalLookupCollection.ToContract(),
-                Images = this.Images.Select(s => s.ToContract())
+                ExternalLookups = this.ExternalLookups.ToContract(),
+                Images = this.Images.ToContract()
+            };
+        }
+
+        /// <inheritdoc />
+        public override Character FromContract(CharacterDto contract)
+        {
+            return new Character
+            {
+                Id = contract.Id,
+                Name = contract.Name,
+                ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups),
+                Images = this.Images.FromContract(contract.Images)
             };
         }
 
@@ -159,20 +155,21 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public override Task<Character> ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { CharacterIdColumn, NameColumn });
-            return Task.FromResult(new Character { Id = (int)record[CharacterIdColumn], Name = record[NameColumn].ToString() });
+            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
+            return Task.FromResult(new Character { Id = (int)record[IdColumn], Name = record[NameColumn].ToString() });
         }
 
         /// <inheritdoc />
+        /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         protected override async Task<IEnumerable<Character>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var characters = new List<Character>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, "Characters");
+                throw new MissingResultException(1, $"{nameof(Character)}s");
             }
 
             while (await reader.ReadAsync())
@@ -182,36 +179,24 @@ namespace Chaos.Movies.Model
 
             if (!await reader.NextResultAsync())
             {
-                throw new MissingResultException(2, "IconsInCharacters");
+                throw new MissingResultException(2, $"{nameof(Character)}{IconCollection.IconsColumn}");
             }
 
             while (await reader.ReadAsync())
             {
-                var characterId = (int)reader[CharacterIdColumn];
-                var character = characters.Find(c => c.Id == characterId);
-                if (character == null)
-                {
-                    throw new MissingResultException($"The character id {characterId} in the icons was missing.");
-                }
-
-                character.Images.Add(new Icon(reader));
+                var character = (Character)this.GetFromResultsByIdInRecord(characters, reader, IdColumn);
+                character.Images.Add(await Icon.Static.ReadFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync())
             {
-                throw new MissingResultException(3, "CharacterExternalLookup");
+                throw new MissingResultException(3, $"{nameof(Character)}{ExternalLookupCollection.ExternalLookupColumn}");
             }
 
             while (await reader.ReadAsync())
             {
-                var characterId = (int)reader[CharacterIdColumn];
-                var character = characters.Find(c => c.Id == characterId);
-                if (character == null)
-                {
-                    throw new MissingResultException($"The character id {characterId} in the icons was missing.");
-                }
-                
-                character.ExternalLookupCollection.Add(await ExternalLookup.Static.ReadFromRecordAsync(reader));
+                var character = (Character)this.GetFromResultsByIdInRecord(characters, reader, IdColumn);
+                character.ExternalLookups.Add(await ExternalLookup.Static.ReadFromRecordAsync(reader));
             }
 
             return characters;
@@ -223,10 +208,10 @@ namespace Chaos.Movies.Model
             return new ReadOnlyDictionary<string, object>(
                 new Dictionary<string, object>
                 {
-                    { Persistent.ColumnToVariable(CharacterIdColumn), this.Id },
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
                     { Persistent.ColumnToVariable(NameColumn), this.Name },
-                    { Persistent.ColumnToVariable(ExternalLookupColumn), this.ExternalLookupCollection.GetSaveTable },
-                    { Persistent.ColumnToVariable(IconsColumn), this.Images.GetSaveTable }
+                    { Persistent.ColumnToVariable(ExternalLookupCollection.ExternalLookupColumn), this.ExternalLookups.GetSaveTable },
+                    { Persistent.ColumnToVariable(IconCollection.IconsColumn), this.Images.GetSaveTable }
                 });
         }
     }

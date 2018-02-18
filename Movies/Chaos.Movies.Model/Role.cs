@@ -15,17 +15,12 @@ namespace Chaos.Movies.Model
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a role of a person in a movie.</summary>
     public sealed class Role : Typeable<Role, RoleDto>
     {
-        /// <summary>The database column for <see cref="Id"/>.</summary>
-        private const string RoleIdColumn = "RoleId";
-
-        /// <summary>The database column for <see cref="Titles"/>.</summary>
-        private const string TitlesColumn = "Titles";
-
         /// <inheritdoc />
         public Role()
         {
@@ -41,10 +36,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Role Static { get; } = new Role();
-
-        /// <summary>Gets the id of the role.</summary>
-        public int Id { get; private set; }
-
+        
         /// <summary>Gets the list of titles of the role in different languages.</summary>
         public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
         
@@ -55,6 +47,17 @@ namespace Chaos.Movies.Model
             {
                 Id = this.Id,
                 Titles = this.Titles.ToContract()
+            };
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        public override Role FromContract(RoleDto contract)
+        {
+            return new Role
+            {
+                Id = contract.Id,
+                Titles = this.Titles.FromContract(contract.Titles)
             };
         }
 
@@ -96,12 +99,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override Task SaveAllAsync(UserSession session)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
         public override Task<IEnumerable<Role>> GetAllAsync(UserSession session)
         {
             throw new NotImplementedException();
@@ -119,8 +116,8 @@ namespace Chaos.Movies.Model
             return new ReadOnlyDictionary<string, object>(
                 new Dictionary<string, object>
                 {
-                    { Persistent.ColumnToVariable(RoleIdColumn), this.Id },
-                    { Persistent.ColumnToVariable(TitlesColumn), this.Titles.GetSaveTable }
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
                 });
         }
 
@@ -149,7 +146,7 @@ namespace Chaos.Movies.Model
                     }
                 }
 
-                role.Titles.SetTitle(new LanguageTitle(reader));
+                //role.Titles.SetTitle(new LanguageTitle(reader));
             }
 
             return result;
@@ -181,7 +178,7 @@ namespace Chaos.Movies.Model
 
                     if (reader.NextResult())
                     {
-                        this.Titles = new LanguageTitleCollection(reader);
+                        //this.Titles = new LanguageTitleCollection(reader);
                     }
                 }
             }

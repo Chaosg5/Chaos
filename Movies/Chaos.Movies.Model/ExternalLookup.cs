@@ -11,6 +11,7 @@ namespace Chaos.Movies.Model
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Holds an id of an item in an <see cref="ExternalSource"/>.</summary>
@@ -51,7 +52,7 @@ namespace Chaos.Movies.Model
                 if (value == null)
                 {
                     // ReSharper disable once ExceptionNotDocumented
-                    throw new ArgumentNullException(nameof(this.ExternalSource));
+                    throw new ArgumentNullException(nameof(value));
                 }
 
                 if (value.Id <= 0)
@@ -73,7 +74,7 @@ namespace Chaos.Movies.Model
                 if (string.IsNullOrEmpty(value))
                 {
                     // ReSharper disable once ExceptionNotDocumented
-                    throw new ArgumentNullException(nameof(this.ExternalId));
+                    throw new ArgumentNullException(nameof(value));
                 }
 
                 this.externalId = value;
@@ -84,6 +85,12 @@ namespace Chaos.Movies.Model
         public override ExternalLookupDto ToContract()
         {
             return new ExternalLookupDto { ExternalSource = this.ExternalSource.ToContract(), ExternalId = this.ExternalId };
+        }
+
+        /// <inheritdoc />
+        public override ExternalLookup FromContract(ExternalLookupDto contract)
+        {
+            return new ExternalLookup { ExternalSource = this.ExternalSource.FromContract(contract.ExternalSource), ExternalId = contract.ExternalId };
         }
 
         /// <inheritdoc />
@@ -101,9 +108,9 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public override async Task<ExternalLookup> ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { ExternalSource.ExternalSourceIdColumn, ExternalIdColumn });
+            Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, ExternalIdColumn });
             return new ExternalLookup(
-                await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.ExternalSourceIdColumn]),
+                await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]),
                 (string)record[ExternalIdColumn]);
         }
     }

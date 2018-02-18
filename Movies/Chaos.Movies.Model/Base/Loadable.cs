@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model
+namespace Chaos.Movies.Model.Base
 {
     using System.Data;
     using System.Threading.Tasks;

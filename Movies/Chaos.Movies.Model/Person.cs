@@ -15,6 +15,7 @@ namespace Chaos.Movies.Model
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a person.</summary>
@@ -132,6 +133,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override Person FromContract(PersonDto contract)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public override Task SaveAsync(UserSession session)
         {
             throw new NotImplementedException();
@@ -145,12 +152,6 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         public override Task<IEnumerable<Person>> GetAsync(UserSession session, IEnumerable<int> idList)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public override Task SaveAllAsync(UserSession session)
         {
             throw new NotImplementedException();
         }

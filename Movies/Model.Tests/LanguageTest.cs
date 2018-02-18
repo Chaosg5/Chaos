@@ -19,6 +19,7 @@ namespace Chaos.Movies.Model.Tests
         {
             var lang = new LanguageTitle("Test", CultureInfo.CurrentCulture);
             lang = new LanguageTitle("Test", CultureInfo.InvariantCulture);
+            
         }
     }
 }

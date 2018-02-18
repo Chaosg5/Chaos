@@ -10,194 +10,69 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
-    using System.Data.SqlClient;
-    using System.Globalization;
+    using System.Data.Common;
     using System.Linq;
+    using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
+    using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A series of movies.</summary>
     /// <remarks>A TV series is considered to be a <see cref="Movie"/> while a series of TV series would be considered to be a <see cref="MovieSeries"/>.
     /// For example "Star Trek: The Next Generation" is a <see cref="Movie"/> but is part of the "Star Trek" and "Star Trek TV series" <see cref="MovieSeries"/> but not the "Star Trek Movies" <see cref="MovieSeries"/>.</remarks>
-    public class MovieSeries
+    public class MovieSeries : Readable<MovieSeries, MovieSeriesDto>
     {
         /// <summary>Private part of the <see cref="Movies"/> property.</summary>
-        private List<Movie> movies = new List<Movie>();
-
-        /// <summary>Initializes a new instance of the <see cref="MovieSeries" /> class.</summary>
-        public MovieSeries()
+        private MovieSeriesType movieSeriesType;
+        
+        /// <summary>Gets the type of the movie series.</summary>
+        public MovieSeriesType MovieSeriesType
         {
+            get => this.movieSeriesType;
+            private set
+            {
+                if (value == null)
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                if (value.Id <= 0)
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new PersistentObjectRequiredException($"The {nameof(MovieSeriesType)} has to be saved.");
+                }
+
+                this.movieSeriesType = value;
+            }
         }
-
-        /// <summary>Initializes a new instance of the <see cref="MovieSeries" /> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="MovieSeries"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public MovieSeries(IDataRecord record)
-        {
-            this.ReadFromRecord(record);
-        }
-
-        /// <summary>Gets the id of the movie series.</summary>
-        public int Id { get; private set; }
-
-        /// <summary>Gets or sets the type of the movie series.</summary>
-        public MovieSeriesType MovieSeriesType { get; set; }
 
         /// <summary>Gets the list of title of the movie collection in different languages.</summary>
-        public LanguageTitleCollection Titles { get; } = new LanguageTitleCollection();
+        public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
         /// <summary>Gets the movies which are a part of this collection with the keys representing their order.</summary>
-        public ReadOnlyCollection<Movie> Movies
-        {
-            get { return this.movies.AsReadOnly(); }
-        }
-
-        /// <summary>Gets the ids of the movies in this series to save.</summary>
-        private DataTable GetSaveMovies
-        {
-            get
-            {
-                using (var table = new DataTable())
-                {
-                    table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn("MovieId"));
-                    table.Columns.Add(new DataColumn("Order"));
-                    for (var i = 0; i < this.movies.Count; i++)
-                    {
-                        table.Rows.Add(this.movies[i].Id, i + 1);
-                    }
-
-                    return table;
-                }
-            }
-        }
-
-        #region Methods
-
-        #region Public
-
-        /// <summary>Saves this movie series to the database.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
+        public MovieCollection Movies { get; private set; } = new MovieCollection();
+        
+        /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public void Save()
+        public override async Task<MovieSeries> ReadFromRecordAsync(IDataRecord record)
         {
-            this.ValidateSaveCandidate();
-            this.SaveToDatabase();
+            Persistent.ValidateRecord(record, new[] { IdColumn, MovieSeriesType.IdColumn });
+            return new MovieSeries { Id = (int)record[IdColumn], MovieSeriesType = await GlobalCache.GetMovieSeriesTypeAsync((int)record[MovieSeriesType.IdColumn]) };
         }
-
-        /// <summary>Saves this movie series and underlying objects to the database.</summary>
-        public void SaveAll()
-        {
-            // ToDo:
-        }
-
-        /// <summary>Sets the order of the movies in this collection.</summary>
-        /// <param name="newOrder">The order to set based on the indexes of the old order.</param>
-        public void ReorderMovies(ICollection<int> newOrder)
-        {
-            this.movies = Persistent.ReorderList(this.movies, newOrder).ToList();
-        }
-
-        /// <summary>Sets the order of the movies in this collection and saves the change.</summary>
-        /// <param name="newOrder">The order to set based on the indexes of the old order.</param>
-        public void ReorderMoviesAndSave(ICollection<int> newOrder)
-        {
-            this.ReorderMovies(newOrder);
-            this.SaveMoviesToDatabase();
-        }
-
-        /// <summary>Adds the specified movie to this series.</summary>
-        /// <param name="movie">The movie to add.</param>
-        /// <exception cref="ArgumentNullException">If the <paramref name="movie"/> is null.</exception>
-        /// <exception cref="PersistentObjectRequiredException">If the <paramref name="movie"/> hasn't been saved to the database.</exception>
-        public void AddMovie(Movie movie)
-        {
-            if (movie == null)
-            {
-                throw new ArgumentNullException(nameof(movie));
-            }
-
-            if (movie.Id <= 0)
-            {
-                throw new PersistentObjectRequiredException("The movie needs to be saved before added to a series.");
-            }
-
-            if (this.movies.Exists(m => m.Id == movie.Id))
-            {
-                return;
-            }
-
-            this.movies.Add(movie);
-        }
-
-        /// <summary>Adds the specified movie to this series and saves the change.</summary>
-        /// <param name="movie">The movie to add.</param>
-        /// <exception cref="ArgumentNullException">If the <paramref name="movie"/> is null.</exception>
-        /// <exception cref="PersistentObjectRequiredException">If the <paramref name="movie"/> hasn't been saved to the database.</exception>
-        public void AddMovieAndSave(Movie movie)
-        {
-            this.AddMovie(movie);
-
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieSeriesAddMovie", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieSeriesId", this.Id);
-                command.Parameters.AddWithValue("@movieId", movie.Id);
-                connection.Open();
-
-                command.ExecuteNonQuery();
-            }
-        }
-
-        /// <summary>Removes the specified movie from this series.</summary>
-        /// <param name="movie">The movie to remove.</param>
-        /// <exception cref="ArgumentNullException">If the <paramref name="movie"/> is null.</exception>
-        /// <exception cref="PersistentObjectRequiredException">If the <paramref name="movie"/> hasn't been saved to the database.</exception>
-        public void RemoveMovie(Movie movie)
-        {
-            if (movie == null)
-            {
-                throw new ArgumentNullException(nameof(movie));
-            }
-
-            if (movie.Id <= 0)
-            {
-                throw new PersistentObjectRequiredException("The movie needs to be saved before removed from a series.");
-            }
-
-            this.movies.RemoveAll(m => m.Id == movie.Id);
-        }
-
-        /// <summary>Removes the specified movie from this series.</summary>
-        /// <param name="movie">The movie to remove.</param>
-        /// <exception cref="ArgumentNullException">If the <paramref name="movie"/> is null.</exception>
-        /// <exception cref="PersistentObjectRequiredException">If the <paramref name="movie"/> hasn't been saved to the database.</exception>
-        public void RemoveMovieAndSave(Movie movie)
-        {
-            this.RemoveMovie(movie);
-
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieSeriesRemoveMovie", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieSeriesId", this.Id);
-                command.Parameters.AddWithValue("@movieId", movie.Id);
-                connection.Open();
-
-                command.ExecuteNonQuery();
-            }
-        }
-
-        #endregion
-
-        #region Private
 
         /// <summary>Validates that this <see cref="MovieSeries"/> is valid to be saved.</summary>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeries"/> is not valid to be saved.</exception>
-        private void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (this.Titles.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+
+            if (this.Movies.Count == 0)
             {
                 throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
@@ -208,57 +83,126 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Saves this <see cref="MovieSeries"/> to the database.</summary>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        private void SaveToDatabase()
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeries"/> is not valid to be saved.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task SaveAsync(UserSession session)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieSeriesSave", connection))
+            this.ValidateSaveCandidate();
+            if (!Persistent.UseService)
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieSeriesId", this.Id);
-                command.Parameters.AddWithValue("@movieSeriesTypeId", this.MovieSeriesType.Id);
-                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTable);
-                connection.Open();
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                return;
+            }
 
-                using (var reader = command.ExecuteReader())
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+            }
+        }
+        
+        /// <inheritdoc />
+        public override MovieSeriesDto ToContract()
+        {
+            return new MovieSeriesDto
+            {
+                Id = this.Id,
+                Movies = this.Movies.ToContract(),
+                Titles = this.Titles.ToContract()
+            };
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        public override MovieSeries FromContract(MovieSeriesDto contract)
+        {
+            return new MovieSeries
+            {
+                Id = contract.Id,
+                Movies = this.Movies.FromContract(contract.Movies),
+                Titles = this.Titles.FromContract(contract.Titles)
+            };
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<MovieSeries> GetAsync(UserSession session, int id)
+        {
+            return (await this.GetAsync(session, new[] { id })).First();
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<IEnumerable<MovieSeries>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            if (!Persistent.UseService)
+            {
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
+                return new List<MovieSeries>();
+            }
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
                 {
-                    if (reader.Read())
-                    {
-                        this.ReadFromRecord(reader);
-                    }
-                }
-            }
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(MovieCollection.MoviesColumn), this.Movies.GetSaveTable },
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
+                });
         }
 
-        /// <summary>Saves this <see cref="MovieSeries"/> to the database.</summary>
-        private void SaveMoviesToDatabase()
+        /// <inheritdoc />
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        protected override async Task<IEnumerable<MovieSeries>> ReadFromRecordsAsync(DbDataReader reader)
         {
-            // ToDo: This requires a special SQL type
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieSeriesSaveMovies", connection))
+            var movieSeriesList = new List<MovieSeries>();
+            if (!reader.HasRows)
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@movieSeriesId", this.Id);
-                command.Parameters.AddWithValue("@movieIds", this.GetSaveMovies);
-                connection.Open();
-
-                command.ExecuteNonQuery();
+                throw new MissingResultException(1, $"{nameof(MovieSeries)}s");
             }
+
+            while (await reader.ReadAsync())
+            {
+                movieSeriesList.Add(await this.ReadFromRecordAsync(reader));
+            }
+
+            if (!await reader.NextResultAsync() || !reader.HasRows)
+            {
+                throw new MissingResultException(2, $"{nameof(MovieSeries)}{LanguageTitleCollection.TitlesColumn}");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var movieSeries = (MovieSeries)this.GetFromResultsByIdInRecord(movieSeriesList, reader, IdColumn);
+                movieSeries.Titles.Add(await LanguageTitle.Static.ReadFromRecordAsync(reader));
+            }
+
+            if (!await reader.NextResultAsync() || !reader.HasRows)
+            {
+                throw new MissingResultException(3, $"{nameof(MovieSeries)}{MovieCollection.MoviesColumn}");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var movieSeries = (MovieSeries)this.GetFromResultsByIdInRecord(movieSeriesList, reader, IdColumn);
+                movieSeries.Movies.Add(await GlobalCache.GetMovieAsync((int)reader[Movie.IdColumn]));
+            }
+
+            return movieSeriesList;
         }
-
-        /// <summary>Updates this <see cref="MovieSeries"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="MovieSeries"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        private void ReadFromRecord(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { "MovieSeriesId" });
-            this.Id = (int)record["MovieSeriesId"];
-        }
-
-        #endregion
-
-        #endregion
     }
 }

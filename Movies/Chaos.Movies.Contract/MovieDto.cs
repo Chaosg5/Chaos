@@ -23,7 +23,7 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets ratings of the movie in <see cref="ExternalSourceDto"/>s.</summary>
         [DataMember]
-        public ReadOnlyCollection<ExternalRatingsDto> ExternalRatings { get; set; }
+        public ReadOnlyCollection<ExternalRatingDto> ExternalRatings { get; set; }
 
         /// <summary>Gets or sets list of title of the movie in different languages.</summary>
         [DataMember]

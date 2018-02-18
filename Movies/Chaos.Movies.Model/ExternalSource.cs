@@ -11,18 +11,17 @@ namespace Chaos.Movies.Model
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a user.</summary>
     public sealed class ExternalSource : Readable<ExternalSource, ExternalSourceDto>
     {
-        /// <summary>The database column for <see cref="Id"/>.</summary>
-        public const string ExternalSourceIdColumn = "ExternalSourceId";
-
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
 
@@ -41,6 +40,32 @@ namespace Chaos.Movies.Model
         /// <summary>The database column for <see cref="EpisodeAddress"/>.</summary>
         private const string EpisodeAddressColumn = "EpisodeAddress";
 
+        /// <summary>Private part of the <see cref="Name"/> property.</summary>
+        private string name;
+
+        /// <summary>Initializes a new instance of the <see cref="ExternalSource"/> class.</summary>
+        /// <param name="name">The <see cref="Name"/> to set.</param>
+        /// <param name="baseAddress">The <see cref="BaseAddress"/> to set.</param>
+        /// <param name="peopleAddress">The <see cref="PeopleAddress"/> to set.</param>
+        /// <param name="characterAddress">The <see cref="CharacterAddress"/> to set.</param>
+        /// <param name="genreAddress">The <see cref="GenreAddress"/> to set.</param>
+        /// <param name="episodeAddress">The <see cref="EpisodeAddress"/> to set.</param>
+        public ExternalSource(
+            string name,
+            string baseAddress,
+            string peopleAddress,
+            string characterAddress,
+            string genreAddress,
+            string episodeAddress)
+        {
+            this.Name = name;
+            this.BaseAddress = baseAddress ?? string.Empty;
+            this.PeopleAddress = peopleAddress ?? string.Empty;
+            this.CharacterAddress = characterAddress ?? string.Empty;
+            this.GenreAddress = genreAddress ?? string.Empty;
+            this.EpisodeAddress = episodeAddress ?? string.Empty;
+        }
+
         /// <inheritdoc />
         private ExternalSource()
         {
@@ -48,24 +73,37 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static ExternalSource Static { get; } = new ExternalSource();
-        
+
         /// <summary>Gets the name.</summary>
-        public string Name { get; private set; }
+        public string Name
+        {
+            get => this.name;
+            private set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                this.name = value;
+            }
+        }
 
         /// <summary>Gets the base address.</summary>
-        public string BaseAddress { get; private set; }
+        public string BaseAddress { get; private set; } = string.Empty;
 
         /// <summary>Gets the people address.</summary>
-        public string PeopleAddress { get; private set; }
+        public string PeopleAddress { get; private set; } = string.Empty;
 
         /// <summary>Gets the character address.</summary>
-        public string CharacterAddress { get; private set; }
+        public string CharacterAddress { get; private set; } = string.Empty;
 
         /// <summary>Gets the genre address.</summary>
-        public string GenreAddress { get; private set; }
+        public string GenreAddress { get; private set; } = string.Empty;
 
         /// <summary>Gets the episode address.</summary>
-        public string EpisodeAddress { get; private set; }
+        public string EpisodeAddress { get; private set; } = string.Empty;
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="ExternalSource"/> is not valid to be saved.</exception>
@@ -85,14 +123,6 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <inheritdoc />
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="ExternalSource"/> is not valid to be saved.</exception>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public override async Task SaveAllAsync(UserSession session)
-        {
-            await this.SaveAsync(session);
-        }
-
         /// <summary>Converts this <see cref="ExternalSource"/> to a <see cref="ExternalSourceDto"/>.</summary>
         /// <returns>The <see cref="ExternalSourceDto"/>.</returns>
         public override ExternalSourceDto ToContract()
@@ -106,6 +136,21 @@ namespace Chaos.Movies.Model
                 CharacterAddress = this.CharacterAddress,
                 GenreAddress = this.GenreAddress,
                 EpisodeAddress = this.EpisodeAddress
+            };
+        }
+
+        /// <inheritdoc />
+        public override ExternalSource FromContract(ExternalSourceDto contract)
+        {
+            return new ExternalSource
+            {
+                Id = contract.Id,
+                Name = contract.Name,
+                BaseAddress = contract.BaseAddress,
+                PeopleAddress = contract.PeopleAddress,
+                CharacterAddress = contract.CharacterAddress,
+                GenreAddress = contract.GenreAddress,
+                EpisodeAddress = contract.EpisodeAddress
             };
         }
 
@@ -131,7 +176,7 @@ namespace Chaos.Movies.Model
         {
             var requiredColumns = new[]
             {
-                ExternalSourceIdColumn,
+                IdColumn,
                 NameColumn,
                 BaseAddressColumn,
                 PeopleAddressColumn,
@@ -144,7 +189,7 @@ namespace Chaos.Movies.Model
                 requiredColumns);
             var externalSource = new ExternalSource
             {
-                Id = (int)record[ExternalSourceIdColumn],
+                Id = (int)record[IdColumn],
                 Name = record[NameColumn].ToString(),
                 BaseAddress = record[BaseAddressColumn].ToString(),
                 PeopleAddress = record[PeopleAddressColumn].ToString(),
@@ -156,15 +201,29 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override Task<ExternalSource> GetAsync(UserSession session, int id)
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public override async Task<ExternalSource> GetAsync(UserSession session, int id)
         {
-            throw new NotImplementedException();
+            return (await this.GetAsync(session, new[] { id })).First();
         }
 
         /// <inheritdoc />
-        public override Task<IEnumerable<ExternalSource>> GetAsync(UserSession session, IEnumerable<int> idList)
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public override async Task<IEnumerable<ExternalSource>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
-            throw new NotImplementedException();
+            if (!Persistent.UseService)
+            {
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
+                return new List<ExternalSource>();
+            }
         }
 
         /// <inheritdoc />
@@ -173,7 +232,7 @@ namespace Chaos.Movies.Model
             return new ReadOnlyDictionary<string, object>(
                 new Dictionary<string, object>
                 {
-                    { Persistent.ColumnToVariable(ExternalSourceIdColumn), this.Id },
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
                     { Persistent.ColumnToVariable(NameColumn), this.Name },
                     { Persistent.ColumnToVariable(BaseAddressColumn), this.BaseAddress },
                     { Persistent.ColumnToVariable(PeopleAddressColumn), this.PeopleAddress },
@@ -184,9 +243,22 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        protected override Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        protected override async Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
         {
-            throw new NotImplementedException();
+            var externalSources = new List<ExternalSource>();
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1, $"{nameof(ExternalSource)}s");
+            }
+            
+            while (await reader.ReadAsync())
+            {
+                externalSources.Add(await this.ReadFromRecordAsync(reader));
+            }
+
+            return externalSources;
         }
     }
 }

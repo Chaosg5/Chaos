@@ -28,6 +28,14 @@ namespace Chaos.Movies.Model.Exceptions
         }
 
         /// <summary>Initializes a new instance of the <see cref="SqlResultSyncException"/> class with a specified error message.</summary>
+        /// <param name="objectId">The id of the out of sync object.</param>
+        /// <param name="type">The type of the object.</param>
+        public SqlResultSyncException(int objectId, Type type)
+            : base($"An {nameof(type)} with id {objectId} was out of sync.")
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="SqlResultSyncException"/> class with a specified error message.</summary>
         /// <param name="message">The message that describes the error.</param>
         public SqlResultSyncException(string message)
             : base(message)

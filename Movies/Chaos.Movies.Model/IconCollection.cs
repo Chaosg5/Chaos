@@ -6,33 +6,20 @@
 
 namespace Chaos.Movies.Model
 {
-    using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
-    using System.Data.Linq;
     using System.Globalization;
     using System.Linq;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
+    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
     public class IconCollection : Listable<Icon, IconDto, IconCollection>
     {
-        /// <summary>The list of <see cref="Icon"/>s in this <see cref="IconCollection"/>.</summary>
-        private readonly List<Icon> icons = new List<Icon>();
-
-        /// <summary>Initializes a new instance of the <see cref="IconCollection" /> class.</summary>
-        public IconCollection()
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="IconCollection" /> class.</summary>
-        /// <param name="reader">The reader containing the data for the movie series type.</param>
-        public IconCollection(IDataReader reader)
-        {
-            this.ReadFromRecord(reader);
-        }
+        /// <summary>The database column for <see cref="IconCollection"/>.</summary>
+        public const string IconsColumn = "Icons";
 
         // ToDo: ReadFromReader?????
 
@@ -48,16 +35,11 @@ namespace Chaos.Movies.Model
             {
                 using (var table = new DataTable())
                 {
-                    // ToDo: Constants
                     table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn("IconId", typeof(int)));
-                    table.Columns.Add(new DataColumn("IconTypeId", typeof(int)));
-                    table.Columns.Add(new DataColumn("IconUrl", typeof(string)));
-                    table.Columns.Add(new DataColumn("Data", typeof(Binary)));
-                    table.Columns.Add(new DataColumn("DataSize", typeof(int)));
-                    foreach (var icon in this.icons)
+                    table.Columns.Add(new DataColumn(Icon.IdColumn, typeof(int)));
+                    foreach (var icon in this.Items)
                     {
-                        table.Rows.Add(icon.Id, icon.IconType.Id, icon.Url, icon.Data, icon.Size);
+                        table.Rows.Add(icon.Id);
                     }
 
                     return table;
@@ -69,24 +51,20 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="ReadOnlyCollection{IconDto}"/>.</returns>
         public override ReadOnlyCollection<IconDto> ToContract()
         {
-            return new ReadOnlyCollection<IconDto>(this.icons.Select(i => i.ToContract()).ToList());
+            return new ReadOnlyCollection<IconDto>(this.Items.Select(i => i.ToContract()).ToList());
         }
 
-        /// <summary>Updates this <see cref="IconCollection"/> from the <paramref name="reader"/>.</summary>
-        /// <param name="reader">The reader containing the data for the <see cref="IconCollection"/>.</param>
-        /// <exception cref="ArgumentNullException">The <paramref name="reader"/> is <see langword="null" />.</exception>
-        private void ReadFromRecord(IDataReader reader)
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        public override IconCollection FromContract(ReadOnlyCollection<IconDto> contract)
         {
-            if (reader == null)
+            var list = new IconCollection();
+            foreach (var item in contract)
             {
-                throw new ArgumentNullException(nameof(reader));
+                list.Add(Icon.Static.FromContract(item));
             }
 
-            this.icons.Clear();
-            while (reader.Read())
-            {
-                this.icons.Add(new Icon(reader));
-            }
+            return list;
         }
     }
 }

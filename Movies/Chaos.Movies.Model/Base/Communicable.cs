@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace Chaos.Movies.Model
+namespace Chaos.Movies.Model.Base
 {
     using System;
 
@@ -33,5 +33,10 @@ namespace Chaos.Movies.Model
         /// <summary>Converts this <typeparamref name="T"/> to a <typeparamref name="TDto"/>.</summary>
         /// <returns>The <typeparamref name="TDto"/>.</returns>
         public abstract TDto ToContract();
+
+        /// <summary>Converts the <paramref name="contract"/> to a <typeparamref name="T"/>.</summary>
+        /// <param name="contract">The contract¨to convert.</param>
+        /// <returns>The <typeparamref name="T"/>.</returns>
+        public abstract T FromContract(TDto contract);
     }
 }

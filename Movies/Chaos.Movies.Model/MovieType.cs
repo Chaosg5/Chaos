@@ -8,97 +8,55 @@ namespace Chaos.Movies.Model
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Data;
-    using System.Data.SqlClient;
+    using System.Data.Common;
     using System.Linq;
+    using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
+    using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a type of a movie.</summary>
-    public class MovieType
+    public class MovieType : Typeable<MovieType, MovieTypeDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="MovieType" /> class.</summary>
-        public MovieType()
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="MovieType" /> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="MovieType"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public MovieType(IDataRecord record)
-        {
-            this.ReadFromRecord(record);
-        }
-
-        /// <summary>Gets the id of the type.</summary>
-        public int Id { get; private set; }
-
         /// <summary>Gets the list of titles of the movie type in different languages.</summary>
         public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
-        /// <summary>Loads all movie types from the database.</summary>
-        /// <returns>All <see cref="MovieType"/>s.</returns>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "This method performs a time-consuming operation.")]
-        public static IEnumerable<MovieType> GetAll()
+        /// <inheritdoc />
+        public override MovieTypeDto ToContract()
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieTypesGetAll", connection))
+            return new MovieTypeDto
             {
-                command.CommandType = CommandType.StoredProcedure;
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    return ReadFromReader(reader);
-                }
-            }
+                Id = this.Id,
+                Titles = this.Titles.ToContract()
+            };
         }
 
-        /// <summary>Gets the specified <see cref="MovieType"/>s.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>MovieTypesGet</c>.
-        /// Result 1 columns: MovieTypeId, Language, Title
-        /// </remarks>
-        /// <param name="idList">The list of ids of the <see cref="MovieType"/>s to get.</param>
-        /// <returns>The specified <see cref="MovieType"/>s.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="idList"/> is <see langword="null" />.</exception>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public static IEnumerable<MovieType> Get(IEnumerable<int> idList)
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        public override MovieType FromContract(MovieTypeDto contract)
         {
-            if (idList == null || !idList.Any())
+            return new MovieType
             {
-                throw new ArgumentNullException(nameof(idList));
-            }
-
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieTypesGet", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@idList", idList);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    return ReadFromReader(reader);
-                }
-            }
+                Id = contract.Id,
+                Titles = this.Titles.FromContract(contract.Titles)
+            };
         }
 
-        /// <summary>Saves this movie type to the database.</summary>
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        public override Task<MovieType> ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn });
+            return Task.FromResult(new MovieType { Id = (int)record[IdColumn] });
+        }
+
+        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public void Save()
-        {
-            this.ValidateSaveCandidate();
-            this.SaveToDatabase();
-        }
-
-        /// <summary>Validates that this <see cref="MovieType"/> is valid to be saved.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
-        private void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (this.Titles.Count == 0)
             {
@@ -106,79 +64,108 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Saves this <see cref="MovieType"/> to the database.</summary>
-        /// <remarks>
-        /// Uses stored procedure <c>MovieTypeSave</c>.
-        /// Result 1 columns: MovieTypeId
-        /// Result 2 columns: Language, Title
-        /// </remarks>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        private void SaveToDatabase()
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task SaveAsync(UserSession session)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("MovieTypeSave", connection))
+            this.ValidateSaveCandidate();
+            if (!Persistent.UseService)
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@MovieTypeId", this.Id);
-                command.Parameters.AddWithValue("@titles", this.Titles.GetSaveTable);
-                connection.Open();
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                return;
+            }
 
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        this.ReadFromRecord(reader);
-                    }
-
-                    if (reader.NextResult())
-                    {
-                        this.Titles = new LanguageTitleCollection(reader);
-                    }
-                }
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
             }
         }
 
-        /// <summary>Updates this <see cref="MovieType"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="MovieType"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        private void ReadFromRecord(IDataRecord record)
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<MovieType> GetAsync(UserSession session, int id)
         {
-            Persistent.ValidateRecord(record, new[] { "MovieTypeId" });
-            this.Id = (int)record["MovieTypeId"];
+            return (await this.GetAsync(session, new[] { id })).First();
         }
 
-        /// <summary>Creates a list of <see cref="MovieType"/>s from a reader.</summary>
-        /// <param name="reader">The reader containing the data for the <see cref="MovieType"/>s.</param>
-        /// <returns>The list of <see cref="MovieType"/>s.</returns>
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<IEnumerable<MovieType>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            if (!Persistent.UseService)
+            {
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
+                return new List<MovieType>();
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<IEnumerable<MovieType>> GetAllAsync(UserSession session)
+        {
+            if (!Persistent.UseService)
+            {
+                return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.({T})GetAllAsync(session.ToContract())).Select(x => new ({T})(x));
+                return new List<MovieType>();
+            }
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
+                });
+        }
+
+        /// <inheritdoc />
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        private static IEnumerable<MovieType> ReadFromReader(SqlDataReader reader)
+        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        protected override async Task<IEnumerable<MovieType>> ReadFromRecordsAsync(DbDataReader reader)
         {
+            var movieTypes = new List<MovieType>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, string.Empty);
+                throw new MissingResultException(1, $"{nameof(MovieType)}s");
             }
 
-            var result = new List<MovieType>();
-            MovieType type = null;
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
-                var id = (int)reader["MovieTypeId"];
-                if (type == null || type.Id != id)
-                {
-                    type = result.Find(t => t.Id == id);
-                    if (type == null)
-                    {
-                        type = new MovieType(reader);
-                        result.Add(type);
-                    }
-                }
-
-                type.Titles.SetTitle(new LanguageTitle(reader));
+                movieTypes.Add(await this.ReadFromRecordAsync(reader));
             }
 
-            return result;
+            if (!await reader.NextResultAsync() || !reader.HasRows)
+            {
+                throw new MissingResultException(2, $"{nameof(MovieType)}{LanguageTitleCollection.TitlesColumn}");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var movieType = (MovieType)this.GetFromResultsByIdInRecord(movieTypes, reader, IdColumn);
+                movieType.Titles.Add(await LanguageTitle.Static.ReadFromRecordAsync(reader));
+            }
+
+            return movieTypes;
         }
     }
 }

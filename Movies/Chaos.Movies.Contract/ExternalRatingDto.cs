@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ExternalRatingsDto.cs" company="Erik Bunnstad">
+// <copyright file="ExternalRatingDto.cs" company="Erik Bunnstad">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -10,7 +10,7 @@ namespace Chaos.Movies.Contract
 
     /// <summary>Represents a user.</summary>
     [DataContract]
-    public class ExternalRatingsDto
+    public class ExternalRatingDto
     {
         /// <summary>Gets or sets the <see cref="ExternalSourceDto"/>.</summary>
         [DataMember]
