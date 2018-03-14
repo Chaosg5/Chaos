@@ -19,10 +19,10 @@ namespace Chaos.Movies.Model
     public class LanguageTitle : Loadable<LanguageTitle, LanguageTitleDto>
     {
         /// <summary>The database column for <see cref="Title"/>.</summary>
-        public const string TitleColumn = "Title";
+        internal const string TitleColumn = "Title";
 
         /// <summary>The database column for <see cref="Language"/>.</summary>
-        public const string LanguageColumn = "Language";
+        internal const string LanguageColumn = "Language";
 
         /// <summary>Private part of the <see cref="Title"/> property.</summary>
         private string title;
@@ -76,22 +76,28 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override LanguageTitle FromContract(LanguageTitleDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new LanguageTitle { Title = contract.Title, Language = contract.Language };
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override Task<LanguageTitle> ReadFromRecordAsync(IDataRecord record)
+        internal override Task<LanguageTitle> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { TitleColumn, LanguageColumn });
             return Task.FromResult(new LanguageTitle(record[TitleColumn].ToString(), new CultureInfo(record[LanguageColumn].ToString())));
         }
 
         /// <inheritdoc />
-        public override void ValidateSaveCandidate()
+        internal override void ValidateSaveCandidate()
         {
         }
     }

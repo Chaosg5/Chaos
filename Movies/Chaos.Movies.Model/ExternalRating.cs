@@ -18,10 +18,10 @@ namespace Chaos.Movies.Model
     public class ExternalRating : Loadable<ExternalRating, ExternalRatingDto>
     {
         /// <summary>The database column for <see cref="Rating"/>.</summary>
-        public const string RatingColumn = "ExternalRating";
+        internal const string RatingColumn = "ExternalRating";
 
         /// <summary>The database column for <see cref="RatingCount"/>.</summary>
-        public const string RatingCountColumn = "RatingCount";
+        internal const string RatingCountColumn = "RatingCount";
 
         /// <summary>Private part of the <see cref="ExternalSource"/> property.</summary>
         private ExternalSource externalSource;
@@ -120,8 +120,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override ExternalRating FromContract(ExternalRatingDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new ExternalRating
             {
                 ExternalSource = this.ExternalSource.FromContract(contract.ExternalSource),
@@ -131,14 +137,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override void ValidateSaveCandidate()
+        internal override void ValidateSaveCandidate()
         {
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override async Task<ExternalRating> ReadFromRecordAsync(IDataRecord record)
+        internal override async Task<ExternalRating> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, RatingColumn, RatingCountColumn });
             return new ExternalRating(

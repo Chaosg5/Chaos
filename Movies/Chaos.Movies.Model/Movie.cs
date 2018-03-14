@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
@@ -59,10 +60,10 @@ namespace Chaos.Movies.Model
         public IconCollection Images { get; } = new IconCollection();
 
         /// <summary>Gets the total rating score from the current user.</summary>
-        public Rating UserRating { get; } = new Rating(new RatingType(1));
+        public UserRating UserRating { get; } = new UserRating(new RatingType());
 
         /// <summary>Gets the total rating score from all users.</summary>
-        public Rating TotalRating { get; } = new Rating(new RatingType(1));
+        public UserRating TotalUserRating { get; } = new UserRating(new RatingType());
 
         /// <summary>Gets the list of <see cref="Character"/>s in this <see cref="Movie"/>.</summary>
         public PersonAsCharacterCollection<Movie> Characters
@@ -102,20 +103,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override Movie FromContract(MovieDto contract)
         {
-            throw new System.NotImplementedException();
-        }
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
 
-        /// <inheritdoc />
-        public override Task<Movie> ReadFromRecordAsync(IDataRecord record)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public override void ValidateSaveCandidate()
-        {
             throw new System.NotImplementedException();
         }
 
@@ -138,13 +133,25 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        internal override Task<Movie> ReadFromRecordAsync(IDataRecord record)
         {
             throw new System.NotImplementedException();
         }
 
         /// <inheritdoc />
-        protected override Task<IEnumerable<Movie>> ReadFromRecordsAsync(DbDataReader reader)
+        internal override void ValidateSaveCandidate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        internal override Task<IEnumerable<Movie>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
             throw new System.NotImplementedException();
         }

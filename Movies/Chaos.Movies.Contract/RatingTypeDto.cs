@@ -17,13 +17,9 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public int Id { get; set; }
 
-        /// <summary>Gets or sets the name of this rating type.</summary>
+        /// <summary>Gets or sets the list of titles of this <see cref="RatingTypeDto"/> in different languages.</summary>
         [DataMember]
-        public string Name { get; set; }
-
-        /// <summary>Gets or sets the description of this rating type.</summary>
-        [DataMember]
-        public string Description { get; set; }
+        public ReadOnlyCollection<LanguageDescriptionDto> Titles { get; set; }
 
         /// <summary>Gets or sets the <see cref="RatingTypeDto"/>s that makes up the derived children of this <see cref="RatingTypeDto"/>.</summary>
         [DataMember]

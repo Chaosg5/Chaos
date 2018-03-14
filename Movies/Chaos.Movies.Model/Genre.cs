@@ -28,7 +28,7 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the id of the <see cref="Genre"/> in <see cref="ExternalSource"/>s.</summary>
         public ExternalLookupCollection ExternalLookups { get; private set; } = new ExternalLookupCollection();
 
-        /// <summary>Gets the title of the genre.</summary>
+        /// <summary>Gets the titles of the genre.</summary>
         public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
         /// <inheritdoc />
@@ -50,32 +50,21 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public override Task<Genre> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn });
-            return Task.FromResult(new Genre { Id = (int)record[IdColumn] });
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="InvalidSaveCandidateException">At least one title needs to be specified.</exception>
-        public override void ValidateSaveCandidate()
-        {
-            if (this.Titles.Count == 0)
-            {
-                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
-            }
-        }
-
-        /// <inheritdoc />
         public override GenreDto ToContract()
         {
             return new GenreDto { Id = this.Id, Titles = this.Titles.ToContract(), ExternalLookups = this.ExternalLookups.ToContract() };
         }
 
         /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override Genre FromContract(GenreDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new Genre
             {
                 Id = contract.Id,
@@ -128,22 +117,29 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal override Task<Genre> ReadFromRecordAsync(IDataRecord record)
         {
-            return new ReadOnlyDictionary<string, object>(
-                new Dictionary<string, object>
-                {
-                    { Persistent.ColumnToVariable(IdColumn), this.Id },
-                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable },
-                    { Persistent.ColumnToVariable(ExternalLookupCollection.ExternalLookupColumn), this.ExternalLookups.GetSaveTable }
-                });
+            Persistent.ValidateRecord(record, new[] { IdColumn });
+            return Task.FromResult(new Genre { Id = (int)record[IdColumn] });
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">At least one title needs to be specified.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Titles.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        protected override async Task<IEnumerable<Genre>> ReadFromRecordsAsync(DbDataReader reader)
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        internal override async Task<IEnumerable<Genre>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var genres = new List<Genre>();
             if (!reader.HasRows)
@@ -179,6 +175,18 @@ namespace Chaos.Movies.Model
             }
 
             return genres;
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable },
+                    { Persistent.ColumnToVariable(ExternalLookupCollection.ExternalLookupColumn), this.ExternalLookups.GetSaveTable }
+                });
         }
     }
 }

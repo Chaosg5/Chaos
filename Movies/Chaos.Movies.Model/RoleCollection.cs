@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Globalization;
@@ -19,7 +20,7 @@ namespace Chaos.Movies.Model
     public class RoleCollection : Listable<Role, RoleDto, RoleCollection>
     {
         /// <summary>The database column for this <see cref="RoleCollection"/>.</summary>
-        public const string RolesColumn = "Roles";
+        internal const string RolesColumn = "Roles";
 
         /// <inheritdoc />
         public override DataTable GetSaveTable
@@ -48,8 +49,14 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override RoleCollection FromContract(ReadOnlyCollection<RoleDto> contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             var list = new RoleCollection();
             foreach (var item in contract)
             {

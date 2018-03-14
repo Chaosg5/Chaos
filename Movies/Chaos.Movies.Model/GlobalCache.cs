@@ -40,7 +40,10 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets all available icon types.</summary>
         private static readonly AsyncCache<int, IconType> IconTypes = new AsyncCache<int, IconType>(i => IconType.Static.GetAsync(session, i));
-        
+
+        /// <summary>Gets all available icon types.</summary>
+        private static readonly AsyncCache<int, RatingType> RatingTypes = new AsyncCache<int, RatingType>(i => RatingType.Static.GetAsync(session, i));
+
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
         /// <summary>The session.</summary>
@@ -56,9 +59,10 @@ namespace Chaos.Movies.Model
         public static async Task InitCacheAsync(UserSession userSession)
         {
             await MovieSeriesTypesLoadAllAsync();
+            await DepartmentsLoadAllAsync();
             await RolesLoadAllAsync();
             await IconTypesLoadAllAsync();
-            await DepartmentsLoadAllAsync();
+            await RatingTypesLoadAllAsync();
         }
 
         /// <summary>Clears all cache objects.</summary>
@@ -157,6 +161,14 @@ namespace Chaos.Movies.Model
             return await IconTypes.GetValue(id);
         }
 
+        /// <summary>Gets the specified <see cref="RatingType"/>.</summary>
+        /// <param name="id">The id of the <see cref="RatingType"/> to get.</param>
+        /// <returns>The specified <see cref="RatingType"/>.</returns>
+        public static async Task<RatingType> GetRatingTypeAsync(int id)
+        {
+            return await RatingTypes.GetValue(id);
+        }
+
         /// <summary>Gets the specified <see cref="ExternalSource"/>.</summary>
         /// <param name="id">The id of the <see cref="ExternalSource"/> to get.</param>
         /// <returns>The specified <see cref="ExternalSource"/>.</returns>
@@ -216,6 +228,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Loads all <see cref="MovieSeriesType"/>s from the database.</summary>
         /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         private static async Task MovieSeriesTypesLoadAllAsync()
         {
             MovieSeriesTypes.Clear();
@@ -238,12 +251,25 @@ namespace Chaos.Movies.Model
 
         /// <summary>Loads all <see cref="IconType"/>s from the database.</summary>
         /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         private static async Task IconTypesLoadAllAsync()
         {
             IconTypes.Clear();
             foreach (var iconType in await IconType.Static.GetAllAsync(session))
             {
                 IconTypes.SetValue(iconType.Id, iconType);
+            }
+        }
+
+        /// <summary>Loads all <see cref="RatingType"/>s from the database.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static async Task RatingTypesLoadAllAsync()
+        {
+            RatingTypes.Clear();
+            foreach (var ratingType in await RatingType.Static.GetAllAsync(session))
+            {
+                RatingTypes.SetValue(ratingType.Id, ratingType);
             }
         }
     }

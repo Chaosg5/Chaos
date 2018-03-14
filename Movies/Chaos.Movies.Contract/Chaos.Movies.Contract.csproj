@@ -45,12 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICharacter.cs" />
     <Compile Include="CharacterDto.cs" />
     <Compile Include="ExternalLookupDto.cs" />
     <Compile Include="ExternalRatingDto.cs" />
     <Compile Include="ExternalSourceDto.cs" />
     <Compile Include="IconTypeDto.cs" />
+    <Compile Include="LanguageDescriptionDto.cs" />
     <Compile Include="PersonUserRatingDto.cs" />
     <Compile Include="CharacterInMovieDto.cs" />
     <Compile Include="DepartmentDto.cs" />
@@ -61,7 +61,7 @@
     <Compile Include="MovieTypeDto.cs" />
     <Compile Include="PersonDto.cs" />
     <Compile Include="PersonInMovieDto.cs" />
-    <Compile Include="RatingDto.cs" />
+    <Compile Include="UserRatingDto.cs" />
     <Compile Include="RatingSystemDto.cs" />
     <Compile Include="RatingTypeDto.cs" />
     <Compile Include="RatingValueDto.cs" />

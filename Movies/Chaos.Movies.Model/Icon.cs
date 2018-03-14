@@ -131,8 +131,15 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public override Icon FromContract(IconDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new Icon { Id = contract.Id, IconType = this.IconType.FromContract(contract.IconType), Data = contract.Data, Url = contract.Url };
         }
 
@@ -181,7 +188,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public override async Task<Icon> ReadFromRecordAsync(IDataRecord record)
+        internal override async Task<Icon> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn, IconType.IdColumn, UrlColumn, DataColumn });
             return new Icon
@@ -194,7 +201,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override void ValidateSaveCandidate()
+        internal override void ValidateSaveCandidate()
         {
         }
 

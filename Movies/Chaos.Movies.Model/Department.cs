@@ -22,17 +22,6 @@ namespace Chaos.Movies.Model
     /// <summary>Represents a production department in a <see cref="Movie"/>.</summary>
     public sealed class Department : Typeable<Department, DepartmentDto>
     {
-        /// <inheritdoc />
-        public Department(DepartmentDto department)
-            : base(department)
-        {
-        }
-
-        /// <inheritdoc />
-        public Department()
-        {
-        }
-
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Department Static { get; } = new Department();
         
@@ -116,8 +105,14 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override Department FromContract(DepartmentDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new Department
             {
                 Id = contract.Id,
@@ -128,7 +123,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
+        internal override void ValidateSaveCandidate()
         {
             if (this.Titles.Count == 0)
             {
@@ -144,7 +139,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override Task<Department> ReadFromRecordAsync(IDataRecord record)
+        internal override Task<Department> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn });
             return Task.FromResult(new Department { Id = (int)record[IdColumn] });
@@ -155,7 +150,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        protected override async Task<IEnumerable<Department>> ReadFromRecordsAsync(DbDataReader reader)
+        internal override async Task<IEnumerable<Department>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var departments = new List<Department>();
             if (!reader.HasRows)

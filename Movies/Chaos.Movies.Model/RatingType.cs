@@ -10,135 +10,217 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
-    using System.Data.SqlClient;
+    using System.Data.Common;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
+    using Chaos.Movies.Model.ChaosMovieService;
+
     using Exceptions;
 
     /// <summary>A sub rating with a defined type.</summary>
-    public class RatingType
+    public class RatingType : Typeable<RatingType, RatingTypeDto>
     {
-        /// <summary>The sub types of this rating type.</summary>
-        private readonly List<RatingType> subtypes = new List<RatingType>();
+        /// <summary>The database column for <see cref="ParentRatingTypeId"/>.</summary>
+        internal const string ParentRatingTypeIdColumn = "ParentRatingTypeId";
 
-        /// <summary>Initializes a new instance of the <see cref="RatingType" /> class.</summary>
-        /// <param name="id">The id of the type.</param>
-        public RatingType(int id)
+        /// <inheritdoc />
+        public RatingType()
         {
+            this.Subtypes = new RatingTypeCollection(this);
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="RatingType"/> class.</summary>
+        /// <remarks>Only intended for tests.</remarks>
+        /// <param name="id">The id.</param>
+        internal RatingType(int id)
+        {
+            // ToDo: Remove and read Types from the database in the test.
             this.Id = id;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="RatingType" /> class.</summary>
-        /// <param name="id">The id of the type.</param>
-        /// <param name="name">The name of the type.</param>
-        /// <param name="description">The description of the type.</param>
-        public RatingType(int id, string name, string description)
-        {
-            this.Id = id;
-            this.Name = name;
-            this.Description = description;
-        }
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static RatingType Static { get; } = new RatingType();
 
-        /// <summary>Initializes a new instance of the <see cref="RatingType" /> class.</summary>
-        /// <param name="name">The name of the type.</param>
-        /// <param name="description">The description of the type.</param>
-        public RatingType(string name, string description)
-        {
-            this.Name = name;
-            this.Description = description;
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="RatingType" /> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="RatingType"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public RatingType(IDataRecord record)
-        {
-            this.ReadFromRecord(record);
-        }
-
-        /// <summary>Gets the id of this rating type.</summary>
-        public int Id { get; private set; }
-
-        /// <summary>Gets the name of this rating type.</summary>
-        public string Name { get; private set; }
-
-        /// <summary>Gets the description of this rating type.</summary>
-        public string Description { get; private set; }
-
+        /// <summary>Gets the titles of the rating type.</summary>
+        public LanguageDescriptionCollection Titles { get; private set; } = new LanguageDescriptionCollection();
+        
         /// <summary>Gets the <see cref="RatingType"/>s that makes up the derived children of this <see cref="RatingType"/>.</summary>
-        public ReadOnlyCollection<RatingType> Subtypes => this.subtypes.AsReadOnly();
+        public RatingTypeCollection Subtypes { get; private set; }
 
-        /// <summary>Adds a sub <see cref="RatingType"/> to this type.</summary>
-        /// <param name="subtype">The subtype to add.</param>
-        public void AddSubtype(RatingType subtype)
-        {
-            if (subtype != null)
-            {
-                this.subtypes.Add(subtype);
-            }
-        }
+        /// <summary>Gets or sets the id of the parent <see cref="RatingType"/>.</summary>
+        private int ParentRatingTypeId { get; set; }
 
-        /// <summary>Saves this rating type to the database.</summary>
+        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public void Save()
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
-            this.SaveToDatabase();
-        }
-
-        /// <summary>Validates that this <see cref="RatingType"/> is valid to be saved.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
-        private void ValidateSaveCandidate()
-        {
-            if (string.IsNullOrEmpty(this.Name))
+            if (!Persistent.UseService)
             {
-                throw new InvalidSaveCandidateException("The 'Name' can not be empty.");
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                return;
             }
 
-            foreach (var subtype in this.subtypes)
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+            }
+        }
+        
+        /// <inheritdoc />
+        public override RatingTypeDto ToContract()
+        {
+            return new RatingTypeDto { Id = this.Id, Titles = this.Titles.ToContract(), Subtypes = this.Subtypes.ToContract() };
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
+        public override RatingType FromContract(RatingTypeDto contract)
+        {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
+            return new RatingType
+            {
+                Id = contract.Id,
+                Titles = this.Titles.FromContract(contract.Titles),
+                Subtypes = this.Subtypes.FromContract(contract.Subtypes)
+            };
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public override async Task<RatingType> GetAsync(UserSession session, int id)
+        {
+            return (await this.GetAsync(session, new[] { id })).First();
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public override async Task<IEnumerable<RatingType>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            if (!Persistent.UseService)
+            {
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
+                return new List<RatingType>();
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<IEnumerable<RatingType>> GetAllAsync(UserSession session)
+        {
+            if (!Persistent.UseService)
+            {
+                return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.({T})GetAllAsync(session.ToContract())).Select(x => new ({T})(x));
+                return new List<RatingType>();
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal override Task<RatingType> ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn, ParentRatingTypeIdColumn });
+            return Task.FromResult(
+                new RatingType
+                {
+                    Id = (int)record[IdColumn],
+                    ParentRatingTypeId = (int?)record[ParentRatingTypeIdColumn] ?? 0
+                });
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Titles.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+
+            foreach (var subtype in this.Subtypes)
             {
                 subtype.ValidateSaveCandidate();
             }
         }
 
-        /// <summary>Updates this <see cref="RatingType"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="RatingType"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        private void ReadFromRecord(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { "RatingTypeId", "Name", "Description" });
-            this.Id = (int)record["RatingTypeId"];
-            this.Name = record["Name"].ToString();
-            this.Description = record["Description"].ToString();
-        }
-
-        /// <summary>Saves this <see cref="RatingType"/> to the database.</summary>
+        /// <inheritdoc />
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        private void SaveToDatabase()
+        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        internal override async Task<IEnumerable<RatingType>> ReadFromRecordsAsync(DbDataReader reader)
         {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("RatingTypeSave", connection))
+            var ratingTypes = new List<RatingType>();
+            if (!reader.HasRows)
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@RatingTypeId", this.Id);
-                command.Parameters.AddWithValue("@Name", this.Name);
-                command.Parameters.AddWithValue("@Description", this.Description);
-                connection.Open();
+                throw new MissingResultException(1, $"{nameof(RatingType)}s");
+            }
 
-                using (var reader = command.ExecuteReader())
+            while (await reader.ReadAsync())
+            {
+                ratingTypes.Add(await this.ReadFromRecordAsync(reader));
+            }
+
+            if (!await reader.NextResultAsync() || !reader.HasRows)
+            {
+                throw new MissingResultException(2, $"{nameof(RatingType)}{LanguageDescriptionCollection.TitlesColumn}");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var ratingType = (RatingType)this.GetFromResultsByIdInRecord(ratingTypes, reader, IdColumn);
+                ratingType.Titles.Add(await LanguageDescription.Static.ReadFromRecordAsync(reader));
+            }
+            
+            foreach (var ratingType in ratingTypes.Where(r => r.ParentRatingTypeId > 0))
+            {
+                var parent = ratingTypes.FirstOrDefault(p => p.Id == ratingType.ParentRatingTypeId);
+                if (parent != null)
                 {
-                    if (reader.Read())
-                    {
-                        this.ReadFromRecord(reader);
-                    }
+                    parent.Subtypes.Add(ratingType);
+                }
+                else
+                {
+                    parent = await GlobalCache.GetRatingTypeAsync(ratingType.ParentRatingTypeId);
+                    parent.Subtypes.Add(ratingType);
                 }
             }
 
-            foreach (var subtype in this.subtypes)
-            {
-                subtype.SaveToDatabase();
-            }
+            return ratingTypes;
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(LanguageDescriptionCollection.TitlesColumn), this.Titles.GetSaveTable }
+                });
         }
     }
 }

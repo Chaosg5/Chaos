@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Rating.cs">
+// <copyright file="UserRating.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -10,61 +10,65 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
-    using System.Data.SqlClient;
+    using System.Data.Common;
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Media;
 
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
+
     using Exceptions;
 
     /// <summary>A rating for a <see cref="Movie"/> set by a <see cref="User"/>.</summary>
-    public class Rating
+    public class UserRating : Loadable<UserRating, UserRatingDto>
     {
-        #region Fields
+        /// <summary>The database column for <see cref="Value"/>.</summary>
+        internal const string RatingColumn = "Rating";
+
+        /// <summary>The database column for <see cref="CreatedDate"/>.r</summary>
+        internal const string CreatedDateColumn = "CreatedDate";
 
         /// <summary>The set and derived value of the rating.</summary>
         private readonly RatingValue ratingValue = new RatingValue(-1, -1);
 
         /// <summary>The list of sub ratings for this rating.</summary>
-        private readonly List<Rating> subRatings = new List<Rating>();
+        private readonly List<UserRating> subRatings = new List<UserRating>();
 
-        #endregion
-
-        #region Constructors
-
-        /// <summary>Initializes a new instance of the <see cref="Rating" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="UserRating" /> class.</summary>
         /// <param name="ratingType">The type of the rating.</param>
-        public Rating(RatingType ratingType)
+        public UserRating(RatingType ratingType)
         {
             this.RatingType = ratingType;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Rating" /> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="UserRating" /> class.</summary>
         /// <param name="assignedValue">The value to set.</param>
         /// <param name="ratingType">The type of the rating.</param>
-        public Rating(int assignedValue, RatingType ratingType)
+        public UserRating(int assignedValue, RatingType ratingType)
         {
             this.ratingValue.Value = assignedValue;
             this.RatingType = ratingType;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Rating"/> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="Rating"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public Rating(IDataRecord record)
+        /// <summary>Prevents a default instance of the <see cref="UserRating"/> class from being created.</summary>
+        private UserRating()
         {
-            this.ReadFromRecord(record);
         }
 
-        #endregion
+        /// <summary>Initializes a new instance of the <see cref="UserRating"/> class.</summary>
+        /// <param name="subRatings">The <see cref="subRatings"/> to set.</param>
+        /// <param name="ratingValue">The <see cref="ratingValue"/> to set.</param>
+        private UserRating(List<UserRating> subRatings, RatingValue ratingValue)
+        {
+            this.subRatings = subRatings;
+            this.ratingValue = ratingValue;
+            this.ValueChanged = true;
+        }
 
-        /// <summary>Gets the id of this rating.</summary>
-        public int Id { get; private set; }
-
-        /// <summary>Gets the id of the parent <see cref="Rating"/>.</summary>
-        public int ParentRatingId { get; private set; }
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static UserRating Static { get; } = new UserRating();
 
         /// <summary>Gets the id of the <see cref="User"/> who owns the rating.</summary>
         public int UserId { get; private set; }
@@ -72,8 +76,11 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the type of this rating.</summary>
         public RatingType RatingType { get; private set; }
 
+        /// <summary>Gets the created date.</summary>
+        public DateTime CreatedDate { get; private set; } = DateTime.Now;
+
         /// <summary>Gets the child ratings of this rating.</summary>
-        public ReadOnlyCollection<Rating> SubRatings => this.subRatings.AsReadOnly();
+        public ReadOnlyCollection<UserRating> SubRatings => this.subRatings.AsReadOnly();
 
         /// <summary>Gets the values of this rating.</summary>
         public double Value
@@ -88,8 +95,11 @@ namespace Chaos.Movies.Model
                 return this.ratingValue.Value > 0 ? this.ratingValue.Value : this.ratingValue.Derived;
             }
         }
-        
-        /// <summary>Gets the display color in RBG hex for this <see cref="Rating"/>'s <see cref="Value"/>.</summary>
+
+        /// <summary>Gets the actual rating value for this rating, not counting derived values.</summary>
+        public int ActualRating => this.ratingValue.Value;
+
+        /// <summary>Gets the display color in RBG hex for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
         public string HexColor
         {
             get
@@ -99,7 +109,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Gets the display color for this <see cref="Rating"/>'s <see cref="Value"/>.</summary>
+        /// <summary>Gets the display color for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
         public Color Color
         {
             get
@@ -130,7 +140,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Gets the display value for this <see cref="Rating"/>'s <see cref="Value"/>.</summary>
+        /// <summary>Gets the display value for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
         public string DisplayValue
         {
             get
@@ -145,18 +155,27 @@ namespace Chaos.Movies.Model
             }
         }
 
+        /// <summary>Gets or sets a value indicating whether value has changed since last saved.</summary>
+        private bool ValueChanged { get; set; }
+        
         /// <summary>Sets the value of this rating.</summary>
         /// <param name="value">The value to set.</param>
         public void SetValue(int value)
         {
+            if (this.ratingValue.Value != value)
+            {
+                this.ValueChanged = true;
+            }
+
             this.ratingValue.Value = value;
         }
-
+        
         /// <summary>Adds a sub rating to this rating.</summary>
-        /// <param name="rating">The sub rating to add.</param>
-        public void AddSubRating(Rating rating)
+        /// <param name="userRating">The sub rating to add.</param>
+        public void AddSubRating(UserRating userRating)
         {
-            this.subRatings.Add(rating);
+            // ToDo: Remove?
+            this.subRatings.Add(userRating);
         }
 
         /// <summary>Gets the list of values for this rating.</summary>
@@ -179,48 +198,90 @@ namespace Chaos.Movies.Model
             this.CalculateValue(derivedValues, ratingSystem);
             return allRatings;
         }
-
-        /// <summary>Saves this rating to the database.</summary>
-        public async void Save()
-        {
-            if (Persistent.UseService)
-            {
-                throw new ServiceRequiredException();
-            }
-
-            this.ValidateSaveCandidate();
-            await SaveToDatabaseAsync(this);
-        }
-
-        /// <summary>Saves this rating to the database.</summary>
-        /// <returns>The <see cref="Task"/>.</returns>
-        public async Task SaveAllAsync()
-        {
-            if (Persistent.UseService)
-            {
-                throw new ServiceRequiredException();
-            }
-
-            this.ValidateAllSaveCandidates();
-            await SaveAllToDatabaseAsync(this);
-        }
-
-        #region Private
         
-        /// <summary>Validates that this <see cref="Rating"/> is valid to be saved.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Rating"/> is not valid to be saved.</exception>
-        private void ValidateAllSaveCandidates()
+        /// <inheritdoc />
+        public override UserRatingDto ToContract()
         {
-            this.ValidateSaveCandidate();
-            foreach (var subtype in this.subRatings)
+            return new UserRatingDto
             {
-                subtype.ValidateAllSaveCandidates();
-            }
+                UserId = this.UserId,
+                RatingType = this.RatingType.ToContract(),
+                SubRatings = this.subRatings.Select(r => r.ToContract()).ToList().AsReadOnly(),
+                Value = this.ratingValue.Value,
+                Derived = this.ratingValue.Derived,
+                HexColor = this.HexColor,
+                Color = this.Color,
+                DisplayValue = this.DisplayValue,
+                CreatedDate = this.CreatedDate
+            };
         }
 
-        /// <summary>Validates that this <see cref="Rating"/> is valid to be saved.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Rating"/> is not valid to be saved.</exception>
-        private void ValidateSaveCandidate()
+        /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        public override UserRating FromContract(UserRatingDto contract)
+        {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
+            return new UserRating(contract.SubRatings.Select(r => Static.FromContract(r)).ToList(), new RatingValue(contract.Value, -1))
+            {
+                UserId = contract.UserId,
+                RatingType = RatingType.Static.FromContract(contract.RatingType),
+                CreatedDate = contract.CreatedDate
+            };
+        }
+
+        /// <summary>The read from records async.</summary>
+        /// <param name="reader">The reader.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal async Task<IEnumerable<UserRating>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            var userRatings = new List<UserRating>();
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1, $"{nameof(UserRating)}s");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                userRatings.Add(await this.ReadFromRecordAsync(reader));
+            }
+
+            foreach (var userRating in userRatings)
+            {
+                foreach (var ratingType in userRating.RatingType.Subtypes)
+                {
+                    var subRating = userRatings.FirstOrDefault(r => r.RatingType.Id == ratingType.Id)
+                        ?? new UserRating { UserId = userRating.UserId, RatingType = ratingType, ratingValue = { Value = -1, Derived = -1 } };
+                    userRating.subRatings.Add(subRating);
+                }
+            }
+
+            return userRatings;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal override async Task<UserRating> ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { User.IdColumn, RatingType.IdColumn, RatingColumn, CreatedDateColumn });
+            return new UserRating
+            {
+                UserId = (int)record[User.IdColumn],
+                RatingType = await GlobalCache.GetRatingTypeAsync((int)record[RatingType.IdColumn]),
+                ratingValue = { Value = (int)record[RatingColumn], Derived = -1 },
+                CreatedDate = (DateTime)record[CreatedDateColumn]
+            };
+        }
+
+        /// <summary>Validates that this <see cref="UserRating"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="UserRating"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
         {
             if (this.RatingType.Id == 0)
             {
@@ -238,62 +299,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Updates this <see cref="Rating"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="Rating"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        private void ReadFromRecord(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { "RatingId", "RatingTypeId", "Value", "UserId" });
-            this.Id = (int)record["RatingId"];
-            this.ratingValue.Value = (int)record["Value"];
-
-            var ratingTypeId = (int)record["RatingTypeId"];
-            if (this.RatingType.Id != ratingTypeId)
-            {
-                this.RatingType = new RatingType(ratingTypeId);
-            }
-
-            this.UserId = (int)record["UserId"];
-        }
-
-        /// <summary>Saves this rating to the database.</summary>
-        /// <param name="rating">The type to save.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
-        private static async Task SaveToDatabaseAsync(Rating rating)
-        {
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("RatingSave", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@RatingId", rating.Id);
-                command.Parameters.AddWithValue("@RatingTypeId", rating.RatingType.Id);
-                command.Parameters.AddWithValue("@Value", rating.ratingValue.Value);
-                await connection.OpenAsync();
-                using (var reader = await command.ExecuteReaderAsync())
-                {
-                    if (await reader.ReadAsync())
-                    {
-                        rating.ReadFromRecord(reader);
-                    }
-                }
-            }
-        }
-
-        /// <summary>Saves this rating to the database.</summary>
-        /// <param name="rating">The type to save.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
-        private static async Task SaveAllToDatabaseAsync(Rating rating)
-        {
-            await SaveToDatabaseAsync(rating);
-            foreach (var subRating in rating.subRatings)
-            {
-                subRating.ParentRatingId = rating.Id;
-                await SaveAllToDatabaseAsync(subRating);
-            }
-        }
-
-        /// <summary>Calculates the derived value of this <see cref="Rating"/>.</summary>
+        /// <summary>Calculates the derived value of this <see cref="UserRating"/>.</summary>
         /// <param name="derivedValues">The list of derived sub values.</param>
         /// <param name="ratingSystem">The rating value system to calculate values based on.</param>
         private void CalculateValue(Dictionary<RatingType, double> derivedValues, RatingSystem ratingSystem)
@@ -339,7 +345,5 @@ namespace Chaos.Movies.Model
 
             this.ratingValue.Derived = ratingTotal / systemTotal;
         }
-
-        #endregion
     }
 }

@@ -54,34 +54,6 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the movies which are a part of this collection with the keys representing their order.</summary>
         public MovieCollection Movies { get; private set; } = new MovieCollection();
-        
-        /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public override async Task<MovieSeries> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn, MovieSeriesType.IdColumn });
-            return new MovieSeries { Id = (int)record[IdColumn], MovieSeriesType = await GlobalCache.GetMovieSeriesTypeAsync((int)record[MovieSeriesType.IdColumn]) };
-        }
-
-        /// <summary>Validates that this <see cref="MovieSeries"/> is valid to be saved.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeries"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
-        {
-            if (this.Titles.Count == 0)
-            {
-                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
-            }
-
-            if (this.Movies.Count == 0)
-            {
-                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
-            }
-
-            if (this.MovieSeriesType == null || this.MovieSeriesType.Id <= 0)
-            {
-                throw new InvalidSaveCandidateException("A valid type needs to be specified.");
-            }
-        }
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeries"/> is not valid to be saved.</exception>
@@ -114,8 +86,14 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override MovieSeries FromContract(MovieSeriesDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new MovieSeries
             {
                 Id = contract.Id,
@@ -151,15 +129,31 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal override async Task<MovieSeries> ReadFromRecordAsync(IDataRecord record)
         {
-            return new ReadOnlyDictionary<string, object>(
-                new Dictionary<string, object>
-                {
-                    { Persistent.ColumnToVariable(IdColumn), this.Id },
-                    { Persistent.ColumnToVariable(MovieCollection.MoviesColumn), this.Movies.GetSaveTable },
-                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
-                });
+            Persistent.ValidateRecord(record, new[] { IdColumn, MovieSeriesType.IdColumn });
+            return new MovieSeries { Id = (int)record[IdColumn], MovieSeriesType = await GlobalCache.GetMovieSeriesTypeAsync((int)record[MovieSeriesType.IdColumn]) };
+        }
+
+        /// <summary>Validates that this <see cref="MovieSeries"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeries"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Titles.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+
+            if (this.Movies.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+
+            if (this.MovieSeriesType == null || this.MovieSeriesType.Id <= 0)
+            {
+                throw new InvalidSaveCandidateException("A valid type needs to be specified.");
+            }
         }
 
         /// <inheritdoc />
@@ -167,7 +161,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        protected override async Task<IEnumerable<MovieSeries>> ReadFromRecordsAsync(DbDataReader reader)
+        internal override async Task<IEnumerable<MovieSeries>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var movieSeriesList = new List<MovieSeries>();
             if (!reader.HasRows)
@@ -203,6 +197,18 @@ namespace Chaos.Movies.Model
             }
 
             return movieSeriesList;
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(MovieCollection.MoviesColumn), this.Movies.GetSaveTable },
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
+                });
         }
     }
 }

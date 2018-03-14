@@ -102,29 +102,6 @@ namespace Chaos.Movies.Model
 
             return people;
         }
-
-        /// <inheritdoc />
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
-        public override Task<Person> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { "PersonId", "Name" });
-            return Task.FromResult(new Person
-            {
-                Id = (int)record["PersonId"],
-                Name = record["Name"].ToString()
-            });
-        }
-
-        /// <summary>Validates that this <see cref="Person"/> is valid to be saved.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Person"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
-        {
-            if (string.IsNullOrEmpty(this.Name))
-            {
-                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can not be empty.");
-            }
-        }
         
         /// <inheritdoc />
         public override PersonDto ToContract()
@@ -133,8 +110,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override Person FromContract(PersonDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             throw new NotImplementedException();
         }
 
@@ -157,13 +140,36 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
+        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
+        internal override Task<Person> ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { "PersonId", "Name" });
+            return Task.FromResult(new Person
+            {
+                Id = (int)record["PersonId"],
+                Name = record["Name"].ToString()
+            });
+        }
+
+        /// <summary>Validates that this <see cref="Person"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Person"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can not be empty.");
+            }
+        }
+
+        /// <inheritdoc />
+        internal override Task<IEnumerable<Person>> ReadFromRecordsAsync(DbDataReader reader)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        protected override Task<IEnumerable<Person>> ReadFromRecordsAsync(DbDataReader reader)
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
             throw new NotImplementedException();
         }

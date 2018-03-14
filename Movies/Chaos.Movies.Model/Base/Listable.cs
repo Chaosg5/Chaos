@@ -14,6 +14,12 @@ namespace Chaos.Movies.Model.Base
     using System.Linq;
 
     using Chaos.Movies.Model.Exceptions;
+    
+    // ToDo: ReadFromReader?????
+
+    // ToDo: IOrderable + ReorderList
+
+    // ToDo: IListable + GetSaveTable
 
     /// <summary>Represents a persitable object that can be saved to the database.</summary>
     /// <typeparam name="T">The base model logic type.</typeparam>
@@ -45,6 +51,37 @@ namespace Chaos.Movies.Model.Base
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        /// <summary>Adds all <typeparamref name="T"/> in the <paramref name="itemsToAdd"/> to this <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <param name="itemsToAdd">The <typeparamref name="T"/>s to add.</param>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        public void AddRange(IEnumerable<T> itemsToAdd)
+        {
+            if (itemsToAdd == null)
+            {
+                return;
+            }
+
+            foreach (var item in itemsToAdd)
+            {
+                this.Add(item);
+            }
+        }
+
+        /// <summary>Removes all <typeparamref name="T"/> in the <paramref name="itemsToRemove"/> to this <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <param name="itemsToRemove">The <typeparamref name="T"/>s to add.</param>
+        public void RemoveRange(IEnumerable<T> itemsToRemove)
+        {
+            if (itemsToRemove == null)
+            {
+                return;
+            }
+
+            foreach (var item in itemsToRemove)
+            {
+                this.Remove(item);
+            }
         }
 
         /// <summary>Adds the <paramref name="item"/> to this <see cref="Listable{T, TDto, TList}"/>.</summary>

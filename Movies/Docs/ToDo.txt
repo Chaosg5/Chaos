@@ -4,6 +4,10 @@ Musik - Importera iTunes biblotek!!!!!
 Boxoffice - Integration
 Filmmusik
 
+User awards
+Awards
+Publishers
+
 Uträknade (ärvda) betyg borde vara gråare, satta starkare så att man kan se vilka man har satt
 
 Ratings:
@@ -34,41 +38,42 @@ Userlists + comments?
 
 Tagline - Where your rating is the key
 
-Story	Uppbyggnad	
-	Plot	Handling	Was the events of the plot interesting, did it s
-		Exposition	Anslag och presentation
-		Conflict	Fördjupning 
-		Rising action	Upptrappning 
-		Climax	Klimax
-		Falling action
-		Resolution	Avrundning	Was the ending rewarding? the events leading upp . Was it predictable 
-	Pacing	Tempo	Was it easy to follow that was going on in the plot, did events , did too little happen or too little with not enough depth.
-	Editing	Klippning	Was the lenght of the shots right. Were transitions between scenes good and did the sceens fit together and feel in the right order?
-	Lighting	Ljussättning	How well was the scenes lit, shadows, hard to see ,
-	Immersion	Uppslukande	
-	Continuity	Kontinuitet	Was the events and tec 
-Video	Bild	How well did the movie's imigary look visually?
-	Look and feel	Utseende	Whether it was good or not, did the visuals fit the world and story.
-	Quality	Kvalitet	What was the actual quality of the images shown?
-	Cinematography	Filmografi	How was the camera work and did it fit the world and story. Were angles, distance and movement right.
-	Costumes	Klädsel	How was the costumes and props.
-	Sets	Miljöer	Set design and locations.
-	Special effects	Special effekter
-	Visual effects	Visuella effekter
-Audio	Ljud	How was the sound?
-	Music	Musik	Was the music good, well balanced with other sound and fit the world, characters and story.
-	Sound effects	Ljudeffekter	Was the m
-	Vocal	Tal	Was the vocals and speech of the 
-Actors	Skådespelare	How well did the actors perform their roles in the movie?
-	Acting	Skådespeleri	How was the quality of the actors' acting?
-	Involvement	Inlevelse	How devoted, prepared and interested did the actors seem to be in the movie and making it good.
-	Casting	Roller	Was the different actors well cast for their different roles.
-Characters	Karaktärer	How good was the quality of the characters.
-	Personalities	Personligheter	Likable, relatable. Were they interesting and could you care for what happended to them.
-	Dialogue	Dialoger	How good was the dialogues written for the character and how well did it fit their personallity.
-	Credibility	Trovärdighet	Was the characters actions and dialogue compared to their personalty, their interaction with other characters, the world around them and the events of the plot.
-Rewatchable	Omsevärdhet	How pleaseant would it be to rewatch compared to the first view.
-Memorable	Minnesvärd	How likley you are to remember och think about elements of the movies, whether it be scences, dialogs, characters, feelings or anything else.
+Total	Totalt	The total rating.
+	Story	Uppbyggnad	
+		Plot	Handling	Was the events of the plot interesting, did it s
+			Exposition	Anslag och presentation
+			Conflict	Fördjupning 
+			Rising action	Upptrappning 
+			Climax	Klimax
+			Falling action
+			Resolution	Avrundning	Was the ending rewarding? the events leading upp . Was it predictable 
+		Pacing	Tempo	Was it easy to follow that was going on in the plot, did events , did too little happen or too little with not enough depth.
+		Editing	Klippning	Was the lenght of the shots right. Were transitions between scenes good and did the sceens fit together and feel in the right order?
+		Lighting	Ljussättning	How well was the scenes lit, shadows, hard to see ,
+		Immersion	Uppslukande	
+		Continuity	Kontinuitet	Was the events and tec 
+	Video	Bild	How well did the movie's imigary look visually?
+		Look and feel	Utseende	Whether it was good or not, did the visuals fit the world and story.
+		Quality	Kvalitet	What was the actual quality of the images shown?
+		Cinematography	Filmografi	How was the camera work and did it fit the world and story. Were angles, distance and movement right.
+		Costumes	Klädsel	How was the costumes and props.
+		Sets	Miljöer	Set design and locations.
+		Special effects	Special effekter
+		Visual effects	Visuella effekter
+	Audio	Ljud	How was the sound?
+		Music	Musik	Was the music good, well balanced with other sound and fit the world, characters and story.
+		Sound effects	Ljudeffekter	Was the m
+		Vocal	Tal	Was the vocals and speech of the 
+	Actors	Skådespelare	How well did the actors perform their roles in the movie?
+		Acting	Skådespeleri	How was the quality of the actors' acting?
+		Involvement	Inlevelse	How devoted, prepared and interested did the actors seem to be in the movie and making it good.
+		Casting	Roller	Was the different actors well cast for their different roles.
+	Characters	Karaktärer	How good was the quality of the characters.
+		Personalities	Personligheter	Likable, relatable. Were they interesting and could you care for what happended to them.
+		Dialogue	Dialoger	How good was the dialogues written for the character and how well did it fit their personallity.
+		Credibility	Trovärdighet	Was the characters actions and dialogue compared to their personalty, their interaction with other characters, the world around them and the events of the plot.
+	Rewatchable	Omsevärdhet	How pleaseant would it be to rewatch compared to the first view.
+	Memorable	Minnesvärd	How likley you are to remember och think about elements of the movies, whether it be scences, dialogs, characters, feelings or anything else.
 
 Tags
 #boring

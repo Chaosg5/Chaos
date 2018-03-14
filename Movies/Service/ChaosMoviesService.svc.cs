@@ -61,34 +61,16 @@ namespace Chaos.Movies.Service
             }
         }
 
-        public async Task RatingSaveAsync(UserSessionDto session, Rating rating)
+        public async Task RatingSaveAsync(UserSessionDto session, UserRating userRating)
         {
             try
             {
-                if (rating == null)
+                if (userRating == null)
                 {
-                    throw new ArgumentNullException(nameof(rating));
+                    throw new ArgumentNullException(nameof(userRating));
                 }
                 
-                rating.Save();
-            }
-            catch (Exception exception)
-            {
-                // Logger.Error(exception);
-                throw new FaultException(exception.ToString());
-            }
-        }
-
-        public async Task RatingSaveAllAsync(UserSessionDto session, Rating rating)
-        {
-            try
-            {
-                if (rating == null)
-                {
-                    throw new ArgumentNullException(nameof(rating));
-                }
-
-                await rating.SaveAllAsync();
+                ////userRating.Save();
             }
             catch (Exception exception)
             {
@@ -102,7 +84,7 @@ namespace Chaos.Movies.Service
         public async Task CharacterSaveAsync(UserSessionDto session, CharacterDto character)
         {
             this.ValidateStateAndSession(session);
-            await new Character(character).SaveAsync(new UserSession(session));
+            await Character.Static.SaveAsync(new UserSession(session));
         }
 
         public async Task<IEnumerable<CharacterDto>> CharacterGetAsync(UserSessionDto session, IEnumerable<int> idList)

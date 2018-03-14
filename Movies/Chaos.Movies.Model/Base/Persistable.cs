@@ -17,23 +17,11 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     public abstract class Persistable<T, TDto> : Loadable<T, TDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="Persistable{T,TDto}"/> class.</summary>
-        /// <param name="dto">The <typeparamref name="TDto"/> to create the <typeparamref name="T"/> from.</param>
-        protected Persistable(TDto dto)
-            : base(dto)
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="Persistable{T,TDto}"/> class.</summary>
-        protected Persistable()
-        {
-        }
-
-        /// <summary>The database column for the id of the <typeparamref name="T"/>.</summary>
-        public static string IdColumn => $"{typeof(T).Name}Id";
-
         /// <summary>Gets or sets the id of this <typeparamref name="T"/>.</summary>
         public int Id { get; protected set; }
+
+        /// <summary>The database column for the id of the <typeparamref name="T"/>.</summary>
+        internal static string IdColumn => $"{typeof(T).Name}Id";
 
         /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
         /// <param name="session">The <see cref="UserSession"/>.</param>

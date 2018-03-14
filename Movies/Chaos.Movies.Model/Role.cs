@@ -52,32 +52,19 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override Role FromContract(RoleDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new Role
             {
                 Id = contract.Id,
                 Titles = this.Titles.FromContract(contract.Titles)
             };
-        }
-
-        /// <summary>Validates that this <see cref="Role"/> is valid to be saved.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Role"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
-        {
-            if (this.Titles.Count == 0)
-            {
-                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
-            }
-        }
-        
-        /// <inheritdoc />
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
-        public override Task<Role> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { "RoleId" });
-            return Task.FromResult(new Role { Id = (int)record["RoleId"] });
         }
 
         /// <inheritdoc />
@@ -104,8 +91,27 @@ namespace Chaos.Movies.Model
             throw new NotImplementedException();
         }
 
+        /// <summary>Validates that this <see cref="Role"/> is valid to be saved.</summary>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Role"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Titles.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+        }
+
         /// <inheritdoc />
-        protected override Task<IEnumerable<Role>> ReadFromRecordsAsync(DbDataReader reader)
+        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
+        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
+        internal override Task<Role> ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { "RoleId" });
+            return Task.FromResult(new Role { Id = (int)record["RoleId"] });
+        }
+
+        /// <inheritdoc />
+        internal override Task<IEnumerable<Role>> ReadFromRecordsAsync(DbDataReader reader)
         {
             throw new NotImplementedException();
         }

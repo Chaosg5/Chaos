@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Globalization;
@@ -19,13 +20,7 @@ namespace Chaos.Movies.Model
     public class IconCollection : Listable<Icon, IconDto, IconCollection>
     {
         /// <summary>The database column for <see cref="IconCollection"/>.</summary>
-        public const string IconsColumn = "Icons";
-
-        // ToDo: ReadFromReader?????
-
-        // ToDo: IOrderable + ReorderList
-
-        // ToDo: IListable + GetSaveTable
+        internal const string IconsColumn = "Icons";
 
         /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
         /// <returns>A table containing the title and language as columns for each title.</returns>
@@ -56,8 +51,14 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override IconCollection FromContract(ReadOnlyCollection<IconDto> contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             var list = new IconCollection();
             foreach (var item in contract)
             {

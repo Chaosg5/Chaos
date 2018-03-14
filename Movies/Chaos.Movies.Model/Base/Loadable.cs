@@ -14,24 +14,12 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     public abstract class Loadable<T, TDto> : Communicable<T, TDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="Loadable{T,TDto}"/> class.</summary>
-        /// <param name="dto">The <typeparamref name="TDto"/> to create the <typeparamref name="T"/> from.</param>
-        protected Loadable(TDto dto)
-            : base(dto)
-        {
-        }
+        /// <summary>Validates that the this <typeparamref name="T"/> is valid to be saved.</summary>
+        internal abstract void ValidateSaveCandidate();
 
-        /// <summary>Initializes a new instance of the <see cref="Loadable{T,TDto}"/> class.</summary>
-        protected Loadable()
-        {
-        }
-        
         /// <summary>Updates this <typeparamref name="T"/> from the <paramref name="record"/>.</summary>
         /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        public abstract Task<T> ReadFromRecordAsync(IDataRecord record);
-        
-        /// <summary>Validates that the this <typeparamref name="T"/> is valid to be saved.</summary>
-        public abstract void ValidateSaveCandidate();
+        internal abstract Task<T> ReadFromRecordAsync(IDataRecord record);
     }
 }

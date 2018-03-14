@@ -37,7 +37,7 @@ namespace Chaos.Movies.Model.Tests
 
         public static void TestGetColor(int value, byte red, byte green, byte blue, string hex)
         {
-            var rating = new Rating(new RatingType(1));
+            var rating = new UserRating(new RatingType());
             rating.SetValue(value);
             var color = rating.Color;
             Assert.AreEqual(red, color.R);
@@ -48,19 +48,19 @@ namespace Chaos.Movies.Model.Tests
             Assert.AreEqual(hex, hexColor);
         }
 
-        private static Rating GetRatings(string ratingString)
+        private static UserRating GetRatings(string ratingString)
         {
-            var rootRating = new Rating(new RatingType(1));
+            var rootRating = new UserRating(new RatingType());
             var ratings = ratingString.Split(new[] { ";" }, StringSplitOptions.None);
             foreach (var groupValues in ratings)
             {
                 var subRatings = groupValues.Split(new[] { "-" }, StringSplitOptions.None);
                 var parentValues = subRatings[0].Split(new[] { ":" }, StringSplitOptions.None);
-                var parentRating = new Rating(int.Parse(parentValues[1], CultureInfo.InvariantCulture), new RatingType(int.Parse(parentValues[0], CultureInfo.InvariantCulture)));
+                var parentRating = new UserRating(int.Parse(parentValues[1], CultureInfo.InvariantCulture), new RatingType(int.Parse(parentValues[0], CultureInfo.InvariantCulture)));
                 for (var i = 1; i < subRatings.Length; i++)
                 {
                     var values = subRatings[i].Split(new[] {":"}, StringSplitOptions.None);
-                    parentRating.AddSubRating(new Rating(int.Parse(values[1], CultureInfo.InvariantCulture), new RatingType(int.Parse(values[0], CultureInfo.InvariantCulture))));
+                    parentRating.AddSubRating(new UserRating(int.Parse(values[1], CultureInfo.InvariantCulture), new RatingType(int.Parse(values[0], CultureInfo.InvariantCulture))));
                 }
 
                 rootRating.AddSubRating(parentRating);

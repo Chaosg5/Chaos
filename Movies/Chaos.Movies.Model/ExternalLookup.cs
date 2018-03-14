@@ -18,7 +18,7 @@ namespace Chaos.Movies.Model
     public sealed class ExternalLookup : Loadable<ExternalLookup, ExternalLookupDto>
     {
         /// <summary>The database column for <see cref="ExternalId"/>.</summary>
-        public const string ExternalIdColumn = "ExternalId";
+        internal const string ExternalIdColumn = "ExternalId";
 
         /// <summary>Private part of the <see cref="ExternalSource"/> property.</summary>
         private ExternalSource externalSource;
@@ -88,25 +88,31 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override ExternalLookup FromContract(ExternalLookupDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new ExternalLookup { ExternalSource = this.ExternalSource.FromContract(contract.ExternalSource), ExternalId = contract.ExternalId };
         }
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">This <see cref="ExternalLookup"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
+        internal override void ValidateSaveCandidate()
         {
             if (string.IsNullOrEmpty(this.ExternalId))
             {
                 throw new InvalidSaveCandidateException($"The {nameof(this.ExternalId)} can't be empty.");
             }
         }
-        
+
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override async Task<ExternalLookup> ReadFromRecordAsync(IDataRecord record)
+        internal override async Task<ExternalLookup> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, ExternalIdColumn });
             return new ExternalLookup(

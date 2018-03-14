@@ -18,18 +18,6 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     public abstract class Typeable<T, TDto> : Readable<T, TDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="Typeable{T,TDto}"/> class.</summary>
-        /// <param name="dto">The <typeparamref name="TDto"/> to create the <typeparamref name="T"/> from.</param>
-        protected Typeable(TDto dto)
-            : base(dto)
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="Typeable{T,TDto}"/> class.</summary>
-        protected Typeable()
-        {
-        }
-
         /// <summary>Gets the all <typeparamref name="T"/>.</summary>
         /// <param name="session">The session.</param>
         /// <returns>The list of <typeparamref name="T"/>s.</returns>

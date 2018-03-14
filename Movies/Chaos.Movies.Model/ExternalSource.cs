@@ -140,8 +140,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override ExternalSource FromContract(ExternalSourceDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+            
             return new ExternalSource
             {
                 Id = contract.Id,
@@ -152,52 +158,6 @@ namespace Chaos.Movies.Model
                 GenreAddress = contract.GenreAddress,
                 EpisodeAddress = contract.EpisodeAddress
             };
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="InvalidSaveCandidateException">This <see cref="ExternalSource"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
-        {
-            if (string.IsNullOrEmpty(this.Name))
-            {
-                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can't be empty.");
-            }
-
-            if (string.IsNullOrEmpty(this.BaseAddress))
-            {
-                throw new InvalidSaveCandidateException($"The {nameof(this.BaseAddress)} can't be empty.");
-            }
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override Task<ExternalSource> ReadFromRecordAsync(IDataRecord record)
-        {
-            var requiredColumns = new[]
-            {
-                IdColumn,
-                NameColumn,
-                BaseAddressColumn,
-                PeopleAddressColumn,
-                CharacterAddressColumn,
-                GenreAddressColumn,
-                EpisodeAddressColumn
-            };
-            Persistent.ValidateRecord(
-                record,
-                requiredColumns);
-            var externalSource = new ExternalSource
-            {
-                Id = (int)record[IdColumn],
-                Name = record[NameColumn].ToString(),
-                BaseAddress = record[BaseAddressColumn].ToString(),
-                PeopleAddress = record[PeopleAddressColumn].ToString(),
-                CharacterAddress = record[CharacterAddressColumn].ToString(),
-                GenreAddress = record[GenreAddressColumn].ToString(),
-                EpisodeAddress = record[EpisodeAddressColumn].ToString()
-            };
-            return Task.FromResult(externalSource);
         }
 
         /// <inheritdoc />
@@ -227,25 +187,55 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        /// <exception cref="InvalidSaveCandidateException">This <see cref="ExternalSource"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
         {
-            return new ReadOnlyDictionary<string, object>(
-                new Dictionary<string, object>
-                {
-                    { Persistent.ColumnToVariable(IdColumn), this.Id },
-                    { Persistent.ColumnToVariable(NameColumn), this.Name },
-                    { Persistent.ColumnToVariable(BaseAddressColumn), this.BaseAddress },
-                    { Persistent.ColumnToVariable(PeopleAddressColumn), this.PeopleAddress },
-                    { Persistent.ColumnToVariable(CharacterAddressColumn), this.CharacterAddress },
-                    { Persistent.ColumnToVariable(GenreAddressColumn), this.GenreAddress },
-                    { Persistent.ColumnToVariable(EpisodeAddressColumn), this.EpisodeAddress }
-                });
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                throw new InvalidSaveCandidateException($"The {nameof(this.Name)} can't be empty.");
+            }
+
+            if (string.IsNullOrEmpty(this.BaseAddress))
+            {
+                throw new InvalidSaveCandidateException($"The {nameof(this.BaseAddress)} can't be empty.");
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override Task<ExternalSource> ReadFromRecordAsync(IDataRecord record)
+        {
+            var requiredColumns = new[]
+            {
+                IdColumn,
+                NameColumn,
+                BaseAddressColumn,
+                PeopleAddressColumn,
+                CharacterAddressColumn,
+                GenreAddressColumn,
+                EpisodeAddressColumn
+            };
+            Persistent.ValidateRecord(
+                record,
+                requiredColumns);
+            var externalSource = new ExternalSource
+            {
+                Id = (int)record[IdColumn],
+                Name = record[NameColumn].ToString(),
+                BaseAddress = record[BaseAddressColumn].ToString(),
+                PeopleAddress = record[PeopleAddressColumn].ToString(),
+                CharacterAddress = record[CharacterAddressColumn].ToString(),
+                GenreAddress = record[GenreAddressColumn].ToString(),
+                EpisodeAddress = record[EpisodeAddressColumn].ToString()
+            };
+            return Task.FromResult(externalSource);
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        protected override async Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
+        internal override async Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var externalSources = new List<ExternalSource>();
             if (!reader.HasRows)
@@ -259,6 +249,22 @@ namespace Chaos.Movies.Model
             }
 
             return externalSources;
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(BaseAddressColumn), this.BaseAddress },
+                    { Persistent.ColumnToVariable(PeopleAddressColumn), this.PeopleAddress },
+                    { Persistent.ColumnToVariable(CharacterAddressColumn), this.CharacterAddress },
+                    { Persistent.ColumnToVariable(GenreAddressColumn), this.GenreAddress },
+                    { Persistent.ColumnToVariable(EpisodeAddressColumn), this.EpisodeAddress }
+                });
         }
     }
 }

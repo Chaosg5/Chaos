@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Model
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Globalization;
@@ -19,7 +20,7 @@ namespace Chaos.Movies.Model
     public class GenreCollection : Listable<Genre, GenreDto, GenreCollection>
     {
         /// <summary>The database column for <see cref="GenreCollection"/>.</summary>
-        public const string GenresColumn = "Genres";
+        internal const string GenresColumn = "Genres";
 
         /// <inheritdoc />
         public override DataTable GetSaveTable
@@ -48,8 +49,14 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override GenreCollection FromContract(ReadOnlyCollection<GenreDto> contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+            
             var list = new GenreCollection();
             foreach (var item in contract)
             {

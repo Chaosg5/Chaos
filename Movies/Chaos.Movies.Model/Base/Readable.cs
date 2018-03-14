@@ -21,18 +21,6 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     public abstract class Readable<T, TDto> : Persistable<T, TDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="Readable{T,TDto}"/> class.</summary>
-        /// <param name="dto">The <typeparamref name="TDto"/> to create the <typeparamref name="T"/> from.</param>
-        protected Readable(TDto dto)
-            : base(dto)
-        {
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="Readable{T,TDto}"/> class.</summary>
-        protected Readable()
-        {
-        }
-
         /// <summary>Gets the specified <typeparamref name="T"/>.</summary>
         /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <param name="id">The id of the <typeparamref name="T"/> to get.</param>
@@ -44,6 +32,11 @@ namespace Chaos.Movies.Model.Base
         /// <param name="idList">The list of ids of the <typeparamref name="T"/>s to get.</param>
         /// <returns>The list of <typeparamref name="T"/>s.</returns>
         public abstract Task<IEnumerable<T>> GetAsync(UserSession session, IEnumerable<int> idList);
+
+        /// <summary>Creates new <typeparamref name="T"/>s from the <paramref name="reader"/>.</summary>
+        /// <param name="reader">The reader containing data sets and records the data for the <typeparamref name="T"/>s.</param>
+        /// <returns>The list of <typeparamref name="T"/>s.</returns>
+        internal abstract Task<IEnumerable<T>> ReadFromRecordsAsync(DbDataReader reader);
 
         /// <summary>Gets a <typeparamref name="T"/> from the <paramref name="items"/> with the id specified in the <paramref name="record"/>.</summary>
         /// <param name="items">The list of <typeparamref name="T"/>s.</param>
@@ -89,10 +82,5 @@ namespace Chaos.Movies.Model.Base
                 }
             }
         }
-        
-        /// <summary>Creates new <typeparamref name="T"/>s from the <paramref name="reader"/>.</summary>
-        /// <param name="reader">The reader containing data sets and records the data for the <typeparamref name="T"/>s.</param>
-        /// <returns>The list of <typeparamref name="T"/>s.</returns>
-        protected abstract Task<IEnumerable<T>> ReadFromRecordsAsync(DbDataReader reader);
     }
 }

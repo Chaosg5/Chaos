@@ -37,31 +37,19 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override MovieType FromContract(MovieTypeDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new MovieType
             {
                 Id = contract.Id,
                 Titles = this.Titles.FromContract(contract.Titles)
             };
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        public override Task<MovieType> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn });
-            return Task.FromResult(new MovieType { Id = (int)record[IdColumn] });
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
-        {
-            if (this.Titles.Count == 0)
-            {
-                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
-            }
         }
 
         /// <inheritdoc />
@@ -126,14 +114,21 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal override Task<MovieType> ReadFromRecordAsync(IDataRecord record)
         {
-            return new ReadOnlyDictionary<string, object>(
-                new Dictionary<string, object>
-                {
-                    { Persistent.ColumnToVariable(IdColumn), this.Id },
-                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
-                });
+            Persistent.ValidateRecord(record, new[] { IdColumn });
+            return Task.FromResult(new MovieType { Id = (int)record[IdColumn] });
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Titles.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
         }
 
         /// <inheritdoc />
@@ -141,7 +136,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        protected override async Task<IEnumerable<MovieType>> ReadFromRecordsAsync(DbDataReader reader)
+        internal override async Task<IEnumerable<MovieType>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var movieTypes = new List<MovieType>();
             if (!reader.HasRows)
@@ -166,6 +161,17 @@ namespace Chaos.Movies.Model
             }
 
             return movieTypes;
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
+                });
         }
     }
 }

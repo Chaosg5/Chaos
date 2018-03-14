@@ -19,7 +19,7 @@ namespace Chaos.Movies.Model
     public class LanguageDescription : Loadable<LanguageDescription, LanguageDescriptionDto>
     {
         /// <summary>The database column for <see cref="Description"/>.</summary>
-        public const string DescriptionColumn = "Description";
+        internal const string DescriptionColumn = "Description";
 
         /// <summary>Private part of the <see cref="Title"/> property.</summary>
         private string title;
@@ -85,22 +85,28 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override LanguageDescription FromContract(LanguageDescriptionDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new LanguageDescription { Title = contract.Title, Description = contract.Description, Language = contract.Language };
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override Task<LanguageDescription> ReadFromRecordAsync(IDataRecord record)
+        internal override Task<LanguageDescription> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { LanguageTitle.TitleColumn, DescriptionColumn, LanguageTitle.LanguageColumn });
             return Task.FromResult(new LanguageDescription(record[LanguageTitle.TitleColumn].ToString(), record[DescriptionColumn].ToString(), new CultureInfo(record[LanguageTitle.LanguageColumn].ToString())));
         }
 
         /// <inheritdoc />
-        public override void ValidateSaveCandidate()
+        internal override void ValidateSaveCandidate()
         {
         }
     }

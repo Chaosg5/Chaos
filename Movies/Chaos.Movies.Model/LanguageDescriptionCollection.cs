@@ -20,7 +20,7 @@ namespace Chaos.Movies.Model
     public class LanguageDescriptionCollection : Listable<LanguageDescription, LanguageDescriptionDto, LanguageDescriptionCollection>
     {
         /// <summary>The database column for this <see cref="LanguageDescriptionCollection"/>.</summary>
-        public const string TitlesColumn = "Titles";
+        internal const string TitlesColumn = "Titles";
 
         /// <summary>Gets the base title.</summary>
         public string GetBaseTitle => this.GetTitle(null).Title;
@@ -56,8 +56,14 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override LanguageDescriptionCollection FromContract(ReadOnlyCollection<LanguageDescriptionDto> contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             var list = new LanguageDescriptionCollection();
             foreach (var item in contract)
             {

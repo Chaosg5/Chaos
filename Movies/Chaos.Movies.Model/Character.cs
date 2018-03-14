@@ -34,14 +34,6 @@ namespace Chaos.Movies.Model
         {
             this.Name = name;
         }
-
-        /// <inheritdoc />
-        public Character(CharacterDto character)
-            : base(character)
-        {
-            this.Id = character.Id;
-            this.Name = character.Name;
-        }
         
         /// <inheritdoc />
         private Character()
@@ -94,7 +86,7 @@ namespace Chaos.Movies.Model
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                return (await service.CharacterGetAsync(session.ToContract(), idList.ToList())).Select(c => new Character(c));
+                return (await service.CharacterGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
 
@@ -129,8 +121,15 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public override Character FromContract(CharacterDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new Character
             {
                 Id = contract.Id,
@@ -142,7 +141,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">This <see cref="Character"/> is not valid to be saved.</exception>
-        public override void ValidateSaveCandidate()
+        internal override void ValidateSaveCandidate()
         {
             if (string.IsNullOrEmpty(this.Name))
             {
@@ -153,7 +152,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public override Task<Character> ReadFromRecordAsync(IDataRecord record)
+        internal override Task<Character> ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
             return Task.FromResult(new Character { Id = (int)record[IdColumn], Name = record[NameColumn].ToString() });
@@ -164,7 +163,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
-        protected override async Task<IEnumerable<Character>> ReadFromRecordsAsync(DbDataReader reader)
+        internal override async Task<IEnumerable<Character>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var characters = new List<Character>();
             if (!reader.HasRows)
