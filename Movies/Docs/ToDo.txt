@@ -4,6 +4,15 @@ Musik - Importera iTunes biblotek!!!!!
 Boxoffice - Integration
 Filmmusik
 
+Passwordrecovery + protect username & email
+
+Ensure methods
+Merge methods
+Get all User ratings
+
+Log
+Validate session in Model.Base instead of Service
+
 User awards
 Awards
 Publishers

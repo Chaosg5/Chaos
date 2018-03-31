@@ -6,9 +6,8 @@
 
 namespace Chaos.Movies.Model.Tests
 {
-    using System;
-    using System.Globalization;
-    using System.Linq;
+    using Chaos.Movies.Contract;
+
     using NUnit.Framework;
 
     [TestFixture]
@@ -23,7 +22,8 @@ namespace Chaos.Movies.Model.Tests
             Assert.That(!string.IsNullOrEmpty(firstLogin.Username));
             Assert.AreEqual(firstLogin.Username, secondLogin.Username);
 
-            Assert.That(!string.IsNullOrEmpty(firstLogin.Password));
+            Assert.NotNull(firstLogin.Password);
+            Assert.That(firstLogin.Password.Length > 0);
             Assert.AreEqual(firstLogin.Password, secondLogin.Password);
             Assert.AreNotEqual(firstLogin.Password, "Hj7:_3f(");
 
