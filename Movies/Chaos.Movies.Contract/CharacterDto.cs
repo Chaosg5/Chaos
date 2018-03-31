@@ -6,7 +6,6 @@
 
 namespace Chaos.Movies.Contract
 {
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
 
@@ -29,5 +28,9 @@ namespace Chaos.Movies.Contract
         /// <summary>Gets or sets the list of images for the movie and their order as represented by the key.</summary>
         [DataMember]
         public ReadOnlyCollection<IconDto> Images { get; set; }
+
+        /// <summary>Gets or sets the user ratings.</summary>
+        [DataMember]
+        public UserSingleRatingDto Ratings { get; set; }
     }
 }

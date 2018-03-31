@@ -47,11 +47,11 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets list of <see cref="CharacterDto"/>s in this <see cref="MovieDto"/>.</summary>
         [DataMember]
-        public ReadOnlyCollection<CharacterInMovieDto> Characters { get; set; }
+        public ReadOnlyCollection<PersonAsCharacterDto> Characters { get; set; }
 
         /// <summary>Gets or sets list of <see cref="PersonDto"/>s in this <see cref="MovieDto"/>.</summary>
         [DataMember]
-        public ReadOnlyCollection<PersonInMovieDto> People { get; set; }
+        public ReadOnlyCollection<PersonInRoleDto> People { get; set; }
 
         /// <summary>Gets or sets the type of the movie.</summary>
         [DataMember]

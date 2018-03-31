@@ -45,14 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorDto.cs" />
     <Compile Include="CharacterDto.cs" />
     <Compile Include="ExternalLookupDto.cs" />
     <Compile Include="ExternalRatingDto.cs" />
     <Compile Include="ExternalSourceDto.cs" />
     <Compile Include="IconTypeDto.cs" />
     <Compile Include="LanguageDescriptionDto.cs" />
-    <Compile Include="PersonUserRatingDto.cs" />
-    <Compile Include="CharacterInMovieDto.cs" />
     <Compile Include="DepartmentDto.cs" />
     <Compile Include="LanguageTitleDto.cs" />
     <Compile Include="MovieDto.cs" />
@@ -60,7 +59,10 @@
     <Compile Include="MovieSeriesTypeDto.cs" />
     <Compile Include="MovieTypeDto.cs" />
     <Compile Include="PersonDto.cs" />
-    <Compile Include="PersonInMovieDto.cs" />
+    <Compile Include="PersonInRoleDto.cs" />
+    <Compile Include="PersonAsCharacterDto.cs" />
+    <Compile Include="UserSingleRatingDto.cs" />
+    <Compile Include="UserLogin.cs" />
     <Compile Include="UserRatingDto.cs" />
     <Compile Include="RatingSystemDto.cs" />
     <Compile Include="RatingTypeDto.cs" />
@@ -70,7 +72,6 @@
     <Compile Include="WatchTypeDto.cs" />
     <Compile Include="WatchLocationDto.cs" />
     <Compile Include="UserDto.cs" />
-    <Compile Include="UserLoginDto.cs" />
     <Compile Include="UserSessionDto.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GenreDto.cs" />
