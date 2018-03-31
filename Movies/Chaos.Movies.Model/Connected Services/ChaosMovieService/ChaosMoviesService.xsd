@@ -4,9 +4,10 @@
   <xs:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" />
   <xs:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Data.Linq" />
   <xs:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Globalization" />
+  <xs:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/System.Windows.Media" />
   <xs:complexType name="UserSessionDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="ActiveForm" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ActiveFrom" type="xs:dateTime" />
       <xs:element minOccurs="0" name="ActiveTo" type="xs:dateTime" />
       <xs:element minOccurs="0" name="ClientIp" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SessionId" type="ser:guid" />
@@ -14,20 +15,13 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="UserSessionDto" nillable="true" type="tns:UserSessionDto" />
-  <xs:complexType name="UserLogin">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="ClientIp" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="UserLogin" nillable="true" type="tns:UserLogin" />
   <xs:complexType name="CharacterDto">
     <xs:sequence>
       <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="ExternalLookups" nillable="true" type="q1:ReadOnlyCollectionOfExternalLookupDto_PbigN1rX" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Images" nillable="true" type="q2:ReadOnlyCollectionOfIconDto_PbigN1rX" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ratings" nillable="true" type="tns:UserSingleRatingDto" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CharacterDto" nillable="true" type="tns:CharacterDto" />
@@ -92,10 +86,337 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="LanguageTitleDto" nillable="true" type="tns:LanguageTitleDto" />
+  <xs:complexType name="UserSingleRatingDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="TotalRating" type="xs:double" />
+      <xs:element minOccurs="0" name="UserId" type="xs:int" />
+      <xs:element minOccurs="0" name="UserRating" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UserSingleRatingDto" nillable="true" type="tns:UserSingleRatingDto" />
   <xs:complexType name="ArrayOfCharacterDto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="CharacterDto" nillable="true" type="tns:CharacterDto" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfCharacterDto" nillable="true" type="tns:ArrayOfCharacterDto" />
+  <xs:complexType name="DepartmentDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Roles" nillable="true" type="q7:ReadOnlyCollectionOfRoleDto_PbigN1rX" />
+      <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q8:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DepartmentDto" nillable="true" type="tns:DepartmentDto" />
+  <xs:complexType name="ArrayOfRoleDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RoleDto" nillable="true" type="tns:RoleDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRoleDto" nillable="true" type="tns:ArrayOfRoleDto" />
+  <xs:complexType name="RoleDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q9:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RoleDto" nillable="true" type="tns:RoleDto" />
+  <xs:complexType name="ArrayOfDepartmentDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DepartmentDto" nillable="true" type="tns:DepartmentDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDepartmentDto" nillable="true" type="tns:ArrayOfDepartmentDto" />
+  <xs:complexType name="ErrorDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ErrorTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ErrorType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Source" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TargetSite" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UserId" type="xs:int" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ErrorDto" nillable="true" type="tns:ErrorDto" />
+  <xs:complexType name="ArrayOfExternalSourceDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ExternalSourceDto" nillable="true" type="tns:ExternalSourceDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfExternalSourceDto" nillable="true" type="tns:ArrayOfExternalSourceDto" />
+  <xs:complexType name="GenreDto">
+    <xs:sequence>
+      <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="ExternalLookups" nillable="true" type="q10:ReadOnlyCollectionOfExternalLookupDto_PbigN1rX" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q11:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GenreDto" nillable="true" type="tns:GenreDto" />
+  <xs:complexType name="ArrayOfGenreDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="GenreDto" nillable="true" type="tns:GenreDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfGenreDto" nillable="true" type="tns:ArrayOfGenreDto" />
+  <xs:complexType name="ArrayOfIconTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="IconTypeDto" nillable="true" type="tns:IconTypeDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfIconTypeDto" nillable="true" type="tns:ArrayOfIconTypeDto" />
+  <xs:complexType name="MovieDto">
+    <xs:sequence>
+      <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Characters" nillable="true" type="q12:ReadOnlyCollectionOfPersonAsCharacterDto_PbigN1rX" />
+      <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="ExternalLookup" nillable="true" type="q13:ReadOnlyCollectionOfExternalLookupDto_PbigN1rX" />
+      <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="ExternalRatings" nillable="true" type="q14:ReadOnlyCollectionOfExternalRatingDto_PbigN1rX" />
+      <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Genres" nillable="true" type="q15:ReadOnlyCollectionOfGenreDto_PbigN1rX" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Images" nillable="true" type="q16:ReadOnlyCollectionOfIconDto_PbigN1rX" />
+      <xs:element minOccurs="0" name="MovieType" nillable="true" type="tns:MovieTypeDto" />
+      <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="People" nillable="true" type="q17:ReadOnlyCollectionOfPersonInRoleDto_PbigN1rX" />
+      <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q18:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
+      <xs:element minOccurs="0" name="TotalUserRating" nillable="true" type="tns:UserRatingDto" />
+      <xs:element minOccurs="0" name="UserUserRating" nillable="true" type="tns:UserRatingDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MovieDto" nillable="true" type="tns:MovieDto" />
+  <xs:complexType name="ArrayOfPersonAsCharacterDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PersonAsCharacterDto" nillable="true" type="tns:PersonAsCharacterDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPersonAsCharacterDto" nillable="true" type="tns:ArrayOfPersonAsCharacterDto" />
+  <xs:complexType name="PersonAsCharacterDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Character" nillable="true" type="tns:CharacterDto" />
+      <xs:element minOccurs="0" name="Person" nillable="true" type="tns:PersonDto" />
+      <xs:element minOccurs="0" name="Ratings" nillable="true" type="tns:UserSingleRatingDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PersonAsCharacterDto" nillable="true" type="tns:PersonAsCharacterDto" />
+  <xs:complexType name="PersonDto">
+    <xs:sequence>
+      <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="ExternalLookups" nillable="true" type="q19:ReadOnlyCollectionOfExternalLookupDto_PbigN1rX" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Images" nillable="true" type="q20:ReadOnlyCollectionOfIconDto_PbigN1rX" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ratings" nillable="true" type="tns:UserSingleRatingDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PersonDto" nillable="true" type="tns:PersonDto" />
+  <xs:complexType name="ArrayOfExternalRatingDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ExternalRatingDto" nillable="true" type="tns:ExternalRatingDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfExternalRatingDto" nillable="true" type="tns:ArrayOfExternalRatingDto" />
+  <xs:complexType name="ExternalRatingDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ExternalSource" nillable="true" type="tns:ExternalSourceDto" />
+      <xs:element minOccurs="0" name="Rating" type="xs:double" />
+      <xs:element minOccurs="0" name="RatingCount" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExternalRatingDto" nillable="true" type="tns:ExternalRatingDto" />
+  <xs:complexType name="MovieTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q21:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MovieTypeDto" nillable="true" type="tns:MovieTypeDto" />
+  <xs:complexType name="ArrayOfPersonInRoleDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PersonInRoleDto" nillable="true" type="tns:PersonInRoleDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPersonInRoleDto" nillable="true" type="tns:ArrayOfPersonInRoleDto" />
+  <xs:complexType name="PersonInRoleDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Department" nillable="true" type="tns:DepartmentDto" />
+      <xs:element minOccurs="0" name="Person" nillable="true" type="tns:PersonDto" />
+      <xs:element minOccurs="0" name="Ratings" nillable="true" type="tns:UserSingleRatingDto" />
+      <xs:element minOccurs="0" name="Role" nillable="true" type="tns:RoleDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PersonInRoleDto" nillable="true" type="tns:PersonInRoleDto" />
+  <xs:complexType name="UserRatingDto">
+    <xs:sequence>
+      <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/System.Windows.Media" minOccurs="0" name="Color" type="q22:Color" />
+      <xs:element minOccurs="0" name="CreatedDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Derived" type="xs:double" />
+      <xs:element minOccurs="0" name="DisplayValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="HexColor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RatingType" nillable="true" type="tns:RatingTypeDto" />
+      <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="SubRatings" nillable="true" type="q23:ReadOnlyCollectionOfUserRatingDto_PbigN1rX" />
+      <xs:element minOccurs="0" name="UserId" type="xs:int" />
+      <xs:element minOccurs="0" name="Value" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UserRatingDto" nillable="true" type="tns:UserRatingDto" />
+  <xs:complexType name="RatingTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Subtypes" nillable="true" type="q24:ReadOnlyCollectionOfRatingTypeDto_PbigN1rX" />
+      <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q25:ReadOnlyCollectionOfLanguageDescriptionDto_PbigN1rX" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RatingTypeDto" nillable="true" type="tns:RatingTypeDto" />
+  <xs:complexType name="ArrayOfRatingTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RatingTypeDto" nillable="true" type="tns:RatingTypeDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRatingTypeDto" nillable="true" type="tns:ArrayOfRatingTypeDto" />
+  <xs:complexType name="ArrayOfLanguageDescriptionDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="LanguageDescriptionDto" nillable="true" type="tns:LanguageDescriptionDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfLanguageDescriptionDto" nillable="true" type="tns:ArrayOfLanguageDescriptionDto" />
+  <xs:complexType name="LanguageDescriptionDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/System.Globalization" minOccurs="0" name="Language" nillable="true" type="q26:CultureInfo" />
+      <xs:element minOccurs="0" name="Title" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="LanguageDescriptionDto" nillable="true" type="tns:LanguageDescriptionDto" />
+  <xs:complexType name="ArrayOfUserRatingDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="UserRatingDto" nillable="true" type="tns:UserRatingDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfUserRatingDto" nillable="true" type="tns:ArrayOfUserRatingDto" />
+  <xs:complexType name="ArrayOfMovieDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MovieDto" nillable="true" type="tns:MovieDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMovieDto" nillable="true" type="tns:ArrayOfMovieDto" />
+  <xs:complexType name="MovieSeriesDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="MovieSeriesType" nillable="true" type="tns:MovieSeriesTypeDto" />
+      <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Movies" nillable="true" type="q27:ReadOnlyCollectionOfMovieDto_PbigN1rX" />
+      <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q28:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MovieSeriesDto" nillable="true" type="tns:MovieSeriesDto" />
+  <xs:complexType name="MovieSeriesTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q29:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MovieSeriesTypeDto" nillable="true" type="tns:MovieSeriesTypeDto" />
+  <xs:complexType name="ArrayOfMovieSeriesDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MovieSeriesDto" nillable="true" type="tns:MovieSeriesDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMovieSeriesDto" nillable="true" type="tns:ArrayOfMovieSeriesDto" />
+  <xs:complexType name="ArrayOfMovieSeriesTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MovieSeriesTypeDto" nillable="true" type="tns:MovieSeriesTypeDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMovieSeriesTypeDto" nillable="true" type="tns:ArrayOfMovieSeriesTypeDto" />
+  <xs:complexType name="ArrayOfMovieTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MovieTypeDto" nillable="true" type="tns:MovieTypeDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMovieTypeDto" nillable="true" type="tns:ArrayOfMovieTypeDto" />
+  <xs:complexType name="ArrayOfPersonDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PersonDto" nillable="true" type="tns:PersonDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPersonDto" nillable="true" type="tns:ArrayOfPersonDto" />
+  <xs:complexType name="RatingSystemDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" minOccurs="0" name="Titles" nillable="true" type="q30:ReadOnlyCollectionOfLanguageDescriptionDto_PbigN1rX" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RatingSystemDto" nillable="true" type="tns:RatingSystemDto" />
+  <xs:complexType name="ArrayOfRatingSystemDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RatingSystemDto" nillable="true" type="tns:RatingSystemDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRatingSystemDto" nillable="true" type="tns:ArrayOfRatingSystemDto" />
+  <xs:complexType name="UserDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UserName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UserDto" nillable="true" type="tns:UserDto" />
+  <xs:complexType name="ArrayOfUserDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="UserDto" nillable="true" type="tns:UserDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfUserDto" nillable="true" type="tns:ArrayOfUserDto" />
+  <xs:complexType name="WatchDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DateUncertain" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="MovieId" type="xs:int" />
+      <xs:element minOccurs="0" name="User" nillable="true" type="tns:UserDto" />
+      <xs:element minOccurs="0" name="UserId" type="xs:int" />
+      <xs:element minOccurs="0" name="WatchDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="WatchLocation" nillable="true" type="tns:WatchLocationDto" />
+      <xs:element minOccurs="0" name="WatchLocationId" type="xs:int" />
+      <xs:element minOccurs="0" name="WatchType" nillable="true" type="tns:WatchTypeDto" />
+      <xs:element minOccurs="0" name="WatchTypeId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WatchDto" nillable="true" type="tns:WatchDto" />
+  <xs:complexType name="WatchLocationDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WatchLocationDto" nillable="true" type="tns:WatchLocationDto" />
+  <xs:complexType name="WatchTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WatchTypeDto" nillable="true" type="tns:WatchTypeDto" />
+  <xs:complexType name="ArrayOfWatchDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WatchDto" nillable="true" type="tns:WatchDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWatchDto" nillable="true" type="tns:ArrayOfWatchDto" />
+  <xs:complexType name="ArrayOfWatchLocationDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WatchLocationDto" nillable="true" type="tns:WatchLocationDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWatchLocationDto" nillable="true" type="tns:ArrayOfWatchLocationDto" />
+  <xs:complexType name="ArrayOfWatchTypeDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WatchTypeDto" nillable="true" type="tns:WatchTypeDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWatchTypeDto" nillable="true" type="tns:ArrayOfWatchTypeDto" />
+  <xs:complexType name="UserLogin">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ClientIp" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UserLogin" nillable="true" type="tns:UserLogin" />
 </xs:schema>

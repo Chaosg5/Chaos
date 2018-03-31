@@ -47,12 +47,6 @@ namespace Chaos.Movies.Model.ChaosMovieService {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ChaosMovieService.IChaosMoviesService")]
     public interface IChaosMoviesService {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CreateUserSession", ReplyAction="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse")]
-        Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLogin userLogin);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CreateUserSession", ReplyAction="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse")]
-        System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLogin userLogin);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CharacterSave", ReplyAction="http://tempuri.org/IChaosMoviesService/CharacterSaveResponse")]
         void CharacterSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character);
         
@@ -64,6 +58,288 @@ namespace Chaos.Movies.Model.ChaosMovieService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CharacterGet", ReplyAction="http://tempuri.org/IChaosMoviesService/CharacterGetResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.CharacterDto>> CharacterGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/DepartmentSave", ReplyAction="http://tempuri.org/IChaosMoviesService/DepartmentSaveResponse")]
+        void DepartmentSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.DepartmentDto department);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/DepartmentSave", ReplyAction="http://tempuri.org/IChaosMoviesService/DepartmentSaveResponse")]
+        System.Threading.Tasks.Task DepartmentSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.DepartmentDto department);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/DepartmentGet", ReplyAction="http://tempuri.org/IChaosMoviesService/DepartmentGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.DepartmentDto> DepartmentGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/DepartmentGet", ReplyAction="http://tempuri.org/IChaosMoviesService/DepartmentGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.DepartmentDto>> DepartmentGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/DepartmentGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/DepartmentGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.DepartmentDto> DepartmentGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/DepartmentGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/DepartmentGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.DepartmentDto>> DepartmentGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/ErrorSave", ReplyAction="http://tempuri.org/IChaosMoviesService/ErrorSaveResponse")]
+        void ErrorSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.ErrorDto error);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/ErrorSave", ReplyAction="http://tempuri.org/IChaosMoviesService/ErrorSaveResponse")]
+        System.Threading.Tasks.Task ErrorSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.ErrorDto error);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/ExternalSourceSave", ReplyAction="http://tempuri.org/IChaosMoviesService/ExternalSourceSaveResponse")]
+        void ExternalSourceSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.ExternalSourceDto externalSource);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/ExternalSourceSave", ReplyAction="http://tempuri.org/IChaosMoviesService/ExternalSourceSaveResponse")]
+        System.Threading.Tasks.Task ExternalSourceSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.ExternalSourceDto externalSource);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/ExternalSourceGet", ReplyAction="http://tempuri.org/IChaosMoviesService/ExternalSourceGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.ExternalSourceDto> ExternalSourceGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/ExternalSourceGet", ReplyAction="http://tempuri.org/IChaosMoviesService/ExternalSourceGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.ExternalSourceDto>> ExternalSourceGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/GenreSave", ReplyAction="http://tempuri.org/IChaosMoviesService/GenreSaveResponse")]
+        void GenreSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.GenreDto genre);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/GenreSave", ReplyAction="http://tempuri.org/IChaosMoviesService/GenreSaveResponse")]
+        System.Threading.Tasks.Task GenreSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.GenreDto genre);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/GenreGet", ReplyAction="http://tempuri.org/IChaosMoviesService/GenreGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.GenreDto> GenreGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/GenreGet", ReplyAction="http://tempuri.org/IChaosMoviesService/GenreGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.GenreDto>> GenreGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/GenreGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/GenreGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.GenreDto> GenreGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/GenreGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/GenreGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.GenreDto>> GenreGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconSave", ReplyAction="http://tempuri.org/IChaosMoviesService/IconSaveResponse")]
+        void IconSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.IconDto icon);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconSave", ReplyAction="http://tempuri.org/IChaosMoviesService/IconSaveResponse")]
+        System.Threading.Tasks.Task IconSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.IconDto icon);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconGet", ReplyAction="http://tempuri.org/IChaosMoviesService/IconGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.IconDto> IconGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconGet", ReplyAction="http://tempuri.org/IChaosMoviesService/IconGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.IconDto>> IconGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/IconTypeSaveResponse")]
+        void IconTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.IconTypeDto iconType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/IconTypeSaveResponse")]
+        System.Threading.Tasks.Task IconTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.IconTypeDto iconType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/IconTypeGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.IconTypeDto> IconTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/IconTypeGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.IconTypeDto>> IconTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/IconTypeGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.IconTypeDto> IconTypeGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/IconTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/IconTypeGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.IconTypeDto>> IconTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSave", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSaveResponse")]
+        void MovieSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieDto movie);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSave", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSaveResponse")]
+        System.Threading.Tasks.Task MovieSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieDto movie);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieGet", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.MovieDto> MovieGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieGet", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieDto>> MovieGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesSave", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesSaveResponse")]
+        void MovieSeriesSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieSeriesDto movieSeries);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesSave", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesSaveResponse")]
+        System.Threading.Tasks.Task MovieSeriesSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieSeriesDto movieSeries);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesGet", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesDto> MovieSeriesGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesGet", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesDto>> MovieSeriesGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeSaveResponse")]
+        void MovieSeriesTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieSeriesTypeDto movieSeriesType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeSaveResponse")]
+        System.Threading.Tasks.Task MovieSeriesTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieSeriesTypeDto movieSeriesType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesTypeDto> MovieSeriesTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesTypeDto>> MovieSeriesTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesTypeDto> MovieSeriesTypeGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesTypeDto>> MovieSeriesTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieTypeSaveResponse")]
+        void MovieTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieTypeDto movieType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieTypeSaveResponse")]
+        System.Threading.Tasks.Task MovieTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieTypeDto movieType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieTypeGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.MovieTypeDto> MovieTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieTypeGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieTypeDto>> MovieTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieTypeGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.MovieTypeDto> MovieTypeGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/MovieTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/MovieTypeGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieTypeDto>> MovieTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/PersonSave", ReplyAction="http://tempuri.org/IChaosMoviesService/PersonSaveResponse")]
+        void PersonSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.PersonDto person);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/PersonSave", ReplyAction="http://tempuri.org/IChaosMoviesService/PersonSaveResponse")]
+        System.Threading.Tasks.Task PersonSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.PersonDto person);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/PersonGet", ReplyAction="http://tempuri.org/IChaosMoviesService/PersonGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.PersonDto> PersonGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/PersonGet", ReplyAction="http://tempuri.org/IChaosMoviesService/PersonGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.PersonDto>> PersonGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingSystemSave", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingSystemSaveResponse")]
+        void RatingSystemSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RatingSystemDto ratingSystem);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingSystemSave", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingSystemSaveResponse")]
+        System.Threading.Tasks.Task RatingSystemSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RatingSystemDto ratingSystem);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingSystemGet", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingSystemGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.RatingSystemDto> RatingSystemGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingSystemGet", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingSystemGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RatingSystemDto>> RatingSystemGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingSystemGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingSystemGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.RatingSystemDto> RatingSystemGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingSystemGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingSystemGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RatingSystemDto>> RatingSystemGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingTypeSaveResponse")]
+        void RatingTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RatingTypeDto ratingType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingTypeSaveResponse")]
+        System.Threading.Tasks.Task RatingTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RatingTypeDto ratingType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingTypeGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.RatingTypeDto> RatingTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingTypeGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RatingTypeDto>> RatingTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingTypeGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.RatingTypeDto> RatingTypeGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RatingTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/RatingTypeGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RatingTypeDto>> RatingTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RoleSave", ReplyAction="http://tempuri.org/IChaosMoviesService/RoleSaveResponse")]
+        void RoleSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RoleDto role);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RoleSave", ReplyAction="http://tempuri.org/IChaosMoviesService/RoleSaveResponse")]
+        System.Threading.Tasks.Task RoleSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RoleDto role);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RoleGet", ReplyAction="http://tempuri.org/IChaosMoviesService/RoleGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.RoleDto> RoleGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RoleGet", ReplyAction="http://tempuri.org/IChaosMoviesService/RoleGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RoleDto>> RoleGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RoleGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/RoleGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.RoleDto> RoleGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/RoleGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/RoleGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RoleDto>> RoleGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/UserSave", ReplyAction="http://tempuri.org/IChaosMoviesService/UserSaveResponse")]
+        void UserSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserDto user);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/UserSave", ReplyAction="http://tempuri.org/IChaosMoviesService/UserSaveResponse")]
+        System.Threading.Tasks.Task UserSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserDto user);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/UserGet", ReplyAction="http://tempuri.org/IChaosMoviesService/UserGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.UserDto> UserGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/UserGet", ReplyAction="http://tempuri.org/IChaosMoviesService/UserGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.UserDto>> UserGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/UserSessionSave", ReplyAction="http://tempuri.org/IChaosMoviesService/UserSessionSaveResponse")]
+        void UserSessionSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserSessionDto userSession);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/UserSessionSave", ReplyAction="http://tempuri.org/IChaosMoviesService/UserSessionSaveResponse")]
+        System.Threading.Tasks.Task UserSessionSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserSessionDto userSession);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchSave", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchSaveResponse")]
+        void WatchSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchDto watch);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchSave", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchSaveResponse")]
+        System.Threading.Tasks.Task WatchSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchDto watch);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchGet", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.WatchDto> WatchGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchGet", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchDto>> WatchGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchLocationSave", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchLocationSaveResponse")]
+        void WatchLocationSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchLocationDto watchLocation);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchLocationSave", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchLocationSaveResponse")]
+        System.Threading.Tasks.Task WatchLocationSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchLocationDto watchLocation);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchLocationGet", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchLocationGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.WatchLocationDto> WatchLocationGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchLocationGet", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchLocationGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchLocationDto>> WatchLocationGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchLocationGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchLocationGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.WatchLocationDto> WatchLocationGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchLocationGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchLocationGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchLocationDto>> WatchLocationGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchTypeSaveResponse")]
+        void WatchTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchTypeDto watchType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchTypeSave", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchTypeSaveResponse")]
+        System.Threading.Tasks.Task WatchTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchTypeDto watchType);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchTypeGetResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.WatchTypeDto> WatchTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchTypeGet", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchTypeGetResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchTypeDto>> WatchTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchTypeGetAllResponse")]
+        System.Collections.Generic.List<Chaos.Movies.Contract.WatchTypeDto> WatchTypeGetAll(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/WatchTypeGetAll", ReplyAction="http://tempuri.org/IChaosMoviesService/WatchTypeGetAllResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchTypeDto>> WatchTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CreateUserSession", ReplyAction="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse")]
+        Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserLogin userLogin);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CreateUserSession", ReplyAction="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse")]
+        System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserLogin userLogin);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -93,14 +369,6 @@ namespace Chaos.Movies.Model.ChaosMovieService {
                 base(binding, remoteAddress) {
         }
         
-        public Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLogin userLogin) {
-            return base.Channel.CreateUserSession(session, userLogin);
-        }
-        
-        public System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLogin userLogin) {
-            return base.Channel.CreateUserSessionAsync(session, userLogin);
-        }
-        
         public void CharacterSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character) {
             base.Channel.CharacterSave(session, character);
         }
@@ -115,6 +383,382 @@ namespace Chaos.Movies.Model.ChaosMovieService {
         
         public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.CharacterDto>> CharacterGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
             return base.Channel.CharacterGetAsync(session, idList);
+        }
+        
+        public void DepartmentSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.DepartmentDto department) {
+            base.Channel.DepartmentSave(session, department);
+        }
+        
+        public System.Threading.Tasks.Task DepartmentSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.DepartmentDto department) {
+            return base.Channel.DepartmentSaveAsync(session, department);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.DepartmentDto> DepartmentGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.DepartmentGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.DepartmentDto>> DepartmentGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.DepartmentGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.DepartmentDto> DepartmentGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.DepartmentGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.DepartmentDto>> DepartmentGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.DepartmentGetAllAsync(session);
+        }
+        
+        public void ErrorSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.ErrorDto error) {
+            base.Channel.ErrorSave(session, error);
+        }
+        
+        public System.Threading.Tasks.Task ErrorSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.ErrorDto error) {
+            return base.Channel.ErrorSaveAsync(session, error);
+        }
+        
+        public void ExternalSourceSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.ExternalSourceDto externalSource) {
+            base.Channel.ExternalSourceSave(session, externalSource);
+        }
+        
+        public System.Threading.Tasks.Task ExternalSourceSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.ExternalSourceDto externalSource) {
+            return base.Channel.ExternalSourceSaveAsync(session, externalSource);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.ExternalSourceDto> ExternalSourceGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.ExternalSourceGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.ExternalSourceDto>> ExternalSourceGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.ExternalSourceGetAsync(session, idList);
+        }
+        
+        public void GenreSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.GenreDto genre) {
+            base.Channel.GenreSave(session, genre);
+        }
+        
+        public System.Threading.Tasks.Task GenreSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.GenreDto genre) {
+            return base.Channel.GenreSaveAsync(session, genre);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.GenreDto> GenreGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.GenreGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.GenreDto>> GenreGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.GenreGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.GenreDto> GenreGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.GenreGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.GenreDto>> GenreGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.GenreGetAllAsync(session);
+        }
+        
+        public void IconSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.IconDto icon) {
+            base.Channel.IconSave(session, icon);
+        }
+        
+        public System.Threading.Tasks.Task IconSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.IconDto icon) {
+            return base.Channel.IconSaveAsync(session, icon);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.IconDto> IconGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.IconGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.IconDto>> IconGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.IconGetAsync(session, idList);
+        }
+        
+        public void IconTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.IconTypeDto iconType) {
+            base.Channel.IconTypeSave(session, iconType);
+        }
+        
+        public System.Threading.Tasks.Task IconTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.IconTypeDto iconType) {
+            return base.Channel.IconTypeSaveAsync(session, iconType);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.IconTypeDto> IconTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.IconTypeGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.IconTypeDto>> IconTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.IconTypeGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.IconTypeDto> IconTypeGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.IconTypeGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.IconTypeDto>> IconTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.IconTypeGetAllAsync(session);
+        }
+        
+        public void MovieSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieDto movie) {
+            base.Channel.MovieSave(session, movie);
+        }
+        
+        public System.Threading.Tasks.Task MovieSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieDto movie) {
+            return base.Channel.MovieSaveAsync(session, movie);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.MovieDto> MovieGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.MovieGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieDto>> MovieGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.MovieGetAsync(session, idList);
+        }
+        
+        public void MovieSeriesSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieSeriesDto movieSeries) {
+            base.Channel.MovieSeriesSave(session, movieSeries);
+        }
+        
+        public System.Threading.Tasks.Task MovieSeriesSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieSeriesDto movieSeries) {
+            return base.Channel.MovieSeriesSaveAsync(session, movieSeries);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesDto> MovieSeriesGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.MovieSeriesGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesDto>> MovieSeriesGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.MovieSeriesGetAsync(session, idList);
+        }
+        
+        public void MovieSeriesTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieSeriesTypeDto movieSeriesType) {
+            base.Channel.MovieSeriesTypeSave(session, movieSeriesType);
+        }
+        
+        public System.Threading.Tasks.Task MovieSeriesTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieSeriesTypeDto movieSeriesType) {
+            return base.Channel.MovieSeriesTypeSaveAsync(session, movieSeriesType);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesTypeDto> MovieSeriesTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.MovieSeriesTypeGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesTypeDto>> MovieSeriesTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.MovieSeriesTypeGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesTypeDto> MovieSeriesTypeGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.MovieSeriesTypeGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieSeriesTypeDto>> MovieSeriesTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.MovieSeriesTypeGetAllAsync(session);
+        }
+        
+        public void MovieTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieTypeDto movieType) {
+            base.Channel.MovieTypeSave(session, movieType);
+        }
+        
+        public System.Threading.Tasks.Task MovieTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.MovieTypeDto movieType) {
+            return base.Channel.MovieTypeSaveAsync(session, movieType);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.MovieTypeDto> MovieTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.MovieTypeGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieTypeDto>> MovieTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.MovieTypeGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.MovieTypeDto> MovieTypeGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.MovieTypeGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.MovieTypeDto>> MovieTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.MovieTypeGetAllAsync(session);
+        }
+        
+        public void PersonSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.PersonDto person) {
+            base.Channel.PersonSave(session, person);
+        }
+        
+        public System.Threading.Tasks.Task PersonSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.PersonDto person) {
+            return base.Channel.PersonSaveAsync(session, person);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.PersonDto> PersonGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.PersonGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.PersonDto>> PersonGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.PersonGetAsync(session, idList);
+        }
+        
+        public void RatingSystemSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RatingSystemDto ratingSystem) {
+            base.Channel.RatingSystemSave(session, ratingSystem);
+        }
+        
+        public System.Threading.Tasks.Task RatingSystemSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RatingSystemDto ratingSystem) {
+            return base.Channel.RatingSystemSaveAsync(session, ratingSystem);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.RatingSystemDto> RatingSystemGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.RatingSystemGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RatingSystemDto>> RatingSystemGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.RatingSystemGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.RatingSystemDto> RatingSystemGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.RatingSystemGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RatingSystemDto>> RatingSystemGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.RatingSystemGetAllAsync(session);
+        }
+        
+        public void RatingTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RatingTypeDto ratingType) {
+            base.Channel.RatingTypeSave(session, ratingType);
+        }
+        
+        public System.Threading.Tasks.Task RatingTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RatingTypeDto ratingType) {
+            return base.Channel.RatingTypeSaveAsync(session, ratingType);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.RatingTypeDto> RatingTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.RatingTypeGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RatingTypeDto>> RatingTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.RatingTypeGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.RatingTypeDto> RatingTypeGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.RatingTypeGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RatingTypeDto>> RatingTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.RatingTypeGetAllAsync(session);
+        }
+        
+        public void RoleSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RoleDto role) {
+            base.Channel.RoleSave(session, role);
+        }
+        
+        public System.Threading.Tasks.Task RoleSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.RoleDto role) {
+            return base.Channel.RoleSaveAsync(session, role);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.RoleDto> RoleGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.RoleGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RoleDto>> RoleGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.RoleGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.RoleDto> RoleGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.RoleGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.RoleDto>> RoleGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.RoleGetAllAsync(session);
+        }
+        
+        public void UserSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserDto user) {
+            base.Channel.UserSave(session, user);
+        }
+        
+        public System.Threading.Tasks.Task UserSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserDto user) {
+            return base.Channel.UserSaveAsync(session, user);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.UserDto> UserGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.UserGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.UserDto>> UserGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.UserGetAsync(session, idList);
+        }
+        
+        public void UserSessionSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserSessionDto userSession) {
+            base.Channel.UserSessionSave(session, userSession);
+        }
+        
+        public System.Threading.Tasks.Task UserSessionSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserSessionDto userSession) {
+            return base.Channel.UserSessionSaveAsync(session, userSession);
+        }
+        
+        public void WatchSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchDto watch) {
+            base.Channel.WatchSave(session, watch);
+        }
+        
+        public System.Threading.Tasks.Task WatchSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchDto watch) {
+            return base.Channel.WatchSaveAsync(session, watch);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.WatchDto> WatchGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.WatchGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchDto>> WatchGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.WatchGetAsync(session, idList);
+        }
+        
+        public void WatchLocationSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchLocationDto watchLocation) {
+            base.Channel.WatchLocationSave(session, watchLocation);
+        }
+        
+        public System.Threading.Tasks.Task WatchLocationSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchLocationDto watchLocation) {
+            return base.Channel.WatchLocationSaveAsync(session, watchLocation);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.WatchLocationDto> WatchLocationGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.WatchLocationGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchLocationDto>> WatchLocationGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.WatchLocationGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.WatchLocationDto> WatchLocationGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.WatchLocationGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchLocationDto>> WatchLocationGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.WatchLocationGetAllAsync(session);
+        }
+        
+        public void WatchTypeSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchTypeDto watchType) {
+            base.Channel.WatchTypeSave(session, watchType);
+        }
+        
+        public System.Threading.Tasks.Task WatchTypeSaveAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.WatchTypeDto watchType) {
+            return base.Channel.WatchTypeSaveAsync(session, watchType);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.WatchTypeDto> WatchTypeGet(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.WatchTypeGet(session, idList);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchTypeDto>> WatchTypeGetAsync(Chaos.Movies.Contract.UserSessionDto session, System.Collections.Generic.List<int> idList) {
+            return base.Channel.WatchTypeGetAsync(session, idList);
+        }
+        
+        public System.Collections.Generic.List<Chaos.Movies.Contract.WatchTypeDto> WatchTypeGetAll(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.WatchTypeGetAll(session);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Chaos.Movies.Contract.WatchTypeDto>> WatchTypeGetAllAsync(Chaos.Movies.Contract.UserSessionDto session) {
+            return base.Channel.WatchTypeGetAllAsync(session);
+        }
+        
+        public Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserLogin userLogin) {
+            return base.Channel.CreateUserSession(userLogin);
+        }
+        
+        public System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserLogin userLogin) {
+            return base.Channel.CreateUserSessionAsync(userLogin);
         }
     }
 }

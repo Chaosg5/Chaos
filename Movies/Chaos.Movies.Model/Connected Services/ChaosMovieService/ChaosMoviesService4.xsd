@@ -2,26 +2,11 @@
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
   <xs:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd6" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:element name="CreateUserSession">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q1:UserSessionDto" />
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="userLogin" nillable="true" type="q2:UserLogin" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="CreateUserSessionResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="CreateUserSessionResult" nillable="true" type="q3:UserSessionDto" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="CharacterSave">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q4:UserSessionDto" />
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="character" nillable="true" type="q5:CharacterDto" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q1:UserSessionDto" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="character" nillable="true" type="q2:CharacterDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -33,15 +18,671 @@
   <xs:element name="CharacterGet">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q6:UserSessionDto" />
-        <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q7:ArrayOfint" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q3:UserSessionDto" />
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q4:ArrayOfint" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="CharacterGetResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="CharacterGetResult" nillable="true" type="q8:ArrayOfCharacterDto" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="CharacterGetResult" nillable="true" type="q5:ArrayOfCharacterDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DepartmentSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q6:UserSessionDto" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="department" nillable="true" type="q7:DepartmentDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DepartmentSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DepartmentGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q8:UserSessionDto" />
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q9:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DepartmentGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="DepartmentGetResult" nillable="true" type="q10:ArrayOfDepartmentDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DepartmentGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q11:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DepartmentGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="DepartmentGetAllResult" nillable="true" type="q12:ArrayOfDepartmentDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ErrorSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q13:UserSessionDto" />
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="error" nillable="true" type="q14:ErrorDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ErrorSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExternalSourceSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q15:UserSessionDto" />
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="externalSource" nillable="true" type="q16:ExternalSourceDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExternalSourceSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExternalSourceGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q17:UserSessionDto" />
+        <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q18:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExternalSourceGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="ExternalSourceGetResult" nillable="true" type="q19:ArrayOfExternalSourceDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GenreSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q20:UserSessionDto" />
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="genre" nillable="true" type="q21:GenreDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GenreSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GenreGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q22:UserSessionDto" />
+        <xs:element xmlns:q23="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q23:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GenreGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="GenreGetResult" nillable="true" type="q24:ArrayOfGenreDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GenreGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q25:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GenreGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="GenreGetAllResult" nillable="true" type="q26:ArrayOfGenreDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q27:UserSessionDto" />
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="icon" nillable="true" type="q28:IconDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q29:UserSessionDto" />
+        <xs:element xmlns:q30="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q30:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="IconGetResult" nillable="true" type="q31:ArrayOfIconDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconTypeSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q32:UserSessionDto" />
+        <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="iconType" nillable="true" type="q33:IconTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconTypeSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconTypeGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q34:UserSessionDto" />
+        <xs:element xmlns:q35="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q35:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconTypeGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q36="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="IconTypeGetResult" nillable="true" type="q36:ArrayOfIconTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconTypeGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q37="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q37:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IconTypeGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="IconTypeGetAllResult" nillable="true" type="q38:ArrayOfIconTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q39:UserSessionDto" />
+        <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="movie" nillable="true" type="q40:MovieDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q41="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q41:UserSessionDto" />
+        <xs:element xmlns:q42="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q42:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q43="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="MovieGetResult" nillable="true" type="q43:ArrayOfMovieDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q44="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q44:UserSessionDto" />
+        <xs:element xmlns:q45="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="movieSeries" nillable="true" type="q45:MovieSeriesDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q46:UserSessionDto" />
+        <xs:element xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q47:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q48="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="MovieSeriesGetResult" nillable="true" type="q48:ArrayOfMovieSeriesDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesTypeSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q49="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q49:UserSessionDto" />
+        <xs:element xmlns:q50="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="movieSeriesType" nillable="true" type="q50:MovieSeriesTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesTypeSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesTypeGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q51="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q51:UserSessionDto" />
+        <xs:element xmlns:q52="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q52:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesTypeGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q53="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="MovieSeriesTypeGetResult" nillable="true" type="q53:ArrayOfMovieSeriesTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesTypeGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q54="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q54:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieSeriesTypeGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q55="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="MovieSeriesTypeGetAllResult" nillable="true" type="q55:ArrayOfMovieSeriesTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieTypeSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q56="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q56:UserSessionDto" />
+        <xs:element xmlns:q57="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="movieType" nillable="true" type="q57:MovieTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieTypeSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieTypeGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q58="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q58:UserSessionDto" />
+        <xs:element xmlns:q59="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q59:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieTypeGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q60="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="MovieTypeGetResult" nillable="true" type="q60:ArrayOfMovieTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieTypeGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q61="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q61:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MovieTypeGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q62="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="MovieTypeGetAllResult" nillable="true" type="q62:ArrayOfMovieTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PersonSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q63="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q63:UserSessionDto" />
+        <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="person" nillable="true" type="q64:PersonDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PersonSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PersonGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q65:UserSessionDto" />
+        <xs:element xmlns:q66="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q66:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PersonGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="PersonGetResult" nillable="true" type="q67:ArrayOfPersonDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingSystemSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q68="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q68:UserSessionDto" />
+        <xs:element xmlns:q69="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="ratingSystem" nillable="true" type="q69:RatingSystemDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingSystemSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingSystemGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q70="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q70:UserSessionDto" />
+        <xs:element xmlns:q71="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q71:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingSystemGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="RatingSystemGetResult" nillable="true" type="q72:ArrayOfRatingSystemDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingSystemGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q73="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q73:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingSystemGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q74="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="RatingSystemGetAllResult" nillable="true" type="q74:ArrayOfRatingSystemDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingTypeSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q75="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q75:UserSessionDto" />
+        <xs:element xmlns:q76="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="ratingType" nillable="true" type="q76:RatingTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingTypeSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingTypeGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q77="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q77:UserSessionDto" />
+        <xs:element xmlns:q78="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q78:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingTypeGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q79="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="RatingTypeGetResult" nillable="true" type="q79:ArrayOfRatingTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingTypeGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q80="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q80:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RatingTypeGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q81="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="RatingTypeGetAllResult" nillable="true" type="q81:ArrayOfRatingTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoleSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q82="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q82:UserSessionDto" />
+        <xs:element xmlns:q83="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="role" nillable="true" type="q83:RoleDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoleSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoleGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q84="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q84:UserSessionDto" />
+        <xs:element xmlns:q85="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q85:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoleGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q86="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="RoleGetResult" nillable="true" type="q86:ArrayOfRoleDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoleGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q87="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q87:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoleGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q88="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="RoleGetAllResult" nillable="true" type="q88:ArrayOfRoleDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UserSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q89="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q89:UserSessionDto" />
+        <xs:element xmlns:q90="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="user" nillable="true" type="q90:UserDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UserSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UserGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q91="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q91:UserSessionDto" />
+        <xs:element xmlns:q92="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q92:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UserGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q93="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="UserGetResult" nillable="true" type="q93:ArrayOfUserDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UserSessionSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q94="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q94:UserSessionDto" />
+        <xs:element xmlns:q95="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="userSession" nillable="true" type="q95:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UserSessionSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q96="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q96:UserSessionDto" />
+        <xs:element xmlns:q97="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="watch" nillable="true" type="q97:WatchDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q98="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q98:UserSessionDto" />
+        <xs:element xmlns:q99="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q99:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q100="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="WatchGetResult" nillable="true" type="q100:ArrayOfWatchDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchLocationSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q101="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q101:UserSessionDto" />
+        <xs:element xmlns:q102="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="watchLocation" nillable="true" type="q102:WatchLocationDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchLocationSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchLocationGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q103="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q103:UserSessionDto" />
+        <xs:element xmlns:q104="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q104:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchLocationGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q105="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="WatchLocationGetResult" nillable="true" type="q105:ArrayOfWatchLocationDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchLocationGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q106="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q106:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchLocationGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q107="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="WatchLocationGetAllResult" nillable="true" type="q107:ArrayOfWatchLocationDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchTypeSave">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q108="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q108:UserSessionDto" />
+        <xs:element xmlns:q109="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="watchType" nillable="true" type="q109:WatchTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchTypeSaveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchTypeGet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q110="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q110:UserSessionDto" />
+        <xs:element xmlns:q111="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idList" nillable="true" type="q111:ArrayOfint" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchTypeGetResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q112="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="WatchTypeGetResult" nillable="true" type="q112:ArrayOfWatchTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchTypeGetAll">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q113="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="session" nillable="true" type="q113:UserSessionDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WatchTypeGetAllResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q114="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="WatchTypeGetAllResult" nillable="true" type="q114:ArrayOfWatchTypeDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateUserSession">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q115="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="userLogin" nillable="true" type="q115:UserLogin" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateUserSessionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q116="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" minOccurs="0" name="CreateUserSessionResult" nillable="true" type="q116:UserSessionDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

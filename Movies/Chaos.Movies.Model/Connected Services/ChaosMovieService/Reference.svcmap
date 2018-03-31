@@ -32,6 +32,7 @@
     <MetadataFile FileName="ChaosMoviesService3.xsd" MetadataType="Schema" ID="4b65f684-fc7a-4a20-b8ea-ed7d44776187" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd4" />
     <MetadataFile FileName="ChaosMoviesService4.xsd" MetadataType="Schema" ID="686ec6e2-ab35-4ac2-b4db-44254660cb08" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd0" />
     <MetadataFile FileName="ChaosMoviesService5.xsd" MetadataType="Schema" ID="a10ba8de-287f-43ef-8e20-f1667cc5100e" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd5" />
+    <MetadataFile FileName="ChaosMoviesService7.xsd" MetadataType="Schema" ID="77a4344b-6666-4df7-8e63-6a50f37a507f" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd7" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

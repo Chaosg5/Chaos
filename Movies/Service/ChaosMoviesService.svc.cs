@@ -109,6 +109,25 @@ namespace Chaos.Movies.Service
 
         #endregion
 
+        #region Error
+
+        /// <inheritdoc />
+        /// <exception cref="FaultException">An exception occurred.</exception>
+        public async Task ErrorSaveAsync(UserSessionDto session, ErrorDto error)
+        {
+            try
+            {
+                this.ValidateStateAndSession(session);
+                await Error.Static.FromContract(error).SaveAsync(UserSession.Static.FromContract(session));
+            }
+            catch (Exception exception)
+            {
+                throw new FaultException(exception.Message);
+            }
+        }
+
+        #endregion
+
         #region ExternalSource 
 
         /// <inheritdoc /> 
@@ -647,6 +666,25 @@ namespace Chaos.Movies.Service
             {
                 this.ValidateStateAndSession(session);
                 return (await User.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
+            }
+            catch (Exception exception)
+            {
+                throw new FaultException(exception.Message);
+            }
+        }
+
+        #endregion
+
+        #region UserSession
+
+        /// <inheritdoc /> 
+        /// <exception cref="FaultException">An exception occurred.</exception>
+        public async Task UserSessionSaveAsync(UserSessionDto session, UserSessionDto userSession)
+        {
+            try
+            {
+                this.ValidateStateAndSession(session);
+                await UserSession.Static.FromContract(userSession).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
             {

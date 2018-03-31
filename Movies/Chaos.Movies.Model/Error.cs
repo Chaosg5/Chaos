@@ -68,6 +68,9 @@ namespace Chaos.Movies.Model
         {
         }
 
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static Error Static { get; } = new Error();
+
         /// <summary>Gets the user id.</summary>
         public int UserId { get; private set; }
 
@@ -132,7 +135,7 @@ namespace Chaos.Movies.Model
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+                await service.ErrorSaveAsync(session.ToContract(), this.ToContract());
             }
         }
 

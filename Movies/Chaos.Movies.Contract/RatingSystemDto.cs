@@ -22,7 +22,7 @@ namespace Chaos.Movies.Contract
         public ReadOnlyCollection<LanguageDescriptionDto> Titles { get; set; }
 
         /// <summary>Gets or sets the the relative value for each <see cref="RatingTypeDto"/>.</summary>
-        [DataMember]
-        public ReadOnlyDictionary<RatingTypeDto, short> Values { get; set; }
+        //[DataMember]
+        //public ReadOnlyDictionary<RatingTypeDto, short> Values { get; set; }
     }
 }

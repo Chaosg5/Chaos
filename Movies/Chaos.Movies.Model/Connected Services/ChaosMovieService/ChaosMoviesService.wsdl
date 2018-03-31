@@ -34,14 +34,9 @@
       <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Data.Linq" />
       <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Globalization" />
       <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd6" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/System.Windows.Media" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IChaosMoviesService_CreateUserSession_InputMessage">
-    <wsdl:part name="parameters" element="tns:CreateUserSession" />
-  </wsdl:message>
-  <wsdl:message name="IChaosMoviesService_CreateUserSession_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CreateUserSessionResponse" />
-  </wsdl:message>
   <wsdl:message name="IChaosMoviesService_CharacterSave_InputMessage">
     <wsdl:part name="parameters" element="tns:CharacterSave" />
   </wsdl:message>
@@ -54,11 +49,289 @@
   <wsdl:message name="IChaosMoviesService_CharacterGet_OutputMessage">
     <wsdl:part name="parameters" element="tns:CharacterGetResponse" />
   </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_DepartmentSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:DepartmentSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_DepartmentSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DepartmentSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_DepartmentGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:DepartmentGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_DepartmentGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DepartmentGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_DepartmentGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:DepartmentGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_DepartmentGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DepartmentGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_ErrorSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:ErrorSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_ErrorSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ErrorSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_ExternalSourceSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExternalSourceSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_ExternalSourceSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExternalSourceSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_ExternalSourceGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExternalSourceGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_ExternalSourceGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExternalSourceGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_GenreSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:GenreSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_GenreSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GenreSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_GenreGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:GenreGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_GenreGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GenreGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_GenreGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:GenreGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_GenreGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GenreGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:IconSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IconSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:IconGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IconGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconTypeSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:IconTypeSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconTypeSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IconTypeSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconTypeGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:IconTypeGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconTypeGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IconTypeGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconTypeGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:IconTypeGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_IconTypeGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IconTypeGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesTypeSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesTypeSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesTypeSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesTypeSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesTypeGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesTypeGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesTypeGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesTypeGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesTypeGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesTypeGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieSeriesTypeGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieSeriesTypeGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieTypeSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieTypeSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieTypeSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieTypeSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieTypeGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieTypeGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieTypeGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieTypeGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieTypeGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:MovieTypeGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_MovieTypeGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MovieTypeGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_PersonSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:PersonSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_PersonSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PersonSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_PersonGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:PersonGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_PersonGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PersonGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingSystemSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:RatingSystemSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingSystemSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RatingSystemSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingSystemGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:RatingSystemGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingSystemGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RatingSystemGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingSystemGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:RatingSystemGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingSystemGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RatingSystemGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingTypeSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:RatingTypeSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingTypeSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RatingTypeSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingTypeGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:RatingTypeGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingTypeGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RatingTypeGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingTypeGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:RatingTypeGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RatingTypeGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RatingTypeGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RoleSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:RoleSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RoleSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RoleSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RoleGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:RoleGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RoleGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RoleGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RoleGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:RoleGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_RoleGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RoleGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_UserSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:UserSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_UserSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UserSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_UserGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:UserGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_UserGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UserGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_UserSessionSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:UserSessionSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_UserSessionSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UserSessionSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:WatchSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WatchSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:WatchGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WatchGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchLocationSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:WatchLocationSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchLocationSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WatchLocationSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchLocationGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:WatchLocationGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchLocationGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WatchLocationGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchLocationGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:WatchLocationGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchLocationGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WatchLocationGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchTypeSave_InputMessage">
+    <wsdl:part name="parameters" element="tns:WatchTypeSave" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchTypeSave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WatchTypeSaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchTypeGet_InputMessage">
+    <wsdl:part name="parameters" element="tns:WatchTypeGet" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchTypeGet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WatchTypeGetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchTypeGetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:WatchTypeGetAll" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_WatchTypeGetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WatchTypeGetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_CreateUserSession_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUserSession" />
+  </wsdl:message>
+  <wsdl:message name="IChaosMoviesService_CreateUserSession_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUserSessionResponse" />
+  </wsdl:message>
   <wsdl:portType name="IChaosMoviesService">
-    <wsdl:operation name="CreateUserSession">
-      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/CreateUserSession" message="tns:IChaosMoviesService_CreateUserSession_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse" message="tns:IChaosMoviesService_CreateUserSession_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="CharacterSave">
       <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/CharacterSave" message="tns:IChaosMoviesService_CharacterSave_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/CharacterSaveResponse" message="tns:IChaosMoviesService_CharacterSave_OutputMessage" />
@@ -67,19 +340,198 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/CharacterGet" message="tns:IChaosMoviesService_CharacterGet_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/CharacterGetResponse" message="tns:IChaosMoviesService_CharacterGet_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="DepartmentSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/DepartmentSave" message="tns:IChaosMoviesService_DepartmentSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/DepartmentSaveResponse" message="tns:IChaosMoviesService_DepartmentSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DepartmentGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/DepartmentGet" message="tns:IChaosMoviesService_DepartmentGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/DepartmentGetResponse" message="tns:IChaosMoviesService_DepartmentGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DepartmentGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/DepartmentGetAll" message="tns:IChaosMoviesService_DepartmentGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/DepartmentGetAllResponse" message="tns:IChaosMoviesService_DepartmentGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ErrorSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/ErrorSave" message="tns:IChaosMoviesService_ErrorSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/ErrorSaveResponse" message="tns:IChaosMoviesService_ErrorSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExternalSourceSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/ExternalSourceSave" message="tns:IChaosMoviesService_ExternalSourceSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/ExternalSourceSaveResponse" message="tns:IChaosMoviesService_ExternalSourceSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExternalSourceGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/ExternalSourceGet" message="tns:IChaosMoviesService_ExternalSourceGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/ExternalSourceGetResponse" message="tns:IChaosMoviesService_ExternalSourceGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GenreSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/GenreSave" message="tns:IChaosMoviesService_GenreSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/GenreSaveResponse" message="tns:IChaosMoviesService_GenreSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GenreGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/GenreGet" message="tns:IChaosMoviesService_GenreGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/GenreGetResponse" message="tns:IChaosMoviesService_GenreGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GenreGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/GenreGetAll" message="tns:IChaosMoviesService_GenreGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/GenreGetAllResponse" message="tns:IChaosMoviesService_GenreGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IconSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/IconSave" message="tns:IChaosMoviesService_IconSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/IconSaveResponse" message="tns:IChaosMoviesService_IconSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IconGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/IconGet" message="tns:IChaosMoviesService_IconGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/IconGetResponse" message="tns:IChaosMoviesService_IconGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IconTypeSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/IconTypeSave" message="tns:IChaosMoviesService_IconTypeSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/IconTypeSaveResponse" message="tns:IChaosMoviesService_IconTypeSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IconTypeGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/IconTypeGet" message="tns:IChaosMoviesService_IconTypeGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/IconTypeGetResponse" message="tns:IChaosMoviesService_IconTypeGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="IconTypeGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/IconTypeGetAll" message="tns:IChaosMoviesService_IconTypeGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/IconTypeGetAllResponse" message="tns:IChaosMoviesService_IconTypeGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSave" message="tns:IChaosMoviesService_MovieSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSaveResponse" message="tns:IChaosMoviesService_MovieSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieGet" message="tns:IChaosMoviesService_MovieGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieGetResponse" message="tns:IChaosMoviesService_MovieGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesSave" message="tns:IChaosMoviesService_MovieSeriesSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesSaveResponse" message="tns:IChaosMoviesService_MovieSeriesSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesGet" message="tns:IChaosMoviesService_MovieSeriesGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesGetResponse" message="tns:IChaosMoviesService_MovieSeriesGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesTypeSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeSave" message="tns:IChaosMoviesService_MovieSeriesTypeSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeSaveResponse" message="tns:IChaosMoviesService_MovieSeriesTypeSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesTypeGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGet" message="tns:IChaosMoviesService_MovieSeriesTypeGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetResponse" message="tns:IChaosMoviesService_MovieSeriesTypeGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesTypeGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetAll" message="tns:IChaosMoviesService_MovieSeriesTypeGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetAllResponse" message="tns:IChaosMoviesService_MovieSeriesTypeGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieTypeSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieTypeSave" message="tns:IChaosMoviesService_MovieTypeSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieTypeSaveResponse" message="tns:IChaosMoviesService_MovieTypeSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieTypeGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieTypeGet" message="tns:IChaosMoviesService_MovieTypeGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieTypeGetResponse" message="tns:IChaosMoviesService_MovieTypeGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MovieTypeGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieTypeGetAll" message="tns:IChaosMoviesService_MovieTypeGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/MovieTypeGetAllResponse" message="tns:IChaosMoviesService_MovieTypeGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PersonSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/PersonSave" message="tns:IChaosMoviesService_PersonSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/PersonSaveResponse" message="tns:IChaosMoviesService_PersonSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PersonGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/PersonGet" message="tns:IChaosMoviesService_PersonGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/PersonGetResponse" message="tns:IChaosMoviesService_PersonGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RatingSystemSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingSystemSave" message="tns:IChaosMoviesService_RatingSystemSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingSystemSaveResponse" message="tns:IChaosMoviesService_RatingSystemSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RatingSystemGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingSystemGet" message="tns:IChaosMoviesService_RatingSystemGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingSystemGetResponse" message="tns:IChaosMoviesService_RatingSystemGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RatingSystemGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingSystemGetAll" message="tns:IChaosMoviesService_RatingSystemGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingSystemGetAllResponse" message="tns:IChaosMoviesService_RatingSystemGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RatingTypeSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingTypeSave" message="tns:IChaosMoviesService_RatingTypeSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingTypeSaveResponse" message="tns:IChaosMoviesService_RatingTypeSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RatingTypeGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingTypeGet" message="tns:IChaosMoviesService_RatingTypeGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingTypeGetResponse" message="tns:IChaosMoviesService_RatingTypeGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RatingTypeGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingTypeGetAll" message="tns:IChaosMoviesService_RatingTypeGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RatingTypeGetAllResponse" message="tns:IChaosMoviesService_RatingTypeGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RoleSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RoleSave" message="tns:IChaosMoviesService_RoleSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RoleSaveResponse" message="tns:IChaosMoviesService_RoleSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RoleGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RoleGet" message="tns:IChaosMoviesService_RoleGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RoleGetResponse" message="tns:IChaosMoviesService_RoleGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RoleGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/RoleGetAll" message="tns:IChaosMoviesService_RoleGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/RoleGetAllResponse" message="tns:IChaosMoviesService_RoleGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UserSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/UserSave" message="tns:IChaosMoviesService_UserSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/UserSaveResponse" message="tns:IChaosMoviesService_UserSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UserGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/UserGet" message="tns:IChaosMoviesService_UserGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/UserGetResponse" message="tns:IChaosMoviesService_UserGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UserSessionSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/UserSessionSave" message="tns:IChaosMoviesService_UserSessionSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/UserSessionSaveResponse" message="tns:IChaosMoviesService_UserSessionSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchSave" message="tns:IChaosMoviesService_WatchSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchSaveResponse" message="tns:IChaosMoviesService_WatchSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchGet" message="tns:IChaosMoviesService_WatchGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchGetResponse" message="tns:IChaosMoviesService_WatchGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchLocationSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchLocationSave" message="tns:IChaosMoviesService_WatchLocationSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchLocationSaveResponse" message="tns:IChaosMoviesService_WatchLocationSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchLocationGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchLocationGet" message="tns:IChaosMoviesService_WatchLocationGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchLocationGetResponse" message="tns:IChaosMoviesService_WatchLocationGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchLocationGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchLocationGetAll" message="tns:IChaosMoviesService_WatchLocationGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchLocationGetAllResponse" message="tns:IChaosMoviesService_WatchLocationGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchTypeSave">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchTypeSave" message="tns:IChaosMoviesService_WatchTypeSave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchTypeSaveResponse" message="tns:IChaosMoviesService_WatchTypeSave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchTypeGet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchTypeGet" message="tns:IChaosMoviesService_WatchTypeGet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchTypeGetResponse" message="tns:IChaosMoviesService_WatchTypeGet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchTypeGetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchTypeGetAll" message="tns:IChaosMoviesService_WatchTypeGetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/WatchTypeGetAllResponse" message="tns:IChaosMoviesService_WatchTypeGetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateUserSession">
+      <wsdl:input wsaw:Action="http://tempuri.org/IChaosMoviesService/CreateUserSession" message="tns:IChaosMoviesService_CreateUserSession_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse" message="tns:IChaosMoviesService_CreateUserSession_OutputMessage" />
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IChaosMoviesService" type="tns:IChaosMoviesService">
     <wsp:PolicyReference URI="#BasicHttpBinding_IChaosMoviesService_policy" />
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="CreateUserSession">
-      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/CreateUserSession" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="CharacterSave">
       <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/CharacterSave" style="document" />
       <wsdl:input>
@@ -91,6 +543,429 @@
     </wsdl:operation>
     <wsdl:operation name="CharacterGet">
       <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/CharacterGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DepartmentSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/DepartmentSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DepartmentGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/DepartmentGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DepartmentGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/DepartmentGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ErrorSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/ErrorSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExternalSourceSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/ExternalSourceSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExternalSourceGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/ExternalSourceGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GenreSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/GenreSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GenreGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/GenreGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GenreGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/GenreGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IconSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/IconSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IconGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/IconGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IconTypeSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/IconTypeSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IconTypeGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/IconTypeGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IconTypeGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/IconTypeGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieSeriesSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieSeriesGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesTypeSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesTypeGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieSeriesTypeGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieSeriesTypeGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieTypeSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieTypeSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieTypeGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieTypeGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MovieTypeGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/MovieTypeGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PersonSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/PersonSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PersonGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/PersonGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RatingSystemSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RatingSystemSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RatingSystemGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RatingSystemGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RatingSystemGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RatingSystemGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RatingTypeSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RatingTypeSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RatingTypeGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RatingTypeGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RatingTypeGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RatingTypeGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RoleSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RoleSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RoleGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RoleGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RoleGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/RoleGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UserSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/UserSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UserGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/UserGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UserSessionSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/UserSessionSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WatchSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/WatchSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WatchGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/WatchGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WatchLocationSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/WatchLocationSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WatchLocationGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/WatchLocationGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WatchLocationGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/WatchLocationGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WatchTypeSave">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/WatchTypeSave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WatchTypeGet">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/WatchTypeGet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WatchTypeGetAll">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/WatchTypeGetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUserSession">
+      <soap:operation soapAction="http://tempuri.org/IChaosMoviesService/CreateUserSession" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

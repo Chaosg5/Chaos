@@ -40,4 +40,121 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfRoleDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="RoleDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q4:ArrayOfRoleDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfRoleDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfRoleDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfPersonAsCharacterDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="PersonAsCharacterDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q5:ArrayOfPersonAsCharacterDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfPersonAsCharacterDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfPersonAsCharacterDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfExternalRatingDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ExternalRatingDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q6:ArrayOfExternalRatingDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfExternalRatingDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfExternalRatingDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfGenreDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="GenreDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q7:ArrayOfGenreDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfGenreDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfGenreDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfPersonInRoleDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="PersonInRoleDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q8:ArrayOfPersonInRoleDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfPersonInRoleDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfPersonInRoleDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfRatingTypeDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="RatingTypeDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q9:ArrayOfRatingTypeDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfRatingTypeDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfRatingTypeDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfLanguageDescriptionDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="LanguageDescriptionDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q10:ArrayOfLanguageDescriptionDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfLanguageDescriptionDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfLanguageDescriptionDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfUserRatingDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="UserRatingDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q11:ArrayOfUserRatingDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfUserRatingDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfUserRatingDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfMovieDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="MovieDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q12:ArrayOfMovieDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfMovieDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfMovieDto_PbigN1rX" />
 </xs:schema>

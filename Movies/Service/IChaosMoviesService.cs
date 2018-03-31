@@ -62,6 +62,17 @@ namespace Chaos.Movies.Service
 
         #endregion
 
+        #region Error	
+
+        /// <summary>Saves the <paramref name="error"/>.</summary>
+        /// <param name="session">The session.</param>
+        /// <param name="error">The <see cref="ErrorDto"/> to save.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [OperationContract]
+        Task ErrorSaveAsync(UserSessionDto session, ErrorDto error);
+        
+        #endregion
+
         #region ExternalSource 
 
         /// <summary>Saves the <paramref name="externalSource"/>.</summary> 
@@ -336,6 +347,17 @@ namespace Chaos.Movies.Service
         [OperationContract]
         Task<IEnumerable<UserDto>> UserGetAsync(UserSessionDto session, IEnumerable<int> idList);
 
+        #endregion
+
+        #region UserSession
+
+        /// <summary>Saves the <paramref name="userSession"/>.</summary>
+        /// <param name="session">The session.</param>
+        /// <param name="userSession">The <see cref="UserSessionDto"/> to save.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [OperationContract]
+        Task UserSessionSaveAsync(UserSessionDto session, UserSessionDto userSession);
+        
         #endregion
 
         #region Watch 

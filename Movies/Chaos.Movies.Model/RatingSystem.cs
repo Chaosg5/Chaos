@@ -91,7 +91,7 @@ namespace Chaos.Movies.Model
             {
                 Id = this.Id,
                 Titles = this.Titles.ToContract(),
-                Values = new ReadOnlyDictionary<RatingTypeDto, short>(this.Values.ToDictionary(p => p.Key.ToContract(), p => p.Value))
+                //Values = new ReadOnlyDictionary<RatingTypeDto, short>(this.Values.ToDictionary(p => p.Key.ToContract(), p => p.Value))
             };
         }
 
@@ -103,7 +103,7 @@ namespace Chaos.Movies.Model
             {
                 Id = contract.Id,
                 Titles = this.Titles.FromContract(contract.Titles),
-                values = contract.Values.ToDictionary(v => RatingType.Static.FromContract(v.Key), v => v.Value)
+                //values = contract.Values.ToDictionary(v => RatingType.Static.FromContract(v.Key), v => v.Value)
             };
         }
 

@@ -68,9 +68,7 @@ namespace Chaos.Movies.Model
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                // ToDo: Service
-                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
-                return new List<Department>();
+                return (await service.DepartmentGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
 
@@ -88,7 +86,7 @@ namespace Chaos.Movies.Model
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+                await service.DepartmentSaveAsync(session.ToContract(), this.ToContract());
             }
         }
 
