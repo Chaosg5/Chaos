@@ -11,23 +11,19 @@ namespace Chaos.Movies.Model
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
-    using System.Data.SqlClient;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model.Base;
+    using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a person.</summary>
     public class Person : Readable<Person, PersonDto>
     {
-        /// <summary>Private part of the <see cref="Images"/> property.</summary>
-        private readonly List<PersonUserRating<Person>> personUserRatings = new List<PersonUserRating<Person>>();
-
-        /// <summary>Initializes a new instance of the <see cref="Person" /> class.</summary>
-        public Person()
-        {
-        }
+        /// <summary>The database column for <see cref="Name"/>.</summary>
+        private const string NameColumn = "Name";
 
         /// <summary>Initializes a new instance of the <see cref="Person" /> class.</summary>
         /// <param name="name">The name of the person.</param>
@@ -36,81 +32,42 @@ namespace Chaos.Movies.Model
             this.Name = name;
         }
 
+        /// <summary>Prevents a default instance of the <see cref="Person"/> class from being created.</summary>
+        private Person()
+        {
+        }
+
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Person Static { get; } = new Person();
 
-        /// <summary>Gets or sets name of the person.</summary>
-        public string Name { get; set; }
+        /// <summary>Gets the name of the person.</summary>
+        public string Name { get; private set; }
+
+        /// <summary>Gets the id of the <see cref="Character"/> in <see cref="ExternalSource"/>s.</summary>
+        public ExternalLookupCollection ExternalLookups { get; private set; } = new ExternalLookupCollection();
 
         /// <summary>Gets the list of images for the <see cref="Person"/> and their order.</summary>
-        public IconCollection Images { get; } = new IconCollection();
+        public IconCollection Images { get; private set; } = new IconCollection();
 
-        /// <summary>Gets the list ratings of this <see cref="Person"/> for the current <see cref="User"/>.</summary>
-        public ReadOnlyCollection<PersonUserRating<Person>> PersonUserRatings
-        {
-            get { return this.personUserRatings.AsReadOnly(); }
-        }
+        /// <summary>Gets the user ratings.</summary>
+        public UserSingleRating Ratings { get; private set; } = new UserSingleRating();
 
-        /// <summary>Gets the specified <see cref="Person"/>s.</summary>
-        /// <param name="idList">The list of ids of the <see cref="Person"/>s to get.</param>
-        /// <remarks>
-        /// Uses stored procedure <c>PeopleGet</c>.
-        /// Result 1 columns: PersonId, Favorite
-        /// Result 2 columns: PersonId, MovieId, Rating, Watches
-        /// </remarks>
-        /// <returns>The list of <see cref="Person"/>s.</returns>
-        public static IEnumerable<Person> Get(IEnumerable<int> idList)
-        {
-            var people = new List<Person>();
-            using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand("PeopleGet", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@idList", idList);
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (!reader.HasRows)
-                    {
-                        throw new MissingResultException(1, "");
-                    }
-
-                    while (reader.Read())
-                    {
-                       // people.Add(this.ReadFromRecordAsync(reader));
-                    }
-
-                    if (!reader.NextResult() || !reader.HasRows)
-                    {
-                        throw new MissingResultException(2, "");
-                    }
-
-                    while (reader.Read())
-                    {
-                        var personId = (int)reader["PersonId"];
-                        var person = people.Find(p => p.Id == personId);
-                        if (person == null)
-                        {
-                            throw new SqlResultSyncException(personId);
-                        }
-
-                        person.personUserRatings.Add(new PersonUserRating<Person>(reader));
-                    }
-                }
-            }
-
-            return people;
-        }
-        
         /// <inheritdoc />
         public override PersonDto ToContract()
         {
-            throw new NotImplementedException();
+            return new PersonDto
+            {
+                Id = this.Id,
+                Name = this.Name,
+                ExternalLookups = this.ExternalLookups.ToContract(),
+                Images = this.Images.ToContract(),
+                Ratings = this.Ratings.ToContract()
+            };
         }
 
         /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public override Person FromContract(PersonDto contract)
         {
             if (contract == null)
@@ -118,38 +75,58 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public override Task SaveAsync(UserSession session)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public override Task<Person> GetAsync(UserSession session, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public override Task<IEnumerable<Person>> GetAsync(UserSession session, IEnumerable<int> idList)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
-        internal override Task<Person> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { "PersonId", "Name" });
-            return Task.FromResult(new Person
+            return new Person
             {
-                Id = (int)record["PersonId"],
-                Name = record["Name"].ToString()
-            });
+                Id = this.Id,
+                Name = this.Name,
+                ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups ?? new List<ExternalLookupDto>().AsReadOnly()),
+                Images = this.Images.FromContract(contract.Images ?? new List<IconDto>().AsReadOnly()),
+                Ratings = this.Ratings.FromContract(contract.Ratings ?? new UserSingleRatingDto())
+            };
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Person"/> is not valid to be saved.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task SaveAsync(UserSession session)
+        {
+            this.ValidateSaveCandidate();
+            if (!Persistent.UseService)
+            {
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                return;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<Person> GetAsync(UserSession session, int id)
+        {
+            return (await this.GetAsync(session, new[] { id })).First();
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<IEnumerable<Person>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            if (!Persistent.UseService)
+            {
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
+                return new List<Person>();
+            }
         }
 
         /// <summary>Validates that this <see cref="Person"/> is valid to be saved.</summary>
@@ -163,15 +140,80 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        internal override Task<IEnumerable<Person>> ReadFromRecordsAsync(DbDataReader reader)
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        internal override async Task<IEnumerable<Person>> ReadFromRecordsAsync(DbDataReader reader)
         {
-            throw new NotImplementedException();
+            var people = new List<Person>();
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1, $"{nameof(Person)}s");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                people.Add(await this.NewFromRecordAsync(reader));
+            }
+
+            if (!await reader.NextResultAsync())
+            {
+                throw new MissingResultException(2, $"{nameof(Person)}{IconCollection.IconsColumn}");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var person = (Person)this.GetFromResultsByIdInRecord(people, reader, IdColumn);
+                person.Images.Add(await Icon.Static.NewFromRecordAsync(reader));
+            }
+
+            if (!await reader.NextResultAsync())
+            {
+                throw new MissingResultException(3, $"{nameof(Person)}{ExternalLookupCollection.ExternalLookupColumn}");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var person = (Person)this.GetFromResultsByIdInRecord(people, reader, IdColumn);
+                person.ExternalLookups.Add(await ExternalLookup.Static.NewFromRecordAsync(reader));
+            }
+
+            return people;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<Person> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new Person();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
+        /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
+            this.Id = (int)record[IdColumn];
+            this.Name = (string)record[NameColumn];
+            this.Ratings = await this.Ratings.NewFromRecordAsync(record);
         }
 
         /// <inheritdoc />
         protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
-            throw new NotImplementedException();
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(ExternalLookupCollection.ExternalLookupColumn), this.ExternalLookups.GetSaveTable },
+                    { Persistent.ColumnToVariable(IconCollection.IconsColumn), this.Images.GetSaveTable }
+                });
         }
     }
 }

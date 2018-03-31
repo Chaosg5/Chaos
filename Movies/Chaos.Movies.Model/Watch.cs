@@ -7,16 +7,20 @@
 namespace Chaos.Movies.Model
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
+    using System.Data.Common;
+    using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
+
     using Exceptions;
 
     /// <summary>Represents an event where a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
     /// <typeparam name="TParent">The type of the parent class.</typeparam>
-    public class Watch<TParent>
+    public class Watch : Readable<Watch, WatchDto>
     {
-        /// <summary>Gets the id and type of the parent which this <see cref="Watch{TParent}"/> belongs to.</summary>
-        private Parent<TParent> parent;
-
         /// <summary>Initializes a new instance of the <see cref="Watch{TParent}" /> class.</summary>
         /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
         /// <param name="watchDate">The date when the movie was watched.</param>
@@ -32,37 +36,26 @@ namespace Chaos.Movies.Model
             this.WatchTypeId = watchTypeId;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Watch{TParent}" /> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="Watch{TParent}"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
-        public Watch(IDataRecord record)
+        private Watch()
         {
-            this.ReadFromRecord(record);
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Watch{TParent}" /> class.</summary>
-        /// <param name="parent">The parent which this <see cref="Watch{TParent}"/> belongs to.</param>
-        /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
-        /// <param name="watchDate">The date when the movie was watched.</param>
-        /// <param name="dateUncertain">If the <paramref name="watchDate"/> when the <see cref="Movie"/> was watched is just estimated and thus uncertain.</param>
-        /// <param name="watchLocationId">The id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</param>
-        /// <param name="watchTypeId">The id of the <see cref="WatchType"/> describing in what format the <see cref="Movie"/> was watched.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
-        internal Watch(Parent<TParent> parent, int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
-        {
-            this.SetParent(parent);
-            this.UserId = userId;
-            this.WatchDate = watchDate;
-            this.DateUncertain = dateUncertain;
-            this.WatchLocationId = watchLocationId;
-            this.WatchTypeId = watchTypeId;
-        }
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static Watch Static { get; } = new Watch();
 
         /// <summary>Gets the id of the watch.</summary>
         public int Id { get; private set; }
-        
+
+        public override Task SaveAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>Gets the id of the <see cref="User"/> who watched <see cref="Movie"/>.</summary>
         public int UserId { get; private set; }
 
@@ -87,18 +80,6 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the <see cref="WatchType"/> how the <see cref="Movie"/> was watched.</summary>
         public WatchType WatchType { get; private set; }
 
-        /// <summary>Sets the parent of this <see cref="Watch{TParent}"/>.</summary>
-        /// <param name="newParent">The parent which this <see cref="Watch{TParent}"/> belongs to.</param>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent{TParent}"/> can't be changed once set.</exception>
-        internal void SetParent(Parent<TParent> newParent)
-        {
-            if (this.parent != null)
-            {
-                throw new ValueLogicalReadOnlyException("The parent can't be changed once set.");
-            }
-
-            this.parent = newParent;
-        }
 
         /// <summary>Sets the user who watched the <see cref="Movie"/>.</summary>
         /// <param name="user">The user to set.</param>
@@ -153,7 +134,6 @@ namespace Chaos.Movies.Model
         {
             Persistent.ValidateRecord(record, new[] { "Id", "ParentId", "ParentType", "UserId", "WatchedDate", "DateUncertain" });
             this.Id = (int)record["Id"];
-            this.SetParent(new Parent<TParent>(record));
             this.UserId = (int)record["UserId"];
 
             DateTime watchDate;
@@ -181,6 +161,46 @@ namespace Chaos.Movies.Model
             {
                 this.WatchTypeId = (int)record["WatchTypeId"];
             }
+        }
+
+        public override WatchDto ToContract()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Watch FromContract(WatchDto contract)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override void ValidateSaveCandidate()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override Task<Watch> NewFromRecordAsync(IDataRecord record)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<Watch> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IEnumerable<Watch>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override Task<IEnumerable<Watch>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

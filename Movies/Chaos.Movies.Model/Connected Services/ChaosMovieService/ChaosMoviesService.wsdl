@@ -32,7 +32,8 @@
       <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
       <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" />
       <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Data.Linq" />
-      <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Globalization" />
+      <xsd:import schemaLocation="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd6" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IChaosMoviesService_CreateUserSession_InputMessage">

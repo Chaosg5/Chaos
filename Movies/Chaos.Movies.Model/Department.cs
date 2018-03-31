@@ -137,15 +137,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override Task<Department> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn });
-            return Task.FromResult(new Department { Id = (int)record[IdColumn] });
-        }
-
-        /// <inheritdoc />
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
@@ -160,7 +151,7 @@ namespace Chaos.Movies.Model
             
             while (await reader.ReadAsync())
             {
-                departments.Add(await this.ReadFromRecordAsync(reader));
+                departments.Add(await this.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
@@ -171,7 +162,7 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var department = (Department)this.GetFromResultsByIdInRecord(departments, reader, IdColumn);
-                department.Titles.Add(await LanguageTitle.Static.ReadFromRecordAsync(reader));
+                department.Titles.Add(await LanguageTitle.Static.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
@@ -187,6 +178,26 @@ namespace Chaos.Movies.Model
             }
 
             return departments;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<Department> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new Department();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn });
+            this.Id = (int)record[IdColumn];
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

@@ -20,7 +20,7 @@ namespace Chaos.Movies.Model
     public static class Persistent
     {
         /// <summary>The connection string to the database read from configuration application settings.</summary>
-        public static readonly string ConnectionString = ConfigurationManager.AppSettings["ConnectionString"];
+        public static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
         /// <summary>If database interaction should be made through the service.</summary>
         public static readonly bool UseService = ConfigurationManager.AppSettings["UseService"] != null && ConfigurationManager.AppSettings["UseSaveService"] == "true";

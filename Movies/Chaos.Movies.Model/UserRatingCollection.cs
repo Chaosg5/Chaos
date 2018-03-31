@@ -25,7 +25,7 @@ namespace Chaos.Movies.Model
     public class UserRatingCollection<TParent, TParentDto> : Collectable<UserRating, UserRatingDto, UserRatingCollection<TParent, TParentDto>, TParent, TParentDto>
     {
         /// <summary>The database column for this <see cref="UserRatingCollection{TParent, TParentDto}"/>.</summary>
-        internal const string UserRatingsColumn = "UserRatings";
+        private const string UserRatingsColumn = "UserRatings";
 
         /// <inheritdoc />
         public UserRatingCollection(Persistable<TParent, TParentDto> parent)
@@ -44,7 +44,7 @@ namespace Chaos.Movies.Model
                     table.Columns.Add(new DataColumn(User.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn(RatingType.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn($"Parent{typeof(TParent).Name}Id", typeof(int)));
-                    table.Columns.Add(new DataColumn(UserRating.RatingColumn, typeof(int)));
+                    table.Columns.Add(new DataColumn(RatingValue.RatingColumn, typeof(int)));
                     table.Columns.Add(new DataColumn(UserRating.CreatedDateColumn, typeof(DateTime)));
                     foreach (var rating in this.Items)
                     {
@@ -92,6 +92,21 @@ namespace Chaos.Movies.Model
             }
 
             return list;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
+        public override async Task SaveAsync(UserSession session)
+        {
+            this.ValidateSaveCandidate();
+            if (!Persistent.UseService)
+            {
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), UserRating.Static.ReadFromRecordsAsync);
+                return;
+            }
+
+            throw new NotSupportedException();
         }
 
         /// <inheritdoc />

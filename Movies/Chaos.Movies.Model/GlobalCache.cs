@@ -52,12 +52,16 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the default system language.</summary>
         public static CultureInfo DefaultLanguage { get; } = new CultureInfo("en-US");
 
+        /// <summary>Gets the system user.</summary>
+        public static User SystemUser { get; }
+
         /// <summary>Initializes a new instance of the <see cref="GlobalCache"/> class.</summary>
         /// <param name="userSession">The session.</param>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <returns>The <see cref="Task"/>.</returns>
         public static async Task InitCacheAsync(UserSession userSession)
         {
+            session = userSession ?? throw new ArgumentNullException(nameof(userSession));
             await MovieSeriesTypesLoadAllAsync();
             await DepartmentsLoadAllAsync();
             await RolesLoadAllAsync();
@@ -198,20 +202,20 @@ namespace Chaos.Movies.Model
         /// <param name="idList">The list of ids of the <see cref="Character"/>s to load.</param>
         private static void CharactersLoad(IEnumerable<int> idList)
         {
-            foreach (var person in Person.Get(idList))
-            {
-                People.SetValue(person.Id, person);
-            }
+            //foreach (var person in Person.Get(idList))
+            //{
+            //    People.SetValue(person.Id, person);
+            //}
         }
 
         /// <summary>Loads the <see cref="Person"/>s with the specified ids from the database.</summary>
         /// <param name="idList">The list of ids of the <see cref="Person"/>s to load.</param>
         private static void PeopleLoad(IEnumerable<int> idList)
         {
-            foreach (var person in Person.Get(idList))
-            {
-                People.SetValue(person.Id, person);
-            }
+            //foreach (var person in Person.Get(idList))
+            //{
+            //    People.SetValue(person.Id, person);
+            //}
         }
 
         /// <summary>Loads all <see cref="Department"/>s from the database.</summary>

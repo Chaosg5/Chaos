@@ -14,4 +14,30 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ReadOnlyCollectionOfExternalLookupDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfExternalLookupDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfIconDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="IconDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q2:ArrayOfIconDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfIconDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfIconDto_PbigN1rX" />
+  <xs:complexType name="ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ReadOnlyCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/System.Collections.ObjectModel" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="LanguageTitleDto" Namespace="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Chaos.Movies.Contract" name="list" nillable="true" type="q3:ArrayOfLanguageTitleDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" nillable="true" type="tns:ReadOnlyCollectionOfLanguageTitleDto_PbigN1rX" />
 </xs:schema>

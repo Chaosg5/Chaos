@@ -110,14 +110,23 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<ExternalLookup> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new ExternalLookup();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<ExternalLookup> ReadFromRecordAsync(IDataRecord record)
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, ExternalIdColumn });
-            return new ExternalLookup(
-                await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]),
-                (string)record[ExternalIdColumn]);
+            this.ExternalSource = await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]);
+             this.ExternalId = (string)record[ExternalIdColumn];
         }
     }
 }

@@ -6,6 +6,7 @@
 
 namespace Chaos.Movies.Contract
 {
+    using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
 
     /// <summary>Represents a user.</summary>
@@ -16,12 +17,12 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public int Id { get; set; }
 
-        /// <summary>Gets or sets the name of this rating system.</summary>
+        /// <summary>Gets or sets the list of titles of this <see cref="RatingTypeDto"/> in different languages.</summary>
         [DataMember]
-        public string Name { get; set; }
+        public ReadOnlyCollection<LanguageDescriptionDto> Titles { get; set; }
 
-        /// <summary>Gets or sets the description of this rating system.</summary>
+        /// <summary>Gets or sets the the relative value for each <see cref="RatingTypeDto"/>.</summary>
         [DataMember]
-        public string Description { get; set; }
+        public ReadOnlyDictionary<RatingTypeDto, short> Values { get; set; }
     }
 }

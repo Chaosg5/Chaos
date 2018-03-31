@@ -27,7 +27,7 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets the active form.</summary>
         [DataMember]
-        public DateTime ActiveForm { get; set; }
+        public DateTime ActiveFrom { get; set; }
 
         /// <summary>Gets or sets the active to.</summary>
         [DataMember]

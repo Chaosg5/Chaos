@@ -9,17 +9,49 @@
 //------------------------------------------------------------------------------
 
 namespace Chaos.Movies.Model.ChaosMovieService {
+    using System;
+    using System.Runtime.Serialization;
     
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.FlagsAttribute()]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DateTimeFormatFlags", Namespace="http://schemas.datacontract.org/2004/07/System.Globalization")]
+    public enum DateTimeFormatFlags : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        None = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        UseGenitiveMonth = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        UseLeapYearMonth = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        UseSpacesInMonthNames = 4,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        UseHebrewRule = 8,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        UseSpacesInDayNames = 16,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        UseDigitPrefixInTokens = 32,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        NotInitialized = -1,
+    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ChaosMovieService.IChaosMoviesService")]
     public interface IChaosMoviesService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CreateUserSession", ReplyAction="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse")]
-        Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLoginDto userLogin);
+        Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLogin userLogin);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CreateUserSession", ReplyAction="http://tempuri.org/IChaosMoviesService/CreateUserSessionResponse")]
-        System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLoginDto userLogin);
+        System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLogin userLogin);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IChaosMoviesService/CharacterSave", ReplyAction="http://tempuri.org/IChaosMoviesService/CharacterSaveResponse")]
         void CharacterSave(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.CharacterDto character);
@@ -61,11 +93,11 @@ namespace Chaos.Movies.Model.ChaosMovieService {
                 base(binding, remoteAddress) {
         }
         
-        public Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLoginDto userLogin) {
+        public Chaos.Movies.Contract.UserSessionDto CreateUserSession(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLogin userLogin) {
             return base.Channel.CreateUserSession(session, userLogin);
         }
         
-        public System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLoginDto userLogin) {
+        public System.Threading.Tasks.Task<Chaos.Movies.Contract.UserSessionDto> CreateUserSessionAsync(Chaos.Movies.Contract.UserSessionDto session, Chaos.Movies.Contract.UserLogin userLogin) {
             return base.Channel.CreateUserSessionAsync(session, userLogin);
         }
         

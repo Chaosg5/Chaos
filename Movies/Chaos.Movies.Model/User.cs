@@ -8,42 +8,132 @@ namespace Chaos.Movies.Model
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
+    using System.Linq;
+    using System.Net.Mail;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model.Base;
+    using Chaos.Movies.Model.ChaosMovieService;
+    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A user.</summary>
     public class User : Readable<User, UserDto>
     {
-        public User(string userName, string name)
+        /// <summary>The database column for <see cref="Username"/>.</summary>
+        internal const string UsernameColumn = "Username";
+
+        /// <summary>The database column for <see cref="Password"/>.</summary>
+        internal const string PasswordColumn = "Password";
+
+        /// <summary>The database column for <see cref="Name"/>.</summary>
+        private const string NameColumn = "Name";
+
+        /// <summary>The database column for <see cref="Email"/>.</summary>
+        private const string EmailColumn = "Email";
+
+        /// <summary>Private part of the <see cref="Username"/> property.</summary>
+        private string username;
+
+        /// <summary>Private part of the <see cref="Name"/> property.</summary>
+        private string name;
+
+        /// <summary>Private part of the <see cref="Email"/> property.</summary>
+        private string email;
+
+        /// <inheritdoc />
+        /// <param name="name">The <see cref="Name"/> to set.</param>
+        /// <param name="email">The <see cref="Email"/> to set.</param>
+        /// <param name="userLogin">The <see cref="Username"/> to set.</param>
+        public User(string name, string email, UserLogin userLogin)
         {
-            
+            this.Username = userLogin.Username;
+            this.Password = userLogin.Password;
+            this.Name = name;
+            this.Email = email;
         }
 
-        public override Task SaveAsync(UserSession session)
+        /// <summary>Prevents a default instance of the <see cref="User"/> class from being created.</summary>
+        private User()
         {
-            throw new System.NotImplementedException();
         }
 
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static User Static { get; } = new User();
+
+        /// <summary>Gets or sets the username of the <see cref="User"/>.</summary>
+        public string Username
         {
-            throw new System.NotImplementedException();
+            get => this.username;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentNullException(value);
+                }
+
+                this.username = value;
+            }
         }
 
-        /// <summary>Gets the username of the <see cref="User"/>.</summary>
-        public string UserName { get; private set; }
+        /// <summary>Gets or sets the name of the <see cref="User"/>.</summary>
+        public string Name
+        {
+            get => this.name;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentNullException(value);
+                }
 
-        /// <summary>Gets the name of the <see cref="User"/>.</summary>
-        public string Name { get; private set; }
+                this.name = value;
+            }
+        }
 
+        /// <summary>Gets or sets the e-mail of the <see cref="User"/>.</summary>
+        public string Email
+        {
+            get => this.email;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentNullException(value);
+                }
+
+                if (new MailAddress(value).Address != value)
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentException(nameof(value), $"The value {value} is not a valid e-mail.");
+                }
+
+                this.email = value;
+            }
+        }
+
+        /// <summary>Gets or sets the password.</summary>
+        private string Password { get; set; }
+
+        /// <inheritdoc />
         public override UserDto ToContract()
         {
-            throw new System.NotImplementedException();
+            return new UserDto
+            {
+                Id = this.Id,
+                Name = this.Name,
+                UserName = this.Username,
+                Email = this.Email
+            };
         }
 
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override User FromContract(UserDto contract)
         {
@@ -52,32 +142,135 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            throw new System.NotImplementedException();
+            return new User
+            {
+                Id = contract.Id,
+                Name = contract.Name,
+                Username = contract.UserName,
+                Email = contract.Email
+            };
         }
 
-        public override Task<User> GetAsync(UserSession session, int id)
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<User> GetAsync(UserSession session, int id)
         {
-            throw new System.NotImplementedException();
+            return (await this.GetAsync(session, new[] { id })).First();
         }
 
-        public override Task<IEnumerable<User>> GetAsync(UserSession session, IEnumerable<int> idList)
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<IEnumerable<User>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
-            throw new System.NotImplementedException();
+            if (!Persistent.UseService)
+            {
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                // ToDo: Service
+                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
+                return new List<User>();
+            }
         }
 
-        internal override Task<User> ReadFromRecordAsync(IDataRecord record)
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task SaveAsync(UserSession session)
         {
-            throw new System.NotImplementedException();
+            this.ValidateSaveCandidate();
+            if (!Persistent.UseService)
+            {
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                return;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+            }
         }
 
+        /// <summary>Updates the <see cref="Password"/> and/or <see cref="Username"/> of the <see cref="User"/> and saves.</summary>
+        /// <param name="oldLogin">The old login credentials.</param>
+        /// <param name="newLogin">The new login credentials.</param>
+        /// <param name="session">The session of the user making the change.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="ArgumentException">The <paramref name="oldLogin"/> does not match.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public async Task UpdatePasswordAndSaveAsync(UserLogin oldLogin, UserLogin newLogin, UserSession session)
+        {
+            if (this.Username != oldLogin.Username || this.Password != oldLogin.Password)
+            {
+                throw new ArgumentException("The login credentials does not match.", nameof(oldLogin));
+            }
+
+            this.Username = newLogin.Username;
+            this.Password = newLogin.Password;
+            await this.SaveAsync(session);
+        }
+
+        /// <inheritdoc />
         internal override void ValidateSaveCandidate()
         {
-            throw new System.NotImplementedException();
         }
 
-        internal override Task<IEnumerable<User>> ReadFromRecordsAsync(DbDataReader reader)
+        /// <inheritdoc />
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal override async Task<IEnumerable<User>> ReadFromRecordsAsync(DbDataReader reader)
         {
-            throw new System.NotImplementedException();
+            var departments = new List<User>();
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1, $"{nameof(User)}s");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                departments.Add(await this.NewFromRecordAsync(reader));
+            }
+
+            return departments;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<User> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new User();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn, UsernameColumn, NameColumn, EmailColumn });
+            this.Id = (int)record[IdColumn];
+            this.Username = (string)record[UsernameColumn];
+            this.Name = (string)record[NameColumn];
+            this.Email = (string)record[EmailColumn];
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(UsernameColumn), this.Username },
+                    { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(EmailColumn), this.Email }
+                });
         }
     }
 }

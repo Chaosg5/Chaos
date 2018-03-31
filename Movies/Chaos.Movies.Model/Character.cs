@@ -44,7 +44,6 @@ namespace Chaos.Movies.Model
         public static Character Static { get; } = new Character();
         
         /// <summary>Gets the name of the character.</summary>
-        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value"/> is <see langword="null" />.</exception>
         public string Name
         {
             get => this.name;
@@ -53,6 +52,7 @@ namespace Chaos.Movies.Model
             {
                 if (string.IsNullOrEmpty(value))
                 {
+                    // ReSharper disable once ExceptionNotDocumented
                     throw new ArgumentNullException(nameof(value));
                 }
 
@@ -65,6 +65,9 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the list of images for this <see cref="Character"/> and their order.</summary>
         public IconCollection Images { get; private set; } = new IconCollection();
+
+        /// <summary>Gets the user ratings.</summary>
+        public UserSingleRating Ratings { get; private set; } = new UserSingleRating();
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
@@ -116,7 +119,8 @@ namespace Chaos.Movies.Model
                 Id = this.Id,
                 Name = this.Name,
                 ExternalLookups = this.ExternalLookups.ToContract(),
-                Images = this.Images.ToContract()
+                Images = this.Images.ToContract(),
+                Ratings = this.Ratings.ToContract()
             };
         }
 
@@ -134,8 +138,9 @@ namespace Chaos.Movies.Model
             {
                 Id = contract.Id,
                 Name = contract.Name,
-                ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups),
-                Images = this.Images.FromContract(contract.Images)
+                ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups ?? new List<ExternalLookupDto>().AsReadOnly()),
+                Images = this.Images.FromContract(contract.Images ?? new List<IconDto>().AsReadOnly()),
+                Ratings = this.Ratings.FromContract(contract.Ratings ?? new UserSingleRatingDto())
             };
         }
 
@@ -150,19 +155,11 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override Task<Character> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
-            return Task.FromResult(new Character { Id = (int)record[IdColumn], Name = record[NameColumn].ToString() });
-        }
-
-        /// <inheritdoc />
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         internal override async Task<IEnumerable<Character>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var characters = new List<Character>();
@@ -173,7 +170,7 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                characters.Add(await this.ReadFromRecordAsync(reader));
+                characters.Add(await this.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync())
@@ -184,7 +181,7 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var character = (Character)this.GetFromResultsByIdInRecord(characters, reader, IdColumn);
-                character.Images.Add(await Icon.Static.ReadFromRecordAsync(reader));
+                character.Images.Add(await Icon.Static.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync())
@@ -195,10 +192,31 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var character = (Character)this.GetFromResultsByIdInRecord(characters, reader, IdColumn);
-                character.ExternalLookups.Add(await ExternalLookup.Static.ReadFromRecordAsync(reader));
+                character.ExternalLookups.Add(await ExternalLookup.Static.NewFromRecordAsync(reader));
             }
 
             return characters;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<Character> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new Character();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
+            this.Id = (int)record[IdColumn];
+            this.Name = (string)record[NameColumn];
+            this.Ratings = await this.Ratings.NewFromRecordAsync(record);
         }
 
         /// <inheritdoc />

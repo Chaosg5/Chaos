@@ -24,14 +24,8 @@ namespace Chaos.Movies.Model
     /// <summary>A rating for a <see cref="Movie"/> set by a <see cref="User"/>.</summary>
     public class UserRating : Loadable<UserRating, UserRatingDto>
     {
-        /// <summary>The database column for <see cref="Value"/>.</summary>
-        internal const string RatingColumn = "Rating";
-
         /// <summary>The database column for <see cref="CreatedDate"/>.r</summary>
         internal const string CreatedDateColumn = "CreatedDate";
-
-        /// <summary>The set and derived value of the rating.</summary>
-        private readonly RatingValue ratingValue = new RatingValue(-1, -1);
 
         /// <summary>The list of sub ratings for this rating.</summary>
         private readonly List<UserRating> subRatings = new List<UserRating>();
@@ -48,7 +42,7 @@ namespace Chaos.Movies.Model
         /// <param name="ratingType">The type of the rating.</param>
         public UserRating(int assignedValue, RatingType ratingType)
         {
-            this.ratingValue.Value = assignedValue;
+            this.RatingValue.Value = assignedValue;
             this.RatingType = ratingType;
         }
 
@@ -59,11 +53,11 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="UserRating"/> class.</summary>
         /// <param name="subRatings">The <see cref="subRatings"/> to set.</param>
-        /// <param name="ratingValue">The <see cref="ratingValue"/> to set.</param>
+        /// <param name="ratingValue">The <see cref="RatingValue"/> to set.</param>
         private UserRating(List<UserRating> subRatings, RatingValue ratingValue)
         {
             this.subRatings = subRatings;
-            this.ratingValue = ratingValue;
+            this.RatingValue = ratingValue;
             this.ValueChanged = true;
         }
 
@@ -87,17 +81,17 @@ namespace Chaos.Movies.Model
         {
             get
             {
-                if (this.ratingValue.Value < 0 || this.ratingValue.Derived < 0)
+                if (this.RatingValue.Value < 0 || this.RatingValue.Derived < 0)
                 {
                     this.GetRatings(null);
                 }
 
-                return this.ratingValue.Value > 0 ? this.ratingValue.Value : this.ratingValue.Derived;
+                return this.RatingValue.Value > 0 ? this.RatingValue.Value : this.RatingValue.Derived;
             }
         }
 
         /// <summary>Gets the actual rating value for this rating, not counting derived values.</summary>
-        public int ActualRating => this.ratingValue.Value;
+        public int ActualRating => this.RatingValue.Value;
 
         /// <summary>Gets the display color in RBG hex for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
         public string HexColor
@@ -155,6 +149,9 @@ namespace Chaos.Movies.Model
             }
         }
 
+        /// <summary>Gets or sets the value of the rating.</summary>
+        private RatingValue RatingValue { get; set; } = new RatingValue(-1, -1);
+
         /// <summary>Gets or sets a value indicating whether value has changed since last saved.</summary>
         private bool ValueChanged { get; set; }
         
@@ -162,12 +159,12 @@ namespace Chaos.Movies.Model
         /// <param name="value">The value to set.</param>
         public void SetValue(int value)
         {
-            if (this.ratingValue.Value != value)
+            if (this.RatingValue.Value != value)
             {
                 this.ValueChanged = true;
             }
 
-            this.ratingValue.Value = value;
+            this.RatingValue.Value = value;
         }
         
         /// <summary>Adds a sub rating to this rating.</summary>
@@ -207,8 +204,8 @@ namespace Chaos.Movies.Model
                 UserId = this.UserId,
                 RatingType = this.RatingType.ToContract(),
                 SubRatings = this.subRatings.Select(r => r.ToContract()).ToList().AsReadOnly(),
-                Value = this.ratingValue.Value,
-                Derived = this.ratingValue.Derived,
+                Value = this.RatingValue.Value,
+                Derived = this.RatingValue.Derived,
                 HexColor = this.HexColor,
                 Color = this.Color,
                 DisplayValue = this.DisplayValue,
@@ -234,9 +231,9 @@ namespace Chaos.Movies.Model
             };
         }
 
-        /// <summary>The read from records async.</summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>The <see cref="Task"/>.</returns>
+        /// <summary>Creates new <see cref="UserRating"/>s from the <paramref name="reader"/>.</summary>
+        /// <param name="reader">The reader containing data sets and records the data for the <see cref="UserRating"/>s.</param>
+        /// <returns>The list of <see cref="UserRating"/>s.</returns>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         internal async Task<IEnumerable<UserRating>> ReadFromRecordsAsync(DbDataReader reader)
@@ -249,7 +246,7 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                userRatings.Add(await this.ReadFromRecordAsync(reader));
+                userRatings.Add(await this.NewFromRecordAsync(reader));
             }
 
             foreach (var userRating in userRatings)
@@ -257,26 +254,12 @@ namespace Chaos.Movies.Model
                 foreach (var ratingType in userRating.RatingType.Subtypes)
                 {
                     var subRating = userRatings.FirstOrDefault(r => r.RatingType.Id == ratingType.Id)
-                        ?? new UserRating { UserId = userRating.UserId, RatingType = ratingType, ratingValue = { Value = -1, Derived = -1 } };
+                        ?? new UserRating { UserId = userRating.UserId, RatingType = ratingType, RatingValue = { Value = -1, Derived = -1 } };
                     userRating.subRatings.Add(subRating);
                 }
             }
 
             return userRatings;
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override async Task<UserRating> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { User.IdColumn, RatingType.IdColumn, RatingColumn, CreatedDateColumn });
-            return new UserRating
-            {
-                UserId = (int)record[User.IdColumn],
-                RatingType = await GlobalCache.GetRatingTypeAsync((int)record[RatingType.IdColumn]),
-                ratingValue = { Value = (int)record[RatingColumn], Derived = -1 },
-                CreatedDate = (DateTime)record[CreatedDateColumn]
-            };
         }
 
         /// <summary>Validates that this <see cref="UserRating"/> is valid to be saved.</summary>
@@ -293,10 +276,32 @@ namespace Chaos.Movies.Model
                 throw new InvalidSaveCandidateException("The id of the rating's user must be greater than zero.");
             }
 
-            if (this.ratingValue.Value < 0)
+            if (this.RatingValue.Value < 0)
             {
-                this.ratingValue.Value = 0;
+                this.RatingValue.Value = 0;
             }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<UserRating> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new UserRating();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { User.IdColumn, RatingType.IdColumn, CreatedDateColumn });
+            this.UserId = (int)record[User.IdColumn];
+            this.RatingType = await GlobalCache.GetRatingTypeAsync((int)record[RatingType.IdColumn]);
+            this.RatingValue = await this.RatingValue.NewFromRecordAsync(record);
+            this.CreatedDate = (DateTime)record[CreatedDateColumn];
         }
 
         /// <summary>Calculates the derived value of this <see cref="UserRating"/>.</summary>
@@ -304,20 +309,20 @@ namespace Chaos.Movies.Model
         /// <param name="ratingSystem">The rating value system to calculate values based on.</param>
         private void CalculateValue(Dictionary<RatingType, double> derivedValues, RatingSystem ratingSystem)
         {
-            if (this.ratingValue.Value < 0)
+            if (this.RatingValue.Value < 0)
             {
-                this.ratingValue.Value = 0;
+                this.RatingValue.Value = 0;
             }
 
             if (!derivedValues.Any())
             {
-                this.ratingValue.Derived = 0;
+                this.RatingValue.Derived = 0;
                 return;
             }
 
             if (ratingSystem == null)
             {
-                this.ratingValue.Derived = derivedValues.Values.Average();
+                this.RatingValue.Derived = derivedValues.Values.Average();
                 return;
             }
 
@@ -339,11 +344,11 @@ namespace Chaos.Movies.Model
 
             if (!(ratingTotal > 0 && systemTotal > 0))
             {
-                this.ratingValue.Derived = 0;
+                this.RatingValue.Derived = 0;
                 return;
             }
 
-            this.ratingValue.Derived = ratingTotal / systemTotal;
+            this.RatingValue.Derived = ratingTotal / systemTotal;
         }
     }
 }

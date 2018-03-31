@@ -27,6 +27,7 @@
     <MetadataFile FileName="ChaosMoviesService.wsdl" MetadataType="Wsdl" ID="5c3b3814-ef98-4641-83d4-84caf505d8eb" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc" />
     <MetadataFile FileName="ChaosMoviesService.xsd" MetadataType="Schema" ID="44aebb67-124a-4a2d-bc69-3091cd566fca" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd2" />
     <MetadataFile FileName="ChaosMoviesService1.xsd" MetadataType="Schema" ID="8085955f-290e-44ec-b3f0-dd2ea9e8d709" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd3" />
+    <MetadataFile FileName="ChaosMoviesService6.xsd" MetadataType="Schema" ID="e54b5cd3-042f-43f7-9d6c-64cc733820ee" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd6" />
     <MetadataFile FileName="ChaosMoviesService2.xsd" MetadataType="Schema" ID="d37fce20-ad0a-469b-8f81-7db2c4162ab5" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd1" />
     <MetadataFile FileName="ChaosMoviesService3.xsd" MetadataType="Schema" ID="4b65f684-fc7a-4a20-b8ea-ed7d44776187" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd4" />
     <MetadataFile FileName="ChaosMoviesService4.xsd" MetadataType="Schema" ID="686ec6e2-ab35-4ac2-b4db-44254660cb08" SourceId="1" SourceUrl="https://localhost:44318/ChaosMoviesService.svc?xsd=xsd0" />

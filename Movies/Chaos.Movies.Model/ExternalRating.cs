@@ -75,7 +75,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the external rating.</summary>
-        /// <exception cref="ArgumentOutOfRangeException" accessor="set">The value is not valid.</exception>
         public double Rating
         {
             get => this.rating;
@@ -84,6 +83,7 @@ namespace Chaos.Movies.Model
             {
                 if (value < 0 || value > 10)
                 {
+                    // ReSharper disable once ExceptionNotDocumented
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }
 
@@ -92,7 +92,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the count of votes for the rating.</summary>
-        /// <exception cref="ArgumentOutOfRangeException" accessor="set">The value is not valid.</exception>
         public int RatingCount
         {
             get => this.ratingCount;
@@ -101,6 +100,7 @@ namespace Chaos.Movies.Model
             {
                 if (value < 0)
                 {
+                    // ReSharper disable once ExceptionNotDocumented
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }
 
@@ -142,15 +142,24 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<ExternalRating> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new ExternalRating();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<ExternalRating> ReadFromRecordAsync(IDataRecord record)
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, RatingColumn, RatingCountColumn });
-            return new ExternalRating(
-                await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]),
-                (double)record[RatingColumn],
-                (int)record[RatingCountColumn]);
+            this.ExternalSource = await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]);
+            this.Rating = (double)record[RatingColumn];
+            this.RatingCount = (int)record[RatingCountColumn];
         }
     }
 }

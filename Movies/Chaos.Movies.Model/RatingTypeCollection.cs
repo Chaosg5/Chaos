@@ -71,6 +71,21 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
+        public override async Task SaveAsync(UserSession session)
+        {
+            this.ValidateSaveCandidate();
+            if (!Persistent.UseService)
+            {
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), RatingType.Static.ReadFromRecordsAsync);
+                return;
+            }
+
+            throw new NotSupportedException();
+        }
+
+        /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public override async Task AddAndSaveAsync(RatingType item)

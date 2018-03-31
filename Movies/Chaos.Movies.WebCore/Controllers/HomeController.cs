@@ -32,9 +32,9 @@ namespace Chaos.Movies.WebCore.Controllers
         public IActionResult Movie()
         {
             var movie = new Movie();
-            movie.Characters.AddCharacter(new PersonAsCharacter(new Person("Paula Patton"), new Character("Garona"), 0));
-            movie.Characters.AddCharacter(new PersonAsCharacter(new Person("Travis Fimmel"), new Character("Anduin Lothar"), 0));
-            movie.Characters.AddCharacter(new PersonAsCharacter(new Person("Ben Foster"), new Character("Medivh"), 0));
+            movie.Characters.Add(new PersonAsCharacter(new Person("Paula Patton"), new Character("Garona")));
+            movie.Characters.Add(new PersonAsCharacter(new Person("Travis Fimmel"), new Character("Anduin Lothar")));
+            movie.Characters.Add(new PersonAsCharacter(new Person("Ben Foster"), new Character("Medivh")));
             return this.View(movie);
         }
 

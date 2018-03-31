@@ -202,9 +202,38 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal override async Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            var externalSources = new List<ExternalSource>();
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1, $"{nameof(ExternalSource)}s");
+            }
+            
+            while (await reader.ReadAsync())
+            {
+                externalSources.Add(await this.NewFromRecordAsync(reader));
+            }
+
+            return externalSources;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<ExternalSource> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new ExternalSource();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override Task<ExternalSource> ReadFromRecordAsync(IDataRecord record)
+        protected override Task ReadFromRecordAsync(IDataRecord record)
         {
             var requiredColumns = new[]
             {
@@ -219,36 +248,14 @@ namespace Chaos.Movies.Model
             Persistent.ValidateRecord(
                 record,
                 requiredColumns);
-            var externalSource = new ExternalSource
-            {
-                Id = (int)record[IdColumn],
-                Name = record[NameColumn].ToString(),
-                BaseAddress = record[BaseAddressColumn].ToString(),
-                PeopleAddress = record[PeopleAddressColumn].ToString(),
-                CharacterAddress = record[CharacterAddressColumn].ToString(),
-                GenreAddress = record[GenreAddressColumn].ToString(),
-                EpisodeAddress = record[EpisodeAddressColumn].ToString()
-            };
-            return Task.FromResult(externalSource);
-        }
-
-        /// <inheritdoc />
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override async Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
-        {
-            var externalSources = new List<ExternalSource>();
-            if (!reader.HasRows)
-            {
-                throw new MissingResultException(1, $"{nameof(ExternalSource)}s");
-            }
-            
-            while (await reader.ReadAsync())
-            {
-                externalSources.Add(await this.ReadFromRecordAsync(reader));
-            }
-
-            return externalSources;
+            this.Id = (int)record[IdColumn];
+            this.Name = record[NameColumn].ToString();
+            this.BaseAddress = record[BaseAddressColumn].ToString();
+            this.PeopleAddress = record[PeopleAddressColumn].ToString();
+            this.CharacterAddress = record[CharacterAddressColumn].ToString();
+            this.GenreAddress = record[GenreAddressColumn].ToString();
+            this.EpisodeAddress = record[EpisodeAddressColumn].ToString();
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

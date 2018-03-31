@@ -10,6 +10,7 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
+    using System.Data.Common;
     using System.Data.Linq;
     using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>An image icon.</summary>
-    public class Icon : Persistable<Icon, IconDto>
+    public class Icon : Readable<Icon, IconDto>
     {
         /// <summary>The database column for <see cref="Data"/>.</summary>
         private const string DataColumn = "Data";
@@ -34,7 +35,7 @@ namespace Chaos.Movies.Model
         private Binary data;
 
         /// <summary>Private part of the <see cref="IconType"/> property.</summary>
-        private IconType iconType;
+        private IconType iconType = new IconType();
 
         /// <summary>Private part of the <see cref="Url"/> property.</summary>
         private string url = string.Empty;
@@ -187,22 +188,30 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override async Task<Icon> ReadFromRecordAsync(IDataRecord record)
+        internal override void ValidateSaveCandidate()
         {
-            Persistent.ValidateRecord(record, new[] { IdColumn, IconType.IdColumn, UrlColumn, DataColumn });
-            return new Icon
-            {
-                Id = (int)record[IdColumn],
-                IconType = await GlobalCache.GetIconTypeAsync((int)record[IconType.IdColumn]),
-                Url = (string)record[UrlColumn],
-                Data = (Binary)record[DataColumn]
-            };
         }
 
         /// <inheritdoc />
-        internal override void ValidateSaveCandidate()
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<Icon> NewFromRecordAsync(IDataRecord record)
         {
+            var result = new Icon();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn, IconType.IdColumn, UrlColumn, DataColumn });
+            this.Id = (int)record[IdColumn];
+            this.IconType = await GlobalCache.GetIconTypeAsync((int)record[IconType.IdColumn]);
+            this.Url = (string)record[UrlColumn];
+            this.Data = (Binary)record[DataColumn];
         }
 
         /// <inheritdoc />
@@ -217,6 +226,21 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(DataColumn), this.Data },
                     { Persistent.ColumnToVariable(SizeColumn), this.Size }
                 });
+        }
+
+        public override Task<Icon> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IEnumerable<Icon>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override Task<IEnumerable<Icon>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

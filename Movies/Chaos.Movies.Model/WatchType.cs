@@ -38,7 +38,10 @@ namespace Chaos.Movies.Model
         private WatchType()
         {
         }
-        
+
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static WatchType Static { get; } = new WatchType();
+
         /// <summary>Gets the name of this watch type.</summary>
         public string Name { get; private set; }
 
@@ -131,15 +134,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="ArgumentNullException">record is <see langword="null" />.</exception>
-        internal override Task<WatchType> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
-            return Task.FromResult(new WatchType { Id = (int)record[IdColumn], Name = (string)record[NameColumn] });
-        }
-
-        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="WatchType"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
@@ -162,10 +156,31 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                watchTypes.Add(await this.ReadFromRecordAsync(reader));
+                watchTypes.Add(await this.NewFromRecordAsync(reader));
             }
 
             return watchTypes;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<WatchType> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new WatchType();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
+            this.Id = (int)record[IdColumn];
+            this.Name = (string)record[NameColumn];
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

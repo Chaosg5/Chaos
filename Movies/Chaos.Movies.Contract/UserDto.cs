@@ -23,5 +23,9 @@ namespace Chaos.Movies.Contract
         /// <summary>Gets or sets the name of the user.</summary>
         [DataMember]
         public string Name { get; set; }
+
+        /// <summary>Gets or sets the email of the user.</summary>
+        [DataMember]
+        public string Email { get; set; }
     }
 }

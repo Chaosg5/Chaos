@@ -26,7 +26,10 @@ namespace Chaos.Movies.Model
     {
         /// <summary>Private part of the <see cref="Movies"/> property.</summary>
         private MovieSeriesType movieSeriesType;
-        
+
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static MovieSeries Static { get; } = new MovieSeries();
+
         /// <summary>Gets the type of the movie series.</summary>
         public MovieSeriesType MovieSeriesType
         {
@@ -128,14 +131,6 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override async Task<MovieSeries> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn, MovieSeriesType.IdColumn });
-            return new MovieSeries { Id = (int)record[IdColumn], MovieSeriesType = await GlobalCache.GetMovieSeriesTypeAsync((int)record[MovieSeriesType.IdColumn]) };
-        }
-
         /// <summary>Validates that this <see cref="MovieSeries"/> is valid to be saved.</summary>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeries"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
@@ -171,7 +166,7 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                movieSeriesList.Add(await this.ReadFromRecordAsync(reader));
+                movieSeriesList.Add(await this.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
@@ -182,7 +177,7 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var movieSeries = (MovieSeries)this.GetFromResultsByIdInRecord(movieSeriesList, reader, IdColumn);
-                movieSeries.Titles.Add(await LanguageTitle.Static.ReadFromRecordAsync(reader));
+                movieSeries.Titles.Add(await LanguageTitle.Static.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
@@ -197,6 +192,26 @@ namespace Chaos.Movies.Model
             }
 
             return movieSeriesList;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<MovieSeries> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new MovieSeries();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn, MovieSeriesType.IdColumn });
+            this.Id = (int)record[IdColumn];
+            this.MovieSeriesType = await GlobalCache.GetMovieSeriesTypeAsync((int)record[MovieSeriesType.IdColumn]);
         }
 
         /// <inheritdoc />

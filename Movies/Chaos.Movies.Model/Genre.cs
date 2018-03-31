@@ -117,14 +117,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override Task<Genre> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn });
-            return Task.FromResult(new Genre { Id = (int)record[IdColumn] });
-        }
-
-        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">At least one title needs to be specified.</exception>
         internal override void ValidateSaveCandidate()
         {
@@ -149,7 +141,7 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                genres.Add(await this.ReadFromRecordAsync(reader));
+                genres.Add(await this.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
@@ -160,7 +152,7 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var genre = (Genre)this.GetFromResultsByIdInRecord(genres, reader, IdColumn);
-                genre.Titles.Add(await LanguageTitle.Static.ReadFromRecordAsync(reader));
+                genre.Titles.Add(await LanguageTitle.Static.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
@@ -171,10 +163,29 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var genre = (Genre)this.GetFromResultsByIdInRecord(genres, reader, IdColumn);
-                genre.ExternalLookups.Add(await ExternalLookup.Static.ReadFromRecordAsync(reader));
+                genre.ExternalLookups.Add(await ExternalLookup.Static.NewFromRecordAsync(reader));
             }
 
             return genres;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<Genre> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new Genre();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn });
+            return Task.FromResult(new Genre { Id = (int)record[IdColumn] });
         }
 
         /// <inheritdoc />

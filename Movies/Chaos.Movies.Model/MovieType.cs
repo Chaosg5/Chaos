@@ -22,6 +22,9 @@ namespace Chaos.Movies.Model
     /// <summary>Represents a type of a movie.</summary>
     public class MovieType : Typeable<MovieType, MovieTypeDto>
     {
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static MovieType Static { get; } = new MovieType();
+
         /// <summary>Gets the list of titles of the movie type in different languages.</summary>
         public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
@@ -114,14 +117,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override Task<MovieType> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn });
-            return Task.FromResult(new MovieType { Id = (int)record[IdColumn] });
-        }
-
-        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieType"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
@@ -146,7 +141,7 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                movieTypes.Add(await this.ReadFromRecordAsync(reader));
+                movieTypes.Add(await this.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
@@ -157,10 +152,30 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var movieType = (MovieType)this.GetFromResultsByIdInRecord(movieTypes, reader, IdColumn);
-                movieType.Titles.Add(await LanguageTitle.Static.ReadFromRecordAsync(reader));
+                movieType.Titles.Add(await LanguageTitle.Static.NewFromRecordAsync(reader));
             }
 
             return movieTypes;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<MovieType> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new MovieType();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn });
+            this.Id = (int)record[IdColumn];
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

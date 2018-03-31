@@ -88,17 +88,29 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override Task<LanguageTitle> ReadFromRecordAsync(IDataRecord record)
+        internal override void ValidateSaveCandidate()
         {
-            Persistent.ValidateRecord(record, new[] { TitleColumn, LanguageColumn });
-            return Task.FromResult(new LanguageTitle(record[TitleColumn].ToString(), new CultureInfo(record[LanguageColumn].ToString())));
         }
 
         /// <inheritdoc />
-        internal override void ValidateSaveCandidate()
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<LanguageTitle> NewFromRecordAsync(IDataRecord record)
         {
+            var result = new LanguageTitle();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { TitleColumn, LanguageColumn });
+            this.Title = record[TitleColumn].ToString();
+            this.Language = new CultureInfo(record[LanguageColumn].ToString());
+            return Task.CompletedTask;
         }
     }
 }

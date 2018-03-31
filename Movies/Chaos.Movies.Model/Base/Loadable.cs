@@ -17,9 +17,14 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Validates that the this <typeparamref name="T"/> is valid to be saved.</summary>
         internal abstract void ValidateSaveCandidate();
 
-        /// <summary>Updates this <typeparamref name="T"/> from the <paramref name="record"/>.</summary>
+        /// <summary>Creates a new <typeparamref name="T"/> from the <paramref name="record"/>.</summary>
         /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        internal abstract Task<T> ReadFromRecordAsync(IDataRecord record);
+        internal abstract Task<T> NewFromRecordAsync(IDataRecord record);
+
+        /// <summary>Updates the <typeparamref name="T"/> from the <paramref name="record"/>.</summary>
+        /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        protected abstract Task ReadFromRecordAsync(IDataRecord record);
     }
 }

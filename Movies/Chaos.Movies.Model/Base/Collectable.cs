@@ -31,12 +31,22 @@ namespace Chaos.Movies.Model.Base
         {
             this.Parent = parent ?? throw new ArgumentNullException(nameof(parent));
         }
+
+        /// <summary>Initializes a new instance of the <see cref="Collectable{T,TDto,TList,TParent,TParentDto}"/> class.</summary>
+        protected Collectable()
+        {
+        }
         
         /// <summary>Gets the id of the parent of this collection.</summary>
         public int ParentId => this.Parent.Id;
 
-        /// <summary>Gets or sets the parent of this collection.</summary>
-        private Persistable<TParent, TParentDto> Parent { get; set; }
+        /// <summary>Gets the parent of this collection.</summary>
+        private Persistable<TParent, TParentDto> Parent { get; }
+
+        /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public abstract Task SaveAsync(UserSession session);
 
         /// <summary>Adds the <paramref name="item"/> to the collection.</summary>
         /// <param name="item">The <typeparamref name="T"/> to add.</param>
@@ -82,6 +92,7 @@ namespace Chaos.Movies.Model.Base
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <paramref name="readFromRecords"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         protected async Task RemoveAndSaveToDatabaseAsync(T item, IReadOnlyDictionary<string, object> commandParameters, Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords)
         {
             this.Remove(item);
@@ -94,7 +105,8 @@ namespace Chaos.Movies.Model.Base
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <paramref name="readFromRecords"/> is <see langword="null"/></exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        private async Task SaveToDatabaseAsync(
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        protected async Task SaveToDatabaseAsync(
             IReadOnlyDictionary<string, object> commandParameters,
             Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords)
         {
@@ -109,7 +121,7 @@ namespace Chaos.Movies.Model.Base
             }
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}Save", connection))
+            using (var command = new SqlCommand($"{typeof(TParent).Name}{typeof(T).Name}Save", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 foreach (var commandParameter in commandParameters)

@@ -24,7 +24,7 @@ namespace Chaos.Movies.Model
     public class RatingType : Typeable<RatingType, RatingTypeDto>
     {
         /// <summary>The database column for <see cref="ParentRatingTypeId"/>.</summary>
-        internal const string ParentRatingTypeIdColumn = "ParentRatingTypeId";
+        private const string ParentRatingTypeIdColumn = "ParentRatingTypeId";
 
         /// <inheritdoc />
         public RatingType()
@@ -46,7 +46,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the titles of the rating type.</summary>
         public LanguageDescriptionCollection Titles { get; private set; } = new LanguageDescriptionCollection();
-        
+
         /// <summary>Gets the <see cref="RatingType"/>s that makes up the derived children of this <see cref="RatingType"/>.</summary>
         public RatingTypeCollection Subtypes { get; private set; }
 
@@ -70,7 +70,7 @@ namespace Chaos.Movies.Model
                 ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
             }
         }
-        
+
         /// <inheritdoc />
         public override RatingTypeDto ToContract()
         {
@@ -139,19 +139,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override Task<RatingType> ReadFromRecordAsync(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { IdColumn, ParentRatingTypeIdColumn });
-            return Task.FromResult(
-                new RatingType
-                {
-                    Id = (int)record[IdColumn],
-                    ParentRatingTypeId = (int?)record[ParentRatingTypeIdColumn] ?? 0
-                });
-        }
-
-        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
@@ -181,7 +168,7 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                ratingTypes.Add(await this.ReadFromRecordAsync(reader));
+                ratingTypes.Add(await this.NewFromRecordAsync(reader));
             }
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
@@ -192,9 +179,9 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var ratingType = (RatingType)this.GetFromResultsByIdInRecord(ratingTypes, reader, IdColumn);
-                ratingType.Titles.Add(await LanguageDescription.Static.ReadFromRecordAsync(reader));
+                ratingType.Titles.Add(await LanguageDescription.Static.NewFromRecordAsync(reader));
             }
-            
+
             foreach (var ratingType in ratingTypes.Where(r => r.ParentRatingTypeId > 0))
             {
                 var parent = ratingTypes.FirstOrDefault(p => p.Id == ratingType.ParentRatingTypeId);
@@ -210,6 +197,27 @@ namespace Chaos.Movies.Model
             }
 
             return ratingTypes;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<RatingType> NewFromRecordAsync(IDataRecord record)
+        {
+            var result = new RatingType();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { IdColumn, ParentRatingTypeIdColumn });
+            this.Id = (int)record[IdColumn];
+            this.ParentRatingTypeId = (int?)record[ParentRatingTypeIdColumn] ?? 0;
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

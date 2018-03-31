@@ -10,13 +10,19 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
+    using System.Data.Common;
     using System.Data.SqlClient;
     using System.Globalization;
     using System.Linq;
+    using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract;
+    using Chaos.Movies.Model.Base;
+
     using Exceptions;
 
     /// <summary>Represents a location where a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
-    public class WatchLocation
+    public class WatchLocation : Typeable<WatchLocation, WatchLocationDto>
     {
         /// <summary>Private part of the <see cref="Types"/> property.</summary>
         private List<WatchType> types;
@@ -29,17 +35,25 @@ namespace Chaos.Movies.Model
             this.Name = name;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="WatchLocation" /> class.</summary>
-        /// <param name="record">The record containing the data for the <see cref="WatchLocation"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        public WatchLocation(IDataRecord record)
+        private WatchLocation()
         {
-            this.ReadFromRecord(record);
+            
         }
 
-        /// <summary>Gets the id of the location.</summary>
-        public int Id { get; private set; }
+
+        /// <summary>Gets a reference to simulate static methods.</summary>
+        public static WatchLocation Static { get; } = new WatchLocation();
+        
+
+        public override Task SaveAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>Gets the name of the location.</summary>
         public string Name { get; private set; }
@@ -180,12 +194,22 @@ namespace Chaos.Movies.Model
 
         /// <summary>Validates that this <see cref="WatchLocation"/> is valid to be saved.</summary>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="WatchLocation"/> is not valid to be saved.</exception>
-        private void ValidateSaveCandidate()
+        internal override void ValidateSaveCandidate()
         {
             if (string.IsNullOrEmpty(this.Name))
             {
                 throw new InvalidSaveCandidateException("The name of the watch location cant be empty.");
             }
+        }
+
+        internal override Task<WatchLocation> NewFromRecordAsync(IDataRecord record)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>Updates this <see cref="WatchLocation"/> from the <paramref name="record"/>.</summary>
@@ -197,6 +221,36 @@ namespace Chaos.Movies.Model
             Persistent.ValidateRecord(record, new[] { "WatchLocationId", "Name" });
             this.Id = (int)record["WatchLocationId"];
             this.Name = record["Name"].ToString();
+        }
+
+        public override WatchLocationDto ToContract()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override WatchLocation FromContract(WatchLocationDto contract)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<WatchLocation> GetAsync(UserSession session, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IEnumerable<WatchLocation>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override Task<IEnumerable<WatchLocation>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IEnumerable<WatchLocation>> GetAllAsync(UserSession session)
+        {
+            throw new NotImplementedException();
         }
     }
 }

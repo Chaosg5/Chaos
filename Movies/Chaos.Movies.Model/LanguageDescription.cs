@@ -97,17 +97,30 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override Task<LanguageDescription> ReadFromRecordAsync(IDataRecord record)
+        internal override void ValidateSaveCandidate()
         {
-            Persistent.ValidateRecord(record, new[] { LanguageTitle.TitleColumn, DescriptionColumn, LanguageTitle.LanguageColumn });
-            return Task.FromResult(new LanguageDescription(record[LanguageTitle.TitleColumn].ToString(), record[DescriptionColumn].ToString(), new CultureInfo(record[LanguageTitle.LanguageColumn].ToString())));
         }
 
         /// <inheritdoc />
-        internal override void ValidateSaveCandidate()
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal override async Task<LanguageDescription> NewFromRecordAsync(IDataRecord record)
         {
+            var result = new LanguageDescription();
+            await result.ReadFromRecordAsync(record);
+            return result;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        protected override Task ReadFromRecordAsync(IDataRecord record)
+        {
+            Persistent.ValidateRecord(record, new[] { LanguageTitle.TitleColumn, DescriptionColumn, LanguageTitle.LanguageColumn });
+            this.Title = record[LanguageTitle.TitleColumn].ToString();
+            this.Description = record[DescriptionColumn].ToString();
+            this.Language = new CultureInfo(record[LanguageTitle.LanguageColumn].ToString());
+            return Task.CompletedTask;
         }
     }
 }
