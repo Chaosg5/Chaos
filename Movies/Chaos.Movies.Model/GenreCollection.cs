@@ -65,5 +65,20 @@ namespace Chaos.Movies.Model
 
             return list;
         }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="GenreCollection"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Items.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+
+            foreach (var item in this.Items)
+            {
+                item.ValidateSaveCandidate();
+            }
+        }
     }
 }

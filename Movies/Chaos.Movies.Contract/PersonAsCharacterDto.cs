@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="PersonAsCharacterDto.cs" company="Erik Bunnstad">
+// <copyright file="PersonAsCharacterDto.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------

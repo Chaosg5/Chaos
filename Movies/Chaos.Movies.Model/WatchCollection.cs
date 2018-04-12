@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="UserRatingCollection.cs">
+// <copyright file="WatchCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -22,18 +22,19 @@ namespace Chaos.Movies.Model
     /// <summary>A rating for a <typeparamref name="TParent"/> set by a <see cref="User"/>.</summary>
     /// <typeparam name="TParent">The parent type of the owner of the collection.</typeparam>
     /// <typeparam name="TParentDto">The data transfer type to use for communicating the <typeparamref name="TParent"/>.</typeparam>
-    public class UserRatingCollection<TParent, TParentDto> : Collectable<UserRating, UserRatingDto, UserRatingCollection<TParent, TParentDto>, TParent, TParentDto>
+    public class WatchCollection<TParent, TParentDto> : Collectable<Watch, WatchDto, WatchCollection<TParent, TParentDto>, TParent, TParentDto>
     {
-        /// <summary>The database column for this <see cref="UserRatingCollection{TParent, TParentDto}"/>.</summary>
-        private const string UserRatingsColumn = "UserRatings";
+        /// <summary>The database column for this <see cref="WatchCollection{TParent, TParentDto}"/>.</summary>
+        private const string WatchesColumn = "Watches";
 
         /// <inheritdoc />
-        public UserRatingCollection(Persistable<TParent, TParentDto> parent)
+        public WatchCollection(Persistable<TParent, TParentDto> parent)
             : base(parent)
         {
         }
 
         /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException" accessor="get">A valid type needs to be specified.</exception>
         public override DataTable GetSaveTable
         {
             get
@@ -41,14 +42,16 @@ namespace Chaos.Movies.Model
                 using (var table = new DataTable())
                 {
                     table.Locale = CultureInfo.InvariantCulture;
+                    table.Columns.Add(new DataColumn(Watch.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn(User.IdColumn, typeof(int)));
-                    table.Columns.Add(new DataColumn(RatingType.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn($"Parent{typeof(TParent).Name}Id", typeof(int)));
-                    table.Columns.Add(new DataColumn(RatingValue.RatingColumn, typeof(int)));
-                    table.Columns.Add(new DataColumn(UserRating.CreatedDateColumn, typeof(DateTime)));
-                    foreach (var rating in this.Items)
+                    table.Columns.Add(new DataColumn(Watch.WatchDateColumn, typeof(DateTime)));
+                    table.Columns.Add(new DataColumn(Watch.DateUncertainColumn, typeof(bool)));
+                    table.Columns.Add(new DataColumn(WatchType.IdColumn, typeof(int)));
+                    foreach (var watch in this.Items)
                     {
-                        table.Rows.Add(rating.UserId, rating.RatingType.Id, this.ParentId, rating.ActualRating, rating.CreatedDate);
+                        watch.ValidateSaveCandidate();
+                        table.Rows.Add(watch.Id, watch.UserId, this.ParentId, watch.WatchDate, watch.DateUncertain, watch.WatchType.Id);
                     }
 
                     return table;
@@ -57,7 +60,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override ReadOnlyCollection<UserRatingDto> ToContract()
+        public override ReadOnlyCollection<WatchDto> ToContract()
         {
             return this.Items.Select(item => item.ToContract()).ToList().AsReadOnly();
         }
@@ -65,30 +68,30 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">This method is not supported.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
-        public override UserRatingCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<UserRatingDto> contract)
+        public override WatchCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<WatchDto> contract)
         {
             if (contract == null)
             {
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            throw new NotSupportedException($"The method {nameof(FromContract)} is not supported for {nameof(UserRatingCollection<TParent, TParentDto>)}");
+            throw new NotSupportedException($"The method {nameof(FromContract)} is not supported for {nameof(WatchCollection<TParent, TParentDto>)}");
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
-        public override UserRatingCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<UserRatingDto> contract, Persistable<TParent, TParentDto> parent)
+        public override WatchCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<WatchDto> contract, Persistable<TParent, TParentDto> parent)
         {
             if (contract == null)
             {
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            var list = new UserRatingCollection<TParent, TParentDto>(parent);
+            var list = new WatchCollection<TParent, TParentDto>(parent);
             foreach (var item in contract)
             {
-                list.Add(UserRating.Static.FromContract(item));
+                list.Add(Watch.Static.FromContract(item));
             }
 
             return list;
@@ -97,54 +100,54 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="UserRating"/> is not valid to be saved.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Watch"/> is not valid to be saved.</exception>
         public override async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), UserRating.Static.ReadFromRecordsAsync, session);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), Watch.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(WatchCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="UserRating"/> is not valid to be saved.</exception>
-        public override async Task AddAndSaveAsync(UserRating item, UserSession session)
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Watch"/> is not valid to be saved.</exception>
+        public override async Task AddAndSaveAsync(Watch item, UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.AddAndSaveToDatabaseAsync(item, this.GetSaveParameters(), UserRating.Static.ReadFromRecordsAsync, session);
+                await this.AddAndSaveToDatabaseAsync(item, this.GetSaveParameters(), Watch.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(WatchCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="UserRating"/> is not valid to be saved.</exception>
-        public override async Task RemoveAndSaveAsync(UserRating item, UserSession session)
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Watch"/> is not valid to be saved.</exception>
+        public override async Task RemoveAndSaveAsync(Watch item, UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.RemoveAndSaveToDatabaseAsync(item, this.GetSaveParameters(), UserRating.Static.ReadFromRecordsAsync, session);
+                await this.RemoveAndSaveToDatabaseAsync(item, this.GetSaveParameters(), Watch.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(WatchCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="UserRatingCollection{TParent, TParentDto}"/> is not valid to be saved.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="WatchCollection{TParent, TParentDto}"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
             if (this.ParentId <= 0)
@@ -159,12 +162,13 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Watch"/> is not valid to be saved.</exception>
         protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
             return new ReadOnlyDictionary<string, object>(
                 new Dictionary<string, object>
                 {
-                    { Persistent.ColumnToVariable(UserRatingsColumn), this.GetSaveTable }
+                    { Persistent.ColumnToVariable(WatchesColumn), this.GetSaveTable }
                 });
         }
     }

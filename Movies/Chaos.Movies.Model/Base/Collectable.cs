@@ -22,6 +22,11 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="TList">The type of the list.</typeparam>
     /// <typeparam name="TParent">The parent type of the owner of the collection.</typeparam>
     /// <typeparam name="TParentDto">The data transfer type to use for communicating the <typeparamref name="TParent"/>.</typeparam>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Design",
+        "CA1005:AvoidExcessiveParametersOnGenericTypes",
+        Justification =
+            "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
     public abstract class Collectable<T, TDto, TList, TParent, TParentDto> : Listable<T, TDto, TList>
     {
         /// <summary>Initializes a new instance of the <see cref="Collectable{T,TDto,TList,TParent, TParentDto}"/> class.</summary>
@@ -36,7 +41,7 @@ namespace Chaos.Movies.Model.Base
         protected Collectable()
         {
         }
-        
+
         /// <summary>Gets the id of the parent of this collection.</summary>
         public int ParentId => this.Parent.Id;
 
@@ -50,22 +55,21 @@ namespace Chaos.Movies.Model.Base
 
         /// <summary>Adds the <paramref name="item"/> to the collection.</summary>
         /// <param name="item">The <typeparamref name="T"/> to add.</param>
+        /// <param name="session">The session.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        public abstract Task AddAndSaveAsync(T item);
+        public abstract Task AddAndSaveAsync(T item, UserSession session);
 
         /// <summary>Removes the <paramref name="item"/> from the collection.</summary>
         /// <param name="item">The <typeparamref name="T"/> to remove.</param>
+        /// <param name="session">The session.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        public abstract Task RemoveAndSaveAsync(T item);
+        public abstract Task RemoveAndSaveAsync(T item, UserSession session);
 
         /// <summary>Converts the <paramref name="contract"/> to a <typeparamref name="T"/>.</summary>
         /// <param name="contract">The contract¨to convert.</param>
         /// <param name="parent">The parent.</param>
         /// <returns>The <typeparamref name="T"/>.</returns>
         public abstract TList FromContract(ReadOnlyCollection<TDto> contract, Persistable<TParent, TParentDto> parent);
-
-        /// <summary>Validates that the this <typeparamref name="TList"/> is valid to be saved.</summary>
-        internal abstract void ValidateSaveCandidate();
 
         /// <summary>Gets SQL parameters to use for <see cref="AddAndSaveToDatabaseAsync"/> and  <see cref="RemoveAndSaveToDatabaseAsync"/>.</summary>
         /// <returns>The list of SQL parameters.</returns>
@@ -75,40 +79,62 @@ namespace Chaos.Movies.Model.Base
         /// <param name="item">The <typeparamref name="T"/> to add.</param>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
+        /// <param name="session">The session.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <paramref name="readFromRecords"/> is <see langword="null"/></exception>
-        protected async Task AddAndSaveToDatabaseAsync(T item, IReadOnlyDictionary<string, object> commandParameters, Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design",
+            "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification =
+                "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
+        protected async Task AddAndSaveToDatabaseAsync(
+            T item,
+            IReadOnlyDictionary<string, object> commandParameters,
+            Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords,
+            UserSession session)
         {
             this.Add(item);
-            await this.SaveToDatabaseAsync(commandParameters, readFromRecords);
+            await this.SaveToDatabaseAsync(commandParameters, readFromRecords, session);
         }
 
         /// <summary>Removes the <paramref name="item"/> from the collection and saves all the content of this <see cref="Collectable{T,TDto,TList,TParent, TParentDto}"/> to the database.</summary>
         /// <param name="item">The <typeparamref name="T"/> to remove.</param>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
+        /// <param name="session">The session.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <paramref name="readFromRecords"/> is <see langword="null"/></exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        protected async Task RemoveAndSaveToDatabaseAsync(T item, IReadOnlyDictionary<string, object> commandParameters, Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords)
+        protected async Task RemoveAndSaveToDatabaseAsync(
+            T item,
+            IReadOnlyDictionary<string, object> commandParameters,
+            Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords,
+            UserSession session)
         {
             this.Remove(item);
-            await this.SaveToDatabaseAsync(commandParameters, readFromRecords);
+            await this.SaveToDatabaseAsync(commandParameters, readFromRecords, session);
         }
 
         /// <summary>Saves all the content of this <see cref="Collectable{T,TDto,TList,TParent, TParentDto}"/> to the database.</summary>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
+        /// <param name="session">The session.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <paramref name="readFromRecords"/> is <see langword="null"/></exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design",
+            "CA1006:DoNotNestGenericTypesInMemberSignatures",
+            Justification =
+                "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
         protected async Task SaveToDatabaseAsync(
             IReadOnlyDictionary<string, object> commandParameters,
-            Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords)
+            Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords,
+            UserSession session)
         {
             if (commandParameters == null)
             {
@@ -119,6 +145,13 @@ namespace Chaos.Movies.Model.Base
             {
                 throw new ArgumentNullException(nameof(readFromRecords));
             }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            await session.ValidateSessionAsync();
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand($"{typeof(TParent).Name}{typeof(T).Name}Save", connection))

@@ -27,6 +27,9 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="Description"/> property.</summary>
         private string description;
 
+        /// <summary>Private part of the <see cref="Language"/> property.</summary>
+        private CultureInfo language;
+
         /// <summary>Initializes a new instance of the <see cref="LanguageDescription"/> class.</summary>
         /// <param name="title">The <see cref="Title"/> to set.</param>
         /// <param name="description">The <see cref="Description"/> to set.</param>
@@ -41,7 +44,7 @@ namespace Chaos.Movies.Model
 
             this.Title = title;
             this.Description = description;
-            this.Language = language ?? throw new ArgumentNullException(nameof(language));
+            this.Language = language;
         }
 
         /// <summary>Prevents a default instance of the <see cref="LanguageDescription"/> class from being created.</summary>
@@ -76,7 +79,26 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the language of the title.</summary>
-        public CultureInfo Language { get; private set; }
+        public CultureInfo Language
+        {
+            get => this.language;
+            private set
+            {
+                if (value == null)
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                if (string.IsNullOrEmpty(value.Name))
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentOutOfRangeException(nameof(value), "The language has to have a name.");
+                }
+
+                this.language = value;
+            }
+        }
 
         /// <inheritdoc />
         public override LanguageDescriptionDto ToContract()

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="RatingTypeCollection.cs" company="Erik Bunnstad">
+// <copyright file="RatingTypeCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -16,8 +16,8 @@ namespace Chaos.Movies.Model
 
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model.Base;
-    using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
+    using Chaos.Movies.Model.Properties;
 
     /// <summary>Represents a user.</summary>
     public class RatingTypeCollection : Collectable<RatingType, RatingTypeDto, RatingTypeCollection, RatingType, RatingTypeDto>
@@ -73,52 +73,49 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
         public override async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), RatingType.Static.ReadFromRecordsAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), RatingType.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            throw new NotSupportedException();
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(RatingTypeCollection)));
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public override async Task AddAndSaveAsync(RatingType item)
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
+        public override async Task AddAndSaveAsync(RatingType item, UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.AddAndSaveToDatabaseAsync(item, this.GetSaveParameters(), RatingType.Static.ReadFromRecordsAsync);
+                await this.AddAndSaveToDatabaseAsync(item, this.GetSaveParameters(), RatingType.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
-            }
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(RatingTypeCollection)));
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public override async Task RemoveAndSaveAsync(RatingType item)
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
+        public override async Task RemoveAndSaveAsync(RatingType item, UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.RemoveAndSaveToDatabaseAsync(item, this.GetSaveParameters(), RatingType.Static.ReadFromRecordsAsync);
+                await this.RemoveAndSaveToDatabaseAsync(item, this.GetSaveParameters(), RatingType.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
-            }
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(RatingTypeCollection)));
         }
 
         /// <inheritdoc />
@@ -142,11 +139,17 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingTypeCollection"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
             if (this.ParentId <= 0)
             {
                 throw new PersistentObjectRequiredException("The parent of the collection has to be saved before saving the collection.");
+            }
+
+            foreach (var userRating in this.Items)
+            {
+                userRating.ValidateSaveCandidate();
             }
         }
 

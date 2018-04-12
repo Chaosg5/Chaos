@@ -34,8 +34,8 @@ namespace Chaos.Movies.Model
                 using (var table = new DataTable())
                 {
                     table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn(LanguageTitle.LanguageColumn));
-                    table.Columns.Add(new DataColumn(LanguageTitle.TitleColumn));
+                    table.Columns.Add(new DataColumn(LanguageTitle.LanguageColumn, typeof(string)));
+                    table.Columns.Add(new DataColumn(LanguageTitle.TitleColumn, typeof(string)));
                     foreach (var languageTitle in this.Items)
                     {
                         table.Rows.Add(languageTitle.Language.Name, languageTitle.Title);
@@ -79,7 +79,7 @@ namespace Chaos.Movies.Model
         {
             if (this.Count == 0)
             {
-                return new LanguageTitle(string.Empty, language ?? CultureInfo.InvariantCulture);
+                return null;
             }
 
             var languageName = "en-US";
@@ -130,6 +130,21 @@ namespace Chaos.Movies.Model
             else
             {
                 this.Add(new LanguageTitle(title, language));
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="LanguageTitleCollection"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Items.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+
+            foreach (var languageTitle in this.Items)
+            {
+                languageTitle.ValidateSaveCandidate();
             }
         }
     }

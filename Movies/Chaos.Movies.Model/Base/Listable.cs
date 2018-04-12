@@ -14,7 +14,7 @@ namespace Chaos.Movies.Model.Base
     using System.Linq;
 
     using Chaos.Movies.Model.Exceptions;
-    
+
     // ToDo: ReadFromReader?????
 
     // ToDo: IOrderable + ReorderList
@@ -25,6 +25,7 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="T">The base model logic type.</typeparam>
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     /// <typeparam name="TList">The type of the list.</typeparam>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
     public abstract class Listable<T, TDto, TList> : Communicable<TList, ReadOnlyCollection<TDto>>, IReadOnlyCollection<T>
     {
         /// <summary>The list of <typeparamref name="T"/>s in this <see cref="Listable{T, TDto, TList}"/>.</summary>
@@ -165,6 +166,9 @@ namespace Chaos.Movies.Model.Base
                 return;
             }
         }
+
+        /// <summary>Validates that the this <typeparamref name="TList"/> is valid to be saved.</summary>
+        internal abstract void ValidateSaveCandidate();
 
         /// <summary>Removes all <typeparamref name="T"/> from this <see cref="Listable{T, TDto, TList}"/>.</summary>
         protected void Clear()

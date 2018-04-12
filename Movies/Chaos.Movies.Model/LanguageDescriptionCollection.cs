@@ -22,11 +22,13 @@ namespace Chaos.Movies.Model
         /// <summary>The database column for this <see cref="LanguageDescriptionCollection"/>.</summary>
         internal const string TitlesColumn = "Titles";
 
+        /// <summary>The default language.</summary>
+        private const string DefaultLanguage = "en-US";
+
         /// <summary>Gets the base title.</summary>
         public string GetBaseTitle => this.GetTitle(null).Title;
 
-        /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
-        /// <returns>A table containing the title and language as columns for each title.</returns>
+        /// <inheritdoc />
         public override DataTable GetSaveTable
         {
             get
@@ -34,9 +36,9 @@ namespace Chaos.Movies.Model
                 using (var table = new DataTable())
                 {
                     table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn(LanguageTitle.LanguageColumn));
-                    table.Columns.Add(new DataColumn(LanguageTitle.TitleColumn));
-                    table.Columns.Add(new DataColumn(LanguageDescription.DescriptionColumn));
+                    table.Columns.Add(new DataColumn(LanguageTitle.LanguageColumn, typeof(string)));
+                    table.Columns.Add(new DataColumn(LanguageTitle.TitleColumn, typeof(string)));
+                    table.Columns.Add(new DataColumn(LanguageDescription.DescriptionColumn, typeof(string)));
                     foreach (var languageDescription in this.Items)
                     {
                         table.Rows.Add(languageDescription.Language.Name, languageDescription.Title, languageDescription.Description);
@@ -47,8 +49,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Converts this <see cref="LanguageDescriptionCollection"/> to a <see cref="ReadOnlyCollection{LanguageDescriptionDto}"/>.</summary>
-        /// <returns>The <see cref="ReadOnlyCollection{LanguageDescriptionDto}"/>.</returns>
+        /// <inheritdoc />
         public override ReadOnlyCollection<LanguageDescriptionDto> ToContract()
         {
             return new ReadOnlyCollection<LanguageDescriptionDto>(this.Items.Select(t => t.ToContract()).ToList());
@@ -80,16 +81,16 @@ namespace Chaos.Movies.Model
         {
             if (this.Count == 0)
             {
-                return new LanguageDescription(string.Empty, string.Empty, language ?? CultureInfo.InvariantCulture);
+                return null;
             }
 
-            var languageName = "en-US";
+            var languageName = DefaultLanguage;
             if (!string.IsNullOrEmpty(language?.Name))
             {
                 languageName = language.Name;
             }
 
-            return this.Items.FirstOrDefault(t => t.Language.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language.Name == "en-US") ?? this.Items.First();
+            return this.Items.FirstOrDefault(t => t.Language.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language.Name == DefaultLanguage) ?? this.Items.First();
         }
 
         /// <summary>Changes the title of this movie series type.</summary>
@@ -133,6 +134,26 @@ namespace Chaos.Movies.Model
             else
             {
                 this.Add(new LanguageDescription(title, description, language));
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="LanguageDescriptionCollection"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Items.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+
+            if (this.Items.Any(i => i.Language.Name == DefaultLanguage))
+            {
+                throw new InvalidSaveCandidateException($"A title in the default language '{DefaultLanguage}' has to be specified.");
+            }
+
+            foreach (var item in this.Items)
+            {
+                item.ValidateSaveCandidate();
             }
         }
     }

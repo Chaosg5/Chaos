@@ -10,6 +10,7 @@ namespace Chaos.Movies.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
+    using System.Data.SqlClient;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
@@ -57,16 +58,45 @@ namespace Chaos.Movies.Model
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="login"/> is <see langword="null"/></exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public static async Task<UserSession> CreateSessionAsync(UserLogin login)
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        public async Task<UserSession> CreateSessionAsync(UserLogin login)
         {
             if (login == null)
             {
                 throw new ArgumentNullException(nameof(login));
             }
 
-            var session = new UserSession();
-            await session.CreateUserSessionAsync(login);
-            return session;
+            if (!Persistent.UseService)
+            {
+                using (var connection = new SqlConnection(Persistent.ConnectionString))
+                using (var command = new SqlCommand("CreateUserSession", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    foreach (var commandParameter in this.GetSaveParameters(login))
+                    {
+                        command.Parameters.AddWithValue(commandParameter.Key, commandParameter.Value);
+                    }
+
+                    await connection.OpenAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            await this.ReadFromRecordAsync(reader);
+                        }
+                    }
+                }
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                return this.FromContract(await service.CreateUserSessionAsync(login));
+            }
+        }
+
+        public async Task ValidateSessionAsync()
+        {
+            
         }
 
         /// <inheritdoc />
@@ -83,8 +113,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override UserSession FromContract(UserSessionDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new UserSession
             {
                 SessionId = contract.SessionId,
@@ -102,13 +138,13 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
                 return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+                await service.UserSessionSaveAsync(session.ToContract(), this.ToContract());
             }
         }
 
@@ -165,8 +201,7 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(ActiveToColumn), this.ActiveTo },
                 });
         }
-
-
+        
         /// <summary>Gets SQL parameters to use for <see cref="Persistable{T,TDto}.SaveAsync"/>.</summary>
         /// <param name="userLogin">The user login credentials.</param>
         /// <returns>The list of SQL parameters.</returns>
@@ -181,23 +216,6 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(User.UsernameColumn), userLogin.Username },
                     { Persistent.ColumnToVariable(User.PasswordColumn), userLogin.Password }
                 });
-        }
-
-        /// <summary>Creates a new <see cref="UserSession"/>.</summary>
-        /// <param name="login">The login.</param>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <returns>The <see cref="Task"/>.</returns>
-        private async Task CreateUserSessionAsync(UserLogin login)
-        {
-            if (!Persistent.UseService)
-            {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(login), this.ReadFromRecordAsync);
-            }
-
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
-            }
         }
     }
 }

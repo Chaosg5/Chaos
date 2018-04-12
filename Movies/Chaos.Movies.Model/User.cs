@@ -48,8 +48,14 @@ namespace Chaos.Movies.Model
         /// <param name="name">The <see cref="Name"/> to set.</param>
         /// <param name="email">The <see cref="Email"/> to set.</param>
         /// <param name="userLogin">The <see cref="Username"/> to set.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="userLogin"/> is <see langword="null"/></exception>
         public User(string name, string email, UserLogin userLogin)
         {
+            if (userLogin == null)
+            {
+                throw new ArgumentNullException(nameof(userLogin));
+            }
+
             this.Username = userLogin.Username;
             this.Password = userLogin.Password;
             this.Name = name;
@@ -111,7 +117,7 @@ namespace Chaos.Movies.Model
                 if (new MailAddress(value).Address != value)
                 {
                     // ReSharper disable once ExceptionNotDocumented
-                    throw new ArgumentException(nameof(value), $"The value {value} is not a valid e-mail.");
+                    throw new ArgumentException($"The value {value} is not a valid e-mail.", nameof(value));
                 }
 
                 this.email = value;
@@ -166,14 +172,12 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                // ToDo: Service
-                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
-                return new List<User>();
+                return (await service.UserGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
 
@@ -184,13 +188,13 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
                 return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+                await service.UserSaveAsync(session.ToContract(), this.ToContract());
             }
         }
 

@@ -23,27 +23,11 @@ namespace Chaos.Movies.Model
     /// <summary>Represents the way in which a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
     public class WatchType : Typeable<WatchType, WatchTypeDto>
     {
-        /// <summary>The database column for <see cref="Name"/>.</summary>
-        internal const string NameColumn = "Name";
-
-        /// <summary>Initializes a new instance of the <see cref="WatchType" /> class.</summary>
-        /// <param name="name">The name to set for the watch type.</param>
-        public WatchType(string name)
-        {
-            this.Id = 0;
-            this.Name = name;
-        }
-
-        /// <summary>Prevents a default instance of the <see cref="WatchType"/> class from being created.</summary>
-        private WatchType()
-        {
-        }
-
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static WatchType Static { get; } = new WatchType();
 
-        /// <summary>Gets the name of this watch type.</summary>
-        public string Name { get; private set; }
+        /// <summary>Gets the list of title of this <see cref="IconType"/> in different languages.</summary>
+        public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
         /// <inheritdoc />
         public override WatchTypeDto ToContract()
@@ -51,12 +35,13 @@ namespace Chaos.Movies.Model
             return new WatchTypeDto
             {
                 Id = this.Id,
-                Name = this.Name
+                Titles = this.Titles.ToContract()
             };
         }
 
         /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public override WatchType FromContract(WatchTypeDto contract)
         {
             if (contract == null)
@@ -67,7 +52,7 @@ namespace Chaos.Movies.Model
             return new WatchType
             {
                 Id = contract.Id,
-                Name = contract.Name
+                Titles = contract.Titles != null ? this.Titles.FromContract(contract.Titles) : new LanguageTitleCollection()
             };
         }
 
@@ -80,13 +65,13 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
                 return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+                await service.WatchTypeSaveAsync(session.ToContract(), this.ToContract());
             }
         }
 
@@ -105,14 +90,12 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                // ToDo: Service
-                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
-                return new List<WatchType>();
+                return (await service.WatchTypeGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
 
@@ -122,14 +105,12 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync);
+                return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync, session);
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                // ToDo: Service
-                ////return (await service.({T})GetAllAsync(session.ToContract())).Select(x => new ({T})(x));
-                return new List<WatchType>();
+                return (await service.WatchTypeGetAllAsync(session.ToContract())).Select(this.FromContract);
             }
         }
 
@@ -137,26 +118,39 @@ namespace Chaos.Movies.Model
         /// <exception cref="InvalidSaveCandidateException">The <see cref="WatchType"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
-            if (string.IsNullOrEmpty(this.Name))
+            if (this.Titles.Count == 0)
             {
-                throw new InvalidSaveCandidateException("The name of the watch type cant be empty.");
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
             }
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         internal override async Task<IEnumerable<WatchType>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var watchTypes = new List<WatchType>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(Department)}s");
+                throw new MissingResultException(1, $"{nameof(WatchType)}s");
             }
 
             while (await reader.ReadAsync())
             {
                 watchTypes.Add(await this.NewFromRecordAsync(reader));
+            }
+
+            if (!await reader.NextResultAsync() || !reader.HasRows)
+            {
+                throw new MissingResultException(2, $"{nameof(WatchType)}{LanguageTitleCollection.TitlesColumn}");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var watchType = (WatchType)this.GetFromResultsByIdInRecord(watchTypes, reader, IdColumn);
+                watchType.Titles.Add(await LanguageTitle.Static.NewFromRecordAsync(reader));
             }
 
             return watchTypes;
@@ -177,9 +171,8 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
+            Persistent.ValidateRecord(record, new[] { IdColumn });
             this.Id = (int)record[IdColumn];
-            this.Name = (string)record[NameColumn];
             return Task.CompletedTask;
         }
 
@@ -190,7 +183,7 @@ namespace Chaos.Movies.Model
                 new Dictionary<string, object>
                 {
                     { Persistent.ColumnToVariable(IdColumn), this.Id },
-                    { Persistent.ColumnToVariable(NameColumn), this.Name }
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
                 });
         }
     }

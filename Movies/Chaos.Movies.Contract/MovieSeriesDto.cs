@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="MovieSeriesDto.cs" company="Erik Bunnstad">
+// <copyright file="MovieSeriesDto.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -28,5 +28,9 @@ namespace Chaos.Movies.Contract
         /// <summary>Gets or sets the movies which are a part of this collection with the keys representing their order.</summary>
         [DataMember]
         public ReadOnlyCollection<MovieDto> Movies { get; set; }
+
+        /// <summary>Gets or sets the list of images for the <see cref="MovieSeriesDto"/> and their order as represented by the key.</summary>
+        [DataMember]
+        public ReadOnlyCollection<IconDto> Images { get; set; }
     }
 }

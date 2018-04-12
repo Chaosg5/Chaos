@@ -51,8 +51,8 @@ namespace Chaos.Movies.Model
                 using (var table = new DataTable())
                 {
                     table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn(RatingType.IdColumn));
-                    table.Columns.Add(new DataColumn(ValueColumn));
+                    table.Columns.Add(new DataColumn(RatingType.IdColumn, typeof(int)));
+                    table.Columns.Add(new DataColumn(ValueColumn, typeof(short)));
                     foreach (var value in this.Values)
                     {
                         table.Rows.Add(value.Key.Id, value.Value);
@@ -97,8 +97,14 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override RatingSystem FromContract(RatingSystemDto contract)
         {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
             return new RatingSystem
             {
                 Id = contract.Id,
@@ -115,13 +121,13 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
                 return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+                await service.RatingSystemSaveAsync(session.ToContract(), this.ToContract());
             }
         }
 
@@ -140,14 +146,12 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                // ToDo: Service
-                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
-                return new List<RatingSystem>();
+                return (await service.RatingSystemGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
 
@@ -157,14 +161,12 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync);
+                return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync, session);
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                // ToDo: Service
-                ////return (await service.({T})GetAllAsync(session.ToContract())).Select(x => new ({T})(x));
-                return new List<RatingSystem>();
+                return (await service.RatingSystemGetAllAsync(session.ToContract())).Select(this.FromContract);
             }
         }
 
@@ -216,10 +218,9 @@ namespace Chaos.Movies.Model
         /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingSystem"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
-            if (this.Titles.Count == 0)
-            {
-                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
-            }
+            this.Titles.ValidateSaveCandidate();
+            
+            // ToDo: Validate Values, that there are any and that the total sum is 100
         }
 
         /// <inheritdoc />

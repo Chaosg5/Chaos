@@ -18,24 +18,43 @@ namespace Chaos.Movies.Model
     using Exceptions;
 
     /// <summary>Represents an event where a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
-    /// <typeparam name="TParent">The type of the parent class.</typeparam>
-    public class Watch : Readable<Watch, WatchDto>
+    public class Watch : Loadable<Watch, WatchDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="Watch{TParent}" /> class.</summary>
+        /// <summary>The database column for <see cref="Id"/>.</summary>
+        internal const string IdColumn = "WatchId";
+
+        /// <summary>The database column for <see cref="WatchDate"/>.</summary>
+        internal const string WatchDateColumn = "WatchDate";
+
+        /// <summary>The database column for <see cref="Id"/>.</summary>
+        internal const string DateUncertainColumn = "DateUncertain";
+
+        /// <summary>The earliest allowed date for the <see cref="WatchDate"/>.</summary>
+        private readonly DateTime minDate = new DateTime(1900, 1, 1);
+
+        /// <summary>Private part of the <see cref="WatchType"/> property.</summary>
+        private WatchType watchType = new WatchType();
+
+        /// <summary>Private part of the <see cref="UserId"/> property.</summary>
+        private int userId;
+
+        /// <summary>Private part of the <see cref="WatchDate"/> property.</summary>
+        private DateTime watchDate;
+
+        /// <inheritdoc />
         /// <param name="userId">The id of the <see cref="User"/> who watched the <see cref="Movie"/>.</param>
         /// <param name="watchDate">The date when the movie was watched.</param>
         /// <param name="dateUncertain">If the <paramref name="watchDate"/> when the <see cref="Movie"/> was watched is just estimated and thus uncertain.</param>
-        /// <param name="watchLocationId">The id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</param>
-        /// <param name="watchTypeId">The id of the <see cref="WatchType"/> describing in what format the <see cref="Movie"/> was watched.</param>
-        public Watch(int userId, DateTime watchDate, bool dateUncertain, int watchLocationId, int watchTypeId)
+        /// <param name="watchType">The <see cref="WatchType"/> describing in what format the <see cref="Movie"/> was watched.</param>
+        public Watch(int userId, DateTime watchDate, bool dateUncertain, WatchType watchType)
         {
-            this.UserId = userId;
+            this.userId = userId;
             this.WatchDate = watchDate;
             this.DateUncertain = dateUncertain;
-            this.WatchLocationId = watchLocationId;
-            this.WatchTypeId = watchTypeId;
+            this.WatchType = watchType;
         }
 
+        /// <summary>Prevents a default instance of the <see cref="Watch"/> class from being created.</summary>
         private Watch()
         {
         }
@@ -43,164 +62,148 @@ namespace Chaos.Movies.Model
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Watch Static { get; } = new Watch();
 
-        /// <summary>Gets the id of the watch.</summary>
-        public int Id { get; private set; }
-
-        public override Task SaveAsync(UserSession session)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>Gets or sets the id of this <see cref="Watch"/>.</summary>
+        public int Id { get; protected set; }
 
         /// <summary>Gets the id of the <see cref="User"/> who watched <see cref="Movie"/>.</summary>
-        public int UserId { get; private set; }
+        public int UserId
+        {
+            get => this.userId;
+            private set
+            {
+                if (value <= 0)
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new PersistentObjectRequiredException($"The {nameof(WatchType)} has to be saved.");
+                }
 
-        /// <summary>Gets the user who watched the <see cref="Movie"/>.</summary>
-        public User User { get; private set; }
+                this.userId = value;
+            }
+        }
 
         /// <summary>Gets or sets the date when the <see cref="Movie"/> was watched.</summary>
-        public DateTime WatchDate { get; set; }
-
-        /// <summary>Gets a value indicating whether the <see cref="WatchDate"/> is uncertain or not.</summary>
-        public bool DateUncertain { get; private set; }
-
-        /// <summary>Gets the id of the <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</summary>
-        public int WatchLocationId { get; private set; }
-
-        /// <summary>Gets the  <see cref="WatchLocation"/> where the <see cref="Movie"/> was watched.</summary>
-        public WatchLocation WatchLocation { get; private set; }
-
-        /// <summary>Gets the id of the <see cref="WatchType"/> of how the <see cref="Movie"/> was watched.</summary>
-        public int WatchTypeId { get; private set; }
-
-        /// <summary>Gets the <see cref="WatchType"/> how the <see cref="Movie"/> was watched.</summary>
-        public WatchType WatchType { get; private set; }
-
-
-        /// <summary>Sets the user who watched the <see cref="Movie"/>.</summary>
-        /// <param name="user">The user to set.</param>
-        public void SetUser(User user)
+        public DateTime WatchDate
         {
-            if (user == null || user.Id == 0)
+            get => this.watchDate;
+            set
             {
-                throw new ArgumentNullException(nameof(user));
-            }
+                if (value <= this.minDate)
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
 
-            if (user.Id != this.UserId)
-            {
-                throw new UserChangeNotAllowedException();
-            }
-
-            this.UserId = user.Id;
-            this.User = user;
-        }
-
-        /// <summary>Sets the location where the <see cref="Movie"/> was watched.</summary>
-        /// <param name="location">The watch location to set.</param>
-        public void SetWatchLocation(WatchLocation location)
-        {
-            if (location == null || location.Id == 0)
-            {
-                throw new ArgumentNullException(nameof(location));
-            }
-
-            this.WatchLocationId = location.Id;
-            this.WatchLocation = location;
-        }
-
-        /// <summary>Sets the type of how the <see cref="Movie"/> was watched.</summary>
-        /// <param name="type">The watch type to set.</param>
-        public void SetWatchType(WatchType type)
-        {
-            if (type == null || type.Id == 0)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            this.WatchTypeId = type.Id;
-            this.WatchType = type;
-        }
-
-        /// <summary>Updates this <see cref="Watch"/> from the <paramref name="record"/>.</summary>
-        /// <param name="record">The record containing the data for the <see cref="Watch"/>.</param>
-        /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
-        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        /// <exception cref="ValueLogicalReadOnlyException">The <see cref="Parent"/> can't be changed once set.</exception>
-        private void ReadFromRecord(IDataRecord record)
-        {
-            Persistent.ValidateRecord(record, new[] { "Id", "ParentId", "ParentType", "UserId", "WatchedDate", "DateUncertain" });
-            this.Id = (int)record["Id"];
-            this.UserId = (int)record["UserId"];
-
-            DateTime watchDate;
-            if (!DateTime.TryParse(record["WatchedDate"].ToString(), out watchDate))
-            {
-                throw new InvalidRecordValueException();
-            }
-
-            this.WatchDate = watchDate;
-
-            bool dateUncertain;
-            if (!bool.TryParse(record["DateUncertain"].ToString(), out dateUncertain))
-            {
-                throw new InvalidRecordValueException();
-            }
-
-            this.DateUncertain = dateUncertain;
-
-            if (record["WatchLocationId"] != null)
-            {
-                this.WatchLocationId = (int)record["WatchLocationId"];
-            }
-
-            if (record["WatchTypeId"] != null)
-            {
-                this.WatchTypeId = (int)record["WatchTypeId"];
+                this.watchDate = value;
             }
         }
 
+        /// <summary>Gets or sets a value indicating whether the <see cref="WatchDate"/> is uncertain or not.</summary>
+        public bool DateUncertain { get; set; }
+
+        /// <summary>Gets or sets the <see cref="WatchType"/> how the <see cref="Movie"/> was watched.</summary>
+        public WatchType WatchType
+        {
+            get => this.watchType;
+            set
+            {
+                if (value == null)
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                if (value.Id <= 0)
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new PersistentObjectRequiredException($"The {nameof(WatchType)} has to be saved.");
+                }
+
+                this.watchType = value;
+            }
+        }
+
+        /// <inheritdoc />
         public override WatchDto ToContract()
         {
-            throw new NotImplementedException();
+            return new WatchDto
+            {
+                Id = this.Id,
+                UserId = this.UserId,
+                WatchDate = this.WatchDate,
+                DateUncertain = this.DateUncertain,
+                WatchType = this.WatchType.ToContract()
+            };
         }
 
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override Watch FromContract(WatchDto contract)
         {
-            throw new NotImplementedException();
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
+            return new Watch
+            {
+                Id = contract.Id,
+                UserId = contract.UserId,
+                WatchDate = contract.WatchDate,
+                DateUncertain = contract.DateUncertain,
+                WatchType = contract.WatchType != null ? this.WatchType.FromContract(contract.WatchType) : new WatchType()
+            };
         }
 
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Watch"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
-            throw new NotImplementedException();
+            this.WatchType.ValidateSaveCandidate();
         }
 
-        internal override Task<Watch> NewFromRecordAsync(IDataRecord record)
+        /// <summary>Creates new <see cref="Watch"/>s from the <paramref name="reader"/>.</summary>
+        /// <param name="reader">The reader containing data sets and records the data for the <see cref="Watch"/>s.</param>
+        /// <returns>The list of <see cref="Watch"/>s.</returns>
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal async Task<IEnumerable<Watch>> ReadFromRecordsAsync(DbDataReader reader)
         {
-            throw new NotImplementedException();
+            var watches = new List<Watch>();
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1, $"{nameof(Watch)}s");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                watches.Add(await this.NewFromRecordAsync(reader));
+            }
+
+            return watches;
         }
 
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">record is <see langword="null" />.</exception>
+        internal override async Task<Watch> NewFromRecordAsync(IDataRecord record)
         {
-            throw new NotImplementedException();
+            var result = new Watch();
+            await result.ReadFromRecordAsync(record);
+            return result;
         }
 
-        public override Task<Watch> GetAsync(UserSession session, int id)
+        /// <inheritdoc />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">record is <see langword="null" />.</exception>
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
-            throw new NotImplementedException();
-        }
-
-        public override Task<IEnumerable<Watch>> GetAsync(UserSession session, IEnumerable<int> idList)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal override Task<IEnumerable<Watch>> ReadFromRecordsAsync(DbDataReader reader)
-        {
-            throw new NotImplementedException();
+            Persistent.ValidateRecord(record, new[] { IdColumn, User.IdColumn, WatchDateColumn, DateUncertainColumn, WatchType.IdColumn });
+            this.Id = (int)record[IdColumn];
+            this.UserId = (int)record[User.IdColumn];
+            this.WatchDate = (DateTime)record[WatchDateColumn];
+            this.DateUncertain = (bool)record[DateUncertainColumn];
+            this.WatchType = await GlobalCache.GetWatchTypeAsync((int)record[WatchType.IdColumn]);
         }
     }
 }

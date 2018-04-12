@@ -16,8 +16,8 @@ namespace Chaos.Movies.Model
 
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model.Base;
-    using Chaos.Movies.Model.ChaosMovieService;
     using Chaos.Movies.Model.Exceptions;
+    using Chaos.Movies.Model.Properties;
 
     /// <summary>A <see cref="Person"/>s in a <typeparamref name="TParent"/>.</summary>
     /// <typeparam name="TParent">The parent type of the owner of the collection.</typeparam>
@@ -102,47 +102,41 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), PersonAsCharacter.Static.ReadFromRecordsAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), PersonAsCharacter.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            throw new NotSupportedException();
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public override async Task AddAndSaveAsync(PersonAsCharacter item)
+        public override async Task AddAndSaveAsync(PersonAsCharacter item, UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.AddAndSaveToDatabaseAsync(item, this.GetSaveParameters(), PersonAsCharacter.Static.ReadFromRecordsAsync);
+                await this.AddAndSaveToDatabaseAsync(item, this.GetSaveParameters(), PersonAsCharacter.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
-            }
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public override async Task RemoveAndSaveAsync(PersonAsCharacter item)
+        public override async Task RemoveAndSaveAsync(PersonAsCharacter item, UserSession session)
         {
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.RemoveAndSaveToDatabaseAsync(item, this.GetSaveParameters(), PersonAsCharacter.Static.ReadFromRecordsAsync);
+                await this.RemoveAndSaveToDatabaseAsync(item, this.GetSaveParameters(), PersonAsCharacter.Static.ReadFromRecordsAsync, session);
                 return;
             }
 
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
-            }
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
@@ -152,6 +146,11 @@ namespace Chaos.Movies.Model
             if (this.ParentId <= 0)
             {
                 throw new PersistentObjectRequiredException("The parent of the collection has to be saved before saving the collection.");
+            }
+
+            foreach (var userRating in this.Items)
+            {
+                userRating.ValidateSaveCandidate();
             }
         }
 

@@ -360,48 +360,6 @@ namespace Chaos.Movies.Service
         
         #endregion
 
-        #region Watch 
-
-        /// <summary>Saves the <paramref name="watch"/>.</summary> 
-        /// <param name="session">The session.</param> 
-        /// <param name="watch">The <see cref="WatchDto"/> to save.</param> 
-        /// <returns>The <see cref="Task"/>.</returns> 
-        [OperationContract]
-        Task WatchSaveAsync(UserSessionDto session, WatchDto watch);
-
-        /// <summary>Gets the <see cref="WatchDto"/> with the specified <paramref name="idList"/>.</summary> 
-        /// <param name="session">The session.</param>
-        /// <param name="idList">The id list.</param> 
-        /// <returns>The <see cref="Task"/>.</returns> 
-        [OperationContract]
-        Task<IEnumerable<WatchDto>> WatchGetAsync(UserSessionDto session, IEnumerable<int> idList);
-
-        #endregion
-
-        #region WatchLocation 
-
-        /// <summary>Saves the <paramref name="watchLocation"/>.</summary> 
-        /// <param name="session">The session.</param> 
-        /// <param name="watchLocation">The <see cref="WatchLocationDto"/> to save.</param> 
-        /// <returns>The <see cref="Task"/>.</returns> 
-        [OperationContract]
-        Task WatchLocationSaveAsync(UserSessionDto session, WatchLocationDto watchLocation);
-
-        /// <summary>Gets the <see cref="WatchLocationDto"/> with the specified <paramref name="idList"/>.</summary> 
-        /// <param name="session">The session.</param>
-        /// <param name="idList">The id list.</param> 
-        /// <returns>The <see cref="Task"/>.</returns> 
-        [OperationContract]
-        Task<IEnumerable<WatchLocationDto>> WatchLocationGetAsync(UserSessionDto session, IEnumerable<int> idList);
-
-        /// <summary>Gets all <see cref="WatchLocationDto"/>s.</summary> 
-        /// <param name="session">The session.</param> 
-        /// <returns>The <see cref="Task"/>.</returns> 
-        [OperationContract]
-        Task<IEnumerable<WatchLocationDto>> WatchLocationGetAllAsync(UserSessionDto session);
-
-        #endregion
-
         #region WatchType 
 
         /// <summary>Saves the <paramref name="watchType"/>.</summary> 
@@ -432,6 +390,9 @@ namespace Chaos.Movies.Service
 
         #region Custom
 
+        /// <summary>Creates a new <see cref="UserSessionDto"/> from the <paramref name="userLogin"/>.</summary>
+        /// <param name="userLogin">The user login data.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
         [OperationContract]
         Task<UserSessionDto> CreateUserSessionAsync(UserLogin userLogin);
 

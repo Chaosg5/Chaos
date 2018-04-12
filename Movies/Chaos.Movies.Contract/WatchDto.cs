@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="WatchDto.cs" company="Erik Bunnstad">
+// <copyright file="WatchDto.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -17,19 +17,11 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public int Id { get; set; }
 
-        /// <summary>Gets or sets the id of the <see cref="MovieDto"/> watched.</summary>
-        [DataMember]
-        public int MovieId { get; set; }
-
-        /// <summary>Gets or sets the id of the <see cref="User"/> who watched <see cref="MovieDto"/>.</summary>
+        /// <summary>Gets or sets the id of the <see cref="UserDto"/> who watched.</summary>
         [DataMember]
         public int UserId { get; set; }
-
-        /// <summary>Gets or sets the user who watched the <see cref="MovieDto"/>.</summary>
-        [DataMember]
-        public UserDto User { get; set; }
-
-        /// <summary>Gets or sets or sets the date when the <see cref="MovieDto"/> was watched.</summary>
+        
+        /// <summary>Gets or sets or sets the date when the watch happened.</summary>
         [DataMember]
         public DateTime WatchDate { get; set; }
 
@@ -37,19 +29,7 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public bool DateUncertain { get; set; }
 
-        /// <summary>Gets or sets the id of the <see cref="WatchLocation"/> where the <see cref="MovieDto"/> was watched.</summary>
-        [DataMember]
-        public int WatchLocationId { get; set; }
-
-        /// <summary>Gets or sets the  <see cref="WatchLocation"/> where the <see cref="MovieDto"/> was watched.</summary>
-        [DataMember]
-        public WatchLocationDto WatchLocation { get; set; }
-
-        /// <summary>Gets or sets the id of the <see cref="WatchType"/> of how the <see cref="MovieDto"/> was watched.</summary>
-        [DataMember]
-        public int WatchTypeId { get; set; }
-
-        /// <summary>Gets or sets the <see cref="WatchType"/> how the <see cref="MovieDto"/> was watched.</summary>
+        /// <summary>Gets or sets the <see cref="WatchTypeDto"/>.</summary>
         [DataMember]
         public WatchTypeDto WatchType { get; set; }
     }

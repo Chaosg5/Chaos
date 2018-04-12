@@ -6,9 +6,7 @@
 
 namespace Chaos.Movies.Model.Tests
 {
-    using System;
     using System.Globalization;
-    using System.Linq;
     using NUnit.Framework;
 
     [TestFixture]
@@ -18,8 +16,7 @@ namespace Chaos.Movies.Model.Tests
         public static void LanguageTitleTest()
         {
             var lang = new LanguageTitle("Test", CultureInfo.CurrentCulture);
-            lang = new LanguageTitle("Test", CultureInfo.InvariantCulture);
-            
+            //lang = new LanguageTitle("Test", CultureInfo.GetCultureInfo());
         }
     }
 }

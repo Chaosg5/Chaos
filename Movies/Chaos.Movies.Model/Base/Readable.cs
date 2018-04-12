@@ -31,6 +31,7 @@ namespace Chaos.Movies.Model.Base
         /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <param name="idList">The list of ids of the <typeparamref name="T"/>s to get.</param>
         /// <returns>The list of <typeparamref name="T"/>s.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
         public abstract Task<IEnumerable<T>> GetAsync(UserSession session, IEnumerable<int> idList);
 
         /// <summary>Creates new <typeparamref name="T"/>s from the <paramref name="reader"/>.</summary>
@@ -44,6 +45,7 @@ namespace Chaos.Movies.Model.Base
         /// <param name="idColumnName">The name of the id column.</param>
         /// <returns>The <typeparamref name="T"/>.</returns>
         /// <exception cref="SqlResultSyncException">The specified <typeparamref name="T"/> was not found in the <paramref name="items"/>.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
         protected Persistable<T, TDto> GetFromResultsByIdInRecord(IEnumerable<Persistable<T, TDto>> items, IDataRecord record, string idColumnName)
         {
             var id = (int)record[idColumnName];
@@ -59,16 +61,25 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Gets the specified <typeparamref name="T"/>s.</summary>
         /// <param name="idList">The list of ids of the <typeparamref name="T"/>s to get.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
+        /// <param name="session">The session.</param>
         /// <returns>The list of <typeparamref name="T"/>s.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="idList"/> or <paramref name="readFromRecords"/> is <see langword="null"/></exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
-        protected async Task<IEnumerable<T>> GetFromDatabaseAsync(IEnumerable<int> idList, Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
+        protected async Task<IEnumerable<T>> GetFromDatabaseAsync(IEnumerable<int> idList, Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords, UserSession session)
         {
             if (readFromRecords == null)
             {
                 throw new ArgumentNullException(nameof(readFromRecords));
             }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            await session.ValidateSessionAsync();
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand($"{typeof(T).Name}Get", connection))

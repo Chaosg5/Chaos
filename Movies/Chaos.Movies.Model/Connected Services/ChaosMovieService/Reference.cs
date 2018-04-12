@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+#pragma warning disable 1591
 namespace Chaos.Movies.Model.ChaosMovieService {
     using System;
     using System.Runtime.Serialization;

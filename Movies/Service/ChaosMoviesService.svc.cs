@@ -34,7 +34,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await Character.Static.FromContract(character).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -49,7 +49,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Character.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -68,7 +68,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await Department.Static.FromContract(department).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -83,7 +83,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Department.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -98,7 +98,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Department.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -117,7 +117,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await Error.Static.FromContract(error).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -136,7 +136,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await ExternalSource.Static.FromContract(externalSource).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -151,7 +151,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await ExternalSource.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -170,7 +170,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await Genre.Static.FromContract(genre).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -185,7 +185,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Genre.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -200,7 +200,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Genre.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -219,7 +219,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await Icon.Static.FromContract(icon).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -234,7 +234,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Icon.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -253,7 +253,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await IconType.Static.FromContract(iconType).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -268,7 +268,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await IconType.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -283,7 +283,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await IconType.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -302,7 +302,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await Movie.Static.FromContract(movie).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -317,7 +317,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Movie.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -336,7 +336,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await MovieSeries.Static.FromContract(movieSeries).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -351,7 +351,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await MovieSeries.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -370,7 +370,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await MovieSeriesType.Static.FromContract(movieSeriesType).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -385,7 +385,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await MovieSeriesType.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -400,7 +400,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await MovieSeriesType.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -419,7 +419,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await MovieType.Static.FromContract(movieType).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -434,7 +434,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await MovieType.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -449,7 +449,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await MovieType.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -468,7 +468,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await Person.Static.FromContract(person).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -483,7 +483,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Person.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -502,7 +502,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await RatingSystem.Static.FromContract(ratingSystem).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -517,7 +517,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await RatingSystem.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -532,7 +532,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await RatingSystem.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -551,7 +551,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await RatingType.Static.FromContract(ratingType).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -566,7 +566,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await RatingType.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -581,7 +581,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await RatingType.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -600,7 +600,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await Role.Static.FromContract(role).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -615,7 +615,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Role.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -630,7 +630,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await Role.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -649,7 +649,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await User.Static.FromContract(user).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -664,7 +664,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await User.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -683,91 +683,8 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await UserSession.Static.FromContract(userSession).SaveAsync(UserSession.Static.FromContract(session));
-            }
-            catch (Exception exception)
-            {
-                throw new FaultException(exception.Message);
-            }
-        }
-
-        #endregion
-
-        #region Watch 
-
-        /// <inheritdoc /> 
-        /// <exception cref="FaultException">An exception occurred.</exception> 
-        public async Task WatchSaveAsync(UserSessionDto session, WatchDto watch)
-        {
-            try
-            {
-                this.ValidateStateAndSession(session);
-                await Watch.Static.FromContract(watch).SaveAsync(UserSession.Static.FromContract(session));
-            }
-            catch (Exception exception)
-            {
-                throw new FaultException(exception.Message);
-            }
-        }
-
-        /// <inheritdoc /> 
-        /// <exception cref="FaultException">An exception occurred.</exception> 
-        public async Task<IEnumerable<WatchDto>> WatchGetAsync(UserSessionDto session, IEnumerable<int> idList)
-        {
-            try
-            {
-                this.ValidateStateAndSession(session);
-                return (await Watch.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
-            }
-            catch (Exception exception)
-            {
-                throw new FaultException(exception.Message);
-            }
-        }
-
-        #endregion
-
-        #region WatchLocation 
-
-        /// <inheritdoc /> 
-        /// <exception cref="FaultException">An exception occurred.</exception> 
-        public async Task WatchLocationSaveAsync(UserSessionDto session, WatchLocationDto watchLocation)
-        {
-            try
-            {
-                this.ValidateStateAndSession(session);
-                await WatchLocation.Static.FromContract(watchLocation).SaveAsync(UserSession.Static.FromContract(session));
-            }
-            catch (Exception exception)
-            {
-                throw new FaultException(exception.Message);
-            }
-        }
-
-        /// <inheritdoc /> 
-        /// <exception cref="FaultException">An exception occurred.</exception> 
-        public async Task<IEnumerable<WatchLocationDto>> WatchLocationGetAsync(UserSessionDto session, IEnumerable<int> idList)
-        {
-            try
-            {
-                this.ValidateStateAndSession(session);
-                return (await WatchLocation.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
-            }
-            catch (Exception exception)
-            {
-                throw new FaultException(exception.Message);
-            }
-        }
-
-        /// <inheritdoc /> 
-        /// <exception cref="FaultException">An exception occurred.</exception> 
-        public async Task<IEnumerable<WatchLocationDto>> WatchLocationGetAllAsync(UserSessionDto session)
-        {
-            try
-            {
-                this.ValidateStateAndSession(session);
-                return (await WatchLocation.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
             {
@@ -785,7 +702,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 await WatchType.Static.FromContract(watchType).SaveAsync(UserSession.Static.FromContract(session));
             }
             catch (Exception exception)
@@ -800,7 +717,7 @@ namespace Chaos.Movies.Service
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await WatchType.Static.GetAsync(UserSession.Static.FromContract(session), idList)).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -809,13 +726,13 @@ namespace Chaos.Movies.Service
             }
         }
 
-        /// <inheritdoc /> 
-        /// <exception cref="FaultException">An exception occurred.</exception> 
+        /// <inheritdoc />
+        /// <exception cref="FaultException">An exception occurred.</exception>
         public async Task<IEnumerable<WatchTypeDto>> WatchTypeGetAllAsync(UserSessionDto session)
         {
             try
             {
-                this.ValidateStateAndSession(session);
+                await this.ValidateStateAndSessionAsync(session);
                 return (await WatchType.Static.GetAllAsync(UserSession.Static.FromContract(session))).Select(c => c.ToContract());
             }
             catch (Exception exception)
@@ -832,9 +749,18 @@ namespace Chaos.Movies.Service
         {
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="FaultException">An exception occurred.</exception>
         public async Task<UserSessionDto> CreateUserSessionAsync(UserLogin userLogin)
         {
-            return null;
+            try
+            {
+                return (await UserSession.Static.CreateSessionAsync(userLogin)).ToContract();
+            }
+            catch (Exception exception)
+            {
+                throw new FaultException(exception.Message);
+            }
         }
 
         public void MovieSearch(string searchText)
@@ -853,13 +779,19 @@ namespace Chaos.Movies.Service
 
             // s.GetMovieAsync()
         }
-        
-        private void ValidateStateAndSession(UserSessionDto session)
+
+        /// <summary>The validate state and session async.</summary>
+        /// <param name="session">The session.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="ServiceRequiredException">Configuration is not valid.</exception>
+        private async Task ValidateStateAndSessionAsync(UserSessionDto session)
         {
             if (Persistent.UseService)
             {
                 throw new ServiceRequiredException($"The {nameof(Persistent.UseService)} setting has to be set to false.");
             }
+
+            await UserSession.Static.FromContract(session).ValidateSessionAsync();
         }
     }
 }

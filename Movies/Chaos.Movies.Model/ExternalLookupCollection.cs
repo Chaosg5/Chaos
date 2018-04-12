@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ExternalLookupCollection.cs" company="Erik Bunnstad">
+// <copyright file="ExternalLookupCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -66,6 +66,16 @@ namespace Chaos.Movies.Model
             }
 
             return list;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">This <see cref="ExternalLookupCollection"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            foreach (var item in this.Items)
+            {
+                item.ValidateSaveCandidate();
+            }
         }
     }
 }

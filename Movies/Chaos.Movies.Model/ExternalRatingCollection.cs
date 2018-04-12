@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ExternalRatingCollection.cs" company="Erik Bunnstad">
+// <copyright file="ExternalRatingCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -66,6 +66,15 @@ namespace Chaos.Movies.Model
             }
 
             return list;
+        }
+
+        /// <inheritdoc />
+        internal override void ValidateSaveCandidate()
+        {
+            foreach (var item in this.Items)
+            {
+                item.ValidateSaveCandidate();
+            }
         }
     }
 }

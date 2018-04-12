@@ -84,7 +84,7 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
             }
 
             using (var service = new ChaosMoviesServiceClient())
@@ -101,7 +101,7 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
                 return;
             }
 

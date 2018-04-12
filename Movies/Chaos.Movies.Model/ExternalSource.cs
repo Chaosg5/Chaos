@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ExternalSource.cs" company="Erik Bunnstad">
+// <copyright file="ExternalSource.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -22,6 +22,8 @@ namespace Chaos.Movies.Model
     /// <summary>Represents a user.</summary>
     public sealed class ExternalSource : Readable<ExternalSource, ExternalSourceDto>
     {
+        // ToDo: MovieTypeAddress
+
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
 
@@ -113,13 +115,13 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
                 return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+                await service.ExternalSourceSaveAsync(session.ToContract(), this.ToContract());
             }
         }
 
@@ -175,14 +177,12 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                // ToDo: Service
-                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
-                return new List<ExternalSource>();
+                return (await service.ExternalSourceGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
 

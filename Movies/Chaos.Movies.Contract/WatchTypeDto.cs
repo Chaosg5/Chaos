@@ -1,11 +1,12 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="WatchTypeDto.cs" company="Erik Bunnstad">
+// <copyright file="WatchTypeDto.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 namespace Chaos.Movies.Contract
 {
+    using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
 
     /// <summary>Represents a user.</summary>
@@ -16,8 +17,8 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public int Id { get; set; }
 
-        /// <summary>Gets or sets the name of the location.</summary>
+        /// <summary>Gets or sets the list of titles of this <see cref="WatchTypeDto"/> in different languages.</summary>
         [DataMember]
-        public string Name { get; set; }
+        public ReadOnlyCollection<LanguageTitleDto> Titles { get; set; }
     }
 }

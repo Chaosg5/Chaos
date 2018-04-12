@@ -9,7 +9,6 @@ namespace Chaos.Movies.Contract
     using System;
     using System.Linq;
     using System.Runtime.Serialization;
-    using System.Security;
     using System.Security.Cryptography;
     using System.Text;
 

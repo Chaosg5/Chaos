@@ -110,8 +110,14 @@ namespace Chaos.Movies.Model
         /// <summary>Converts the <paramref name="columnName"/> to a variable name.</summary>
         /// <param name="columnName">The column name.</param>
         /// <returns>The variable name.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="columnName"/> is <see langword="null"/></exception>
         public static string ColumnToVariable(string columnName)
         {
+            if (columnName == null)
+            {
+                throw new ArgumentNullException(nameof(columnName));
+            }
+
             return $"@{char.ToLowerInvariant(columnName[0])}{columnName.Substring(1)}";
         }
 

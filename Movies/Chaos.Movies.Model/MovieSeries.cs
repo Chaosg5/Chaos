@@ -58,6 +58,9 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the movies which are a part of this collection with the keys representing their order.</summary>
         public MovieCollection Movies { get; private set; } = new MovieCollection();
 
+        /// <summary>Gets the list of images for the <see cref="Person"/> and their order.</summary>
+        public IconCollection Images { get; private set; } = new IconCollection();
+
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieSeries"/> is not valid to be saved.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
@@ -66,13 +69,13 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
                 return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                ////await service.({T})SaveAsync(session.ToContract(), this.ToContract());
+                await service.MovieSeriesSaveAsync(session.ToContract(), this.ToContract());
             }
         }
         
@@ -83,7 +86,8 @@ namespace Chaos.Movies.Model
             {
                 Id = this.Id,
                 Movies = this.Movies.ToContract(),
-                Titles = this.Titles.ToContract()
+                Titles = this.Titles.ToContract(),
+                Images = this.Images.ToContract()
             };
         }
 
@@ -100,8 +104,9 @@ namespace Chaos.Movies.Model
             return new MovieSeries
             {
                 Id = contract.Id,
-                Movies = this.Movies.FromContract(contract.Movies),
-                Titles = this.Titles.FromContract(contract.Titles)
+                Movies = this.Movies.FromContract(contract.Movies ?? new List<MovieDto>().AsReadOnly()),
+                Titles = this.Titles.FromContract(contract.Titles ?? new List<LanguageTitleDto>().AsReadOnly()),
+                Images = this.Images.FromContract(contract.Images ?? new List<IconDto>().AsReadOnly())
             };
         }
 
@@ -120,14 +125,12 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync);
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                // ToDo: Service
-                ////return (await service.({T})GetAsync(session.ToContract(), idList.ToList())).Select(x => new ({T})(x));
-                return new List<MovieSeries>();
+                return (await service.MovieSeriesGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
 
@@ -191,6 +194,17 @@ namespace Chaos.Movies.Model
                 movieSeries.Movies.Add(await GlobalCache.GetMovieAsync((int)reader[Movie.IdColumn]));
             }
 
+            if (!await reader.NextResultAsync())
+            {
+                throw new MissingResultException(4, $"{nameof(Person)}{IconCollection.IconsColumn}");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var person = (MovieSeries)this.GetFromResultsByIdInRecord(movieSeriesList, reader, IdColumn);
+                person.Images.Add(await Icon.Static.NewFromRecordAsync(reader));
+            }
+
             return movieSeriesList;
         }
 
@@ -222,7 +236,8 @@ namespace Chaos.Movies.Model
                 {
                     { Persistent.ColumnToVariable(IdColumn), this.Id },
                     { Persistent.ColumnToVariable(MovieCollection.MoviesColumn), this.Movies.GetSaveTable },
-                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable },
+                    { Persistent.ColumnToVariable(IconCollection.IconsColumn), this.Images.GetSaveTable }
                 });
         }
     }

@@ -10,6 +10,9 @@ Ensure methods
 Merge methods
 Get all User ratings
 
+SQL - Dont delete from (important) Collections, set bit deleted instead?
+Language Create type
+
 Log
 Validate session in Model.Base instead of Service
 
@@ -35,6 +38,7 @@ TMDB
 Rotten Critics
 Rotten User
 Metacritics
+Metacritics User
 
 Like Love Hate Star
 

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="MovieSeriesTypeDto.cs" company="Erik Bunnstad">
+// <copyright file="MovieSeriesTypeDto.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------

@@ -12,6 +12,7 @@ namespace Chaos.Movies.Model
     using System.Data;
     using System.Data.Common;
     using System.Data.Linq;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
@@ -153,13 +154,37 @@ namespace Chaos.Movies.Model
             this.ValidateSaveCandidate();
             if (!Persistent.UseService)
             {
-                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync);
+                await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
                 return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
-                //await service.CharacterSaveAsync(session.ToContract(), this.ToContract());
+                await service.IconSaveAsync(session.ToContract(), this.ToContract());
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<Icon> GetAsync(UserSession session, int id)
+        {
+            return (await this.GetAsync(session, new[] { id })).First();
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public override async Task<IEnumerable<Icon>> GetAsync(UserSession session, IEnumerable<int> idList)
+        {
+            if (!Persistent.UseService)
+            {
+                return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                return (await service.IconGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
 
@@ -203,6 +228,25 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        internal override async Task<IEnumerable<Icon>> ReadFromRecordsAsync(DbDataReader reader)
+        {
+            var icons = new List<Icon>();
+            if (!reader.HasRows)
+            {
+                throw new MissingResultException(1, $"{nameof(Icon)}s");
+            }
+
+            while (await reader.ReadAsync())
+            {
+                icons.Add(await this.NewFromRecordAsync(reader));
+            }
+
+            return icons;
+        }
+
+        /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override async Task ReadFromRecordAsync(IDataRecord record)
@@ -226,21 +270,6 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(DataColumn), this.Data },
                     { Persistent.ColumnToVariable(SizeColumn), this.Size }
                 });
-        }
-
-        public override Task<Icon> GetAsync(UserSession session, int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<IEnumerable<Icon>> GetAsync(UserSession session, IEnumerable<int> idList)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal override Task<IEnumerable<Icon>> ReadFromRecordsAsync(DbDataReader reader)
-        {
-            throw new NotImplementedException();
         }
     }
 }

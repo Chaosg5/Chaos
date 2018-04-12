@@ -17,13 +17,12 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class IconCollection : Listable<Icon, IconDto, IconCollection>
+    public class IconCollection : Orderable<Icon, IconDto, IconCollection>
     {
         /// <summary>The database column for <see cref="IconCollection"/>.</summary>
         internal const string IconsColumn = "Icons";
 
-        /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
-        /// <returns>A table containing the title and language as columns for each title.</returns>
+        /// <inheritdoc />
         public override DataTable GetSaveTable
         {
             get
@@ -32,18 +31,18 @@ namespace Chaos.Movies.Model
                 {
                     table.Locale = CultureInfo.InvariantCulture;
                     table.Columns.Add(new DataColumn(Icon.IdColumn, typeof(int)));
-                    foreach (var icon in this.Items)
+                    table.Columns.Add(new DataColumn(OrderColumn, typeof(int)));
+                    for (var i = 0; i < this.Items.Count; i++)
                     {
-                        table.Rows.Add(icon.Id);
+                        table.Rows.Add(this.Items[i].Id, i + 1);
                     }
 
                     return table;
                 }
             }
         }
-        
-        /// <summary>Converts this <see cref="IconCollection"/> to a <see cref="ReadOnlyCollection{IconDto}"/>.</summary>
-        /// <returns>The <see cref="ReadOnlyCollection{IconDto}"/>.</returns>
+
+        /// <inheritdoc />
         public override ReadOnlyCollection<IconDto> ToContract()
         {
             return new ReadOnlyCollection<IconDto>(this.Items.Select(i => i.ToContract()).ToList());
@@ -66,6 +65,15 @@ namespace Chaos.Movies.Model
             }
 
             return list;
+        }
+
+        /// <inheritdoc />
+        internal override void ValidateSaveCandidate()
+        {
+            foreach (var item in this.Items)
+            {
+                item.ValidateSaveCandidate();
+            }
         }
     }
 }

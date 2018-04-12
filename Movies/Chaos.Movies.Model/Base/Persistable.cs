@@ -31,10 +31,11 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecord">The callback method to use for reading the <typeparamref name="T"/> from data to object after being saved.</param>
+        /// <param name="session">The session.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <parmref name="readFromRecord"/> is <see langword="null"/></exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        protected async Task SaveToDatabaseAsync(IReadOnlyDictionary<string, object> commandParameters, Func<IDataRecord, Task> readFromRecord)
+        protected async Task SaveToDatabaseAsync(IReadOnlyDictionary<string, object> commandParameters, Func<IDataRecord, Task> readFromRecord, UserSession session)
         {
             if (commandParameters == null)
             {
@@ -45,7 +46,14 @@ namespace Chaos.Movies.Model.Base
             {
                 throw new ArgumentNullException(nameof(readFromRecord));
             }
-            
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            await session.ValidateSessionAsync();
+
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand($"{typeof(T).Name}Save", connection))
             {

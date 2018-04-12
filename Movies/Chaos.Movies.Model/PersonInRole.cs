@@ -156,8 +156,13 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="PersonInRole"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
+            this.Person.ValidateSaveCandidate();
+            this.Role.ValidateSaveCandidate();
+            this.Department.ValidateSaveCandidate();
+            this.Ratings.ValidateSaveCandidate();
         }
 
         /// <summary>Creates new <see cref="PersonInRole"/>s from the <paramref name="reader"/>.</summary>

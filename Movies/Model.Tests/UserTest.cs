@@ -25,7 +25,7 @@ namespace Chaos.Movies.Model.Tests
         public static async Task TestEnsureSystemUser()
         {
             var login = new UserLogin("erik@skillingaryd.nu", "712", (await Dns.GetHostEntryAsync(Dns.GetHostName())).AddressList[0].ToString());
-            var session = await UserSession.CreateSessionAsync(login);
+            var session = await UserSession.Static.CreateSessionAsync(login);
             Assert.IsNotNull(session);
             Assert.AreNotEqual(Guid.Empty, session.SessionId);
             Assert.Greater(session.UserId, 0);
@@ -40,7 +40,7 @@ namespace Chaos.Movies.Model.Tests
         internal static async Task<UserSession> GetUserSessionAsync()
         {
             var login = new UserLogin("erik@skillingaryd.nu", "712", (await Dns.GetHostEntryAsync(Dns.GetHostName())).AddressList[0].ToString());
-            var session = await UserSession.CreateSessionAsync(login);
+            var session = await UserSession.Static.CreateSessionAsync(login);
             Assert.IsNotNull(session);
             Assert.AreNotEqual(Guid.Empty, session.SessionId);
             Assert.Greater(session.UserId, 0);

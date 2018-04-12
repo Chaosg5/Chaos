@@ -7,12 +7,9 @@
 namespace Chaos.Movies.Model
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Threading;
     using System.Threading.Tasks;
-
-    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Provides a global cache of objects.</summary>
     internal static class GlobalCache
@@ -44,6 +41,9 @@ namespace Chaos.Movies.Model
         /// <summary>Gets all available icon types.</summary>
         private static readonly AsyncCache<int, RatingType> RatingTypes = new AsyncCache<int, RatingType>(i => RatingType.Static.GetAsync(session, i));
 
+        /// <summary>Gets all available icon types.</summary>
+        private static readonly AsyncCache<int, WatchType> WatchTypes = new AsyncCache<int, WatchType>(i => WatchType.Static.GetAsync(session, i));
+
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
         /// <summary>The session.</summary>
@@ -67,32 +67,14 @@ namespace Chaos.Movies.Model
             await RolesLoadAllAsync();
             await IconTypesLoadAllAsync();
             await RatingTypesLoadAllAsync();
+            await WatchTypesLoadAllAsync();
         }
 
         /// <summary>Clears all cache objects.</summary>
         public static void ClearAllCache()
         {
         }
-
-        // ToDo: Remove this
-        /////// <summary>Adds the specified <paramref name="type"/> to the current list of movie series types.</summary>
-        /////// <param name="type">The movie series type to add.</param>
-        ////public static void AddMovieSeriesType(MovieSeriesType type)
-        ////{
-        ////    if (type == null)
-        ////    {
-        ////        throw new ArgumentNullException("type");
-        ////    }
-
-        ////    if (type.Id <= 0)
-        ////    {
-        ////        throw new PersistentObjectRequiredException("The movie series type needs to be saved before added to the cache.");
-        ////    }
-
-        ////    MovieSeriesTypesField.RemoveAll(t => t.Id == type.Id);
-        ////    MovieSeriesTypesField.Add(type);
-        ////}
-
+        
         /// <summary>Gets the specified <see cref="Movie"/>.</summary>
         /// <param name="id">The id of the <see cref="Movie"/> to get.</param>
         /// <returns>The specified <see cref="Movie"/>.</returns>
@@ -173,49 +155,20 @@ namespace Chaos.Movies.Model
             return await RatingTypes.GetValue(id);
         }
 
+        /// <summary>Gets the specified <see cref="WatchType"/>.</summary>
+        /// <param name="id">The id of the <see cref="WatchType"/> to get.</param>
+        /// <returns>The specified <see cref="WatchType"/>.</returns>
+        public static async Task<WatchType> GetWatchTypeAsync(int id)
+        {
+            return await WatchTypes.GetValue(id);
+        }
+
         /// <summary>Gets the specified <see cref="ExternalSource"/>.</summary>
         /// <param name="id">The id of the <see cref="ExternalSource"/> to get.</param>
         /// <returns>The specified <see cref="ExternalSource"/>.</returns>
         public static async Task<ExternalSource> GetExternalSourceAsync(int id)
         {
             return await ExternalSources.GetValue(id);
-        }
-
-        /////// <summary>Gets the specified <see cref="Role"/> by title and <see cref="Department"/> title.</summary>
-        /////// <param name="roleTitle">The title of the <see cref="Role"/> to get.</param>
-        /////// <param name="departmentTitle">The title of the <see cref="Department"/> that the role belongs to.</param>
-        /////// <param name="language">The language of the titles.</param>
-        /////// <returns>The found role.</returns>
-        /////// <exception cref="ArgumentOutOfRangeException">If the role or department wasn't found.</exception>
-        ////public static Role GetRole(string roleTitle, string departmentTitle, CultureInfo language)
-        ////{
-        ////    var role = GetDepartment(departmentTitle, language).Roles.First(r => r.Titles.GetTitle(language).Title == roleTitle);
-        ////    if (role == null)
-        ////    {
-        ////        throw new ArgumentOutOfRangeException(nameof(roleTitle));
-        ////    }
-
-        ////    return role;
-        ////}
-
-        /// <summary>Loads the <see cref="Character"/>s with the specified ids from the database.</summary>
-        /// <param name="idList">The list of ids of the <see cref="Character"/>s to load.</param>
-        private static void CharactersLoad(IEnumerable<int> idList)
-        {
-            //foreach (var person in Person.Get(idList))
-            //{
-            //    People.SetValue(person.Id, person);
-            //}
-        }
-
-        /// <summary>Loads the <see cref="Person"/>s with the specified ids from the database.</summary>
-        /// <param name="idList">The list of ids of the <see cref="Person"/>s to load.</param>
-        private static void PeopleLoad(IEnumerable<int> idList)
-        {
-            //foreach (var person in Person.Get(idList))
-            //{
-            //    People.SetValue(person.Id, person);
-            //}
         }
 
         /// <summary>Loads all <see cref="Department"/>s from the database.</summary>
@@ -244,6 +197,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Loads all <see cref="Role"/>s from the database.</summary>
         /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         private static async Task RolesLoadAllAsync()
         {
             Roles.Clear();
@@ -274,6 +228,18 @@ namespace Chaos.Movies.Model
             foreach (var ratingType in await RatingType.Static.GetAllAsync(session))
             {
                 RatingTypes.SetValue(ratingType.Id, ratingType);
+            }
+        }
+
+        /// <summary>Loads all <see cref="WatchType"/>s from the database.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static async Task WatchTypesLoadAllAsync()
+        {
+            WatchTypes.Clear();
+            foreach (var ratingType in await WatchType.Static.GetAllAsync(session))
+            {
+                WatchTypes.SetValue(ratingType.Id, ratingType);
             }
         }
     }

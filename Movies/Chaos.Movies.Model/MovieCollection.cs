@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="MovieCollection.cs" company="Erik Bunnstad">
+// <copyright file="MovieCollection.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -30,8 +30,8 @@ namespace Chaos.Movies.Model
                 using (var table = new DataTable())
                 {
                     table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn(Movie.IdColumn));
-                    table.Columns.Add(new DataColumn(OrderColumn));
+                    table.Columns.Add(new DataColumn(Movie.IdColumn, typeof(int)));
+                    table.Columns.Add(new DataColumn(OrderColumn, typeof(int)));
                     for (var i = 0; i < this.Items.Count; i++)
                     {
                         table.Rows.Add(this.Items[i].Id, i + 1);
@@ -65,6 +65,21 @@ namespace Chaos.Movies.Model
             }
 
             return list;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="MovieCollection"/> is not valid to be saved.</exception>
+        internal override void ValidateSaveCandidate()
+        {
+            if (this.Items.Count == 0)
+            {
+                throw new InvalidSaveCandidateException("At least one title needs to be specified.");
+            }
+
+            foreach (var item in this.Items)
+            {
+                item.ValidateSaveCandidate();
+            }
         }
     }
 }
