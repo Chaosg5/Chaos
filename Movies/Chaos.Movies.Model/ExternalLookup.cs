@@ -24,7 +24,7 @@ namespace Chaos.Movies.Model
         private ExternalSource externalSource;
 
         /// <summary>Private part of the <see cref="ExternalId"/> property.</summary>
-        private string externalId;
+        private string externalId = string.Empty;
         
         /// <summary>Initializes a new instance of the <see cref="ExternalLookup"/> class.</summary>
         /// <param name="externalSource">The external source.</param>
@@ -71,7 +71,7 @@ namespace Chaos.Movies.Model
             get => this.externalId;
             private set
             {
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     // ReSharper disable once ExceptionNotDocumented
                     throw new ArgumentNullException(nameof(value));
@@ -96,7 +96,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            return new ExternalLookup { ExternalSource = this.ExternalSource.FromContract(contract.ExternalSource), ExternalId = contract.ExternalId };
+            return new ExternalLookup { ExternalSource = ExternalSource.Static.FromContract(contract.ExternalSource), ExternalId = contract.ExternalId };
         }
 
         /// <inheritdoc />

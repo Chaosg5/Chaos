@@ -11,6 +11,7 @@ namespace Chaos.Movies.Model
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.SqlClient;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
@@ -29,6 +30,9 @@ namespace Chaos.Movies.Model
 
         /// <summary>The database column for <see cref="ActiveTo"/>.</summary>
         private const string ActiveToColumn = "ActiveTo";
+
+        /// <summary>Available sessions.</summary>
+        private static readonly AsyncCache<Guid, UserSession> UserSessions = new AsyncCache<Guid, UserSession>(GetFromDatabaseAsync);
 
         /// <summary>Prevents a default instance of the <see cref="UserSession"/> class from being created.</summary>
         private UserSession()
@@ -59,6 +63,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException"><paramref name="login"/> is <see langword="null"/></exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
         public async Task<UserSession> CreateSessionAsync(UserLogin login)
         {
             if (login == null)
@@ -68,24 +73,7 @@ namespace Chaos.Movies.Model
 
             if (!Persistent.UseService)
             {
-                using (var connection = new SqlConnection(Persistent.ConnectionString))
-                using (var command = new SqlCommand("CreateUserSession", connection))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    foreach (var commandParameter in this.GetSaveParameters(login))
-                    {
-                        command.Parameters.AddWithValue(commandParameter.Key, commandParameter.Value);
-                    }
-
-                    await connection.OpenAsync();
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            await this.ReadFromRecordAsync(reader);
-                        }
-                    }
-                }
+                return await this.CreateSessionToDatabaseAsync(login);
             }
 
             using (var service = new ChaosMoviesServiceClient())
@@ -94,9 +82,32 @@ namespace Chaos.Movies.Model
             }
         }
 
+        /// <summary>Validates that this <see cref="UserSession"/> is valid.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
         public async Task ValidateSessionAsync()
         {
+            var session = await UserSessions.GetValue(this.SessionId);
+            if (session.ActiveTo > DateTime.Now)
+            {
+                return;
+            }
+
+            if (session.SessionId == Guid.Empty)
+            {
+                // ReSharper disable once ExceptionNotDocumented
+                throw new InvalidSessionException("The session does not exist and can't be used.");
+            }
             
+            // Updates ActiveTo from the database, since the cache may not be up to date
+            session = await GetFromDatabaseAsync(this.SessionId);
+            if (session.ActiveTo > DateTime.Now)
+            {
+                UserSessions.SetValue(session.SessionId, session);
+                return;
+            }
+
+            // ReSharper disable once ExceptionNotDocumented
+            throw new InvalidSessionException("The session has expired and can't be used.");
         }
 
         /// <inheritdoc />
@@ -201,7 +212,34 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(ActiveToColumn), this.ActiveTo },
                 });
         }
-        
+
+        /// <summary>The get from database async.</summary>
+        /// <param name="sessionId">The session id.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        private static async Task<UserSession> GetFromDatabaseAsync(Guid sessionId)
+        {
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"{typeof(UserSession).Name}Get", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                // ReSharper disable once ExceptionNotDocumented
+                command.Parameters.AddWithValue(
+                    Persistent.ColumnToVariable($"{IdColumn}s"),
+                    Persistent.CreateIdCollectionTable(new List<Guid> { sessionId }));
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    if (await reader.ReadAsync())
+                    {
+                        return await Static.NewFromRecordAsync(reader);
+                    }
+                }
+            }
+
+            return new UserSession();
+        }
+
         /// <summary>Gets SQL parameters to use for <see cref="Persistable{T,TDto}.SaveAsync"/>.</summary>
         /// <param name="userLogin">The user login credentials.</param>
         /// <returns>The list of SQL parameters.</returns>
@@ -216,6 +254,37 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(User.UsernameColumn), userLogin.Username },
                     { Persistent.ColumnToVariable(User.PasswordColumn), userLogin.Password }
                 });
+        }
+
+        /// <summary>The create session to database async.</summary>
+        /// <param name="login">The login.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
+        private async Task<UserSession> CreateSessionToDatabaseAsync(UserLogin login)
+        {
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"{nameof(UserSession)}Save", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                foreach (var commandParameter in this.GetSaveParameters(login))
+                {
+                    command.Parameters.AddWithValue(commandParameter.Key, commandParameter.Value);
+                }
+
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        var session = new UserSession();
+                        await session.ReadFromRecordAsync(reader);
+                        return session;
+                    }
+
+                    throw new MissingResultException("Failed to create a new session.");
+                }
+            }
         }
     }
 }

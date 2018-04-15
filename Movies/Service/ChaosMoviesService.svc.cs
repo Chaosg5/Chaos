@@ -42,7 +42,7 @@ namespace Chaos.Movies.Service
                 throw new FaultException(exception.Message);
             }
         }
-
+        
         /// <inheritdoc /> 
         /// <exception cref="FaultException">An exception occurred.</exception> 
         public async Task<IEnumerable<CharacterDto>> CharacterGetAsync(UserSessionDto session, IEnumerable<int> idList)

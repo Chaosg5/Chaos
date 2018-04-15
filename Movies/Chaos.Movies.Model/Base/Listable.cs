@@ -14,13 +14,7 @@ namespace Chaos.Movies.Model.Base
     using System.Linq;
 
     using Chaos.Movies.Model.Exceptions;
-
-    // ToDo: ReadFromReader?????
-
-    // ToDo: IOrderable + ReorderList
-
-    // ToDo: IListable + GetSaveTable
-
+    
     /// <summary>Represents a persitable object that can be saved to the database.</summary>
     /// <typeparam name="T">The base model logic type.</typeparam>
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>

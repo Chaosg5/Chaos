@@ -11,6 +11,7 @@ namespace Chaos.Movies.Model
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
+    using System.Data.SqlClient;
     using System.Linq;
     using System.Net.Mail;
     using System.Threading.Tasks;
@@ -21,12 +22,12 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A user.</summary>
-    public class User : Readable<User, UserDto>
+    public class User : Readable<User, UserDto>, ISearchable<User>
     {
         /// <summary>The database column for <see cref="Username"/>.</summary>
         internal const string UsernameColumn = "Username";
 
-        /// <summary>The database column for <see cref="Password"/>.</summary>
+        /// <summary>The database column for password.</summary>
         internal const string PasswordColumn = "Password";
 
         /// <summary>The database column for <see cref="Name"/>.</summary>
@@ -35,14 +36,20 @@ namespace Chaos.Movies.Model
         /// <summary>The database column for <see cref="Email"/>.</summary>
         private const string EmailColumn = "Email";
 
+        /// <summary>The database column for <see cref="Username"/>.</summary>
+        private const string OldUsernameColumn = "OldUsername";
+
+        /// <summary>The database column for password.</summary>
+        private const string OldPasswordColumn = "OldPassword";
+
         /// <summary>Private part of the <see cref="Username"/> property.</summary>
-        private string username;
+        private string username = string.Empty;
 
         /// <summary>Private part of the <see cref="Name"/> property.</summary>
-        private string name;
+        private string name = string.Empty;
 
         /// <summary>Private part of the <see cref="Email"/> property.</summary>
-        private string email;
+        private string email = string.Empty;
 
         /// <inheritdoc />
         /// <param name="name">The <see cref="Name"/> to set.</param>
@@ -57,7 +64,6 @@ namespace Chaos.Movies.Model
             }
 
             this.Username = userLogin.Username;
-            this.Password = userLogin.Password;
             this.Name = name;
             this.Email = email;
         }
@@ -123,9 +129,6 @@ namespace Chaos.Movies.Model
                 this.email = value;
             }
         }
-
-        /// <summary>Gets or sets the password.</summary>
-        private string Password { get; set; }
 
         /// <inheritdoc />
         public override UserDto ToContract()
@@ -198,23 +201,50 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Updates the <see cref="Password"/> and/or <see cref="Username"/> of the <see cref="User"/> and saves.</summary>
-        /// <param name="oldLogin">The old login credentials.</param>
-        /// <param name="newLogin">The new login credentials.</param>
+        /// <summary>Updates the password and/or <see cref="Username"/> of the <see cref="User"/> and saves.</summary>
         /// <param name="session">The session of the user making the change.</param>
+        /// <param name="newLogin">The new login credentials.</param>
+        /// <param name="oldLogin">The old login credentials.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="ArgumentException">The <paramref name="oldLogin"/> does not match.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public async Task UpdatePasswordAndSaveAsync(UserLogin oldLogin, UserLogin newLogin, UserSession session)
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        public async Task SetPasswordAsync(UserSession session, UserLogin newLogin, UserLogin oldLogin = null)
         {
-            if (this.Username != oldLogin.Username || this.Password != oldLogin.Password)
+            if (!Persistent.UseService)
             {
-                throw new ArgumentException("The login credentials does not match.", nameof(oldLogin));
+                await this.SetPasswordToDatabaseAsync(oldLogin ?? newLogin, newLogin, session);
+                return;
             }
 
-            this.Username = newLogin.Username;
-            this.Password = newLogin.Password;
-            await this.SaveAsync(session);
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.UserSaveAsync(session.ToContract(), this.ToContract());
+            }
+        }
+
+        /// <inheritdoc />
+        /// <remarks>Searching with <see cref="SearchParametersDto.RequireExactMatch"/> = <see langword="true"/> and <see cref="SearchParametersDto.SearchLimit"/> = 1 will force the search to only <see cref="Username"/> for an exact match.</remarks>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public async Task<IEnumerable<User>> SearchAsync(SearchParametersDto parametersDto, UserSession session)
+        {
+            if (!Persistent.UseService)
+            {
+                var items = new List<User>();
+                foreach (var id in await this.SearchDatabaseAsync(parametersDto, session))
+                {
+                    items.Add(await this.GetAsync(session, id));
+                }
+
+                return items;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                return new List<User>();
+                ////await service.CharacterSearchAsync(session.ToContract(), this.ToContract());
+            }
         }
 
         /// <inheritdoc />
@@ -275,6 +305,54 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(NameColumn), this.Name },
                     { Persistent.ColumnToVariable(EmailColumn), this.Email }
                 });
+        }
+
+        /// <summary>Sets the password to the database.</summary>
+        /// <param name="oldLogin">The old Login.</param>
+        /// <param name="newLogin">The new Login.</param>
+        /// <param name="session">The session.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="oldLogin"/> or <parmref name="newLogin"/> is <see langword="null"/></exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        private async Task SetPasswordToDatabaseAsync(UserLogin oldLogin, UserLogin newLogin, UserSession session)
+        {
+            if (oldLogin == null)
+            {
+                throw new ArgumentNullException(nameof(oldLogin));
+            }
+
+            if (newLogin == null)
+            {
+                throw new ArgumentNullException(nameof(newLogin));
+            }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            await session.ValidateSessionAsync();
+
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"{typeof(User).Name}SetPassword", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable(User.IdColumn), this.Id);
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable(OldUsernameColumn), oldLogin.Username);
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable(OldPasswordColumn), oldLogin.Password);
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable(UsernameColumn), newLogin.Username);
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable(PasswordColumn), newLogin.Password);
+
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        await this.ReadFromRecordAsync(reader);
+                    }
+                }
+            }
         }
     }
 }

@@ -20,13 +20,13 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
-    public sealed class Character : Readable<Character, CharacterDto>
+    public sealed class Character : Readable<Character, CharacterDto>, ISearchable<Character>
     {
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
 
         /// <summary>Private part of the <see cref="Name"/> property.</summary>
-        private string name;
+        private string name = string.Empty;
 
         /// <inheritdoc />
         /// <param name="name">The value to set for <see cref="Name"/>.</param>
@@ -53,7 +53,7 @@ namespace Chaos.Movies.Model
                 if (string.IsNullOrEmpty(value))
                 {
                     // ReSharper disable once ExceptionNotDocumented
-                    throw new ArgumentNullException(nameof(value));
+                    throw new ArgumentNullException(nameof(value), "The name of the character has to be set.");
                 }
 
                 this.name = value;
@@ -90,6 +90,29 @@ namespace Chaos.Movies.Model
             using (var service = new ChaosMoviesServiceClient())
             {
                 return (await service.CharacterGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        public async Task<IEnumerable<Character>> SearchAsync(SearchParametersDto parametersDto, UserSession session)
+        {
+            if (!Persistent.UseService)
+            {
+                var items = new List<Character>();
+                foreach (var id in await this.SearchDatabaseAsync(parametersDto, session))
+                {
+                    items.Add(await GlobalCache.GetCharacterAsync(id));
+                }
+
+                return items;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                return new List<Character>();
+                ////await service.CharacterSearchAsync(session.ToContract(), this.ToContract());
             }
         }
 

@@ -20,8 +20,10 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a person.</summary>
-    public class Person : Readable<Person, PersonDto>
+    public class Person : Readable<Person, PersonDto>, ISearchable<Person>
     {
+        // ToDo: Add BirthDay, DeathDay, Age, Gender
+
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
 
@@ -124,6 +126,29 @@ namespace Chaos.Movies.Model
             using (var service = new ChaosMoviesServiceClient())
             {
                 return (await service.PersonGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        public async Task<IEnumerable<Person>> SearchAsync(SearchParametersDto parametersDto, UserSession session)
+        {
+            if (!Persistent.UseService)
+            {
+                var items = new List<Person>();
+                foreach (var id in await this.SearchDatabaseAsync(parametersDto, session))
+                {
+                    items.Add(await GlobalCache.GetPersonAsync(id));
+                }
+
+                return items;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                return new List<Person>();
+                ////await service.CharacterSearchAsync(session.ToContract(), this.ToContract());
             }
         }
 

@@ -20,7 +20,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a user.</summary>
-    public sealed class ExternalSource : Readable<ExternalSource, ExternalSourceDto>
+    public sealed class ExternalSource : Typeable<ExternalSource, ExternalSourceDto>
     {
         // ToDo: MovieTypeAddress
 
@@ -43,7 +43,7 @@ namespace Chaos.Movies.Model
         private const string EpisodeAddressColumn = "EpisodeAddress";
 
         /// <summary>Private part of the <see cref="Name"/> property.</summary>
-        private string name;
+        private string name = string.Empty;
 
         /// <summary>Initializes a new instance of the <see cref="ExternalSource"/> class.</summary>
         /// <param name="name">The <see cref="Name"/> to set.</param>
@@ -183,6 +183,22 @@ namespace Chaos.Movies.Model
             using (var service = new ChaosMoviesServiceClient())
             {
                 return (await service.ExternalSourceGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<IEnumerable<ExternalSource>> GetAllAsync(UserSession session)
+        {
+            if (!Persistent.UseService)
+            {
+                return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync, session);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                return new List<ExternalSource>();
+                ////return (await service.ExternalSourceGetAllAsync(session.ToContract())).Select(this.FromContract);
             }
         }
 

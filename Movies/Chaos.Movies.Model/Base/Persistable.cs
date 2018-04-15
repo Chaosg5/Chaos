@@ -11,7 +11,7 @@ namespace Chaos.Movies.Model.Base
     using System.Data;
     using System.Data.SqlClient;
     using System.Threading.Tasks;
-    
+
     /// <summary>Represents a persitable object that can be saved to the database.</summary>
     /// <typeparam name="T">The base model logic type.</typeparam>
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
@@ -51,7 +51,7 @@ namespace Chaos.Movies.Model.Base
             {
                 throw new ArgumentNullException(nameof(session));
             }
-
+            
             await session.ValidateSessionAsync();
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))

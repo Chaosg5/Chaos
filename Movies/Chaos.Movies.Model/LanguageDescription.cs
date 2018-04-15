@@ -22,10 +22,10 @@ namespace Chaos.Movies.Model
         internal const string DescriptionColumn = "Description";
 
         /// <summary>Private part of the <see cref="Title"/> property.</summary>
-        private string title;
+        private string title = string.Empty;
 
         /// <summary>Private part of the <see cref="Description"/> property.</summary>
-        private string description;
+        private string description = string.Empty;
 
         /// <summary>Private part of the <see cref="Language"/> property.</summary>
         private CultureInfo language;

@@ -43,7 +43,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets all available icon types.</summary>
         private static readonly AsyncCache<int, WatchType> WatchTypes = new AsyncCache<int, WatchType>(i => WatchType.Static.GetAsync(session, i));
-
+        
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
         /// <summary>The session.</summary>

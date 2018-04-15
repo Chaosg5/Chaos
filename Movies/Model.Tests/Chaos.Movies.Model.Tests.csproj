@@ -63,6 +63,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CharacterTest.cs" />
+    <Compile Include="ExternalSourceTest.cs" />
+    <Compile Include="ExternalLookupTest.cs" />
+    <Compile Include="TestExtensions.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="UserTest.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ErrorTest.cs" />

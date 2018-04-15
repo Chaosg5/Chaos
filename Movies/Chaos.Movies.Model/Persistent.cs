@@ -15,6 +15,7 @@ namespace Chaos.Movies.Model
 
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
+    using Chaos.Movies.Model.Properties;
 
     /// <summary>Contains help methods for <see cref="Persistable{T,TDto}"/>.</summary>
     public static class Persistent
@@ -23,7 +24,7 @@ namespace Chaos.Movies.Model
         public static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
         /// <summary>If database interaction should be made through the service.</summary>
-        public static readonly bool UseService = ConfigurationManager.AppSettings["UseService"] != null && ConfigurationManager.AppSettings["UseSaveService"] == "true";
+        public static readonly bool UseService = Settings.Default.UserService;
 
         /// <summary>Reorders a dictionary with an order based key.</summary>
         /// <typeparam name="T">The type of the items in the <paramref name="list"/>.</typeparam>
@@ -100,6 +101,27 @@ namespace Chaos.Movies.Model
             }
 
             if (idList.Any(i => i <= 0))
+            {
+                throw new PersistentObjectRequiredException("All items to get needs to be persisted.");
+            }
+
+            return CreateTable(idList, "Id");
+        }
+
+        /// <summary>Creates a data table containing a single column and rows for each item in <paramref name="ids"/>.</summary>
+        /// <param name="ids">The list of ids.</param>
+        /// <returns>The created <see cref="DataTable"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="ids"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public static DataTable CreateIdCollectionTable(IEnumerable<Guid> ids)
+        {
+            var idList = ids?.Distinct().ToList();
+            if (idList == null || !idList.Any())
+            {
+                throw new ArgumentNullException(nameof(ids));
+            }
+
+            if (idList.Any(i => i == Guid.Empty))
             {
                 throw new PersistentObjectRequiredException("All items to get needs to be persisted.");
             }

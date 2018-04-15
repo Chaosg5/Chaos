@@ -6,6 +6,8 @@
       <Word>IMDB</Word>
       <Word>TMDB</Word>
       <Word>CMDB</Word>
+      <Word>Dto</Word>
+      <Word>Persistable</Word>
     </Recognized>
   </Words>
 </Dictionary>
