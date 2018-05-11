@@ -56,7 +56,7 @@ namespace Chaos.Movies.Model
         {
             if (contract == null)
             {
-                throw new ArgumentNullException(nameof(contract));
+                return new ExternalLookupCollection();
             }
 
             var list = new ExternalLookupCollection();

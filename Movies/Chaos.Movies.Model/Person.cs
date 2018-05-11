@@ -81,9 +81,9 @@ namespace Chaos.Movies.Model
             {
                 Id = this.Id,
                 Name = this.Name,
-                ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups ?? new List<ExternalLookupDto>().AsReadOnly()),
-                Images = this.Images.FromContract(contract.Images ?? new List<IconDto>().AsReadOnly()),
-                Ratings = this.Ratings.FromContract(contract.Ratings ?? new UserSingleRatingDto())
+                ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups),
+                Images = this.Images.FromContract(contract.Images),
+                Ratings = this.Ratings.FromContract(contract.Ratings)
             };
         }
 

@@ -111,7 +111,7 @@ namespace Chaos.Movies.Model.Tests
             var login = new UserLogin(
                 Properties.Settings.Default.SystemUserName,
                 Properties.Settings.Default.SystemUserName,
-                (await Dns.GetHostEntryAsync(Dns.GetHostName())).AddressList[0].ToString());
+                await GlobalCache.GetServerIpAsync());
             // ReSharper disable ExceptionNotDocumented
             var session = await UserSession.Static.CreateSessionAsync(login);
             // ReSharper restore ExceptionNotDocumented

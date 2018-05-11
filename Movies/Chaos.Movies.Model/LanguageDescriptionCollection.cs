@@ -62,7 +62,7 @@ namespace Chaos.Movies.Model
         {
             if (contract == null)
             {
-                throw new ArgumentNullException(nameof(contract));
+                return new LanguageDescriptionCollection();
             }
 
             var list = new LanguageDescriptionCollection();

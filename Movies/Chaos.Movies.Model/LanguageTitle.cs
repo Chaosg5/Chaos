@@ -16,7 +16,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class LanguageTitle : Loadable<LanguageTitle, LanguageTitleDto>
+    public class LanguageTitle : Loadable<LanguageTitle, LanguageTitleDto>, IEquatable<LanguageTitle>
     {
         /// <summary>The database column for <see cref="Title"/>.</summary>
         internal const string TitleColumn = "Title";
@@ -88,6 +88,77 @@ namespace Chaos.Movies.Model
                 }
 
                 this.language = value;
+            }
+        }
+
+        /// <summary>Returns a value indicating whether the <paramref name="titleB"/> is equal to the specified <paramref name="titleB"/>.</summary>
+        /// <param name="titleA">The first title to compare to the <paramref name="titleB"/>.</param>
+        /// <param name="titleB">The second title to compare to the <paramref name="titleA"/>.</param>
+        /// <returns><see langword="true"/> if the <paramref name="titleA"/> has the same value the <paramref name="titleB"/>; otherwise <see langword="false"/>.</returns>
+        public static bool operator ==(LanguageTitle titleA, LanguageTitle titleB)
+        {
+            return titleA?.Equals(titleB) ?? false;
+        }
+
+        /// <summary>Returns a value indicating whether the <paramref name="titleB"/> is not equal to the specified <paramref name="titleB"/>.</summary>
+        /// <param name="titleA">The first title to compare to the <paramref name="titleB"/>.</param>
+        /// <param name="titleB">The second title to compare to the <paramref name="titleA"/>.</param>
+        /// <returns><see langword="true"/> if the <paramref name="titleA"/> doesn't have the same value the <paramref name="titleB"/>; otherwise <see langword="false"/>.</returns>
+        public static bool operator !=(LanguageTitle titleA, LanguageTitle titleB)
+        {
+            return titleA != titleB;
+        }
+
+        /// <summary>Returns a value indicating whether this instance is equal to the specified <paramref name="otherTitle"/>.</summary>
+        /// <param name="otherTitle">The other title to compare to this instance.</param>
+        /// <returns><see langword="true"/> if the <paramref name="otherTitle"/> has the same value as this instance; otherwise <see langword="false"/>.</returns>
+        public bool Equals(LanguageTitle otherTitle)
+        {
+            if (object.ReferenceEquals(null, otherTitle))
+            {
+                return false;
+            }
+
+            if (object.ReferenceEquals(this, otherTitle))
+            {
+                return true;
+            }
+
+            return string.Equals(this.title, otherTitle.title) && string.Equals(this.language.Name, otherTitle.language.Name);
+        }
+
+        /// <summary>Returns a value indicating whether this instance is equal to the specified <paramref name="obj"/>.</summary>
+        /// <param name="obj">An object to compare to this instance.</param>
+        /// <returns><see langword="true"/> if the <paramref name="obj"/> is an <see cref="LanguageTitle"/> and has the same value as this instance; otherwise <see langword="false"/>.</returns>
+        public override bool Equals(object obj)
+        {
+            if (object.ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (object.ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return this.Equals((LanguageTitle)obj);
+        }
+
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A hash code for the current <see cref="int"/>.</returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                // ReSharper disable NonReadonlyMemberInGetHashCode
+                return ((this.title != null ? this.title.GetHashCode() : 0) * 397) ^ (this.language != null ? this.language.GetHashCode() : 0);
+                // ReSharper restore NonReadonlyMemberInGetHashCode
             }
         }
 

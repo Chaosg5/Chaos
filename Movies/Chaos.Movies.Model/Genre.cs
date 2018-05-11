@@ -151,7 +151,7 @@ namespace Chaos.Movies.Model
                 genre.Titles.Add(await LanguageTitle.Static.NewFromRecordAsync(reader));
             }
 
-            if (!await reader.NextResultAsync() || !reader.HasRows)
+            if (!await reader.NextResultAsync())
             {
                 throw new MissingResultException(3, $"{nameof(Genre)}{ExternalLookupCollection.ExternalLookupColumn}");
             }
@@ -181,7 +181,8 @@ namespace Chaos.Movies.Model
         protected override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn });
-            return Task.FromResult(new Genre { Id = (int)record[IdColumn] });
+            this.Id = (int)record[IdColumn];
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

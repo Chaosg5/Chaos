@@ -63,7 +63,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DepartmentTest.cs" />
     <Compile Include="CharacterTest.cs" />
+    <Compile Include="GenreTest.cs" />
     <Compile Include="ExternalSourceTest.cs" />
     <Compile Include="ExternalLookupTest.cs" />
     <Compile Include="TestExtensions.cs" />
@@ -72,7 +74,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ErrorTest.cs" />
     <Compile Include="RolesTest.cs" />
-    <Compile Include="LanguageTest.cs" />
+    <Compile Include="LanguageTitleTest.cs" />
     <Compile Include="UserLoginTest.cs" />
     <Compile Include="RatingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

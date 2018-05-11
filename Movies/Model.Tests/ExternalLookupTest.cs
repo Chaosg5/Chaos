@@ -20,12 +20,8 @@ namespace Chaos.Movies.Model.Tests
         [Test]
         public static void TestExternalLookupContract()
         {
-            var externalId = "externalId9";
-            var contract = new ExternalLookupDto
-            {
-                ExternalId = externalId,
-                ExternalSource = ExternalSourceTest.GetExternalSourceContract()
-            };
+            var contract = GetExternalLookupContract();
+            var externalId = contract.ExternalId;
             var externalLookup = ExternalLookup.Static.FromContract(contract);
             Assert.AreEqual(contract.ExternalId, externalLookup.ExternalId);
             ExternalSourceTest.AssertExternalSource(contract.ExternalSource, externalLookup.ExternalSource);
@@ -35,6 +31,17 @@ namespace Chaos.Movies.Model.Tests
             contract.ExternalId = externalId;
             contract.ExternalSource = null;
             Assert.Throws<ArgumentNullException>(() => ExternalLookup.Static.FromContract(contract));
+        }
+
+        /// <summary>The get external lookup contract.</summary>
+        /// <returns>The <see cref="ExternalLookupDto"/>.</returns>
+        internal static ExternalLookupDto GetExternalLookupContract()
+        {
+            return new ExternalLookupDto
+            {
+                ExternalId = "externalId9",
+                ExternalSource = ExternalSourceTest.GetExternalSourceContract()
+            };
         }
     }
 }

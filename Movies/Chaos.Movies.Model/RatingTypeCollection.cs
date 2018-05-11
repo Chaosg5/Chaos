@@ -59,14 +59,8 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="NotSupportedException">This method is not supported.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override RatingTypeCollection FromContract(ReadOnlyCollection<RatingTypeDto> contract)
         {
-            if (contract == null)
-            {
-                throw new ArgumentNullException(nameof(contract));
-            }
-
             throw new NotSupportedException($"The method {nameof(FromContract)} is not supported for {nameof(RatingTypeCollection)}");
         }
 
@@ -125,7 +119,7 @@ namespace Chaos.Movies.Model
         {
             if (contract == null)
             {
-                throw new ArgumentNullException(nameof(contract));
+                return new RatingTypeCollection(parent);
             }
 
             var list = new RatingTypeCollection(parent);

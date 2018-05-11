@@ -104,9 +104,9 @@ namespace Chaos.Movies.Model
             return new MovieSeries
             {
                 Id = contract.Id,
-                Movies = this.Movies.FromContract(contract.Movies ?? new List<MovieDto>().AsReadOnly()),
-                Titles = this.Titles.FromContract(contract.Titles ?? new List<LanguageTitleDto>().AsReadOnly()),
-                Images = this.Images.FromContract(contract.Images ?? new List<IconDto>().AsReadOnly())
+                Movies = this.Movies.FromContract(contract.Movies),
+                Titles = this.Titles.FromContract(contract.Titles),
+                Images = this.Images.FromContract(contract.Images)
             };
         }
 

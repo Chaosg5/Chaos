@@ -6,8 +6,10 @@
 
 namespace Chaos.Movies.Model.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
@@ -51,10 +53,32 @@ namespace Chaos.Movies.Model.Tests
         }
 
         /// <summary>Tests the <see cref="Character.SaveAsync"/>.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Character"/> is not valid to be saved.</exception>
         [Test]
         public static async Task TestCharacterSaveAsync()
         {
-            
+            var session = await UserTest.GetSystemSessionAsync();
+            var characterName = "Test Character H84H743";
+            var characters = (await Character.Static.SearchAsync(
+                new SearchParametersDto { SearchText = characterName, RequireExactMatch = true, SearchLimit = 1 },
+                session)).ToList();
+            Character character;
+            if (!characters.Any())
+            {
+                character = new Character(characterName);
+
+                await character.SaveAsync(session);
+            }
+            else
+            {
+                character = characters.First();
+            }
+
+            Assert.AreEqual(character.Name, characterName);
+            Assert.Greater(character.Id, 0);
         }
     }
 }

@@ -8,8 +8,11 @@ namespace Chaos.Movies.Model
 {
     using System;
     using System.Globalization;
+    using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Chaos.Movies.Contract;
 
     /// <summary>Provides a global cache of objects.</summary>
     internal static class GlobalCache
@@ -52,8 +55,10 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the default system language.</summary>
         public static CultureInfo DefaultLanguage { get; } = new CultureInfo("en-US");
 
-        /// <summary>Gets the system user.</summary>
-        public static User SystemUser { get; }
+        public static async Task<string> GetServerIpAsync()
+        {
+            return (await Dns.GetHostEntryAsync(Dns.GetHostName())).AddressList[0].ToString();
+        }
 
         /// <summary>Initializes a new instance of the <see cref="GlobalCache"/> class.</summary>
         /// <param name="userSession">The session.</param>
@@ -62,12 +67,15 @@ namespace Chaos.Movies.Model
         public static async Task InitCacheAsync(UserSession userSession)
         {
             session = userSession ?? throw new ArgumentNullException(nameof(userSession));
+            
+            /*
             await MovieSeriesTypesLoadAllAsync();
             await DepartmentsLoadAllAsync();
             await RolesLoadAllAsync();
             await IconTypesLoadAllAsync();
             await RatingTypesLoadAllAsync();
             await WatchTypesLoadAllAsync();
+            */
         }
 
         /// <summary>Clears all cache objects.</summary>
@@ -169,6 +177,15 @@ namespace Chaos.Movies.Model
         public static async Task<ExternalSource> GetExternalSourceAsync(int id)
         {
             return await ExternalSources.GetValue(id);
+        }
+
+        private static async Task<UserSession> GetSessionAsync()
+        {
+            return await UserSession.Static.CreateSessionAsync(
+                new UserLogin(
+                    Properties.Settings.Default.SystemUserName,
+                    Properties.Settings.Default.SystemUserName,
+                    await GetServerIpAsync()));
         }
 
         /// <summary>Loads all <see cref="Department"/>s from the database.</summary>
