@@ -11,6 +11,7 @@ namespace Chaos.Movies.Model
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
+    using System.Data.SqlTypes;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -22,10 +23,25 @@ namespace Chaos.Movies.Model
     /// <summary>Represents a person.</summary>
     public class Person : Readable<Person, PersonDto>, ISearchable<Person>
     {
-        // ToDo: Add BirthDay, DeathDay, Age, Gender
+        // ToDo: Add Gender
 
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
+
+        /// <summary>The database column for <see cref="BirthDate"/>.</summary>
+        private const string BirthDateColumn = "BirthDate";
+
+        /// <summary>The database column for <see cref="DeathDate"/>.</summary>
+        private const string DeathDateColumn = "DeathDate";
+
+        /// <summary>Private part of the <see cref="Name"/> property.</summary>
+        private string name = string.Empty;
+
+        /// <summary>Private part of the <see cref="BirthDate"/> property.</summary>
+        private DateTime birthDate = SqlDateTime.MinValue.Value;
+
+        /// <summary>Private part of the <see cref="DeathDate"/> property.</summary>
+        private DateTime deathDate = SqlDateTime.MinValue.Value;
 
         /// <summary>Initializes a new instance of the <see cref="Person" /> class.</summary>
         /// <param name="name">The name of the person.</param>
@@ -43,7 +59,34 @@ namespace Chaos.Movies.Model
         public static Person Static { get; } = new Person();
 
         /// <summary>Gets the name of the person.</summary>
-        public string Name { get; private set; }
+        public string Name
+        {
+            get => this.name;
+            private set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    // ReSharper disable once ExceptionNotDocumented
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                this.name = value;
+            }
+        }
+
+        /// <summary>Gets the year when the person was born.</summary>
+        public DateTime BirthDate
+        {
+            get => this.birthDate;
+            private set => this.birthDate = value < SqlDateTime.MinValue ? SqlDateTime.MinValue.Value : value;
+        }
+
+        /// <summary>Gets the year when the person died.</summary>
+        public DateTime DeathDate
+        {
+            get => this.deathDate;
+            private set => this.deathDate = value < SqlDateTime.MinValue ? SqlDateTime.MinValue.Value : value;
+        }
 
         /// <summary>Gets the id of the <see cref="Character"/> in <see cref="ExternalSource"/>s.</summary>
         public ExternalLookupCollection ExternalLookups { get; private set; } = new ExternalLookupCollection();
@@ -61,6 +104,8 @@ namespace Chaos.Movies.Model
             {
                 Id = this.Id,
                 Name = this.Name,
+                BirthDate = this.BirthDate,
+                DeathDate = this.DeathDate,
                 ExternalLookups = this.ExternalLookups.ToContract(),
                 Images = this.Images.ToContract(),
                 Ratings = this.Ratings.ToContract()
@@ -79,8 +124,10 @@ namespace Chaos.Movies.Model
 
             return new Person
             {
-                Id = this.Id,
-                Name = this.Name,
+                Id = contract.Id,
+                Name = contract.Name,
+                BirthDate = contract.BirthDate,
+                DeathDate = contract.DeathDate,
                 ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups),
                 Images = this.Images.FromContract(contract.Images),
                 Ratings = this.Ratings.FromContract(contract.Ratings)
@@ -220,9 +267,11 @@ namespace Chaos.Movies.Model
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
         protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
+            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn, BirthDateColumn, DeathDateColumn });
             this.Id = (int)record[IdColumn];
             this.Name = (string)record[NameColumn];
+            this.BirthDate = (DateTime)record[BirthDateColumn];
+            this.DeathDate = (DateTime)record[DeathDateColumn];
             this.Ratings = await this.Ratings.NewFromRecordAsync(record);
         }
 
@@ -234,6 +283,8 @@ namespace Chaos.Movies.Model
                 {
                     { Persistent.ColumnToVariable(IdColumn), this.Id },
                     { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(BirthDateColumn), this.BirthDate },
+                    { Persistent.ColumnToVariable(DeathDateColumn), this.DeathDate },
                     { Persistent.ColumnToVariable(ExternalLookupCollection.ExternalLookupColumn), this.ExternalLookups.GetSaveTable },
                     { Persistent.ColumnToVariable(IconCollection.IconsColumn), this.Images.GetSaveTable }
                 });

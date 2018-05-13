@@ -20,6 +20,7 @@ WHERE
 	or I.name like '%UK%')
 ) as x on x.IndexName like '%' + TABLE_NAME
 where TABLE_NAME like '%Titles'
+	or TABLE_NAME like '%ExternalLookup'
 
 -- Invalid key or index names (should not be any rows at all)
 

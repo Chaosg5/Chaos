@@ -82,13 +82,13 @@ namespace Chaos.Movies.Model
                 return null;
             }
 
-            var languageName = "en-US";
+            var languageName = GlobalCache.DefaultLanguage.Name;
             if (!string.IsNullOrEmpty(language?.Name))
             {
                 languageName = language.Name;
             }
 
-            return this.Items.FirstOrDefault(t => t.Language.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language.Name == "en-US") ?? this.Items.First();
+            return this.Items.FirstOrDefault(t => t.Language.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language.Name == GlobalCache.DefaultLanguage.Name) ?? this.Items.First();
         }
 
         /// <summary>Changes the title of this movie series type.</summary>

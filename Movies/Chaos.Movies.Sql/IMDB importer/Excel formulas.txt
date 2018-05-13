@@ -1,0 +1,8 @@
+Movies
+="insert #movies select null, null, '" & A2 & "', '" & B2 & "', " & F2 & ", " & IF(ISNUMBER(G2);G2;"null") & ", " & IF(ISNUMBER(H2);H2;0) & ", '" & IF(I2="\N";"";""&I2&"") & "', '" & J2 & "', '" & K2 & "';"
+Titles
+="insert #titles select null, null, '" & A2 & "', N'" & SUBSTITUTE(C2;"'";"''") & "', " & IF(D2="\N";"null";"'"&D2&"'") & ", " & IF(E2="\N";"null";"'"&E2&"'") & ", " & IF(F2="\N";"null";"'"&F2&"'") & ";"
+Ratings
+="insert #ratings select null, '" & A2 & "', " & B2 & ", " & C2
+People
+="insert #people select null, '" & A2 & "', '" & SUBSTITUTE(B2;"'";"''") & "', " & IF(LEN(C2)<>4;"null";"'"&C2&"-01-01'") & ", " & IF(LEN(D2)<>4;"null";"'"&D2&"-01-01'") & ";"

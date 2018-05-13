@@ -22,9 +22,6 @@ namespace Chaos.Movies.Model
         /// <summary>The database column for this <see cref="LanguageDescriptionCollection"/>.</summary>
         internal const string TitlesColumn = "Titles";
 
-        /// <summary>The default language.</summary>
-        private const string DefaultLanguage = "en-US";
-
         /// <summary>Gets the base title.</summary>
         public string GetBaseTitle => this.GetTitle(null).Title;
 
@@ -84,13 +81,13 @@ namespace Chaos.Movies.Model
                 return null;
             }
 
-            var languageName = DefaultLanguage;
+            var languageName = GlobalCache.DefaultLanguage.Name;
             if (!string.IsNullOrEmpty(language?.Name))
             {
                 languageName = language.Name;
             }
 
-            return this.Items.FirstOrDefault(t => t.Language.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language.Name == DefaultLanguage) ?? this.Items.First();
+            return this.Items.FirstOrDefault(t => t.Language.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language.Name == GlobalCache.DefaultLanguage.Name) ?? this.Items.First();
         }
 
         /// <summary>Changes the title of this movie series type.</summary>
@@ -144,11 +141,6 @@ namespace Chaos.Movies.Model
             if (this.Items.Count == 0)
             {
                 throw new InvalidSaveCandidateException("At least one title needs to be specified.");
-            }
-
-            if (this.Items.Any(i => i.Language.Name == DefaultLanguage))
-            {
-                throw new InvalidSaveCandidateException($"A title in the default language '{DefaultLanguage}' has to be specified.");
             }
 
             foreach (var item in this.Items)
