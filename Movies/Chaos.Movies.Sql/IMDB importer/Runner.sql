@@ -33,7 +33,7 @@ if not exists (
 begin
 	create table #titles (
 		MovieId int
-		,language nvarchar(5) collate Finnish_Swedish_CI_AS
+		,language nvarchar(8) collate Finnish_Swedish_CI_AS
 		,ImdbId nvarchar(50) collate Finnish_Swedish_CI_AS
 		,Title nvarchar(100) collate Finnish_Swedish_CI_AS
 		,Country nvarchar(50) collate Finnish_Swedish_CI_AS
@@ -141,14 +141,14 @@ delete from #people;
 /*
 
 select max(ImdbId)
-from #movies
+from #titles
 
 
 select count(1)
-from #movies
+from #titles
 
 select count(distinct ImdbId)
-from #movies
+from #titles
 
 */
 
@@ -380,6 +380,12 @@ begin
 	where t.MovieId is null;
 
 	;throw 50000, 'Invalid Title found', 1;
+
+	/*
+	delete
+	from #titles
+	where MovieId is null;
+	*/
 end;
 
 	/*
@@ -578,21 +584,26 @@ and x.Lang = right(l.Language, 2)
 /*
 
 select count(1)
-from dbo.Movies as p
+from dbo.movietitles as p
 
 
 select top 1 *
-from dbo.People as p
-order by 1 desc
+from dbo.movietitles as p
+order by movieId desc
 
-select max(ImdbId)
-from dbo.movies as p
+select *
+from dbo.movies as m
+left join dbo.movietitles as t on t.MovieId = m.MovieId
+where m.imdbid < 'tt0243765'
+	and t.MovieId is null
 
-select top 1 *
-from dbo.People as p
-where Name = 'Ben Keyworth'
-order by 1 desc
+select *
+from dbo.movies as m
+left join dbo.movietitles as t on t.MovieId = m.MovieId
+where imdbId = 'tt0038269'
 
+select *
+from dbo.movietitles as p
 
 
 declare @imdbExernalSourceId int = (select top 1 ExternalSourceId from dbo.ExternalSources as s where s.Name = 'IMDB');

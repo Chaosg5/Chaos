@@ -45,7 +45,7 @@ namespace Chaos.Movies.Model.Tests
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Role"/> is not valid to be saved.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T,TDto}"/> has to be saved before added.</exception>
         [TestCase("Actor", "Skådespelare")]
-        public static async Task TestEnsureRoleAsync(string englishName, string swedishName)
+        public static async Task<int> TestEnsureRoleAsync(string englishName, string swedishName)
         {
             var session = await UserTest.GetSystemSessionAsync();
             var englishTitle = new LanguageTitle(englishName, LanguageTitleTest.English);
@@ -66,6 +66,7 @@ namespace Chaos.Movies.Model.Tests
             Assert.IsNotNull(title);
             title = role.Titles.First(t => t == swedishTitle);
             Assert.IsNotNull(title);
+            return role.Id;
         }
 
         /// <summary>The get actor role.</summary>

@@ -110,3 +110,7 @@ Server:
 2017-08-03 IP: 90.229.244.195
 2017-09-08 IP: 90.229.244.195
 2017-10-06 IP: 213.64.69.165
+
+
+IMDB Old Data: ftp://ftp.fu-berlin.de/pub/misc/movies/database/
+New data: https://datasets.imdbws.com/

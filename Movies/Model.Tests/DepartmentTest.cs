@@ -49,7 +49,15 @@ namespace Chaos.Movies.Model.Tests
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Department"/> is not valid to be saved.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        [TestCase("Cast", "Rollista", "Actor:Skådespelare")]
+        [TestCase("Director", "Regiserad av", "Director:Regisör")]
+        [TestCase("Writing", "Skriven av", "Writer:Författare")]
+        [TestCase("Cast", "Rollista", "Actor:Skådespelare;Actress:Skådespelerska;Self:Sig själv")]
+        [TestCase("Cinematography", "Foto", "Archive footage:Arkivfoto;Cinematographer:Filmfotograf")]
+        [TestCase("Sound", "Ljud", "Archive sound:Arkivljud")]
+        [TestCase("Music", "Musik", "Composer:Kompositör")]
+        [TestCase("Editing", "Redigering", "Editor:Redigerare")]
+        [TestCase("Production", "Producent", "Producer:Producent")]
+        [TestCase("Production design", "Produktionsdesign", "Production designer:Produktionsdesigner")]
         public static async Task TestEnsureDepartmentAsync(string englishName, string swedishName, string roles)
         {
             var session = await UserTest.GetSystemSessionAsync();
@@ -57,15 +65,32 @@ namespace Chaos.Movies.Model.Tests
             var swedishTitle = new LanguageTitle(swedishName, LanguageTitleTest.Swedish);
             await GlobalCache.InitCacheAsync(session);
             var departments = await Department.Static.GetAllAsync(session);
-            var department = departments.FirstOrDefault(g => g.Titles.Any(t => t == englishTitle || t == swedishTitle));
-            if (department == null)
+            var department = departments.FirstOrDefault(g => g.Titles.Any(t => t == englishTitle || t == swedishTitle)) ?? new Department();
+
+            if (!department.Titles.Contains(englishTitle))
             {
-                department = new Department();
                 department.Titles.Add(englishTitle);
-                department.Titles.Add(swedishTitle);
-                department.Roles.Add(await RolesTest.GetActorRoleAsync());
-                await department.SaveAsync(session);
             }
+
+            if (!department.Titles.Contains(swedishTitle))
+            {
+                department.Titles.Add(swedishTitle);
+            }
+
+            var rolesList = roles.Split(new[] { ";" }, StringSplitOptions.None);
+            foreach (var roleItem in rolesList)
+            {
+                var rolesValue = roleItem.Split(new[] { ":" }, StringSplitOptions.None);
+                var englishRoleTitle = new LanguageTitle(rolesValue[0], LanguageTitleTest.English);
+                var swedishRoleTitle = new LanguageTitle(rolesValue[1], LanguageTitleTest.Swedish);
+
+                if (!department.Roles.Any(r => r.Titles.Contains(englishTitle) || r.Titles.Contains(swedishRoleTitle)))
+                {
+                    department.Roles.Add(await GlobalCache.GetRoleAsync(await RolesTest.TestEnsureRoleAsync(englishRoleTitle.Title, swedishRoleTitle.Title)));
+                }
+            }
+
+            await department.SaveAsync(session);
 
             Assert.Greater(department.Id, 0);
             Assert.AreEqual(2, department.Titles.Count);
@@ -73,8 +98,7 @@ namespace Chaos.Movies.Model.Tests
             Assert.IsNotNull(title);
             title = department.Titles.First(t => t == swedishTitle);
             Assert.IsNotNull(title);
-            var role = department.Roles.FirstOrDefault();
-            Assert.IsNotNull(role);
+            Assert.AreEqual(rolesList.Length, department.Roles.Count);
         }
     }
 }

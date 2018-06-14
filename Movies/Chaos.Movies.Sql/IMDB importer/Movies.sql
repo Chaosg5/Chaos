@@ -7,13 +7,14 @@ if not exists (
 	where (name like '#movies%')
 		and type = 'U'
 	)
-		
 begin
 	create table #movies (
 		MovieId int
 		,MovieTypeId int
 		,ImdbId nvarchar(50) collate Finnish_Swedish_CI_AS
 		,MovieType nvarchar(50) collate Finnish_Swedish_CI_AS
+		,DefaultTitle nvarchar(100) collate Finnish_Swedish_CI_AS
+		,OriginalTitle nvarchar(100) collate Finnish_Swedish_CI_AS
 		,StartYear int
 		,EndYear int
 		,RunTime int
@@ -29,11 +30,10 @@ if not exists (
 	where (name like '#titles%')
 		and type = 'U'
 	)
-		
 begin
 	create table #titles (
 		MovieId int
-		,language nvarchar(5) collate Finnish_Swedish_CI_AS
+		,language nvarchar(8) collate Finnish_Swedish_CI_AS
 		,ImdbId nvarchar(50) collate Finnish_Swedish_CI_AS
 		,Title nvarchar(100) collate Finnish_Swedish_CI_AS
 		,Country nvarchar(50) collate Finnish_Swedish_CI_AS
@@ -48,7 +48,6 @@ if not exists (
 	where (name like '#ratings%')
 		and type = 'U'
 	)
-		
 begin
 	create table #ratings (
 		MovieId int
@@ -64,7 +63,6 @@ if not exists (
 	where (name like '#people%')
 		and type = 'U'
 	)
-		
 begin
 	create table #people (
 		PersonId int
@@ -82,6 +80,8 @@ create table #movies (
 	,MovieTypeId int
 	,ImdbId nvarchar(50) collate Finnish_Swedish_CI_AS
 	,MovieType nvarchar(50) collate Finnish_Swedish_CI_AS
+	,DefaultTitle nvarchar(100) collate Finnish_Swedish_CI_AS
+	,OriginalTitle nvarchar(100) collate Finnish_Swedish_CI_AS
 	,StartYear int
 	,EndYear int
 	,RunTime int
@@ -141,14 +141,14 @@ delete from #people;
 /*
 
 select max(ImdbId)
-from #movies
+from #titles
 
 
 select count(1)
-from #movies
+from #titles
 
 select count(distinct ImdbId)
-from #movies
+from #titles
 
 */
 
@@ -185,7 +185,7 @@ if exists (
 		select distinct MovieType
 		from #movies
 	) as m on m.MovieType = t.Title
-		and Language = 'en-US'
+		and Language = 'default'
 	where t.MovieTypeId is null
 )
 begin
@@ -195,7 +195,7 @@ begin
 		select distinct MovieType
 		from #movies
 	) as m on m.MovieType = t.Title
-		and Language = 'en-US'
+		and Language = 'default'
 	where t.MovieTypeId is null;
 
 	;throw 50000, 'Invalid Movie Type found', 1;
@@ -214,7 +214,7 @@ if exists (
 			select distinct Genre3
 			from #movies
 		) as m on m.Genre = t.Title
-			and Language = 'en-US'
+			and Language = 'default'
 		where m.Genre <> ''
 			and t.GenreId is null
 	)
@@ -231,7 +231,7 @@ begin
 			select distinct Genre3
 			from #movies
 		) as m on m.Genre = t.Title
-			and Language = 'en-US'
+			and Language = 'default'
 		where m.Genre <> ''
 			and t.GenreId is null;
 
@@ -266,7 +266,7 @@ set m.MovieId = l.MovieId
 	,m.MovieTypeId = t.MovieTypeId
 from #movies m
 left join dbo.MovieTypeTitles as t on t.Title = m.MovieType
-	and t.Language = 'en-US'
+	and t.Language = 'default'
 left join dbo.MovieExternalLookup as l on l.ExternalId = m.ImdbId
 	and l.ExternalSourceId = @imdbExernalSourceId;
 
@@ -307,7 +307,25 @@ begin
 	where m.MovieId is null;
 
 	;throw 50000, 'Invalid Movie found', 1;
-end;
+end
+
+insert dbo.MovieTitles
+select m.MovieId
+	,'default'
+	,m.DefaultTitle
+from #movies as m
+left join dbo.MovieTitles as t on t.MovieId = m.MovieId
+	and t.Language = 'default'
+where t.MovieId is null;
+
+insert dbo.MovieTitles
+select m.MovieId
+	,'original'
+	,m.OriginalTitle
+from #movies as m
+left join dbo.MovieTitles as t on t.MovieId = m.MovieId
+	and t.Language = 'original'
+where t.MovieId is null;
 
 -----------
 -- Genre --
@@ -331,7 +349,7 @@ select m.MovieId
 	,g.GenreId
 from #movies as m
 inner join dbo.GenreTitles as g on g.Title = m.Genre1
-	and g.Language = 'en-US'
+	and g.Language = 'default'
 left join dbo.MoviesInGenres as e on e.GenreId = g.GenreId
 	and e.MovieId = m.MovieId
 where e.MovieId is null;
@@ -341,7 +359,7 @@ select m.MovieId
 	,g.GenreId
 from #movies as m
 inner join dbo.GenreTitles as g on g.Title = m.Genre2
-	and g.Language = 'en-US'
+	and g.Language = 'default'
 left join dbo.MoviesInGenres as e on e.GenreId = g.GenreId
 	and e.MovieId = m.MovieId
 where e.MovieId is null;
@@ -351,7 +369,7 @@ select m.MovieId
 	,g.GenreId
 from #movies as m
 inner join dbo.GenreTitles as g on g.Title = m.Genre3
-	and g.Language = 'en-US'
+	and g.Language = 'default'
 left join dbo.MoviesInGenres as e on e.GenreId = g.GenreId
 	and e.MovieId = m.MovieId
 where e.MovieId is null;
@@ -380,6 +398,12 @@ begin
 	where t.MovieId is null;
 
 	;throw 50000, 'Invalid Title found', 1;
+
+	/*
+	delete
+	from #titles
+	where MovieId is null;
+	*/
 end;
 
 	/*
@@ -578,21 +602,21 @@ and x.Lang = right(l.Language, 2)
 /*
 
 select count(1)
-from dbo.People as p
+from dbo.movietitles as p
 
 
 select top 1 *
-from dbo.People as p
-order by 1 desc
+from dbo.movietitles as p
+order by movieId desc
 
 select max(ImdbId)
-from dbo.movies as p
+from dbo.movietitles as p
 
-select top 1 *
-from dbo.People as p
-where Name = 'Ben Keyworth'
-order by 1 desc
-
+select *
+from dbo.movies as m
+left join dbo.movietitles as t on t.MovieId = m.MovieId
+where m.MovieId < 999997
+	and t.MovieId is null
 
 
 declare @imdbExernalSourceId int = (select top 1 ExternalSourceId from dbo.ExternalSources as s where s.Name = 'IMDB');

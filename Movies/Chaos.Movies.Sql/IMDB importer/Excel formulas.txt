@@ -1,8 +1,19 @@
 Movies
-="insert #movies select null, null, '" & A2 & "', '" & B2 & "', " & F2 & ", " & IF(ISNUMBER(G2);G2;"null") & ", " & IF(ISNUMBER(H2);H2;0) & ", '" & IF(I2="\N";"";""&I2&"") & "', '" & J2 & "', '" & K2 & "';"
+="insert #movies select null, null, '" & A2 & "', '" & B2 & "', N'" & SUBSTITUTE(LEFT(C2;100);"'";"''") & "', N'" & SUBSTITUTE(LEFT(D2;100);"'";"''") & "', " & F2 & ", " & IF(ISNUMBER(G2);G2;"null") & ", " & IF(ISNUMBER(H2);H2;0) & ", '" & IF(I2="\N";"";""&I2&"") & "', '" & J2 & "', '" & K2 & "';"
 Titles
-="insert #titles select null, null, '" & A2 & "', N'" & SUBSTITUTE(C2;"'";"''") & "', " & IF(D2="\N";"null";"'"&D2&"'") & ", " & IF(E2="\N";"null";"'"&E2&"'") & ", " & IF(F2="\N";"null";"'"&F2&"'") & ";"
+="insert #titles select null, null, '" & A2 & "', N'" & SUBSTITUTE(LEFT(C2;100);"'";"''") & "', " & IF(D2="\N";"null";"'"&D2&"'") & ", " & IF(E2="\N";"null";"'"&E2&"'") & ", " & IF(F2="\N";"null";"'"&F2&"'") & ";"
 Ratings
 ="insert #ratings select null, '" & A2 & "', " & B2 & ", " & C2
 People
 ="insert #people select null, '" & A2 & "', '" & SUBSTITUTE(B2;"'";"''") & "', " & IF(LEN(C2)<>4;"null";"'"&C2&"-01-01'") & ", " & IF(LEN(D2)<>4;"null";"'"&D2&"-01-01'") & ";"
+
+Actors  28.175.000 => title.principals	=> DONE			(28.159.065/28.174.887) 99.94%
+People   8.598.761 => name.basics 		=> DONE 		(8.598.761/8.598.761) 	100%
+Movies   4.988.593 => title.basics 		=> DONE 		(4.988.593/4.988.593) 	100%
+Titles   3.590.000 => title.akas		=> DONE			(3.614.670/3.590.416) 	100.7%
+Writer   4.999.000 => title.crew		=> IMPORTED		(/4.990.865)
+Episodes 3.350.000 => title.episodes	=> IMPORTED		(/3.351.842)
+Ratings    800.000 => title.ratings		=> DONE			(830.572/803.572) 100%
+
+<add name="ConnectionString" connectionString="Data Source=942-E600446-01\SQL2014;Initial Catalog=CMDB;User Id=CMDB;Password=YZNES7BmFY4ncSMk;" providerName="System.Data.SqlClient"/>
+<add name="ConnectionString" connectionString="Data Source=192.168.1.123;Initial Catalog=CMDB;User Id=admin;Password=chaos1m7a9c2g5;" providerName="System.Data.SqlClient"/>

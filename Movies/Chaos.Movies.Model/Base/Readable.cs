@@ -45,7 +45,7 @@ namespace Chaos.Movies.Model.Base
         public abstract Task<IEnumerable<T>> GetAsync(UserSession session, IEnumerable<int> idList);
         
         /// <summary>Creates new <typeparamref name="T"/>s from the <paramref name="reader"/>.</summary>
-        /// <param name="reader">The reader containing data sets and records the data for the <typeparamref name="T"/>s.</param>
+        /// <param name="reader">The reader containing data sets and records for the data for the <typeparamref name="T"/>s.</param>
         /// <returns>The list of <typeparamref name="T"/>s.</returns>
         internal abstract Task<IEnumerable<T>> ReadFromRecordsAsync(DbDataReader reader);
 
