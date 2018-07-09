@@ -253,22 +253,21 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         internal override async Task<IEnumerable<User>> ReadFromRecordsAsync(DbDataReader reader)
         {
-            var departments = new List<User>();
+            var users = new List<User>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(User)}s");
+                return users;
             }
 
             while (await reader.ReadAsync())
             {
-                departments.Add(await this.NewFromRecordAsync(reader));
+                users.Add(await this.NewFromRecordAsync(reader));
             }
 
-            return departments;
+            return users;
         }
 
         /// <inheritdoc />

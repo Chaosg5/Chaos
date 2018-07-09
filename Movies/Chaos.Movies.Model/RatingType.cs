@@ -159,7 +159,7 @@ namespace Chaos.Movies.Model
             var ratingTypes = new List<RatingType>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(RatingType)}s");
+                return ratingTypes;
             }
 
             while (await reader.ReadAsync())

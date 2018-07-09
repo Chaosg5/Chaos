@@ -122,7 +122,10 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the user ratings.</summary>
-        public UserSingleRating Ratings { get; private set; } = new UserSingleRating();
+        public UserSingleRating UserRatings { get; private set; } = new UserSingleRating();
+
+        /// <summary>Gets the total rating score from all users.</summary>
+        public double TotalRating { get; private set; }
 
         /// <inheritdoc />
         public override PersonInRoleDto ToContract()
@@ -132,7 +135,8 @@ namespace Chaos.Movies.Model
                 Person = this.Person.ToContract(),
                 Role = this.Role.ToContract(),
                 Department = this.Department.ToContract(),
-                Ratings = this.Ratings.ToContract()
+                UserRatings = this.UserRatings.ToContract(),
+                TotalRating = this.TotalRating
             };
         }
 
@@ -151,7 +155,8 @@ namespace Chaos.Movies.Model
                 Person = Person.Static.FromContract(contract.Person),
                 Role = Role.Static.FromContract(contract.Role),
                 Department = Department.Static.FromContract(contract.Department),
-                Ratings = this.Ratings.FromContract(contract.Ratings)
+                UserRatings = this.UserRatings.FromContract(contract.UserRatings),
+                TotalRating = contract.TotalRating
             };
         }
 
@@ -162,20 +167,19 @@ namespace Chaos.Movies.Model
             this.Person.ValidateSaveCandidate();
             this.Role.ValidateSaveCandidate();
             this.Department.ValidateSaveCandidate();
-            this.Ratings.ValidateSaveCandidate();
+            this.UserRatings.ValidateSaveCandidate();
         }
 
         /// <summary>Creates new <see cref="PersonInRole"/>s from the <paramref name="reader"/>.</summary>
         /// <param name="reader">The reader containing data sets and records the data for the <see cref="PersonInRole"/>s.</param>
         /// <returns>The list of <see cref="PersonInRole"/>s.</returns>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         internal async Task<IEnumerable<PersonInRole>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var personInRoles = new List<PersonInRole>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(UserRating)}s");
+                return personInRoles;
             }
 
             while (await reader.ReadAsync())
@@ -201,11 +205,11 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { Character.IdColumn, Person.IdColumn });
+            Persistent.ValidateRecord(record, new[] { Person.IdColumn, Role.IdColumn, Department.IdColumn });
             this.Person = await GlobalCache.GetPersonAsync((int)record[Person.IdColumn]);
             this.Role = await GlobalCache.GetRoleAsync((int)record[Role.IdColumn]);
             this.Department = await GlobalCache.GetDepartmentAsync((int)record[Department.IdColumn]);
-            this.Ratings = await this.Ratings.NewFromRecordAsync(record);
+            this.TotalRating = (int)record[UserSingleRating.TotalRatingColumn];
         }
     }
 }

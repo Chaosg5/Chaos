@@ -67,7 +67,10 @@ namespace Chaos.Movies.Model
         public IconCollection Images { get; private set; } = new IconCollection();
 
         /// <summary>Gets the user ratings.</summary>
-        public UserSingleRating Ratings { get; private set; } = new UserSingleRating();
+        public UserSingleRating UserRatings { get; private set; } = new UserSingleRating();
+
+        /// <summary>Gets the total rating score from all users.</summary>
+        public double TotalRating { get; private set; }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
@@ -143,7 +146,8 @@ namespace Chaos.Movies.Model
                 Name = this.Name,
                 ExternalLookups = this.ExternalLookups.ToContract(),
                 Images = this.Images.ToContract(),
-                Ratings = this.Ratings.ToContract()
+                UserRatings = this.UserRatings.ToContract(),
+                TotalRating = this.TotalRating
             };
         }
 
@@ -163,7 +167,8 @@ namespace Chaos.Movies.Model
                 Name = contract.Name,
                 ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups),
                 Images = this.Images.FromContract(contract.Images),
-                Ratings = this.Ratings.FromContract(contract.Ratings)
+                UserRatings = this.UserRatings.FromContract(contract.UserRatings),
+                TotalRating = contract.TotalRating
             };
         }
 
@@ -178,7 +183,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
@@ -188,7 +192,7 @@ namespace Chaos.Movies.Model
             var characters = new List<Character>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(Character)}s");
+                return characters;
             }
 
             while (await reader.ReadAsync())
@@ -234,12 +238,13 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        protected override Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
+            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn, UserSingleRating.TotalRatingColumn });
             this.Id = (int)record[IdColumn];
             this.Name = (string)record[NameColumn];
-            this.Ratings = await this.Ratings.NewFromRecordAsync(record);
+            this.TotalRating = (int)record[UserSingleRating.TotalRatingColumn];
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

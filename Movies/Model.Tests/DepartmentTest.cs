@@ -86,7 +86,7 @@ namespace Chaos.Movies.Model.Tests
 
                 if (!department.Roles.Any(r => r.Titles.Contains(englishTitle) || r.Titles.Contains(swedishRoleTitle)))
                 {
-                    department.Roles.Add(await GlobalCache.GetRoleAsync(await RolesTest.TestEnsureRoleAsync(englishRoleTitle.Title, swedishRoleTitle.Title)));
+                    department.Roles.Add(await GlobalCache.GetRoleAsync(await RolesTest.GetRoleAsync(englishRoleTitle.Title, swedishRoleTitle.Title)));
                 }
             }
 

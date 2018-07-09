@@ -125,7 +125,7 @@ namespace Chaos.Movies.Model
             var iconTypes = new List<IconType>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(IconType)}s");
+                return iconTypes;
             }
 
             while (await reader.ReadAsync())

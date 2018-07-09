@@ -234,14 +234,13 @@ namespace Chaos.Movies.Model
         /// <summary>Creates new <see cref="UserRating"/>s from the <paramref name="reader"/>.</summary>
         /// <param name="reader">The reader containing data sets and records the data for the <see cref="UserRating"/>s.</param>
         /// <returns>The list of <see cref="UserRating"/>s.</returns>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         internal async Task<IEnumerable<UserRating>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var userRatings = new List<UserRating>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(UserRating)}s");
+                return userRatings;
             }
 
             while (await reader.ReadAsync())

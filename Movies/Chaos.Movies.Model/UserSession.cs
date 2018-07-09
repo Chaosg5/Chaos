@@ -57,6 +57,13 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the active to.</summary>
         public DateTime ActiveTo { get; private set; } = DateTime.Now.AddMinutes(30);
 
+        /// <summary>Creates an empty session.</summary>
+        /// <returns>The <see cref="UserSession"/>.</returns>
+        public static Task<UserSession> EmptySessionAsync()
+        {
+            return Task.FromResult(new UserSession());
+        }
+
         /// <summary>Creates a new <see cref="UserSession"/>.</summary>
         /// <param name="login">The login.</param>
         /// <returns>The <see cref="Task"/>.</returns>
@@ -192,7 +199,7 @@ namespace Chaos.Movies.Model
         {
             Persistent.ValidateRecord(record, new[] { IdColumn, ClientIpColumn, User.IdColumn, ActiveFromColumn, ActiveToColumn });
             this.SessionId = (Guid)record[IdColumn];
-            this.ClientIp = record[ClientIpColumn].ToString();
+            this.ClientIp = (string)record[ClientIpColumn];
             this.UserId = (int)record[User.IdColumn];
             this.ActiveFrom = (DateTime)record[ActiveFromColumn];
             this.ActiveTo = (DateTime)record[ActiveToColumn]; 

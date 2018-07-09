@@ -19,7 +19,7 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets id of the movie in <see cref="ExternalSourceDto"/>s.</summary>
         [DataMember]
-        public ReadOnlyCollection<ExternalLookupDto> ExternalLookup { get; set; }
+        public ReadOnlyCollection<ExternalLookupDto> ExternalLookups { get; set; }
 
         /// <summary>Gets or sets ratings of the movie in <see cref="ExternalSourceDto"/>s.</summary>
         [DataMember]
@@ -39,11 +39,11 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets total rating score from the current user.</summary>
         [DataMember]
-        public UserRatingDto UserUserRating { get; set; }
+        public UserRatingDto UserRating { get; set; }
 
         /// <summary>Gets or sets total rating score from all users.</summary>
         [DataMember]
-        public UserRatingDto TotalUserRating { get; set; }
+        public double TotalRating { get; set; }
 
         /// <summary>Gets or sets list of <see cref="CharacterDto"/>s in this <see cref="MovieDto"/>.</summary>
         [DataMember]
@@ -56,5 +56,17 @@ namespace Chaos.Movies.Contract
         /// <summary>Gets or sets the type of the movie.</summary>
         [DataMember]
         public MovieTypeDto MovieType { get; set; }
+
+        /// <summary>Gets or sets the year when the movie was released.</summary>
+        [DataMember]
+        public int Year { get; set; }
+
+        /// <summary>Gets or sets the year when the movie was released.</summary>
+        [DataMember]
+        public int EndYear { get; set; }
+
+        /// <summary>Gets or sets the runtime of the movie.</summary>
+        [DataMember]
+        public int RunTime { get; set; }
     }
 }

@@ -142,7 +142,7 @@ namespace Chaos.Movies.Model
             var departments = new List<Department>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(Department)}s");
+                return departments;
             }
             
             while (await reader.ReadAsync())

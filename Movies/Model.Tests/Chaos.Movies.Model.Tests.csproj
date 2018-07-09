@@ -63,6 +63,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MovieTest.cs" />
     <Compile Include="DepartmentTest.cs" />
     <Compile Include="CharacterTest.cs" />
     <Compile Include="GenreTest.cs" />

@@ -225,7 +225,7 @@ namespace Chaos.Movies.Model
             var externalSources = new List<ExternalSource>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(ExternalSource)}s");
+                return externalSources;
             }
             
             while (await reader.ReadAsync())
@@ -265,12 +265,12 @@ namespace Chaos.Movies.Model
                 record,
                 requiredColumns);
             this.Id = (int)record[IdColumn];
-            this.Name = record[NameColumn].ToString();
-            this.BaseAddress = record[BaseAddressColumn].ToString();
-            this.PeopleAddress = record[PeopleAddressColumn].ToString();
-            this.CharacterAddress = record[CharacterAddressColumn].ToString();
-            this.GenreAddress = record[GenreAddressColumn].ToString();
-            this.EpisodeAddress = record[EpisodeAddressColumn].ToString();
+            this.Name = (string)record[NameColumn];
+            this.BaseAddress = (string)record[BaseAddressColumn];
+            this.PeopleAddress = (string)record[PeopleAddressColumn];
+            this.CharacterAddress = (string)record[CharacterAddressColumn];
+            this.GenreAddress = (string)record[GenreAddressColumn];
+            this.EpisodeAddress = (string)record[EpisodeAddressColumn];
             return Task.CompletedTask;
         }
 

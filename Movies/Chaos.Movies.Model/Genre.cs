@@ -132,7 +132,7 @@ namespace Chaos.Movies.Model
             var genres = new List<Genre>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(Genre)}s");
+                return genres;
             }
 
             while (await reader.ReadAsync())

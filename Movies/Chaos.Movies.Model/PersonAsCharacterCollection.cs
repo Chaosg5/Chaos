@@ -22,10 +22,11 @@ namespace Chaos.Movies.Model
     /// <summary>A <see cref="Person"/>s in a <typeparamref name="TParent"/>.</summary>
     /// <typeparam name="TParent">The parent type of the owner of the collection.</typeparam>
     /// <typeparam name="TParentDto">The data transfer type to use for communicating the <typeparamref name="TParent"/>.</typeparam>
-    public class PersonAsCharacterCollection<TParent, TParentDto> : Collectable<PersonAsCharacter, PersonAsCharacterDto, PersonAsCharacterCollection<TParent, TParentDto>, TParent, TParentDto>
+    public class PersonAsCharacterCollection<TParent, TParentDto>
+        : Collectable<PersonAsCharacter, PersonAsCharacterDto, PersonAsCharacterCollection<TParent, TParentDto>, TParent, TParentDto>
     {
         /// <summary>The database column for this <see cref="UserRatingCollection{TParent, TParentDto}"/>.</summary>
-        private const string UserRatingsColumn = "UserRatings";
+        internal const string PersonAsCharacterColumn = "PeopleAsCharacters";
 
         /// <inheritdoc />
         public PersonAsCharacterCollection(Persistable<TParent, TParentDto> parent)
@@ -48,7 +49,12 @@ namespace Chaos.Movies.Model
                     table.Columns.Add(new DataColumn(UserSingleRating.UserIdColumn, typeof(int)));
                     foreach (var personAsCharacter in this.Items)
                     {
-                        table.Rows.Add(personAsCharacter.Person.Id, personAsCharacter.Character.Id, this.ParentId, personAsCharacter.Ratings.UserRating, personAsCharacter.Ratings.UserId);
+                        table.Rows.Add(
+                            personAsCharacter.Person.Id,
+                            personAsCharacter.Character.Id,
+                            this.ParentId,
+                            personAsCharacter.UserRatings.UserRating,
+                            personAsCharacter.UserRatings.UserId);
                     }
 
                     return table;
@@ -66,13 +72,16 @@ namespace Chaos.Movies.Model
         /// <exception cref="NotSupportedException">This method is not supported.</exception>
         public override PersonAsCharacterCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<PersonAsCharacterDto> contract)
         {
-            throw new NotSupportedException($"The method {nameof(FromContract)} is not supported for {nameof(UserRatingCollection<TParent, TParentDto>)}");
+            throw new NotSupportedException(
+                $"The method {nameof(FromContract)} is not supported for {nameof(UserRatingCollection<TParent, TParentDto>)}");
         }
 
         /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        public override PersonAsCharacterCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<PersonAsCharacterDto> contract, Persistable<TParent, TParentDto> parent)
+        public override PersonAsCharacterCollection<TParent, TParentDto> FromContract(
+            ReadOnlyCollection<PersonAsCharacterDto> contract,
+            Persistable<TParent, TParentDto> parent)
         {
             if (contract == null)
             {
@@ -100,7 +109,11 @@ namespace Chaos.Movies.Model
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    Resources.ErrorGenericNotSupportedInService,
+                    nameof(UserRatingCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
@@ -115,7 +128,11 @@ namespace Chaos.Movies.Model
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    Resources.ErrorGenericNotSupportedInService,
+                    nameof(UserRatingCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
@@ -130,7 +147,11 @@ namespace Chaos.Movies.Model
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    Resources.ErrorGenericNotSupportedInService,
+                    nameof(UserRatingCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
@@ -152,10 +173,7 @@ namespace Chaos.Movies.Model
         protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
             return new ReadOnlyDictionary<string, object>(
-                new Dictionary<string, object>
-                {
-                    { Persistent.ColumnToVariable(UserRatingsColumn), this.GetSaveTable }
-                });
+                new Dictionary<string, object> { { Persistent.ColumnToVariable(PersonAsCharacterColumn), this.GetSaveTable } });
         }
     }
 }

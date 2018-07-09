@@ -22,6 +22,7 @@ namespace Chaos.Movies.Model.Tests
         [Test]
         public static void TestRoleCollection()
         {
+            //ToDo: 
             var collection = new RoleCollection();
             Assert.IsTrue(collection.Count == 0);
             collection.Add(new Role());
@@ -45,7 +46,19 @@ namespace Chaos.Movies.Model.Tests
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Role"/> is not valid to be saved.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T,TDto}"/> has to be saved before added.</exception>
         [TestCase("Actor", "Skådespelare")]
-        public static async Task<int> TestEnsureRoleAsync(string englishName, string swedishName)
+        public static async Task TestEnsureRoleAsync(string englishName, string swedishName)
+        {
+            await GetRoleAsync(englishName, swedishName);
+        }
+
+        /// <summary>Tests the <see cref="Role.SaveAsync"/>.</summary>
+        /// <param name="englishName">The english Name.</param>
+        /// <param name="swedishName">The swedish Name.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Role"/> is not valid to be saved.</exception>
+        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T,TDto}"/> has to be saved before added.</exception>
+        internal static async Task<int> GetRoleAsync(string englishName, string swedishName)
         {
             var session = await UserTest.GetSystemSessionAsync();
             var englishTitle = new LanguageTitle(englishName, LanguageTitleTest.English);

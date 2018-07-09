@@ -235,7 +235,7 @@ namespace Chaos.Movies.Model
             var icons = new List<Icon>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(Icon)}s");
+                return icons;
             }
 
             while (await reader.ReadAsync())

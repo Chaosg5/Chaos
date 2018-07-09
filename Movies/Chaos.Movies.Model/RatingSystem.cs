@@ -180,7 +180,7 @@ namespace Chaos.Movies.Model
             var ratingSystems = new List<RatingSystem>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(RatingSystem)}s");
+                return ratingSystems;
             }
 
             while (await reader.ReadAsync())

@@ -91,6 +91,9 @@ namespace Chaos.Movies.Model
             }
         }
 
+        /// <summary>Gets the type of the <see cref="LanguageTitle"/>.</summary>
+        public LanguageType LanguageType { get; private set; }
+
         /// <summary>Returns a value indicating whether the <paramref name="titleB"/> is equal to the specified <paramref name="titleB"/>.</summary>
         /// <param name="titleA">The first title to compare to the <paramref name="titleB"/>.</param>
         /// <param name="titleB">The second title to compare to the <paramref name="titleA"/>.</param>
@@ -106,7 +109,7 @@ namespace Chaos.Movies.Model
         /// <returns><see langword="true"/> if the <paramref name="titleA"/> doesn't have the same value the <paramref name="titleB"/>; otherwise <see langword="false"/>.</returns>
         public static bool operator !=(LanguageTitle titleA, LanguageTitle titleB)
         {
-            return titleA != titleB;
+            return !(titleA?.Equals(titleB) ?? false);
         }
 
         /// <summary>Returns a value indicating whether this instance is equal to the specified <paramref name="otherTitle"/>.</summary>
@@ -124,7 +127,10 @@ namespace Chaos.Movies.Model
                 return true;
             }
 
-            return string.Equals(this.title, otherTitle.title) && string.Equals(this.language.Name, otherTitle.language.Name);
+            return string.Equals(this.title, otherTitle.title)
+                && string.Equals(
+                    this.language?.Name ?? this.LanguageType.ToString(),
+                    otherTitle.language?.Name ?? otherTitle.LanguageType.ToString());
         }
 
         /// <summary>Returns a value indicating whether this instance is equal to the specified <paramref name="obj"/>.</summary>
@@ -165,7 +171,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         public override LanguageTitleDto ToContract()
         {
-            return new LanguageTitleDto { Title = this.Title, Language = this.Language };
+            return new LanguageTitleDto { Title = this.Title, Language = this.Language, LanguageType = this.LanguageType};
         }
 
         /// <inheritdoc />
@@ -177,7 +183,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            return new LanguageTitle { Title = contract.Title, Language = contract.Language };
+            return new LanguageTitle { Title = contract.Title, Language = contract.Language, LanguageType = contract.LanguageType};
         }
 
         /// <inheritdoc />
@@ -201,8 +207,23 @@ namespace Chaos.Movies.Model
         protected override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { TitleColumn, LanguageColumn });
-            this.Title = record[TitleColumn].ToString();
-            this.Language = new CultureInfo(record[LanguageColumn].ToString());
+            this.Title = (string)record[TitleColumn];
+            var languageType = (string)record[LanguageColumn];
+            switch (languageType.ToUpperInvariant())
+            {
+                case "DEFAULT":
+                    this.LanguageType = LanguageType.Default;
+                    break;
+
+                case "ORIGINAL":
+                    this.LanguageType = LanguageType.Default;
+                    break;
+                default:
+                    this.LanguageType = LanguageType.Language;
+                    this.Language = new CultureInfo(languageType);
+                    break;
+            }
+
             return Task.CompletedTask;
         }
     }

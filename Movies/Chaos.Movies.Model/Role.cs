@@ -133,7 +133,7 @@ namespace Chaos.Movies.Model
             var roles = new List<Role>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(Role)}s");
+                return roles;
             }
 
             while (await reader.ReadAsync())

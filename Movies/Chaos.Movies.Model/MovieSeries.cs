@@ -164,7 +164,7 @@ namespace Chaos.Movies.Model
             var movieSeriesList = new List<MovieSeries>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(MovieSeries)}s");
+                return movieSeriesList;
             }
 
             while (await reader.ReadAsync())

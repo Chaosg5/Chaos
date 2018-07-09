@@ -8,7 +8,7 @@ namespace Chaos.Movies.Contract
 {
     using System.Globalization;
     using System.Runtime.Serialization;
-
+    
     /// <summary>Represents a user.</summary>
     [DataContract]
     public class LanguageDescriptionDto
@@ -24,5 +24,9 @@ namespace Chaos.Movies.Contract
         /// <summary>Gets or sets the language of the title.</summary>
         [DataMember]
         public CultureInfo Language { get; set; }
+
+        /// <summary>Gets or sets the type of the language of the title.</summary>
+        [DataMember]
+        public LanguageType LanguageType { get; set; }
     }
 }

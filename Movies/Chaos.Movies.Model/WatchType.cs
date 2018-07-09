@@ -134,7 +134,7 @@ namespace Chaos.Movies.Model
             var watchTypes = new List<WatchType>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(WatchType)}s");
+                return watchTypes;
             }
 
             while (await reader.ReadAsync())

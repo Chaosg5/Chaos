@@ -25,7 +25,7 @@ namespace Chaos.Movies.Model
     public class PersonInRoleCollection<TParent, TParentDto> : Collectable<PersonInRole, PersonInRoleDto, PersonInRoleCollection<TParent, TParentDto>, TParent, TParentDto>
     {
         /// <summary>The database column for this <see cref="UserRatingCollection{TParent, TParentDto}"/>.</summary>
-        private const string UserRatingsColumn = "UserRatings";
+        internal const string PersonInRoleColumn = "PeopleInRoles";
 
         /// <inheritdoc />
         public PersonInRoleCollection(Persistable<TParent, TParentDto> parent)
@@ -49,7 +49,7 @@ namespace Chaos.Movies.Model
                     table.Columns.Add(new DataColumn(UserSingleRating.UserIdColumn, typeof(int)));
                     foreach (var personInRole in this.Items)
                     {
-                        table.Rows.Add(personInRole.Person.Id, personInRole.Role.Id, personInRole.Department.Id, this.ParentId, personInRole.Ratings.UserRating, personInRole.Ratings.UserId);
+                        table.Rows.Add(personInRole.Person.Id, personInRole.Role.Id, personInRole.Department.Id, this.ParentId, personInRole.UserRatings.UserRating, personInRole.UserRatings.UserId);
                     }
 
                     return table;
@@ -159,7 +159,7 @@ namespace Chaos.Movies.Model
             return new ReadOnlyDictionary<string, object>(
                 new Dictionary<string, object>
                 {
-                    { Persistent.ColumnToVariable(UserRatingsColumn), this.GetSaveTable }
+                    { Persistent.ColumnToVariable(PersonInRoleColumn), this.GetSaveTable }
                 });
         }
     }

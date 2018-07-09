@@ -100,10 +100,13 @@ namespace Chaos.Movies.Model
             }
         }
 
+        /// <summary>Gets the type of the <see cref="LanguageDescription"/>.</summary>
+        public LanguageType LanguageType { get; private set; }
+
         /// <inheritdoc />
         public override LanguageDescriptionDto ToContract()
         {
-            return new LanguageDescriptionDto { Title = this.Title, Description = this.Description, Language = this.Language };
+            return new LanguageDescriptionDto { Title = this.Title, Description = this.Description, Language = this.Language, LanguageType = this.LanguageType };
         }
 
         /// <inheritdoc />
@@ -115,7 +118,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            return new LanguageDescription { Title = contract.Title, Description = contract.Description, Language = contract.Language };
+            return new LanguageDescription { Title = contract.Title, Description = contract.Description, Language = contract.Language, LanguageType = contract.LanguageType };
         }
 
         /// <inheritdoc />
@@ -139,9 +142,23 @@ namespace Chaos.Movies.Model
         protected override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { LanguageTitle.TitleColumn, DescriptionColumn, LanguageTitle.LanguageColumn });
-            this.Title = record[LanguageTitle.TitleColumn].ToString();
-            this.Description = record[DescriptionColumn].ToString();
-            this.Language = new CultureInfo(record[LanguageTitle.LanguageColumn].ToString());
+            this.Title = (string)record[LanguageTitle.TitleColumn];
+            this.Description = (string)record[DescriptionColumn];
+            var languageType = (string)record[LanguageTitle.LanguageColumn];
+            switch (languageType.ToUpperInvariant())
+            {
+                case "DEFAULT":
+                    this.LanguageType = LanguageType.Default;
+                    break;
+                case "ORIGINAL":
+                    this.LanguageType = LanguageType.Default;
+                    break;
+                default:
+                    this.LanguageType = LanguageType.Language;
+                    this.Language = new CultureInfo(languageType);
+                    break;
+            }
+
             return Task.CompletedTask;
         }
     }

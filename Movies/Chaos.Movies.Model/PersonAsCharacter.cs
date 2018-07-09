@@ -87,7 +87,10 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the user ratings.</summary>
-        public UserSingleRating Ratings { get; private set; } = new UserSingleRating();
+        public UserSingleRating UserRatings { get; private set; } = new UserSingleRating();
+
+        /// <summary>Gets the total rating score from all users.</summary>
+        public double TotalRating { get; private set; }
 
         /// <inheritdoc />
         public override PersonAsCharacterDto ToContract()
@@ -96,7 +99,8 @@ namespace Chaos.Movies.Model
             {
                 Character = this.Character.ToContract(),
                 Person = this.Person.ToContract(),
-                Ratings = this.Ratings.ToContract()
+                UserRatings = this.UserRatings.ToContract(),
+                TotalRating = this.TotalRating
             };
         }
 
@@ -109,12 +113,13 @@ namespace Chaos.Movies.Model
             {
                 throw new ArgumentNullException(nameof(contract));
             }
-
+            
             return new PersonAsCharacter
             {
                 Character = Character.Static.FromContract(contract.Character),
                 Person = Person.Static.FromContract(contract.Person),
-                Ratings = this.Ratings.FromContract(contract.Ratings)
+                UserRatings = this.UserRatings.FromContract(contract.UserRatings),
+                TotalRating = contract.TotalRating
             };
         }
 
@@ -126,14 +131,13 @@ namespace Chaos.Movies.Model
         /// <summary>Creates new <see cref="PersonAsCharacter"/>s from the <paramref name="reader"/>.</summary>
         /// <param name="reader">The reader containing data sets and records the data for the <see cref="PersonAsCharacter"/>s.</param>
         /// <returns>The list of <see cref="PersonAsCharacter"/>s.</returns>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         internal async Task<IEnumerable<PersonAsCharacter>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var personAsCharacters = new List<PersonAsCharacter>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(UserRating)}s");
+                return personAsCharacters;
             }
 
             while (await reader.ReadAsync())
@@ -162,7 +166,7 @@ namespace Chaos.Movies.Model
             Persistent.ValidateRecord(record, new[] { Character.IdColumn, Person.IdColumn });
             this.Character = await GlobalCache.GetCharacterAsync((int)record[Character.IdColumn]);
             this.Person = await GlobalCache.GetPersonAsync((int)record[Person.IdColumn]);
-            this.Ratings = await this.Ratings.NewFromRecordAsync(record);
+            this.TotalRating = (int)record[UserSingleRating.TotalRatingColumn];
         }
     }
 }

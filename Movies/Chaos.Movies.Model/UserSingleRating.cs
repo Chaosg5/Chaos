@@ -14,7 +14,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
-    /// <summary>A simple user rating, similar to <see cref="UserRating"/> but not using the <see cref="RatingType"/>.</summary>
+    /// <summary>A simple user rating, similar to <see cref="Model.UserRating"/> but not using the <see cref="RatingType"/>.</summary>
     public class UserSingleRating : Loadable<UserSingleRating, UserSingleRatingDto>
     {
         /// <summary>The database column for <see cref="UserRating"/>.</summary>
@@ -24,7 +24,7 @@ namespace Chaos.Movies.Model
         internal const string UserIdColumn = "UserId";
 
         /// <summary>The database column for <see cref="TotalRating"/>.</summary>
-        private const string TotalRatingColumn = "TotalRating";
+        internal const string TotalRatingColumn = "TotalRating";
 
         /// <summary>Private part of the <see cref="UserRating"/> property.</summary>
         private int userRating;
@@ -111,7 +111,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { TotalRatingColumn, UserRatingColumn, UserIdColumn });
+            Persistent.ValidateRecord(record, new[] { TotalRatingColumn });
             this.TotalRating = (double)record[TotalRatingColumn];
             this.UserRating = (int)record[UserRatingColumn];
             this.UserId = (int)record[UserIdColumn];

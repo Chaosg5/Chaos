@@ -95,7 +95,10 @@ namespace Chaos.Movies.Model
         public IconCollection Images { get; private set; } = new IconCollection();
 
         /// <summary>Gets the user ratings.</summary>
-        public UserSingleRating Ratings { get; private set; } = new UserSingleRating();
+        public UserSingleRating UserRatings { get; private set; } = new UserSingleRating();
+
+        /// <summary>Gets the total rating score from all users.</summary>
+        public double TotalRating { get; private set; }
 
         /// <inheritdoc />
         public override PersonDto ToContract()
@@ -108,7 +111,8 @@ namespace Chaos.Movies.Model
                 DeathDate = this.DeathDate,
                 ExternalLookups = this.ExternalLookups.ToContract(),
                 Images = this.Images.ToContract(),
-                Ratings = this.Ratings.ToContract()
+                UserRatings = this.UserRatings.ToContract(),
+                TotalRating = this.TotalRating
             };
         }
 
@@ -130,7 +134,8 @@ namespace Chaos.Movies.Model
                 DeathDate = contract.DeathDate,
                 ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups),
                 Images = this.Images.FromContract(contract.Images),
-                Ratings = this.Ratings.FromContract(contract.Ratings)
+                UserRatings = this.UserRatings.FromContract(contract.UserRatings),
+                TotalRating = contract.TotalRating
             };
         }
 
@@ -219,7 +224,7 @@ namespace Chaos.Movies.Model
             var people = new List<Person>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(Person)}s");
+                return people;
             }
 
             while (await reader.ReadAsync())
@@ -265,14 +270,23 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
-        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        protected override Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn, BirthDateColumn, DeathDateColumn });
+            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn, BirthDateColumn, DeathDateColumn, UserSingleRating.TotalRatingColumn });
             this.Id = (int)record[IdColumn];
             this.Name = (string)record[NameColumn];
-            this.BirthDate = (DateTime)record[BirthDateColumn];
-            this.DeathDate = (DateTime)record[DeathDateColumn];
-            this.Ratings = await this.Ratings.NewFromRecordAsync(record);
+            if (!DBNull.Value.Equals(record[BirthDateColumn]))
+            {
+                this.BirthDate = (DateTime)record[BirthDateColumn];
+            }
+
+            if (!DBNull.Value.Equals(record[DeathDateColumn]))
+            {
+                this.DeathDate = (DateTime)record[DeathDateColumn];
+            }
+
+            this.TotalRating = (int)record[UserSingleRating.TotalRatingColumn];
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

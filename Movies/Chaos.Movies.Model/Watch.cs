@@ -172,7 +172,7 @@ namespace Chaos.Movies.Model
             var watches = new List<Watch>();
             if (!reader.HasRows)
             {
-                throw new MissingResultException(1, $"{nameof(Watch)}s");
+                return watches;
             }
 
             while (await reader.ReadAsync())

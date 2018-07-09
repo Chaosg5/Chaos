@@ -11,6 +11,7 @@ Merge methods
 Get all User ratings
 
 SQL - Dont delete from (important) Collections, set bit deleted instead?
+SQL - Remove unneeded joins for all Get-procedures
 Language Create type
 
 Log

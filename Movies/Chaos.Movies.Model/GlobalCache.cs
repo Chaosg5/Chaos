@@ -29,6 +29,9 @@ namespace Chaos.Movies.Model
         /// <summary>Gets all available movie series types.</summary>
         private static readonly AsyncCache<int, MovieSeriesType> MovieSeriesTypes = new AsyncCache<int, MovieSeriesType>(i => MovieSeriesType.Static.GetAsync(session, i));
 
+        /// <summary>Gets all available movie series types.</summary>
+        private static readonly AsyncCache<int, MovieType> MovieTypes = new AsyncCache<int, MovieType>(i => MovieType.Static.GetAsync(session, i));
+
         /// <summary>Gets all available people.</summary>
         private static readonly AsyncCache<int, Person> People = new AsyncCache<int, Person>(i => Person.Static.GetAsync(session, i));
 
@@ -46,7 +49,10 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets all available icon types.</summary>
         private static readonly AsyncCache<int, WatchType> WatchTypes = new AsyncCache<int, WatchType>(i => WatchType.Static.GetAsync(session, i));
-        
+
+        /// <summary>Gets all available user sessions.</summary>
+        private static readonly AsyncCache<Guid, UserSession> UserSessions = new AsyncCache<Guid, UserSession>(i => UserSession.EmptySessionAsync());
+
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
         /// <summary>The session.</summary>
@@ -131,6 +137,14 @@ namespace Chaos.Movies.Model
             return await MovieSeriesTypes.GetValue(id);
         }
 
+        /// <summary>Gets the specified <see cref="MovieType"/>.</summary>
+        /// <param name="id">The id of the <see cref="MovieType"/> to get.</param>
+        /// <returns>The specified <see cref="MovieType"/>.</returns>
+        public static async Task<MovieType> GetMovieTypeAsync(int id)
+        {
+            return await MovieTypes.GetValue(id);
+        }
+
         /// <summary>Gets the specified <see cref="Person"/>.</summary>
         /// <param name="id">The id of the <see cref="Person"/> to get.</param>
         /// <returns>The specified <see cref="Person"/>.</returns>
@@ -171,6 +185,14 @@ namespace Chaos.Movies.Model
             return await WatchTypes.GetValue(id);
         }
 
+        /// <summary>Gets the specified <see cref="UserSession"/>.</summary>
+        /// <param name="id">The id of the <see cref="UserSession"/> to get.</param>
+        /// <returns>The specified <see cref="UserSession"/>.</returns>
+        public static async Task<UserSession> GetUserSessionAsync(Guid id)
+        {
+            return await UserSessions.GetValue(id);
+        }
+
         /// <summary>Gets the specified <see cref="ExternalSource"/>.</summary>
         /// <param name="id">The id of the <see cref="ExternalSource"/> to get.</param>
         /// <returns>The specified <see cref="ExternalSource"/>.</returns>
@@ -209,6 +231,18 @@ namespace Chaos.Movies.Model
             foreach (var movieSeriesType in await MovieSeriesType.Static.GetAllAsync(session))
             {
                 MovieSeriesTypes.SetValue(movieSeriesType.Id, movieSeriesType);
+            }
+        }
+
+        /// <summary>Loads all <see cref="MovieType"/>s from the database.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static async Task MovieTypesLoadAllAsync()
+        {
+            MovieTypes.Clear();
+            foreach (var movieType in await MovieType.Static.GetAllAsync(session))
+            {
+                MovieTypes.SetValue(movieType.Id, movieType);
             }
         }
 
