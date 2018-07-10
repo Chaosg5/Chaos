@@ -7,6 +7,6 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <_NewBackgroundProfile>True</_NewBackgroundProfile>
-    <_PublishTargetUrl>C:\Github\Chaosg5\Chaos\Movies\Chaos.Movies.WebCore\bin\Release\PublishOutput</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\pub\CMDB</_PublishTargetUrl>
   </PropertyGroup>
 </Project>

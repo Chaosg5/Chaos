@@ -19,3 +19,5 @@ Ratings    800.000 => title.ratings		=> DONE			(830.572/803.572) 100%
 <add name="ConnectionString" connectionString="Data Source=192.168.1.123;Initial Catalog=CMDB;User Id=WebUser;Password=MSdNhYK3haQ9SKcw;" providerName="System.Data.SqlClient"/>
 
 Warcraft = 766949
+
+d9b2ec74-8a6b-4c41-b12d-cc08fe10e4ec

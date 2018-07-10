@@ -110,7 +110,7 @@ namespace Chaos.Movies.Model.Tests
         {
             var login = new UserLogin(
                 Properties.Settings.Default.SystemUserName,
-                Properties.Settings.Default.SystemUserName,
+                Properties.Settings.Default.SystemPassword,
                 await GlobalCache.GetServerIpAsync());
             // ReSharper disable ExceptionNotDocumented
             var session = await UserSession.Static.CreateSessionAsync(login);

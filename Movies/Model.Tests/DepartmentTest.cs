@@ -63,7 +63,6 @@ namespace Chaos.Movies.Model.Tests
             var session = await UserTest.GetSystemSessionAsync();
             var englishTitle = new LanguageTitle(englishName, LanguageTitleTest.English);
             var swedishTitle = new LanguageTitle(swedishName, LanguageTitleTest.Swedish);
-            await GlobalCache.InitCacheAsync(session);
             var departments = await Department.Static.GetAllAsync(session);
             var department = departments.FirstOrDefault(g => g.Titles.Any(t => t == englishTitle || t == swedishTitle)) ?? new Department();
 

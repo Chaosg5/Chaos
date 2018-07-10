@@ -29,7 +29,6 @@ namespace Chaos.Movies.Model.Tests
             }
 
             var session = await UserTest.GetSystemSessionAsync();
-            await GlobalCache.InitCacheAsync(session);
             var movie = await Movie.Static.GetAsync(session, 766949);
             AssertMovie(movie);
         }

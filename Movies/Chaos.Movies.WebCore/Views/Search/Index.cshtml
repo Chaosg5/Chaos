@@ -1,0 +1,16 @@
+﻿@using System.Collections.ObjectModel
+@using Chaos.Movies.Contract
+@model ReadOnlyCollection<MovieDto>
+
+<h1>Search</h1>
+
+@using (Html.BeginForm("Index", "Search", FormMethod.Post))
+{
+    <label>Search:</label>
+    @Html.TextBox("searchText")
+}
+
+@foreach (var movie in Model)
+{
+    @movie.Titles.First(t => t.LanguageType == LanguageType.Default).Title
+}

@@ -7,9 +7,11 @@
 namespace Chaos.Movies.WebCore.Controllers
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Model;
+    using Chaos.Movies.Model.Exceptions;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -21,7 +23,7 @@ namespace Chaos.Movies.WebCore.Controllers
             var session = await this.ValidateSessionAsync();
             if (session == null)
             {
-                return this.RedirectToAction("Login");
+                return this.RedirectToAction("Index", "Login");
             }
 
             return View();
@@ -32,7 +34,7 @@ namespace Chaos.Movies.WebCore.Controllers
             var session = await this.ValidateSessionAsync();
             if (session == null)
             {
-                return this.RedirectToAction("Login");
+                return this.RedirectToAction("Index", "Login");
             }
 
             ViewData["Message"] = "Your application description page.";
@@ -45,7 +47,7 @@ namespace Chaos.Movies.WebCore.Controllers
             var session = await this.ValidateSessionAsync();
             if (session == null)
             {
-                return this.RedirectToAction("Login");
+                return this.RedirectToAction("Index", "Login");
             }
 
             ViewData["Message"] = "Your contact page.";
@@ -53,23 +55,16 @@ namespace Chaos.Movies.WebCore.Controllers
             return View();
         }
         
-        public IActionResult Login()
-        {
-            ViewData["Message"] = "Login.";
-
-            return View();
-        }
-
-        public async Task<IActionResult> Movie()
+        public async Task<IActionResult> Movie(int movieId)
         {
             var session = await this.ValidateSessionAsync();
             if (session == null)
             {
-                return this.RedirectToAction("Login");
+                return this.RedirectToAction("Index", "Login");
             }
 
-            var movie = await Model.Movie.Static.GetAsync(session, 766949);
-            return this.View(movie);
+            var movie = await Model.Movie.Static.GetAsync(session, movieId);
+            return this.View(movie.ToContract());
         }
 
         public IActionResult Error()
@@ -77,6 +72,9 @@ namespace Chaos.Movies.WebCore.Controllers
             return View();
         }
 
+        /// <summary>Validates the current user's session.</summary>
+        /// <returns>The <see cref="UserSession"/>.</returns>
+        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         private async Task<UserSession> ValidateSessionAsync()
         {
             if (!Guid.TryParse(HttpContext.Session.GetString("SessionId"), out var sessionId))
@@ -84,7 +82,16 @@ namespace Chaos.Movies.WebCore.Controllers
                 return null;
             }
 
-            return null;
+            try
+            {
+                var session = await UserSession.GetSessionAsync(sessionId);
+                await session.ValidateSessionAsync();
+                return session;
+            }
+            catch (InvalidSessionException)
+            {
+                return null;
+            }
         }
     }
 }

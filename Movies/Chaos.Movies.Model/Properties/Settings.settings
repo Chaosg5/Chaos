@@ -9,7 +9,7 @@
       <Value Profile="(Default)">System</Value>
     </Setting>
     <Setting Name="SystemPassword" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">#4tJk448My3j%H5c</Value>
+      <Value Profile="(Default)">System</Value>
     </Setting>
   </Settings>
 </SettingsFile>

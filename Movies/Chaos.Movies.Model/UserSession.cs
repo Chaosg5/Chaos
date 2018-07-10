@@ -57,11 +57,12 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the active to.</summary>
         public DateTime ActiveTo { get; private set; } = DateTime.Now.AddMinutes(30);
 
-        /// <summary>Creates an empty session.</summary>
-        /// <returns>The <see cref="UserSession"/>.</returns>
-        public static Task<UserSession> EmptySessionAsync()
+        /// <summary>Gets the specified <see cref="UserSession"/>.</summary>
+        /// <param name="sessionId">The id of the <see cref="UserSession"/> to get.</param>
+        /// <returns>The specified <see cref="UserSession"/>.</returns>
+        public static async Task<UserSession> GetSessionAsync(Guid sessionId)
         {
-            return Task.FromResult(new UserSession());
+            return await UserSessions.GetValue(sessionId);
         }
 
         /// <summary>Creates a new <see cref="UserSession"/>.</summary>
@@ -78,15 +79,21 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(login));
             }
 
+            UserSession session;
             if (!Persistent.UseService)
             {
-                return await this.CreateSessionToDatabaseAsync(login);
+                session = await this.CreateSessionToDatabaseAsync(login);
+            }
+            else
+            {
+                using (var service = new ChaosMoviesServiceClient())
+                {
+                    session = this.FromContract(await service.CreateUserSessionAsync(login));
+                }
             }
 
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                return this.FromContract(await service.CreateUserSessionAsync(login));
-            }
+            UserSessions.SetValue(session.SessionId, session);
+            return session;
         }
 
         /// <summary>Validates that this <see cref="UserSession"/> is valid.</summary>
@@ -104,7 +111,7 @@ namespace Chaos.Movies.Model
                 // ReSharper disable once ExceptionNotDocumented
                 throw new InvalidSessionException("The session does not exist and can't be used.");
             }
-            
+
             // Updates ActiveTo from the database, since the cache may not be up to date
             session = await GetFromDatabaseAsync(this.SessionId);
             if (session.ActiveTo > DateTime.Now)
@@ -202,7 +209,7 @@ namespace Chaos.Movies.Model
             this.ClientIp = (string)record[ClientIpColumn];
             this.UserId = (int)record[User.IdColumn];
             this.ActiveFrom = (DateTime)record[ActiveFromColumn];
-            this.ActiveTo = (DateTime)record[ActiveToColumn]; 
+            this.ActiveTo = (DateTime)record[ActiveToColumn];
             return Task.CompletedTask;
         }
 

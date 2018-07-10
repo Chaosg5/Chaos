@@ -1,19 +1,14 @@
-﻿@using Chaos.Movies.Model
-@model Movie
-
-@{
-    ViewData["Title"] = "Movie";
-}
-<h2>@ViewData["Title"].</h2>
-<h3>@ViewData["Message"]</h3>
-
+﻿@using Chaos.Movies.Contract
+@model MovieDto
+<!--
 <div style="position: absolute; width: 750px; height: 1334px; border: black 1px solid;">
     <img src="~/images/StarTransparent.svg" />
 </div>
 <div style="position: absolute; width: 1334px; height: 750px; border: black 1px solid;">
 
 </div>
+-->
 
+<h1>@Model.Titles.First(t => t.LanguageType == LanguageType.Default).Title</h1>
 <h2>Actors/Characters</h2>
-
-@Html.Partial("Cast", Model)
+@await Html.PartialAsync("Cast", Model)
