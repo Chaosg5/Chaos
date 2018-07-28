@@ -54,18 +54,6 @@ namespace Chaos.Movies.WebCore.Controllers
 
             return View();
         }
-        
-        public async Task<IActionResult> Movie(int movieId)
-        {
-            var session = await this.ValidateSessionAsync();
-            if (session == null)
-            {
-                return this.RedirectToAction("Index", "Login");
-            }
-
-            var movie = await Model.Movie.Static.GetAsync(session, movieId);
-            return this.View(movie.ToContract());
-        }
 
         public IActionResult Error()
         {

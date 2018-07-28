@@ -22,7 +22,7 @@ namespace Chaos.Movies.Model
     /// <summary>A rating for a <typeparamref name="TParent"/> set by a <see cref="User"/>.</summary>
     /// <typeparam name="TParent">The parent type of the owner of the collection.</typeparam>
     /// <typeparam name="TParentDto">The data transfer type to use for communicating the <typeparamref name="TParent"/>.</typeparam>
-    public class UserRatingCollection<TParent, TParentDto> : Collectable<UserRating, UserRatingDto, UserRatingCollection<TParent, TParentDto>, TParent, TParentDto>
+    public class UserRatingCollection<TParent, TParentDto> : Collectable<UserRating, UserRatingDto, UserRatingCollection<TParent, TParentDto>, ReadOnlyCollection<UserRatingDto>, TParent, TParentDto>
     {
         /// <summary>The database column for this <see cref="UserRatingCollection{TParent, TParentDto}"/>.</summary>
         private const string UserRatingsColumn = "UserRatings";

@@ -20,7 +20,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
-    public sealed class Character : Readable<Character, CharacterDto>, ISearchable<Character>
+    public class Character : Rateable<Character, CharacterDto>, ISearchable<Character>
     {
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
@@ -67,10 +67,61 @@ namespace Chaos.Movies.Model
         public IconCollection Images { get; private set; } = new IconCollection();
 
         /// <summary>Gets the user ratings.</summary>
-        public UserSingleRating UserRatings { get; private set; } = new UserSingleRating();
+        public UserSingleRating UserRating { get; private set; } = new UserSingleRating();
 
-        /// <summary>Gets the total rating score from all users.</summary>
-        public double TotalRating { get; private set; }
+        /// <summary>Gets the total rating.</summary>
+        public TotalRating TotalRating { get; private set; } = new TotalRating(typeof(Character));
+
+        /// <summary>Saves a <see cref="UserSingleRating"/> for the <see cref="User"/> of the <paramref name="session"/> for the specified <paramref name="characterId"/> and <paramref name="movieId"/>.</summary>
+        /// <param name="characterId">The id of the <see cref="Character"/> to rate.</param>
+        /// <param name="personId">The id of the <see cref="Person"/> who plays the <see cref="Character"/>.</param>
+        /// <param name="movieId">The id of the <see cref="Movie"/> to rate the <see cref="Character"/> in.</param>
+        /// <param name="rating">The value of the <see cref="User"/>'s rating.</param>
+        /// <param name="session">The <see cref="User"/>'s session.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="PersistentObjectRequiredException">All items to save needs to be persisted.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="session"/> is <see langword="null"/></exception>
+        public static async Task SaveUserRatingAsync(int characterId, int personId, int movieId, int rating, UserSession session)
+        {
+            if (characterId <= 0)
+            {
+                throw new PersistentObjectRequiredException($"The {nameof(Character)} has to be saved.");
+            }
+
+            if (personId <= 0)
+            {
+                throw new PersistentObjectRequiredException($"The {nameof(Person)} has to be saved.");
+            }
+
+            if (movieId <= 0)
+            {
+                throw new PersistentObjectRequiredException($"The {nameof(Movie)} has to be saved.");
+            }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            if (!Persistent.UseService)
+            {
+                var parameters = new ReadOnlyDictionary<string, object>(
+                    new Dictionary<string, object>
+                    {
+                        { Persistent.ColumnToVariable(IdColumn), characterId },
+                        { Persistent.ColumnToVariable(Person.IdColumn), personId },
+                        { Persistent.ColumnToVariable(Movie.IdColumn), movieId },
+                        { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
+                        { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), rating }
+                    });
+                await Character.CustomDatabaseActionAsync(parameters, UserSingleRating.SaveUserMovieRatingProcedure, session);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.CharacterSearchAsync(session.ToContract(), this.ToContract());
+            }
+        }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
@@ -98,6 +149,30 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="items"/> is <see langword="null"/></exception>
+        public override async Task GetUserRatingsAsync(IEnumerable<CharacterDto> items, UserSession session)
+        {
+            if (!Persistent.UseService)
+            {
+                var itemList = items?.ToList();
+                await this.GetUserRatingsFromDatabaseAsync(itemList, itemList?.Select(i => i.Id), this.ReadUserRatingsAsync, session);
+                return;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                //return (await service.MovieGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
+            }
+        }
+
+        public override Task GetUserItemDetailsAsync(CharacterDto item, UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public async Task<IEnumerable<Character>> SearchAsync(SearchParametersDto parametersDto, UserSession session)
         {
@@ -115,7 +190,7 @@ namespace Chaos.Movies.Model
             using (var service = new ChaosMoviesServiceClient())
             {
                 return new List<Character>();
-                ////await service.CharacterSearchAsync(session.ToContract(), this.ToContract());
+                //await service.CharacterSearchAsync(session.ToContract(), this.ToContract());
             }
         }
 
@@ -146,8 +221,8 @@ namespace Chaos.Movies.Model
                 Name = this.Name,
                 ExternalLookups = this.ExternalLookups.ToContract(),
                 Images = this.Images.ToContract(),
-                UserRatings = this.UserRatings.ToContract(),
-                TotalRating = this.TotalRating
+                UserRating = this.UserRating.ToContract(),
+                TotalRating = this.TotalRating.ToContract()
             };
         }
 
@@ -167,8 +242,8 @@ namespace Chaos.Movies.Model
                 Name = contract.Name,
                 ExternalLookups = this.ExternalLookups.FromContract(contract.ExternalLookups),
                 Images = this.Images.FromContract(contract.Images),
-                UserRatings = this.UserRatings.FromContract(contract.UserRatings),
-                TotalRating = contract.TotalRating
+                UserRating = this.UserRating.FromContract(contract.UserRating),
+                TotalRating = this.TotalRating.FromContract(contract.TotalRating)
             };
         }
 
@@ -238,13 +313,12 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn, UserSingleRating.TotalRatingColumn });
+            Persistent.ValidateRecord(record, new[] { IdColumn, NameColumn });
             this.Id = (int)record[IdColumn];
             this.Name = (string)record[NameColumn];
-            this.TotalRating = (int)record[UserSingleRating.TotalRatingColumn];
-            return Task.CompletedTask;
+            this.TotalRating = await this.TotalRating.NewFromRecordAsync(record);
         }
 
         /// <inheritdoc />
@@ -258,6 +332,35 @@ namespace Chaos.Movies.Model
                     { Persistent.ColumnToVariable(ExternalLookupCollection.ExternalLookupColumn), this.ExternalLookups.GetSaveTable },
                     { Persistent.ColumnToVariable(IconCollection.IconsColumn), this.Images.GetSaveTable }
                 });
+        }
+
+        /// <inheritdoc />
+        protected override async Task ReadUserRatingsAsync(IEnumerable<CharacterDto> items, int userId, DbDataReader reader)
+        {
+            var ratings = new Dictionary<int, double>();
+            if (reader.HasRows)
+            {
+                while (await reader.ReadAsync())
+                {
+                    ratings.Add((int)reader[IdColumn], (double)reader[UserSingleRating.RatingColumn]);
+                }
+            }
+
+            foreach (var character in items)
+            {
+                double rating;
+                if (!ratings.TryGetValue(character.Id, out rating))
+                {
+                    rating = 0;
+                }
+
+                UserSingleRating.SetUserRating(character.UserRating, userId, rating);
+            }
+        }
+
+        protected override Task ReadUserDetailsAsync(CharacterDto item, int userId, DbDataReader reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

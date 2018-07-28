@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
+    <link href="../wwwroot/css/site.css" rel="stylesheet">
+    <link href="../wwwroot/lib/bootstrap/dist/js/bootstrap.js" rel="stylesheet">
     <style type="text/css">
         #photoRegion {
             background-color: red;
@@ -40,11 +42,28 @@
     </style>
 </head>
 <body>
+    <div class="container body-content">
+        <div class="row">
+            <div class="col-md-8" style="background-color: Red">
+                <a href="#">
+                    <div class="item left col-md-6">
+                        <div class="itemContent">
+                            <div class="name">
+                                <h4>Warcraft</h4>
+                            </div>
+                            <span>Movie - 2018</span>
+                        </div>
+                        <div class="listIcon">
+                            <img src="../wwwroot/images/TravisFimmel.jpg" />
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div id="photoRegion" class="full16x9">
         <div class="photo photo4x4">
-            <img src="../wwwroot/images/AnduinLothar.jpg"/>
-        </div>
-        <div class="photo photo4x4">
             <img src="../wwwroot/images/AnduinLothar.jpg" />
         </div>
         <div class="photo photo4x4">
@@ -52,6 +71,75 @@
         </div>
         <div class="photo photo4x4">
             <img src="../wwwroot/images/AnduinLothar.jpg" />
+        </div>
+        <div class="photo photo4x4">
+            <img src="../wwwroot/images/AnduinLothar.jpg" />
+        </div>
+    </div>
+
+    <div class="ratingRow">
+        <div class="ratingIcon">
+            <span class="ratingScore">1.5</span>
+            <img src="~/images/User.svg" />
+        </div>
+        <div class="ratingBackground">
+            <div style="background-color: rgb(255, 51, 0); height: 100%; width: 15%; margin-left: 85%;">
+                <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+            </div>
+        </div>
+        <div class="ratingStars" onclick="SetPersonRating(event, this, true);">
+            <img src="~/images/StarRowTransparent.svg" />
+        </div>
+    </div>
+    <div class="ratingRow">
+        <div class="ratingIcon">
+            <span class="ratingScore">2.0</span>
+            <img src="~/images/CMDB.png" />
+        </div>
+        <div class="ratingBackground">
+            <div style="background-color: rgb(255, 153, 0); height: 100%; width: 40%; margin-left: 60%;">
+            </div>
+        </div>
+        <div class="ratingStars">
+            <img src="~/images/StarRowTransparent.svg" />
+        </div>
+    </div>
+    <div class="ratingRow">
+        <div class="ratingIcon">
+            <span class="ratingScore">2.0</span>
+            <img src="~/images/IMDB.ico" />
+        </div>
+        <div class="ratingBackground">
+            <div style="background-color: rgb(205, 230, 0); height: 100%; width: 60%; margin-left: 40%;">
+            </div>
+        </div>
+        <div class="ratingStars">
+            <img src="~/images/StarRowTransparent.svg" />
+        </div>
+    </div>
+    <div class="ratingRow">
+        <div class="ratingIcon">
+            <span class="ratingScore">2.0</span>
+            <img src="~/images/TMDB.png" />
+        </div>
+        <div class="ratingBackground">
+            <div style="background-color: rgb(102, 179, 0); height: 100%; width: 80%; margin-left: 20%;">
+            </div>
+        </div>
+        <div class="ratingStars">
+            <img src="~/images/StarRowTransparent.svg" />
+        </div>
+    </div>
+    <div class="ratingRow">
+        <div class="ratingIcon">
+            <span class="ratingScore">2.0</span>
+            <img src="~/images/TMDB.png" />
+        </div>
+        <div class="ratingBackground">
+            <div style="background-color: green; height: 100%; width: 100%; margin-left: 0%;"></div>
+        </div>
+        <div class="ratingStars">
+            <img src="~/images/StarRowTransparent.svg" />
         </div>
     </div>
 </body>

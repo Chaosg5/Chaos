@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class LanguageDescriptionCollection : Listable<LanguageDescription, LanguageDescriptionDto, LanguageDescriptionCollection>
+    public class LanguageDescriptionCollection : Listable<LanguageDescription, LanguageDescriptionDto, LanguageDescriptionCollection, ReadOnlyCollection<LanguageDescriptionDto>>
     {
         /// <summary>The database column for this <see cref="LanguageDescriptionCollection"/>.</summary>
         internal const string TitlesColumn = "Titles";

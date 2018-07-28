@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a user.</summary>
-    public class ExternalRatingCollection : Listable<ExternalRating, ExternalRatingDto, ExternalRatingCollection>
+    public class ExternalRatingCollection : Listable<ExternalRating, ExternalRatingDto, ExternalRatingCollection, ReadOnlyCollection<ExternalRatingDto>>
     {
         /// <summary>The database column for <see cref="ExternalRatingCollection"/>.</summary>
         internal const string ExternalRatingsColumn = "ExternalRatings";
@@ -35,7 +35,7 @@ namespace Chaos.Movies.Model
                     table.Columns.Add(new DataColumn(ExternalRating.RatingCountColumn, typeof(int)));
                     foreach (var rating in this.Items)
                     {
-                        table.Rows.Add(rating.ExternalSource.Id, rating.Rating, rating.RatingCount);
+                        table.Rows.Add(rating.ExternalSource.Id, rating.Value, rating.RatingCount);
                     }
 
                     return table;

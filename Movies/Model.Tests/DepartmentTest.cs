@@ -32,7 +32,7 @@ namespace Chaos.Movies.Model.Tests
             Assert.IsNotNull(department);
 
             contract.Id = 13;
-            contract.Titles = new ReadOnlyCollection<LanguageTitleDto>(new List<LanguageTitleDto>());
+            contract.Titles = new LanguageTitleCollectionDto(new List<LanguageTitleDto>());
             contract.Roles = new ReadOnlyCollection<RoleDto>(new List<RoleDto>());
 
             department = Department.Static.FromContract(contract);

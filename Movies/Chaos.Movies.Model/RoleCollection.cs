@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A list of <see cref="Role"/>s.</summary>
-    public class RoleCollection : Listable<Role, RoleDto, RoleCollection>
+    public class RoleCollection : Listable<Role, RoleDto, RoleCollection, ReadOnlyCollection<RoleDto>>
     {
         /// <summary>The database column for this <see cref="RoleCollection"/>.</summary>
         internal const string RolesColumn = "Roles";

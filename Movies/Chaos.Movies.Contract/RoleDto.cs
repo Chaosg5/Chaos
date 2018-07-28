@@ -19,6 +19,6 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets the list of titles of the role in different languages.</summary>
         [DataMember]
-        public ReadOnlyCollection<LanguageTitleDto> Titles { get; set; }
+        public LanguageTitleCollectionDto Titles { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Write your Javascript code.
 function SetPersonRating(event, sender, rightToLeft, movieId, personId, sessionId) {
     var rating = GetRatingFromPosition(event, sender, rightToLeft, 200);
+
     alert("Rating: " + rating);
 }
 

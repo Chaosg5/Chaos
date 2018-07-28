@@ -1,0 +1,20 @@
+﻿@using Chaos.Movies.Contract
+@model MovieDto
+<!--
+<div style="position: absolute; width: 750px; height: 1334px; border: black 1px solid;">
+    <img src="~/images/StarTransparent.svg" />
+</div>
+<div style="position: absolute; width: 1334px; height: 750px; border: black 1px solid;">
+
+</div>
+-->
+
+<h1>@Model.Titles.First(t => t.LanguageType == LanguageType.Default).Title</h1>
+<h2 class="accordion-toggle" data-toggle="collapse" data-target="#characters">Actors/Characters</h2>
+<div id="characters" class="col-md-12 collapse in">
+    @await Html.PartialAsync("Cast", Model)
+</div>
+<h2 class="accordion-toggle" data-toggle="collapse" data-target="#people">Cast/Crew</h2>
+<div id="people" class="col-md-12 collapse in">
+    @await Html.PartialAsync("Crew", Model)
+</div>

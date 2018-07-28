@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a user.</summary>
-    public class MovieCollection : Orderable<Movie, MovieDto, MovieCollection>
+    public class MovieCollection : Orderable<Movie, MovieDto, MovieCollection, ReadOnlyCollection<MovieDto>>
     {
         /// <summary>The database column for <see cref="MovieCollection"/>.</summary>
         internal const string MoviesColumn = "Movies";

@@ -36,7 +36,7 @@ namespace Chaos.Movies.Model.Tests
             var title = LanguageTitleTest.GetLanguageTitleContract();
             contract.Id = 11;
             contract.ExternalLookups = new ReadOnlyCollection<ExternalLookupDto>(new List<ExternalLookupDto> { externalLookup });
-            contract.Titles = new ReadOnlyCollection<LanguageTitleDto>(new List<LanguageTitleDto> { title });
+            contract.Titles = new LanguageTitleCollectionDto(new List<LanguageTitleDto> { title });
             genre = Genre.Static.FromContract(contract);
 
             Assert.AreEqual(contract.Id, genre.Id);

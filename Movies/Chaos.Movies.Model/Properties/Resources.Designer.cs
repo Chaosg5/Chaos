@@ -68,5 +68,14 @@ namespace Chaos.Movies.Model.Properties {
                 return ResourceManager.GetString("ErrorGenericNotSupportedInService", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All ratable items has to be persitable..
+        /// </summary>
+        internal static string ErrorRatableItemsNeedsToBePersistable {
+            get {
+                return ResourceManager.GetString("ErrorRatableItemsNeedsToBePersistable", resourceCulture);
+            }
+        }
     }
 }

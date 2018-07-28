@@ -1,6 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background-color: white;
 }
 
 /* Wrapping element */
@@ -41,12 +42,21 @@ textarea {
 /************************/
 /*****     LIST     *****/
 /************************/
+
+.clickable {
+    cursor: pointer;
+}
+
+/************************/
+/*****     LIST     *****/
+/************************/
 .item {
     display: inline-block;
     border: #c0c0c0 1px solid;
     box-shadow: 5px 5px 5px #c0c0c0;
     white-space: nowrap;
     margin-bottom: 5px;
+    background-color: white;
 }
 
     .item .name {
@@ -64,69 +74,106 @@ textarea {
         vertical-align: bottom;
     }
 
+    .item a {
+        text-decoration: none;
+        color: black;
+    }
+
 .listIcon {
     display: inline-block;
     vertical-align: top;
 }
 
-    .listIcon img {
+    .listIcon.large img {
+        width: 200px;
+        height: 300px;
+    }
+
+    .listIcon img, .listIcon.medium img {
         width: 100px;
         height: 150px;
     }
 
+    .listIcon.small img {
+        width: 67px;
+        height: 100px;
+    }
+
+    .listIcon.tiny img {
+        width: 33px;
+        height: 50px;
+    }
+
+/**************************/
+/*****     Toggle     *****/
+/**************************/
+.accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings'; /* essential for enabling glyphicon */
+    content: "\e114"; /* adjust as needed, taken from bootstrap.css */
+    float: left; /* adjust as needed */
+    color: black; /* adjust as needed */
+    margin-right: 0.4em;
+}
+
+.accordion-toggle.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\e080"; /* adjust as needed, taken from bootstrap.css */
+}
+
 /**************************/
 /*****     RATING     *****/
 /**************************/
-.rating {
+.itemContent {
     display: inline-block;
 }
 
-    .rating .ratingRow {
+    .itemContent .ratingRow {
         display: block;
         height: 20px;
         width: 245px;
     }
 
-        .rating .ratingRow div {
+        .itemContent .ratingRow div {
             position: absolute;
         }
 
-        .rating .ratingRow img {
+        .itemContent .ratingRow img {
             vertical-align: top;
         }
 
-        .rating .ratingRow .ratingIcon {
+        .itemContent .ratingRow .ratingIcon {
             width: 45px;
             height: 20px;
         }
 
-            .rating .ratingRow .ratingIcon img {
+            .itemContent .ratingRow .ratingIcon img {
                 width: 20px;
                 height: 20px;
             }
 
-        .rating .ratingRow .ratingBackground {
+        .itemContent .ratingRow .ratingBackground {
             height: 20px;
             width: 200px;
             background-color: lightgray;
         }
 
-        .rating .ratingRow .ratingStars {
+        .itemContent .ratingRow .ratingStars {
             height: 20px;
             width: 200px;
         }
 
-        .rating .ratingRow .ratingScore {
+        .itemContent .ratingRow .ratingScore {
             font-weight: bold;
             font-family: serif;
             font-size: 16px;
             width: 25px;
         }
 
-.item.left .rating .ratingRow .ratingIcon {
+.item.left .itemContent .ratingRow .ratingIcon {
     margin-left: 200px;
 }
 
-.item.right .rating .ratingBackground, .item.right .rating .ratingStars {
+.item.right .itemContent .ratingBackground, .item.right .itemContent .ratingStars {
     margin-left: 45px;
 }

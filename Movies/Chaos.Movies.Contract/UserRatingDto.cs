@@ -9,11 +9,13 @@ namespace Chaos.Movies.Contract
     using System;
     using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
-    using System.Windows.Media;
 
-    /// <summary>Represents a user.</summary>
+    using Chaos.Movies.Contract.Interface;
+
+    /// <inheritdoc />
+    /// <summary>Represents a user's rating for a specific <see cref="RatingTypeDto"/>.</summary>
     [DataContract]
-    public class UserRatingDto
+    public class UserRatingDto : IRating
     {
         /// <summary>Gets or sets the id of the <see cref="UserDto"/> who owns the rating.</summary>
         [DataMember]
@@ -27,23 +29,19 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public ReadOnlyCollection<UserRatingDto> SubRatings { get; set; }
 
-        /// <summary>Gets or sets the value of this rating.</summary>
+        /// <inheritdoc />
         [DataMember]
-        public int Value { get; set; }
-
+        public double Value { get; set; }
+        
         /// <summary>Gets or sets the derived value of this rating.</summary>
         [DataMember]
         public double Derived { get; set; }
 
-        /// <summary>Gets or sets the display color in RBG hex for this <see cref="UserRatingDto"/>'s <see cref="Value"/>.</summary>
+        /// <inheritdoc />
         [DataMember]
         public string HexColor { get; set; }
 
-        /// <summary>Gets or sets the display color for this <see cref="UserRatingDto"/>'s <see cref="Value"/>.</summary>
-        [DataMember]
-        public Color Color { get; set; }
-
-        /// <summary>Gets or sets the display value for this <see cref="UserRatingDto"/>'s <see cref="Value"/>.</summary>
+        /// <inheritdoc />
         [DataMember]
         public string DisplayValue { get; set; }
 

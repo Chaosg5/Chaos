@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A genre of <see cref="Movie"/>s.</summary>
-    public class GenreCollection : Listable<Genre, GenreDto, GenreCollection>
+    public class GenreCollection : Listable<Genre, GenreDto, GenreCollection, ReadOnlyCollection<GenreDto>>
     {
         /// <summary>The database column for <see cref="GenreCollection"/>.</summary>
         internal const string GenresColumn = "Genres";

@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interface\IRating.cs" />
+    <Compile Include="Interface\IUserSingleRating.cs" />
+    <Compile Include="LanguageTitleCollectionDto.cs" />
     <Compile Include="LanguageType.cs" />
     <Compile Include="SearchParametersDto.cs" />
     <Compile Include="ErrorDto.cs" />
@@ -63,6 +66,7 @@
     <Compile Include="PersonDto.cs" />
     <Compile Include="PersonInRoleDto.cs" />
     <Compile Include="PersonAsCharacterDto.cs" />
+    <Compile Include="TotalRatingDto.cs" />
     <Compile Include="UserSingleRatingDto.cs" />
     <Compile Include="UserLogin.cs" />
     <Compile Include="UserRatingDto.cs" />

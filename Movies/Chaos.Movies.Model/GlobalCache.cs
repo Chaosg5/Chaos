@@ -73,6 +73,7 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the specified <see cref="Movie"/>.</summary>
         /// <param name="id">The id of the <see cref="Movie"/> to get.</param>
         /// <returns>The specified <see cref="Movie"/>.</returns>
+        [Obsolete]
         public static async Task<Movie> GetMovieAsync(int id)
         {
             await InitCacheAsync();

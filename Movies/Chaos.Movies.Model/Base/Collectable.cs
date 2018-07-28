@@ -27,9 +27,9 @@ namespace Chaos.Movies.Model.Base
         "CA1005:AvoidExcessiveParametersOnGenericTypes",
         Justification =
             "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
-    public abstract class Collectable<T, TDto, TList, TParent, TParentDto> : Listable<T, TDto, TList>
+    public abstract class Collectable<T, TDto, TList, TListDto, TParent, TParentDto> : Listable<T, TDto, TList, TListDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="Collectable{T,TDto,TList,TParent, TParentDto}"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="Collectable{T,TDto,TList,TListDto,TParent, TParentDto}"/> class.</summary>
         /// <param name="parent">The parent of the collection.</param>
         /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
         protected Collectable(Persistable<TParent, TParentDto> parent)
@@ -37,7 +37,7 @@ namespace Chaos.Movies.Model.Base
             this.Parent = parent ?? throw new ArgumentNullException(nameof(parent));
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Collectable{T,TDto,TList,TParent,TParentDto}"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="Collectable{T,TDto,TList,TListDto,TParent,TParentDto}"/> class.</summary>
         protected Collectable()
         {
         }
@@ -75,7 +75,7 @@ namespace Chaos.Movies.Model.Base
         /// <returns>The list of SQL parameters.</returns>
         protected abstract IReadOnlyDictionary<string, object> GetSaveParameters();
 
-        /// <summary>Adds the <paramref name="item"/> to the collection and saves all the content of this <see cref="Collectable{T,TDto,TList,TParent, TParentDto}"/> to the database.</summary>
+        /// <summary>Adds the <paramref name="item"/> to the collection and saves all the content of this <see cref="Collectable{T,TDto,TList,TListDto,TParent, TParentDto}"/> to the database.</summary>
         /// <param name="item">The <typeparamref name="T"/> to add.</param>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
@@ -99,7 +99,7 @@ namespace Chaos.Movies.Model.Base
             await this.SaveToDatabaseAsync(commandParameters, readFromRecords, session);
         }
 
-        /// <summary>Removes the <paramref name="item"/> from the collection and saves all the content of this <see cref="Collectable{T,TDto,TList,TParent, TParentDto}"/> to the database.</summary>
+        /// <summary>Removes the <paramref name="item"/> from the collection and saves all the content of this <see cref="Collectable{T,TDto,TList,TListDto,TParent, TParentDto}"/> to the database.</summary>
         /// <param name="item">The <typeparamref name="T"/> to remove.</param>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
@@ -118,7 +118,7 @@ namespace Chaos.Movies.Model.Base
             await this.SaveToDatabaseAsync(commandParameters, readFromRecords, session);
         }
 
-        /// <summary>Saves all the content of this <see cref="Collectable{T,TDto,TList,TParent, TParentDto}"/> to the database.</summary>
+        /// <summary>Saves all the content of this <see cref="Collectable{T,TDto,TList,TListDto,TParent, TParentDto}"/> to the database.</summary>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
         /// <param name="session">The session.</param>

@@ -133,6 +133,7 @@ namespace Chaos.Movies.Model.Base
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable(SearchTextColumn), parametersDto.SearchText);
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable(SearchLimitColumn), parametersDto.SearchLimit);
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable(RequireExactMatchColumn), parametersDto.RequireExactMatch);
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable(User.IdColumn), session.UserId);
 
                 await connection.OpenAsync();
                 using (var reader = await command.ExecuteReaderAsync())

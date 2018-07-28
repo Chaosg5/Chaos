@@ -20,7 +20,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Properties;
 
     /// <summary>Represents a user.</summary>
-    public class RatingTypeCollection : Collectable<RatingType, RatingTypeDto, RatingTypeCollection, RatingType, RatingTypeDto>
+    public class RatingTypeCollection : Collectable<RatingType, RatingTypeDto, RatingTypeCollection, ReadOnlyCollection<RatingTypeDto>, RatingType, RatingTypeDto>
     {
         /// <summary>The database column for <see cref="RatingTypeCollection"/>.</summary>
         private const string RatingTypesColumn = "RatingTypes";

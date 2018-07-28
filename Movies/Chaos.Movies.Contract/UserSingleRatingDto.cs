@@ -6,22 +6,33 @@
 
 namespace Chaos.Movies.Contract
 {
+    using System;
     using System.Runtime.Serialization;
 
-    /// <summary>Represents a user.</summary>
+    using Chaos.Movies.Contract.Interface;
+
+    /// <inheritdoc />
     [DataContract]
-    public class UserSingleRatingDto
+    public class UserSingleRatingDto : IUserSingleRating
     {
-        /// <summary>Gets or sets total rating from all user's ratings.</summary>
+        /// <inheritdoc />
         [DataMember]
-        public double TotalRating { get; set; }
+        public double Value { get; set; }
 
-        /// <summary>Gets or sets the current user's rating.</summary>
+        /// <inheritdoc />
         [DataMember]
-        public int UserRating { get; set; }
+        public string DisplayValue { get; set; }
 
-        /// <summary>Gets or sets the id <see cref="UserDto"/> which the <see cref="UserRating"/> belongs to.</summary>
+        /// <inheritdoc />
+        [DataMember]
+        public string HexColor { get; set; }
+
+        /// <inheritdoc />
         [DataMember]
         public int UserId { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public DateTime CreatedDate { get; set; }
     }
 }

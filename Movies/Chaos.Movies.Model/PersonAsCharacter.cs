@@ -22,15 +22,15 @@ namespace Chaos.Movies.Model
         /// <summary>Private part of the <see cref="Character"/> property.</summary>
         private Character character;
 
-        /// <summary>Private part of the <see cref="Person"/> property.</summary>
-        private Person person;
+        /// <summary>Private part of the <see cref="PersonInRole"/> property.</summary>
+        private PersonInRole personInRoleInRole;
 
         /// <summary>Initializes a new instance of the <see cref="PersonAsCharacter"/> class.</summary>
-        /// <param name="person">The <see cref="Person"/> to set.</param>
+        /// <param name="personInRole">The <see cref="Model.PersonInRole"/> to set.</param>
         /// <param name="character">The <see cref="Character"/> to set.</param>
-        public PersonAsCharacter(Person person, Character character)
+        public PersonAsCharacter(PersonInRole personInRole, Character character)
         {
-            this.Person = person;
+            this.PersonInRole = personInRole;
             this.Character = character;
         }
 
@@ -65,32 +65,32 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets the person playing the <see cref="Character"/>.</summary>
-        public Person Person
+        public PersonInRole PersonInRole
         {
-            get => this.person;
+            get => this.personInRoleInRole;
             private set
             {
-                if (value == null)
+                if (value?.Person == null)
                 {
                     // ReSharper disable once ExceptionNotDocumented
                     throw new ArgumentNullException(nameof(value));
                 }
 
-                if (value.Id <= 0)
+                if (value.Person.Id <= 0)
                 {
                     // ReSharper disable once ExceptionNotDocumented
-                    throw new PersistentObjectRequiredException($"The {nameof(this.Person)} has to be saved.");
+                    throw new PersistentObjectRequiredException($"The {nameof(this.PersonInRole)} has to be saved.");
                 }
 
-                this.person = value;
+                this.personInRoleInRole = value;
             }
         }
 
         /// <summary>Gets the user ratings.</summary>
         public UserSingleRating UserRatings { get; private set; } = new UserSingleRating();
 
-        /// <summary>Gets the total rating score from all users.</summary>
-        public double TotalRating { get; private set; }
+        /// <summary>Gets the total rating.</summary>
+        public TotalRating TotalRating { get; private set; } = new TotalRating(typeof(PersonAsCharacter));
 
         /// <inheritdoc />
         public override PersonAsCharacterDto ToContract()
@@ -98,9 +98,9 @@ namespace Chaos.Movies.Model
             return new PersonAsCharacterDto
             {
                 Character = this.Character.ToContract(),
-                Person = this.Person.ToContract(),
-                UserRatings = this.UserRatings.ToContract(),
-                TotalRating = this.TotalRating
+                PersonInRole = this.PersonInRole.ToContract(),
+                UserRating = this.UserRatings.ToContract(),
+                TotalRating = this.TotalRating.ToContract()
             };
         }
 
@@ -117,9 +117,9 @@ namespace Chaos.Movies.Model
             return new PersonAsCharacter
             {
                 Character = Character.Static.FromContract(contract.Character),
-                Person = Person.Static.FromContract(contract.Person),
-                UserRatings = this.UserRatings.FromContract(contract.UserRatings),
-                TotalRating = contract.TotalRating
+                PersonInRole = PersonInRole.Static.FromContract(contract.PersonInRole),
+                UserRatings = this.UserRatings.FromContract(contract.UserRating),
+                TotalRating = this.TotalRating.FromContract(contract.TotalRating)
             };
         }
 
@@ -163,10 +163,10 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { Character.IdColumn, Person.IdColumn });
+            Persistent.ValidateRecord(record, new[] { Character.IdColumn });
             this.Character = await GlobalCache.GetCharacterAsync((int)record[Character.IdColumn]);
-            this.Person = await GlobalCache.GetPersonAsync((int)record[Person.IdColumn]);
-            this.TotalRating = (int)record[UserSingleRating.TotalRatingColumn];
+            this.PersonInRole = await PersonInRole.Static.NewFromRecordAsync(record);
+            this.TotalRating = await this.TotalRating.NewFromRecordAsync(record);
         }
     }
 }

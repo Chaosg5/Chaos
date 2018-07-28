@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class LanguageTitleCollection : Listable<LanguageTitle, LanguageTitleDto, LanguageTitleCollection>
+    public class LanguageTitleCollection : Listable<LanguageTitle, LanguageTitleDto, LanguageTitleCollection, LanguageTitleCollectionDto>
     {
         /// <summary>The database column for this <see cref="LanguageTitleCollection"/>.</summary>
         internal const string TitlesColumn = "Titles";
@@ -48,15 +48,15 @@ namespace Chaos.Movies.Model
 
         /// <summary>Converts this <see cref="LanguageTitleCollection"/> to a <see cref="ReadOnlyCollection{LanguageTitleDto}"/>.</summary>
         /// <returns>The <see cref="ReadOnlyCollection{LanguageTitleDto}"/>.</returns>
-        public override ReadOnlyCollection<LanguageTitleDto> ToContract()
+        public override LanguageTitleCollectionDto ToContract()
         {
-            return new ReadOnlyCollection<LanguageTitleDto>(this.Items.Select(t => t.ToContract()).ToList());
+            return new LanguageTitleCollectionDto(this.Items.Select(t => t.ToContract()).ToList());
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
-        public override LanguageTitleCollection FromContract(ReadOnlyCollection<LanguageTitleDto> contract)
+        public override LanguageTitleCollection FromContract(LanguageTitleCollectionDto contract)
         {
             if (contract == null)
             {

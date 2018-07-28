@@ -22,11 +22,49 @@ namespace Chaos.Movies.Model.Base
 
         /// <summary>The database column for the id of the <typeparamref name="T"/>.</summary>
         internal static string IdColumn => $"{typeof(T).Name}Id";
-
+        
         /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
         /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         public abstract Task SaveAsync(UserSession session);
+
+        /// <summary>Performs a custom database action.</summary>
+        /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
+        /// <param name="procedureSuffix">The name of the stored procedure to call.</param>
+        /// <param name="session">The session.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <parmref name="commandParameters"/> is <see langword="null"/></exception>
+        protected static async Task CustomDatabaseActionAsync(IReadOnlyDictionary<string, object> commandParameters, string procedureSuffix, UserSession session)
+        {
+            if (commandParameters == null)
+            {
+                throw new ArgumentNullException(nameof(commandParameters));
+            }
+
+            if (string.IsNullOrWhiteSpace(procedureSuffix))
+            {
+                throw new ArgumentNullException(nameof(procedureSuffix));
+            }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            await session.ValidateSessionAsync();
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"{typeof(T).Name}{procedureSuffix}", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                foreach (var commandParameter in commandParameters)
+                {
+                    command.Parameters.AddWithValue(commandParameter.Key, commandParameter.Value);
+                }
+
+                await connection.OpenAsync();
+                await command.ExecuteNonQueryAsync();
+            }
+        }
 
         /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
         /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
@@ -53,7 +91,6 @@ namespace Chaos.Movies.Model.Base
             }
             
             await session.ValidateSessionAsync();
-
             using (var connection = new SqlConnection(Persistent.ConnectionString))
             using (var command = new SqlCommand($"{typeof(T).Name}Save", connection))
             {

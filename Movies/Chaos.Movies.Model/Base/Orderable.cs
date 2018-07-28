@@ -13,7 +13,7 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     /// <typeparam name="TList">The type of the list.</typeparam>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
-    public abstract class Orderable<T, TDto, TList> : Listable<T, TDto, TList>
+    public abstract class Orderable<T, TDto, TList, TListDto> : Listable<T, TDto, TList, TListDto>
     {
         /// <summary>The database column for the order.</summary>
         protected const string OrderColumn = "Order";

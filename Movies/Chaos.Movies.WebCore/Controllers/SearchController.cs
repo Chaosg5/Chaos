@@ -31,9 +31,11 @@ namespace Chaos.Movies.WebCore.Controllers
                     new SearchParametersDto { RequireExactMatch = false, SearchLimit = 10, SearchText = searchText },
                     session);
                 result.AddRange(movies.Select(m => m.ToContract()));
+                await Movie.Static.GetUserRatingsAsync(result, session);
+                result = result.OrderByDescending(m => m.ExternalRatings.FirstOrDefault()?.Value).ToList();
             }
 
-            return View(result.AsReadOnly());
+            return this.View(result.AsReadOnly());
         }
 
 

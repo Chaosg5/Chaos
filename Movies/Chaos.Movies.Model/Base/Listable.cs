@@ -20,9 +20,9 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     /// <typeparam name="TList">The type of the list.</typeparam>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
-    public abstract class Listable<T, TDto, TList> : Communicable<TList, ReadOnlyCollection<TDto>>, IReadOnlyCollection<T>
+    public abstract class Listable<T, TDto, TList, TListDto> : Communicable<TList, TListDto>, IReadOnlyCollection<T>
     {
-        /// <summary>The list of <typeparamref name="T"/>s in this <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <summary>The list of <typeparamref name="T"/>s in this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         private List<T> items = new List<T>();
         
         /// <summary>Gets the number of elements contained in this <see cref="RoleCollection"/>.</summary>
@@ -31,7 +31,7 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Gets properties from of each <typeparamref name="T"/> in a table which can be used to save them to the database.</summary>
         public abstract DataTable GetSaveTable { get; }
 
-        /// <summary>The list of <typeparamref name="T"/>s in this <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <summary>The list of <typeparamref name="T"/>s in this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         protected IReadOnlyList<T> Items => this.items.AsReadOnly();
 
         /// <summary>Returns an enumerator which iterates through this <see cref="RoleCollection"/>.</summary>
@@ -48,7 +48,7 @@ namespace Chaos.Movies.Model.Base
             return this.GetEnumerator();
         }
 
-        /// <summary>Adds all <typeparamref name="T"/> in the <paramref name="itemsToAdd"/> to this <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <summary>Adds all <typeparamref name="T"/> in the <paramref name="itemsToAdd"/> to this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         /// <param name="itemsToAdd">The <typeparamref name="T"/>s to add.</param>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public void AddRange(IEnumerable<T> itemsToAdd)
@@ -64,7 +64,7 @@ namespace Chaos.Movies.Model.Base
             }
         }
 
-        /// <summary>Removes all <typeparamref name="T"/> in the <paramref name="itemsToRemove"/> to this <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <summary>Removes all <typeparamref name="T"/> in the <paramref name="itemsToRemove"/> to this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         /// <param name="itemsToRemove">The <typeparamref name="T"/>s to add.</param>
         public void RemoveRange(IEnumerable<T> itemsToRemove)
         {
@@ -79,7 +79,7 @@ namespace Chaos.Movies.Model.Base
             }
         }
 
-        /// <summary>Adds the <paramref name="item"/> to this <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <summary>Adds the <paramref name="item"/> to this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         /// <param name="item">The <typeparamref name="T"/> to add.</param>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/></exception>
@@ -123,7 +123,7 @@ namespace Chaos.Movies.Model.Base
             this.items.Add(item);
         }
 
-        /// <summary>Removes the  <paramref name="item"/> from the <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <summary>Removes the  <paramref name="item"/> from the <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         /// <param name="item">The <typeparamref name="T"/> to remove.</param>
         public void Remove(T item)
         {
@@ -164,7 +164,7 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Validates that the this <typeparamref name="TList"/> is valid to be saved.</summary>
         internal abstract void ValidateSaveCandidate();
 
-        /// <summary>Removes all <typeparamref name="T"/> from this <see cref="Listable{T, TDto, TList}"/>.</summary>
+        /// <summary>Removes all <typeparamref name="T"/> from this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         protected void Clear()
         {
             this.items.Clear();

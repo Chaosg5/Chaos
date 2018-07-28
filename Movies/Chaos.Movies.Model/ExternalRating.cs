@@ -11,36 +11,31 @@ namespace Chaos.Movies.Model
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Contract.Interface;
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a rating of an item in an <see cref="ExternalSource"/>.</summary>
-    public class ExternalRating : Loadable<ExternalRating, ExternalRatingDto>
+    public class ExternalRating : Rating<ExternalRating, ExternalRatingDto>, IRating
     {
-        /// <summary>The database column for <see cref="Rating"/>.</summary>
-        internal const string RatingColumn = "ExternalRating";
-
         /// <summary>The database column for <see cref="RatingCount"/>.</summary>
         internal const string RatingCountColumn = "RatingCount";
 
         /// <summary>Private part of the <see cref="ExternalSource"/> property.</summary>
         private ExternalSource externalSource;
 
-        /// <summary>Private part of the <see cref="Rating"/> property.</summary>
-        private double rating;
-
         /// <summary>Private part of the <see cref="RatingCount"/> property.</summary>
         private int ratingCount;
 
         /// <summary>Initializes a new instance of the <see cref="ExternalRating"/> class.</summary>
         /// <param name="externalSource">The <see cref="ExternalSource"/>.</param>
-        /// <param name="rating">The value to set for <see cref="Rating"/>.</param>
+        /// <param name="rating">The value to set for <see cref="IRating.Value"/>.</param>
         /// <param name="ratingCount">The value to set for <see cref="RatingCount"/>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="externalSource"/> is <see langword="null"/></exception>
         public ExternalRating(ExternalSource externalSource, double rating, int ratingCount)
         {
             this.ExternalSource = externalSource ?? throw new ArgumentNullException(nameof(externalSource));
-            this.Rating = rating;
+            this.Value = rating;
             this.RatingCount = ratingCount;
         }
 
@@ -73,24 +68,7 @@ namespace Chaos.Movies.Model
                 this.externalSource = value;
             }
         }
-
-        /// <summary>Gets the external rating.</summary>
-        public double Rating
-        {
-            get => this.rating;
-
-            private set
-            {
-                if (value < 0 || value > 10)
-                {
-                    // ReSharper disable once ExceptionNotDocumented
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-
-                this.rating = value;
-            }
-        }
-
+        
         /// <summary>Gets the count of votes for the rating.</summary>
         public int RatingCount
         {
@@ -114,7 +92,9 @@ namespace Chaos.Movies.Model
             return new ExternalRatingDto
             {
                 ExternalSource = this.ExternalSource.ToContract(),
-                Rating = this.Rating,
+                Value = this.Value,
+                DisplayValue = this.DisplayValue,
+                HexColor = this.HexColor,
                 RatingCount = this.RatingCount
             };
         }
@@ -131,7 +111,7 @@ namespace Chaos.Movies.Model
             return new ExternalRating
             {
                 ExternalSource = this.ExternalSource.FromContract(contract.ExternalSource),
-                Rating = contract.Rating,
+                Value = contract.Value,
                 RatingCount = contract.RatingCount
             };
         }
@@ -158,7 +138,7 @@ namespace Chaos.Movies.Model
         {
             Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, RatingColumn, RatingCountColumn });
             this.ExternalSource = await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]);
-            this.Rating = (double)record[RatingColumn];
+            this.Value = (double)record[RatingColumn];
             this.RatingCount = (int)record[RatingCountColumn];
         }
     }

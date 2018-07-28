@@ -94,45 +94,10 @@ namespace Chaos.Movies.Model
         public int ActualRating => this.RatingValue.Value;
 
         /// <summary>Gets the display color in RBG hex for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
-        public string HexColor
-        {
-            get
-            {
-                var color = this.Color;
-                return string.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
-            }
-        }
+        public string HexColor => GetHexColor(this.Value);
 
         /// <summary>Gets the display color for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
-        public Color Color
-        {
-            get
-            {
-                byte redValue = 255;
-                byte greenValue = 0;
-                if (this.Value > 1 && this.Value <= 5)
-                {
-                    greenValue = (byte)((this.Value - 1) * 51);
-                }
-
-                if (this.Value > 5 && this.Value < 6)
-                {
-                    greenValue = (byte)(204 + ((this.Value - 5) * 26));
-                }
-
-                if (this.Value >= 6)
-                {
-                    greenValue = (byte)(230 - ((this.Value - 6) * 25.5));
-                }
-
-                if (this.Value > 5)
-                {
-                    redValue = (byte)(255 - ((this.Value - 5) * 51));
-                }
-
-                return Color.FromRgb(redValue, greenValue, 0);
-            }
-        }
+        public Color Color => GetColor(this.Value);
 
         /// <summary>Gets the display value for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
         public string DisplayValue
@@ -154,7 +119,46 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets or sets a value indicating whether value has changed since last saved.</summary>
         private bool ValueChanged { get; set; }
-        
+
+        /// <summary>Gets the display color in RBG hex for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
+        /// <param name="value">The value to get the <see cref="Color"/> for.</param>
+        /// <returns>The <see cref="Color"/>.</returns>
+        public static string GetHexColor(double value)
+        {
+            var color = GetColor(value);
+            return string.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
+        }
+
+        /// <summary>Gets the display color for the <paramref name="value"/>.</summary>
+        /// <param name="value">The value to get the <see cref="Color"/> for.</param>
+        /// <returns>The <see cref="Color"/>.</returns>
+        public static Color GetColor(double value)
+        {
+            byte redValue = 255;
+            byte greenValue = 0;
+            if (value > 1 && value <= 5)
+            {
+                greenValue = (byte)((value - 1) * 51);
+            }
+
+            if (value > 5 && value < 6)
+            {
+                greenValue = (byte)(204 + ((value - 5) * 26));
+            }
+
+            if (value >= 6)
+            {
+                greenValue = (byte)(230 - ((value - 6) * 25.5));
+            }
+
+            if (value > 5)
+            {
+                redValue = (byte)(255 - ((value - 5) * 51));
+            }
+
+            return Color.FromRgb(redValue, greenValue, 0);
+        }
+
         /// <summary>Sets the value of this rating.</summary>
         /// <param name="value">The value to set.</param>
         public void SetValue(int value)
@@ -207,7 +211,6 @@ namespace Chaos.Movies.Model
                 Value = this.RatingValue.Value,
                 Derived = this.RatingValue.Derived,
                 HexColor = this.HexColor,
-                Color = this.Color,
                 DisplayValue = this.DisplayValue,
                 CreatedDate = this.CreatedDate
             };
@@ -223,7 +226,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            return new UserRating(contract.SubRatings.Select(r => Static.FromContract(r)).ToList(), new RatingValue(contract.Value, -1))
+            return new UserRating(contract.SubRatings.Select(r => Static.FromContract(r)).ToList(), new RatingValue((int)contract.Value, -1))
             {
                 UserId = contract.UserId,
                 RatingType = RatingType.Static.FromContract(contract.RatingType),

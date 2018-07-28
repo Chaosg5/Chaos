@@ -23,9 +23,9 @@ namespace Chaos.Movies.Model
     /// <typeparam name="TParent">The parent type of the owner of the collection.</typeparam>
     /// <typeparam name="TParentDto">The data transfer type to use for communicating the <typeparamref name="TParent"/>.</typeparam>
     public class PersonAsCharacterCollection<TParent, TParentDto>
-        : Collectable<PersonAsCharacter, PersonAsCharacterDto, PersonAsCharacterCollection<TParent, TParentDto>, TParent, TParentDto>
+        : Collectable<PersonAsCharacter, PersonAsCharacterDto, PersonAsCharacterCollection<TParent, TParentDto>, ReadOnlyCollection<PersonAsCharacterDto>, TParent, TParentDto>
     {
-        /// <summary>The database column for this <see cref="UserRatingCollection{TParent, TParentDto}"/>.</summary>
+        /// <summary>The database column for this <see cref="PersonAsCharacterCollection{TParent, TParentDto}"/>.</summary>
         internal const string PersonAsCharacterColumn = "PeopleAsCharacters";
 
         /// <inheritdoc />
@@ -45,15 +45,15 @@ namespace Chaos.Movies.Model
                     table.Columns.Add(new DataColumn(Person.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn(Character.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn($"Parent{typeof(TParent).Name}Id", typeof(int)));
-                    table.Columns.Add(new DataColumn(UserSingleRating.UserRatingColumn, typeof(int)));
+                    table.Columns.Add(new DataColumn(UserSingleRating.RatingColumn, typeof(int)));
                     table.Columns.Add(new DataColumn(UserSingleRating.UserIdColumn, typeof(int)));
                     foreach (var personAsCharacter in this.Items)
                     {
                         table.Rows.Add(
-                            personAsCharacter.Person.Id,
+                            personAsCharacter.PersonInRole.Person.Id,
                             personAsCharacter.Character.Id,
                             this.ParentId,
-                            personAsCharacter.UserRatings.UserRating,
+                            personAsCharacter.UserRatings.Value,
                             personAsCharacter.UserRatings.UserId);
                     }
 
@@ -73,7 +73,7 @@ namespace Chaos.Movies.Model
         public override PersonAsCharacterCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<PersonAsCharacterDto> contract)
         {
             throw new NotSupportedException(
-                $"The method {nameof(FromContract)} is not supported for {nameof(UserRatingCollection<TParent, TParentDto>)}");
+                $"The method {nameof(FromContract)} is not supported for {nameof(PersonAsCharacterCollection<TParent, TParentDto>)}");
         }
 
         /// <inheritdoc />
@@ -113,7 +113,7 @@ namespace Chaos.Movies.Model
                 string.Format(
                     CultureInfo.InvariantCulture,
                     Resources.ErrorGenericNotSupportedInService,
-                    nameof(UserRatingCollection<TParent, TParentDto>)));
+                    nameof(PersonAsCharacterCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
@@ -132,7 +132,7 @@ namespace Chaos.Movies.Model
                 string.Format(
                     CultureInfo.InvariantCulture,
                     Resources.ErrorGenericNotSupportedInService,
-                    nameof(UserRatingCollection<TParent, TParentDto>)));
+                    nameof(PersonAsCharacterCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
@@ -151,7 +151,7 @@ namespace Chaos.Movies.Model
                 string.Format(
                     CultureInfo.InvariantCulture,
                     Resources.ErrorGenericNotSupportedInService,
-                    nameof(UserRatingCollection<TParent, TParentDto>)));
+                    nameof(PersonAsCharacterCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />

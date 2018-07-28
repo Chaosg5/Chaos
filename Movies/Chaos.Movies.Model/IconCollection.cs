@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class IconCollection : Orderable<Icon, IconDto, IconCollection>
+    public class IconCollection : Orderable<Icon, IconDto, IconCollection, ReadOnlyCollection<IconDto>>
     {
         /// <summary>The database column for <see cref="IconCollection"/>.</summary>
         internal const string IconsColumn = "Icons";

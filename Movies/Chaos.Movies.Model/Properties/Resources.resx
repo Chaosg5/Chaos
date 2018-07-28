@@ -120,4 +120,7 @@
   <data name="ErrorGenericNotSupportedInService" xml:space="preserve">
     <value>Using {0} via service is not supported due to the use of generic types and no specific method being implemented.</value>
   </data>
+  <data name="ErrorRatableItemsNeedsToBePersistable" xml:space="preserve">
+    <value>All ratable items has to be persitable.</value>
+  </data>
 </root>

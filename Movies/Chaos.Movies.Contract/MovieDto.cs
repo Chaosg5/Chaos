@@ -27,7 +27,7 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets list of title of the movie in different languages.</summary>
         [DataMember]
-        public ReadOnlyCollection<LanguageTitleDto> Titles { get; set; }
+        public LanguageTitleCollectionDto Titles { get; set; }
 
         /// <summary>Gets or sets list of genres that the movie belongs to.</summary>
         [DataMember]
@@ -39,11 +39,15 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets total rating score from the current user.</summary>
         [DataMember]
-        public UserRatingDto UserRating { get; set; }
+        public UserRatingDto UserRatings { get; set; }
 
-        /// <summary>Gets or sets total rating score from all users.</summary>
+        /// <summary>Gets or sets the user ratings.</summary>
         [DataMember]
-        public double TotalRating { get; set; }
+        public UserSingleRatingDto UserRating { get; set; }
+
+        /// <summary>Gets or sets the total rating from all users.</summary>
+        [DataMember]
+        public TotalRatingDto TotalRating { get; set; }
 
         /// <summary>Gets or sets list of <see cref="CharacterDto"/>s in this <see cref="MovieDto"/>.</summary>
         [DataMember]

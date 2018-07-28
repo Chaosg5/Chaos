@@ -22,9 +22,9 @@ namespace Chaos.Movies.Model
     /// <summary>A <see cref="Person"/>s in a <typeparamref name="TParent"/>.</summary>
     /// <typeparam name="TParent">The parent type of the owner of the collection.</typeparam>
     /// <typeparam name="TParentDto">The data transfer type to use for communicating the <typeparamref name="TParent"/>.</typeparam>
-    public class PersonInRoleCollection<TParent, TParentDto> : Collectable<PersonInRole, PersonInRoleDto, PersonInRoleCollection<TParent, TParentDto>, TParent, TParentDto>
+    public class PersonInRoleCollection<TParent, TParentDto> : Collectable<PersonInRole, PersonInRoleDto, PersonInRoleCollection<TParent, TParentDto>, ReadOnlyCollection<PersonInRoleDto>, TParent, TParentDto>
     {
-        /// <summary>The database column for this <see cref="UserRatingCollection{TParent, TParentDto}"/>.</summary>
+        /// <summary>The database column for this <see cref="PersonInRoleCollection{TParent, TParentDto}"/>.</summary>
         internal const string PersonInRoleColumn = "PeopleInRoles";
 
         /// <inheritdoc />
@@ -45,11 +45,11 @@ namespace Chaos.Movies.Model
                     table.Columns.Add(new DataColumn(Role.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn(Department.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn($"Parent{typeof(TParent).Name}Id", typeof(int)));
-                    table.Columns.Add(new DataColumn(UserSingleRating.UserRatingColumn, typeof(int)));
+                    table.Columns.Add(new DataColumn(UserSingleRating.RatingColumn, typeof(int)));
                     table.Columns.Add(new DataColumn(UserSingleRating.UserIdColumn, typeof(int)));
                     foreach (var personInRole in this.Items)
                     {
-                        table.Rows.Add(personInRole.Person.Id, personInRole.Role.Id, personInRole.Department.Id, this.ParentId, personInRole.UserRatings.UserRating, personInRole.UserRatings.UserId);
+                        table.Rows.Add(personInRole.Person.Id, personInRole.Role.Id, personInRole.Department.Id, this.ParentId, personInRole.UserRatings.Value, personInRole.UserRatings.UserId);
                     }
 
                     return table;
@@ -67,7 +67,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="NotSupportedException">This method is not supported.</exception>
         public override PersonInRoleCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<PersonInRoleDto> contract)
         {
-            throw new NotSupportedException($"The method {nameof(FromContract)} is not supported for {nameof(UserRatingCollection<TParent, TParentDto>)}");
+            throw new NotSupportedException($"The method {nameof(FromContract)} is not supported for {nameof(PersonInRoleCollection<TParent, TParentDto>)}");
         }
 
         /// <inheritdoc />
@@ -102,7 +102,7 @@ namespace Chaos.Movies.Model
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(PersonInRoleCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
@@ -118,7 +118,7 @@ namespace Chaos.Movies.Model
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(PersonInRoleCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />
@@ -134,7 +134,7 @@ namespace Chaos.Movies.Model
                 return;
             }
 
-            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(UserRatingCollection<TParent, TParentDto>)));
+            throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.ErrorGenericNotSupportedInService, nameof(PersonInRoleCollection<TParent, TParentDto>)));
         }
 
         /// <inheritdoc />

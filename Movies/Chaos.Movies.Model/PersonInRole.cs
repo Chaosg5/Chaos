@@ -124,8 +124,8 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the user ratings.</summary>
         public UserSingleRating UserRatings { get; private set; } = new UserSingleRating();
 
-        /// <summary>Gets the total rating score from all users.</summary>
-        public double TotalRating { get; private set; }
+        /// <summary>Gets the total rating.</summary>
+        public TotalRating TotalRating { get; private set; } = new TotalRating(typeof(PersonInRole));
 
         /// <inheritdoc />
         public override PersonInRoleDto ToContract()
@@ -135,8 +135,8 @@ namespace Chaos.Movies.Model
                 Person = this.Person.ToContract(),
                 Role = this.Role.ToContract(),
                 Department = this.Department.ToContract(),
-                UserRatings = this.UserRatings.ToContract(),
-                TotalRating = this.TotalRating
+                UserRating = this.UserRatings.ToContract(),
+                TotalRating = this.TotalRating.ToContract()
             };
         }
 
@@ -155,8 +155,8 @@ namespace Chaos.Movies.Model
                 Person = Person.Static.FromContract(contract.Person),
                 Role = Role.Static.FromContract(contract.Role),
                 Department = Department.Static.FromContract(contract.Department),
-                UserRatings = this.UserRatings.FromContract(contract.UserRatings),
-                TotalRating = contract.TotalRating
+                UserRatings = this.UserRatings.FromContract(contract.UserRating),
+                TotalRating = this.TotalRating.FromContract(contract.TotalRating)
             };
         }
 
@@ -209,7 +209,7 @@ namespace Chaos.Movies.Model
             this.Person = await GlobalCache.GetPersonAsync((int)record[Person.IdColumn]);
             this.Role = await GlobalCache.GetRoleAsync((int)record[Role.IdColumn]);
             this.Department = await GlobalCache.GetDepartmentAsync((int)record[Department.IdColumn]);
-            this.TotalRating = (int)record[UserSingleRating.TotalRatingColumn];
+            this.TotalRating = await this.TotalRating.NewFromRecordAsync(record);
         }
     }
 }

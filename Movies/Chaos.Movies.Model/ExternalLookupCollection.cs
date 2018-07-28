@@ -18,7 +18,7 @@ namespace Chaos.Movies.Model
 
     /// <summary>Represents a user.</summary>
     /// <remarks>This does only support a single entry for each <see cref="ExternalSource"/>.</remarks>
-    public class ExternalLookupCollection : Listable<ExternalLookup, ExternalLookupDto, ExternalLookupCollection>
+    public class ExternalLookupCollection : Listable<ExternalLookup, ExternalLookupDto, ExternalLookupCollection, ReadOnlyCollection<ExternalLookupDto>>
     {
         /// <summary>The database column for <see cref="ExternalLookupCollection"/>.</summary>
         internal const string ExternalLookupColumn = "ExternalLookups";

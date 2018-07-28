@@ -2,15 +2,73 @@
 @using Chaos.Movies.Contract
 @model ReadOnlyCollection<MovieDto>
 
-<h1>Search</h1>
-
-@using (Html.BeginForm("Index", "Search", FormMethod.Post))
+@using (Html.BeginForm("Index", "Search", FormMethod.Get))
 {
-    <label>Search:</label>
-    @Html.TextBox("searchText")
+    <h1>
+        Search:
+        @Html.TextBox("searchText")
+    </h1>
 }
 
 @foreach (var movie in Model)
 {
-    @movie.Titles.First(t => t.LanguageType == LanguageType.Default).Title
+    <div class="row">
+        <div class="col-md-12">
+            <a href="@Url.Action("Movie", "View", new { movieId = movie.Id})">
+                <div class="item right">
+                    <div class="listIcon small">
+                        <img src="~/images/icons/Movie.png" />
+                    </div>
+                    <div class="itemContent">
+                        <div class="name">
+                            <h4>@movie.Titles.First(t => t.LanguageType == LanguageType.Default).Title (@movie.Year) (@movie.MovieType.Titles.First(t => t.LanguageType == LanguageType.Default).Title)</h4>
+                        </div>
+                        <div class="ratingRow">
+                            <div class="ratingIcon">
+                                <img src="~/images/User.svg" />
+                                <span class="ratingScore">@movie.UserRating.DisplayValue</span>
+                            </div>
+                            <div class="ratingBackground">
+                                <div style="background-color: @movie.UserRating.HexColor; height: 100%; width: @((movie.UserRating.Value*10))%;">
+                                </div>
+                            </div>
+                            <div class="ratingStars">
+                                <img src="~/images/StarRowTransparent.svg" />
+                            </div>
+                        </div>
+                        <div class="ratingRow">
+                            <div class="ratingIcon">
+                                <img src="~/images/CMDB.png" />
+                                <span class="ratingScore">@movie.TotalRating.DisplayValue</span>
+                            </div>
+                            <div class="ratingBackground">
+                                <div style="background-color: @movie.TotalRating.HexColor; height: 100%; width: @((movie.TotalRating.Value*10))%;">
+                                </div>
+                            </div>
+                            <div class="ratingStars">
+                                <img src="~/images/StarRowTransparent.svg" />
+                            </div>
+                        </div>
+                        @{var imdb = movie.ExternalRatings.FirstOrDefault(e => e.ExternalSource.Name == "IMDB");}
+                        @if (imdb != null)
+                        {
+                        <div class="ratingRow">
+                            <div class="ratingIcon">
+                                <img src="~/images/IMDB.ico" />
+                                <span class="ratingScore">@imdb.DisplayValue</span>
+                            </div>
+                            <div class="ratingBackground">
+                                <div style="background-color: @imdb.HexColor; height: 100%; width: @((imdb.Value*10))%;">
+                                </div>
+                            </div>
+                            <div class="ratingStars">
+                                <img src="~/images/StarRowTransparent.svg" />
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
 }

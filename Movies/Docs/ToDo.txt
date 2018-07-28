@@ -23,6 +23,14 @@ Publishers
 
 Uträknade (ärvda) betyg borde vara gråare, satta starkare så att man kan se vilka man har satt
 
+***********************
+*****     GUI     *****
+***********************
+* Characters need data from person - Gender
+* Set user titles
+* Order items for user
+***********************
+
 Ratings:
 
 - People
@@ -72,7 +80,7 @@ Total	Totalt	The total rating.
 		Cinematography	Filmografi	How was the camera work and did it fit the world and story. Were angles, distance and movement right.
 		Costumes	Klädsel	How was the costumes and props.
 		Sets	Miljöer	Set design and locations.
-		Special effects	Special effekter
+		Special effects	Specialeffekter
 		Visual effects	Visuella effekter
 	Audio	Ljud	How was the sound?
 		Music	Musik	Was the music good, well balanced with other sound and fit the world, characters and story.

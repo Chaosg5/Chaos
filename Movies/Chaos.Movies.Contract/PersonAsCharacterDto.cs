@@ -18,14 +18,14 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets the person playing the <see cref="Character"/>.</summary>
         [DataMember]
-        public PersonDto Person { get; set; }
+        public PersonInRoleDto PersonInRole { get; set; }
 
         /// <summary>Gets or sets the user rating.</summary>
         [DataMember]
-        public UserSingleRatingDto UserRatings { get; set; }
+        public UserSingleRatingDto UserRating { get; set; }
 
-        /// <summary>Gets or sets total rating score from all users.</summary>
+        /// <summary>Gets or sets the total rating from all users.</summary>
         [DataMember]
-        public double TotalRating { get; set; }
+        public TotalRatingDto TotalRating { get; set; }
     }
 }

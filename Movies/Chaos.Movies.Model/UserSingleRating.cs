@@ -11,57 +11,51 @@ namespace Chaos.Movies.Model
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Contract.Interface;
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A simple user rating, similar to <see cref="Model.UserRating"/> but not using the <see cref="RatingType"/>.</summary>
-    public class UserSingleRating : Loadable<UserSingleRating, UserSingleRatingDto>
+    public class UserSingleRating : Rating<UserSingleRating, UserSingleRatingDto>, IUserSingleRating
     {
-        /// <summary>The database column for <see cref="UserRating"/>.</summary>
-        internal const string UserRatingColumn = "UserRating";
-
         /// <summary>The database column for <see cref="UserId"/>.</summary>
         internal const string UserIdColumn = "UserId";
 
-        /// <summary>The database column for <see cref="TotalRating"/>.</summary>
-        internal const string TotalRatingColumn = "TotalRating";
-
-        /// <summary>Private part of the <see cref="UserRating"/> property.</summary>
-        private int userRating;
+        /// <summary>The database procedure for saving a <see cref="User"/> rating for an item in a <see cref="Movie"/>.</summary>
+        internal const string SaveUserMovieRatingProcedure = "SaveUserMovieRating";
         
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static UserSingleRating Static { get; } = new UserSingleRating();
 
-        /// <summary>Gets the total rating from all user's ratings.</summary>
-        public double TotalRating { get; private set; }
-
-        /// <summary>Gets the current user's rating of the <see cref="Character"/>.</summary>
-        public int UserRating
-        {
-            get => this.userRating;
-            private set
-            {
-                if (value < 0 || value > 10)
-                {
-                    // ReSharper disable once ExceptionNotDocumented
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-
-                this.userRating = value;
-            }
-        }
-
-        /// <summary>Gets the id <see cref="User"/> which the <see cref="UserRating"/> belongs to.</summary>
+        /// <inheritdoc />
         public int UserId { get; private set; }
+
+        /// <inheritdoc />
+        public DateTime CreatedDate { get; set; }
+
+        /// <summary>Sets the <see cref="IRating.Value"/> and <see cref="UserId"/>.</summary>
+        /// <param name="userRating">The <see cref="UserSingleRating"/> to set ratings for.</param>
+        /// <param name="userId">The <see cref="UserId"/> to set.</param>
+        /// <param name="rating">The <see cref="IRating.Value"/> to set.</param>
+        public static void SetUserRating(UserSingleRatingDto userRating, int userId, double rating)
+        {
+            var validated = Static.FromContract(userRating);
+            validated.SetUserRating(userId, rating);
+            userRating.UserId = validated.UserId;
+            userRating.Value = validated.Value;
+            userRating.DisplayValue = validated.DisplayValue;
+            userRating.HexColor = validated.HexColor;
+        }
 
         /// <inheritdoc />
         public override UserSingleRatingDto ToContract()
         {
             return new UserSingleRatingDto
             {
-                TotalRating = this.TotalRating,
                 UserId = this.UserId,
-                UserRating = this.UserRating
+                Value = this.Value,
+                DisplayValue = this.DisplayValue,
+                HexColor = this.HexColor
             };
         }
 
@@ -76,19 +70,18 @@ namespace Chaos.Movies.Model
 
             return new UserSingleRating
             {
-                TotalRating = contract.TotalRating,
                 UserId = contract.UserId,
-                UserRating = contract.UserRating
+                Value = contract.Value
             };
         }
 
-        /// <summary>Sets the <see cref="UserRating"/> and <see cref="UserId"/>.</summary>
+        /// <summary>Sets the <see cref="IRating.Value"/> and <see cref="UserId"/>.</summary>
         /// <param name="userId">The <see cref="UserId"/> to set.</param>
-        /// <param name="rating">The <see cref="UserRating"/> to set.</param>
-        public void SetUserRating(int userId, int rating)
+        /// <param name="rating">The <see cref="IRating.Value"/> to set.</param>
+        public void SetUserRating(int userId, double rating)
         {
             this.UserId = userId;
-            this.UserRating = rating;
+            this.Value = rating;
         }
 
         /// <inheritdoc />
@@ -111,9 +104,8 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { TotalRatingColumn });
-            this.TotalRating = (double)record[TotalRatingColumn];
-            this.UserRating = (int)record[UserRatingColumn];
+            Persistent.ValidateRecord(record, new[] { RatingColumn, UserIdColumn });
+            this.Value = (int)record[RatingColumn];
             this.UserId = (int)record[UserIdColumn];
             return Task.CompletedTask;
         }
