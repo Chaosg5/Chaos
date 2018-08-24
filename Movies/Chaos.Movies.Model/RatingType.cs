@@ -25,7 +25,7 @@ namespace Chaos.Movies.Model
     {
         /// <summary>The database column for <see cref="ParentRatingTypeId"/>.</summary>
         private const string ParentRatingTypeIdColumn = "ParentRatingTypeId";
-
+        
         /// <inheritdoc />
         public RatingType()
         {
@@ -50,9 +50,9 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the <see cref="RatingType"/>s that makes up the derived children of this <see cref="RatingType"/>.</summary>
         public RatingTypeCollection Subtypes { get; private set; }
 
-        /// <summary>Gets or sets the id of the parent <see cref="RatingType"/>.</summary>
-        private int ParentRatingTypeId { get; set; }
-
+        /// <summary>Gets the id of the parent <see cref="RatingType"/>.</summary>
+        internal int ParentRatingTypeId { get; private set; }
+        
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
@@ -75,6 +75,12 @@ namespace Chaos.Movies.Model
         public override RatingTypeDto ToContract()
         {
             return new RatingTypeDto { Id = this.Id, Titles = this.Titles.ToContract(), Subtypes = this.Subtypes.ToContract() };
+        }
+
+        /// <inheritdoc />
+        public override RatingTypeDto ToContract(string languageName)
+        {
+            return new RatingTypeDto { Id = this.Id, Titles = this.Titles.ToContract(languageName) };
         }
 
         /// <inheritdoc />
@@ -169,7 +175,7 @@ namespace Chaos.Movies.Model
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
             {
-                throw new MissingResultException(2, $"{nameof(RatingType)}{LanguageDescriptionCollection.TitlesColumn}");
+                throw new MissingResultException(2, $"{nameof(RatingType)}{LanguageTitleCollection.TitlesColumn}");
             }
 
             while (await reader.ReadAsync())
@@ -212,7 +218,7 @@ namespace Chaos.Movies.Model
         {
             Persistent.ValidateRecord(record, new[] { IdColumn, ParentRatingTypeIdColumn });
             this.Id = (int)record[IdColumn];
-            this.ParentRatingTypeId = (int?)record[ParentRatingTypeIdColumn] ?? 0;
+            this.ParentRatingTypeId = (int)record[ParentRatingTypeIdColumn];
             return Task.CompletedTask;
         }
 
@@ -223,7 +229,7 @@ namespace Chaos.Movies.Model
                 new Dictionary<string, object>
                 {
                     { Persistent.ColumnToVariable(IdColumn), this.Id },
-                    { Persistent.ColumnToVariable(LanguageDescriptionCollection.TitlesColumn), this.Titles.GetSaveTable }
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable }
                 });
         }
     }

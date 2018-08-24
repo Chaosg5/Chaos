@@ -9,7 +9,17 @@
 </div>
 -->
 
-<h1>@Model.Titles.First(t => t.LanguageType == LanguageType.Default).Title</h1>
+<h1>@Model.Titles.UserTitle.Title (@Model.Year) (@Model.MovieType.Titles.UserTitle.Title)</h1>
+@if (Model.Titles.OriginalTitle != null)
+{
+    <!--ToDo: Original title name-->
+    <span>@Model.Titles.OriginalTitle.Title (Original title)</span>
+}
+
+<h2 class="accordion-toggle" data-toggle="collapse" data-target="#ratings">Ratings</h2>
+<div id="ratings" class="col-md-12 collapse in">
+    @await Html.PartialAsync("MovieRatings", Model.UserRatings)
+</div>
 <h2 class="accordion-toggle" data-toggle="collapse" data-target="#characters">Actors/Characters</h2>
 <div id="characters" class="col-md-12 collapse in">
     @await Html.PartialAsync("Cast", Model)

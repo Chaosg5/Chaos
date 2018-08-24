@@ -217,6 +217,23 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override UserRatingDto ToContract(string languageName)
+        {
+            return new UserRatingDto
+            {
+                UserId = this.UserId,
+                RatingType = this.RatingType.ToContract(languageName),
+                SubRatings = this.subRatings.Select(r => r.ToContract(languageName)).ToList().AsReadOnly(),
+                Value = this.RatingValue.Value,
+                Derived = this.RatingValue.Derived,
+                Width = $"{(this.Value*10).ToString(CultureInfo.InvariantCulture)}%",
+                HexColor = this.HexColor,
+                DisplayValue = this.DisplayValue,
+                CreatedDate = this.CreatedDate
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public override UserRating FromContract(UserRatingDto contract)
@@ -261,7 +278,7 @@ namespace Chaos.Movies.Model
                 }
             }
 
-            return userRatings;
+            return userRatings.Where(r => r.RatingType.ParentRatingTypeId == 0);
         }
 
         /// <summary>Validates that this <see cref="UserRating"/> is valid to be saved.</summary>
@@ -299,7 +316,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { User.IdColumn, RatingType.IdColumn, CreatedDateColumn });
+            Persistent.ValidateRecord(record, new[] { User.IdColumn, RatingType.IdColumn, RatingValue.RatingColumn, CreatedDateColumn });
             this.UserId = (int)record[User.IdColumn];
             this.RatingType = await GlobalCache.GetRatingTypeAsync((int)record[RatingType.IdColumn]);
             this.RatingValue = await this.RatingValue.NewFromRecordAsync(record);

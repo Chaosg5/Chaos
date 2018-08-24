@@ -20,17 +20,18 @@ namespace Chaos.Movies.Model.Base
     {
         public abstract Task GetUserRatingsAsync(IEnumerable<TDto> items, UserSession session);
 
-        public abstract Task GetUserItemDetailsAsync(TDto item, UserSession session);
+        public abstract Task GetUserItemDetailsAsync(TDto item, UserSession session, string languageName);
 
         protected abstract Task ReadUserRatingsAsync(IEnumerable<TDto> items, int userId, DbDataReader reader);
 
-        protected abstract Task ReadUserDetailsAsync(TDto item, int userId, DbDataReader reader);
+        protected abstract Task ReadUserDetailsAsync(TDto item, int userId, DbDataReader reader, string languageName);
 
         protected async Task GetUserDetailsFromDatabaseAsync(
             TDto item,
             int id,
-            Func<TDto, int, DbDataReader, Task> readFromRecords,
-            UserSession session)
+            Func<TDto, int, DbDataReader, string, Task> readFromRecords,
+            UserSession session,
+            string languageName)
         {
             if (item == null)
             {
@@ -57,7 +58,7 @@ namespace Chaos.Movies.Model.Base
                 await connection.OpenAsync();
                 using (var reader = await command.ExecuteReaderAsync())
                 {
-                    await readFromRecords(item, session.UserId, reader);
+                    await readFromRecords(item, session.UserId, reader, languageName);
                 }
             }
         }

@@ -31,8 +31,10 @@ namespace Chaos.Movies.WebCore.Controllers
             }
 
             var movie = await Model.Movie.Static.GetAsync(session, movieId);
-            var result = movie.ToContract();
+            var userLanguage = "sv-SE";
+            var result = movie.ToContract(userLanguage);
             await Model.Movie.Static.GetUserRatingsAsync(new List<MovieDto> { result }, session);
+            await Model.Movie.Static.GetUserItemDetailsAsync(result, session, userLanguage);
             return this.View(result);
         }
 

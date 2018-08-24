@@ -18,6 +18,8 @@ namespace Chaos.Movies.Model
     /// <summary>The title of a movie.</summary>
     public class LanguageTitle : Loadable<LanguageTitle, LanguageTitleDto>, IEquatable<LanguageTitle>
     {
+        // ToDo: Replace CultureInfo with an own class with Name, UserTitle, Titles and CultureInfo inside
+
         /// <summary>The database column for <see cref="Title"/>.</summary>
         internal const string TitleColumn = "Title";
 
@@ -93,7 +95,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the type of the <see cref="LanguageTitle"/>.</summary>
         public LanguageType LanguageType { get; private set; }
-
+        
         /// <summary>Returns a value indicating whether the <paramref name="titleB"/> is equal to the specified <paramref name="titleB"/>.</summary>
         /// <param name="titleA">The first title to compare to the <paramref name="titleB"/>.</param>
         /// <param name="titleB">The second title to compare to the <paramref name="titleA"/>.</param>
@@ -171,7 +173,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         public override LanguageTitleDto ToContract()
         {
-            return new LanguageTitleDto { Title = this.Title, Language = this.Language, LanguageType = this.LanguageType};
+            return new LanguageTitleDto { Title = this.Title, Language = this.Language, LanguageType = this.LanguageType };
         }
 
         /// <inheritdoc />
@@ -183,7 +185,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            return new LanguageTitle { Title = contract.Title, Language = contract.Language, LanguageType = contract.LanguageType};
+            return new LanguageTitle { Title = contract.Title, Language = contract.Language, LanguageType = contract.LanguageType };
         }
 
         /// <inheritdoc />
@@ -214,9 +216,8 @@ namespace Chaos.Movies.Model
                 case "DEFAULT":
                     this.LanguageType = LanguageType.Default;
                     break;
-
                 case "ORIGINAL":
-                    this.LanguageType = LanguageType.Default;
+                    this.LanguageType = LanguageType.Original;
                     break;
                 default:
                     this.LanguageType = LanguageType.Language;

@@ -96,6 +96,17 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override RatingSystemDto ToContract(string languageName)
+        {
+            return new RatingSystemDto
+            {
+                Id = this.Id,
+                Titles = this.Titles.ToContract(languageName),
+                //Values = new ReadOnlyDictionary<RatingTypeDto, short>(this.Values.ToDictionary(p => p.Key.ToContract(), p => p.Value))
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override RatingSystem FromContract(RatingSystemDto contract)
@@ -190,7 +201,7 @@ namespace Chaos.Movies.Model
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
             {
-                throw new MissingResultException(2, $"{nameof(RatingSystem)}{LanguageDescriptionCollection.TitlesColumn}");
+                throw new MissingResultException(2, $"{nameof(RatingSystem)}{LanguageTitleCollection.TitlesColumn}");
             }
 
             while (await reader.ReadAsync())
@@ -250,7 +261,7 @@ namespace Chaos.Movies.Model
                 new Dictionary<string, object>
                 {
                     { Persistent.ColumnToVariable(IdColumn), this.Id },
-                    { Persistent.ColumnToVariable(LanguageDescriptionCollection.TitlesColumn), this.Titles.GetSaveTable },
+                    { Persistent.ColumnToVariable(LanguageTitleCollection.TitlesColumn), this.Titles.GetSaveTable },
                     { Persistent.ColumnToVariable(RatingSystemValuesColumn), this.RatingSystemValueGetSaveTable }
                 });
         }

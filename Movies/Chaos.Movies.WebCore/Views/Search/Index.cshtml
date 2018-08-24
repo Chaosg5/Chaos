@@ -21,7 +21,7 @@
                     </div>
                     <div class="itemContent">
                         <div class="name">
-                            <h4>@movie.Titles.First(t => t.LanguageType == LanguageType.Default).Title (@movie.Year) (@movie.MovieType.Titles.First(t => t.LanguageType == LanguageType.Default).Title)</h4>
+                            <h4>@movie.Titles.UserTitle.Title (@movie.Year) (@movie.MovieType.Titles.UserTitle.Title)</h4>
                         </div>
                         <div class="ratingRow">
                             <div class="ratingIcon">

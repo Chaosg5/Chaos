@@ -7,7 +7,6 @@
 namespace Chaos.Movies.Model
 {
     using System;
-    using System.Collections.ObjectModel;
     using System.Data;
     using System.Globalization;
     using System.Linq;
@@ -17,13 +16,11 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The title of a movie.</summary>
-    public class LanguageDescriptionCollection : Listable<LanguageDescription, LanguageDescriptionDto, LanguageDescriptionCollection, ReadOnlyCollection<LanguageDescriptionDto>>
+    public class LanguageDescriptionCollection : Listable<LanguageDescription, LanguageDescriptionDto, LanguageDescriptionCollection, LanguageDescriptionCollectionDto>
     {
-        /// <summary>The database column for this <see cref="LanguageDescriptionCollection"/>.</summary>
-        internal const string TitlesColumn = "Titles";
-
         /// <summary>Gets the base title.</summary>
-        public string GetBaseTitle => this.GetTitle(null).Title;
+        // ReSharper disable once ExceptionNotDocumented
+        public string GetBaseTitle => this.GetTitle(GlobalCache.BaseLanguage.Name).Title;
 
         /// <inheritdoc />
         public override DataTable GetSaveTable
@@ -47,15 +44,34 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override ReadOnlyCollection<LanguageDescriptionDto> ToContract()
+        public override LanguageDescriptionCollectionDto ToContract()
         {
-            return new ReadOnlyCollection<LanguageDescriptionDto>(this.Items.Select(t => t.ToContract()).ToList());
+            return new LanguageDescriptionCollectionDto(this.Items.Select(t => t.ToContract()).ToList());
+        }
+
+        /// <inheritdoc />
+        public override LanguageDescriptionCollectionDto ToContract(string language)
+        {
+            var contract = new LanguageDescriptionCollectionDto(this.Items.Select(t => t.ToContract(language)).ToList())
+            {
+                // ReSharper disable once ExceptionNotDocumented
+                UserTitle = this.GetTitle(language).ToContract(language)
+            };
+
+            // ReSharper disable once ExceptionNotDocumented
+            var originalTitle = this.GetTitle(LanguageType.Original.ToString())?.ToContract();
+            if (originalTitle != null && originalTitle.Title != contract.UserTitle.Title)
+            {
+                contract.OriginalTitle = originalTitle;
+            }
+
+            return contract;
         }
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
-        public override LanguageDescriptionCollection FromContract(ReadOnlyCollection<LanguageDescriptionDto> contract)
+        public override LanguageDescriptionCollection FromContract(LanguageDescriptionCollectionDto contract)
         {
             if (contract == null)
             {
@@ -71,23 +87,34 @@ namespace Chaos.Movies.Model
             return list;
         }
 
-        /// <summary>Gets the title for the specified <paramref name="language"/>.</summary>
-        /// <param name="language">The language to get the title for.</param>
+        /// <summary>Gets the title for the specified <paramref name="languageName"/>.</summary>
+        /// <param name="languageName">The language to get the title for.</param>
         /// <returns>The title of the specified language; else the title of the default language</returns>
-        public LanguageDescription GetTitle(CultureInfo language)
+        /// <exception cref="InvalidSaveCandidateException">There are no titles. At least one title needs to be added.</exception>
+        public LanguageDescription GetTitle(string languageName)
         {
             if (this.Count == 0)
             {
-                return null;
+                throw new InvalidSaveCandidateException("There are no titles. At least one title needs to be added.");
             }
 
-            var languageName = GlobalCache.DefaultLanguage.Name;
-            if (!string.IsNullOrEmpty(language?.Name))
+            if (string.Equals(languageName, LanguageType.Original.ToString(), StringComparison.OrdinalIgnoreCase))
             {
-                languageName = language.Name;
+                return this.FirstOrDefault(t => t.LanguageType == LanguageType.Original);
             }
 
-            return this.Items.FirstOrDefault(t => t.Language.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language.Name == GlobalCache.DefaultLanguage.Name) ?? this.Items.First();
+            if (string.Equals(languageName, LanguageType.Default.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                var title = this.FirstOrDefault(t => t.LanguageType == LanguageType.Default);
+                if (title != null)
+                {
+                    return title;
+                }
+
+                languageName = GlobalCache.BaseLanguage.Name;
+            }
+
+            return this.Items.FirstOrDefault(t => t.Language?.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language?.Name == GlobalCache.BaseLanguage.Name) ?? this.Items.First();
         }
 
         /// <summary>Changes the title of this movie series type.</summary>
@@ -122,7 +149,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(language));
             }
 
-            var languageDescription = this.Items.FirstOrDefault(t => t.Language.Name == language.Name);
+            var languageDescription = this.Items.FirstOrDefault(t => t.Language?.Name == language.Name);
             if (languageDescription != null)
             {
                 languageDescription.Title = title;

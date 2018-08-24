@@ -5,51 +5,54 @@
 }
 
 /* Wrapping element */
+
 /* Set some basic padding to keep content from hitting the edges */
+
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
 }
 
 /* Set widths on the form inputs since otherwise they're 100% wide */
+
 input,
 select,
-textarea {
-    max-width: 280px;
-}
+textarea { max-width: 280px; }
 
 /* Carousel */
+
 .carousel-caption p {
     font-size: 20px;
     line-height: 1.4;
 }
 
 /* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}
+
+.carousel-inner .item img[src$=".svg"] { width: 100%; }
 
 /* Hide/rearrange for smaller screens */
+
 @media screen and (max-width: 767px) {
     /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
+    .carousel-caption { display: none; }
 }
 
 /***********************************************************/
 
 /************************/
-/*****     LIST     *****/
-/************************/
 
-.clickable {
-    cursor: pointer;
-}
+/*****     LIST     *****/
 
 /************************/
-/*****     LIST     *****/
+
+.clickable { cursor: pointer; }
+
 /************************/
+
+/*****     LIST     *****/
+
+/************************/
+
 .item {
     display: inline-block;
     border: #c0c0c0 1px solid;
@@ -59,54 +62,55 @@ textarea {
     background-color: white;
 }
 
-    .item .name {
-        height: 30px;
-        border-bottom: 1px solid #c0c0c0;
-    }
+.item .name {
+    height: 30px;
+    border-bottom: 1px solid #c0c0c0;
+}
 
-    .item.left .name {
-        text-align: right;
-    }
+.item.left .name { text-align: right; }
 
-    .item.separator {
-        border: black 1px solid;
-        height: 152px;
-        vertical-align: bottom;
-    }
+.item.separator {
+    border: black 1px solid;
+    height: 152px;
+    vertical-align: bottom;
+}
 
-    .item a {
-        text-decoration: none;
-        color: black;
-    }
+.item a {
+    text-decoration: none;
+    color: black;
+}
 
 .listIcon {
     display: inline-block;
     vertical-align: top;
 }
 
-    .listIcon.large img {
-        width: 200px;
-        height: 300px;
-    }
+.listIcon.large img {
+    width: 200px;
+    height: 300px;
+}
 
-    .listIcon img, .listIcon.medium img {
-        width: 100px;
-        height: 150px;
-    }
+.listIcon img, .listIcon.medium img {
+    width: 100px;
+    height: 150px;
+}
 
-    .listIcon.small img {
-        width: 67px;
-        height: 100px;
-    }
+.listIcon.small img {
+    width: 67px;
+    height: 100px;
+}
 
-    .listIcon.tiny img {
-        width: 33px;
-        height: 50px;
-    }
+.listIcon.tiny img {
+    width: 33px;
+    height: 50px;
+}
 
 /**************************/
+
 /*****     Toggle     *****/
+
 /**************************/
+
 .accordion-toggle:after {
     /* symbol for "opening" panels */
     font-family: 'Glyphicons Halflings'; /* essential for enabling glyphicon */
@@ -121,59 +125,55 @@ textarea {
     content: "\e080"; /* adjust as needed, taken from bootstrap.css */
 }
 
+.accordion-toggle { cursor: pointer; }
+
+
 /**************************/
+
 /*****     RATING     *****/
+
 /**************************/
-.itemContent {
-    display: inline-block;
+
+.itemContent { display: inline-block; }
+
+.ratingRow {
+    display: block;
+    height: 20px;
+    width: 245px;
 }
 
-    .itemContent .ratingRow {
-        display: block;
-        height: 20px;
-        width: 245px;
-    }
+.ratingRow div { position: absolute; }
 
-        .itemContent .ratingRow div {
-            position: absolute;
-        }
+.ratingRow img { vertical-align: top; }
 
-        .itemContent .ratingRow img {
-            vertical-align: top;
-        }
-
-        .itemContent .ratingRow .ratingIcon {
-            width: 45px;
-            height: 20px;
-        }
-
-            .itemContent .ratingRow .ratingIcon img {
-                width: 20px;
-                height: 20px;
-            }
-
-        .itemContent .ratingRow .ratingBackground {
-            height: 20px;
-            width: 200px;
-            background-color: lightgray;
-        }
-
-        .itemContent .ratingRow .ratingStars {
-            height: 20px;
-            width: 200px;
-        }
-
-        .itemContent .ratingRow .ratingScore {
-            font-weight: bold;
-            font-family: serif;
-            font-size: 16px;
-            width: 25px;
-        }
-
-.item.left .itemContent .ratingRow .ratingIcon {
-    margin-left: 200px;
+.ratingRow .ratingIcon {
+    width: 45px;
+    height: 20px;
 }
 
-.item.right .itemContent .ratingBackground, .item.right .itemContent .ratingStars {
-    margin-left: 45px;
+.ratingRow .ratingIcon img {
+    width: 20px;
+    height: 20px;
 }
+
+.ratingRow .ratingBackground {
+    height: 20px;
+    width: 200px;
+    background-color: lightgray;
+}
+
+.ratingRow .ratingStars {
+    height: 20px;
+    width: 200px;
+}
+
+.ratingRow .ratingScore {
+    font-weight: bold;
+    font-family: serif;
+    font-size: 16px;
+    width: 25px;
+}
+
+.item.left .ratingRow .ratingIcon { margin-left: 200px; }
+
+.item.right .ratingBackground, .item.right .ratingStars { margin-left: 45px; }

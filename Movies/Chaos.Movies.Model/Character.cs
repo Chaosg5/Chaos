@@ -166,7 +166,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        public override Task GetUserItemDetailsAsync(CharacterDto item, UserSession session)
+        public override Task GetUserItemDetailsAsync(CharacterDto item, UserSession session, string languageName)
         {
             throw new NotImplementedException();
         }
@@ -358,7 +358,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        protected override Task ReadUserDetailsAsync(CharacterDto item, int userId, DbDataReader reader)
+        protected override Task ReadUserDetailsAsync(CharacterDto item, int userId, DbDataReader reader, string languageName)
         {
             throw new NotImplementedException();
         }

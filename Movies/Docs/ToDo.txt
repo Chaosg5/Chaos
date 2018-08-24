@@ -23,6 +23,8 @@ Publishers
 
 Uträknade (ärvda) betyg borde vara gråare, satta starkare så att man kan se vilka man har satt
 
+IMDB graphs for series
+
 ***********************
 *****     GUI     *****
 ***********************
@@ -61,20 +63,20 @@ Userlists + comments?
 Tagline - Where your rating is the key
 
 Total	Totalt	The total rating.
-	Story	Uppbyggnad	
-		Plot	Handling	Was the events of the plot interesting, did it s
-			Exposition	Anslag och presentation
-			Conflict	Fördjupning 
-			Rising action	Upptrappning 
-			Climax	Klimax
-			Falling action
-			Resolution	Avrundning	Was the ending rewarding? the events leading upp . Was it predictable 
-		Pacing	Tempo	Was it easy to follow that was going on in the plot, did events , did too little happen or too little with not enough depth.
-		Editing	Klippning	Was the lenght of the shots right. Were transitions between scenes good and did the sceens fit together and feel in the right order?
-		Lighting	Ljussättning	How well was the scenes lit, shadows, hard to see ,
+	Story	Handling	Was the events of the plot interesting, did it s
+		Exposition	Anslag och presentation
+		Conflict	Fördjupning 
+		Rising action	Upptrappning 
+		Climax	Klimax
+		Falling action
+		Resolution	Avrundning	Was the ending rewarding? the events leading upp . Was it predictable 
+	Pacing	Tempo	Was it easy to follow that was going on in the plot, did events , did too little happen or too little with not enough depth.
+		Production	Produktion	
 		Immersion	Uppslukande	
 		Continuity	Kontinuitet	Was the events and tec 
 	Video	Bild	How well did the movie's imigary look visually?
+		Editing	Klippning	Was the lenght of the shots right. Were transitions between scenes good and did the sceens fit together and feel in the right order?
+		Lighting	Ljussättning	How well was the scenes lit, shadows, hard to see ,
 		Look and feel	Utseende	Whether it was good or not, did the visuals fit the world and story.
 		Quality	Kvalitet	What was the actual quality of the images shown?
 		Cinematography	Filmografi	How was the camera work and did it fit the world and story. Were angles, distance and movement right.

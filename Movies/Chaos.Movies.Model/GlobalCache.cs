@@ -7,6 +7,7 @@
 namespace Chaos.Movies.Model
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Net;
     using System.Threading;
@@ -49,16 +50,18 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets all available icon types.</summary>
         private static readonly AsyncCache<int, WatchType> WatchTypes = new AsyncCache<int, WatchType>(i => WatchType.Static.GetAsync(session, i));
-
+        
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
         /// <summary>The session.</summary>
         private static UserSession session;
 
-        private static bool IsInitiated = true;
+        private static bool IsInitiated = false;
 
         /// <summary>Gets the default system language.</summary>
-        public static CultureInfo DefaultLanguage { get; } = new CultureInfo("en-US");
+        public static CultureInfo BaseLanguage { get; } = new CultureInfo("en-US");
+
+        public static IEnumerable<RatingType> RootRatingTypes { get; private set; }
 
         internal static async Task<string> GetServerIpAsync()
         {
@@ -198,12 +201,21 @@ namespace Chaos.Movies.Model
 
             if (!IsInitiated)
             {
-                await MovieSeriesTypesLoadAllAsync();
-                await DepartmentsLoadAllAsync();
-                await RolesLoadAllAsync();
-                await IconTypesLoadAllAsync();
-                await RatingTypesLoadAllAsync();
-                await WatchTypesLoadAllAsync();
+                IsInitiated = true;
+                try
+                {
+                    await MovieSeriesTypesLoadAllAsync();
+                    await DepartmentsLoadAllAsync();
+                    await RolesLoadAllAsync();
+                    await IconTypesLoadAllAsync();
+                    await RatingTypesLoadAllAsync();
+                    //await WatchTypesLoadAllAsync();
+                }
+                catch
+                {
+                    IsInitiated = false;
+                    throw;
+                }
             }
         }
 
@@ -282,10 +294,17 @@ namespace Chaos.Movies.Model
         private static async Task RatingTypesLoadAllAsync()
         {
             RatingTypes.Clear();
+            var rootRatingTypes = new List<RatingType>();
             foreach (var ratingType in await RatingType.Static.GetAllAsync(session))
             {
                 RatingTypes.SetValue(ratingType.Id, ratingType);
+                if (ratingType.ParentRatingTypeId == 0)
+                {
+                    rootRatingTypes.Add(ratingType);
+                }
             }
+
+            RootRatingTypes = rootRatingTypes;
         }
 
         /// <summary>Loads all <see cref="WatchType"/>s from the database.</summary>

@@ -15,7 +15,8 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
-    /// <summary>A simple user rating, similar to <see cref="Model.UserRating"/> but not using the <see cref="RatingType"/>.</summary>
+    /// <inheritdoc cref="IUserSingleRating" />
+    /// <summary>A simple user rating, similar to <see cref="T:Chaos.Movies.Model.UserRating" /> but not using the <see cref="T:Chaos.Movies.Model.RatingType" />.</summary>
     public class UserSingleRating : Rating<UserSingleRating, UserSingleRatingDto>, IUserSingleRating
     {
         /// <summary>The database column for <see cref="UserId"/>.</summary>

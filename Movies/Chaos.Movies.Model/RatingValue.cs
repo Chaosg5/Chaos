@@ -79,7 +79,7 @@ namespace Chaos.Movies.Model
         protected override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { RatingColumn });
-            this.Value = (int)record[RatingColumn];
+            this.Value = (byte)record[RatingColumn];
             return Task.CompletedTask;
         }
     }

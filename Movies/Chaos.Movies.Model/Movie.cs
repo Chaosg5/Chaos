@@ -64,7 +64,7 @@ namespace Chaos.Movies.Model
         public IconCollection Images { get; private set; } = new IconCollection();
 
         /// <summary>Gets the total rating score from the current user.</summary>
-        public UserRating UserRatings { get; private set; } = new UserRating(new RatingType());
+        public UserRating UserRatings { get; private set; }
 
         /// <summary>Gets the user ratings.</summary>
         public UserSingleRating UserRating { get; private set; } = new UserSingleRating();
@@ -167,12 +167,35 @@ namespace Chaos.Movies.Model
                 Titles = this.Titles.ToContract(),
                 Genres = this.Genres.ToContract(),
                 Images = this.Images.ToContract(),
-                UserRatings = this.UserRatings.ToContract(),
+                UserRatings = this.UserRatings?.ToContract(),
                 UserRating = this.UserRating.ToContract(),
                 TotalRating = this.TotalRating.ToContract(),
                 Characters = this.Characters.ToContract(),
                 People = this.People.ToContract(),
                 MovieType = this.MovieType.ToContract(),
+                Year = this.Year,
+                EndYear = this.EndYear,
+                RunTime = this.RunTime
+            };
+        }
+
+        /// <inheritdoc />
+        public override MovieDto ToContract(string languageName)
+        {
+            return new MovieDto
+            {
+                Id = this.Id,
+                ExternalLookups = this.ExternalLookups.ToContract(languageName),
+                ExternalRatings = this.ExternalRatings.ToContract(languageName),
+                Titles = this.Titles.ToContract(languageName),
+                Genres = this.Genres.ToContract(languageName),
+                Images = this.Images.ToContract(languageName),
+                UserRatings = this.UserRatings?.ToContract(languageName),
+                UserRating = this.UserRating.ToContract(languageName),
+                TotalRating = this.TotalRating.ToContract(languageName),
+                Characters = this.Characters.ToContract(languageName),
+                People = this.People.ToContract(languageName),
+                MovieType = this.MovieType.ToContract(languageName),
                 Year = this.Year,
                 EndYear = this.EndYear,
                 RunTime = this.RunTime
@@ -197,7 +220,7 @@ namespace Chaos.Movies.Model
                 Titles = this.Titles.FromContract(contract.Titles),
                 Genres = this.Genres.FromContract(contract.Genres),
                 Images = this.Images.FromContract(contract.Images),
-                UserRatings = this.UserRatings.FromContract(contract.UserRatings),
+                UserRatings = this.UserRatings?.FromContract(contract.UserRatings),
                 UserRating = this.UserRating.FromContract(contract.UserRating),
                 TotalRating = this.TotalRating.FromContract(contract.TotalRating),
                 Characters = this.Characters.FromContract(contract.Characters),
@@ -252,11 +275,11 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override async Task GetUserItemDetailsAsync(MovieDto item, UserSession session)
+        public override async Task GetUserItemDetailsAsync(MovieDto item, UserSession session, string languageName)
         {
             if (!Persistent.UseService)
             {
-                await this.GetUserDetailsFromDatabaseAsync(item, item.Id, this.ReadUserDetailsAsync, session);
+                await this.GetUserDetailsFromDatabaseAsync(item, item.Id, this.ReadUserDetailsAsync, session, languageName);
                 return;
             }
 
@@ -448,12 +471,9 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        protected override async Task ReadUserDetailsAsync(MovieDto item, int userId, DbDataReader reader)
+        protected override async Task ReadUserDetailsAsync(MovieDto item, int userId, DbDataReader reader, string languageName)
         {
-            while (await reader.ReadAsync())
-            {
-                item.UserRatings = (await this.UserRatings.ReadFromRecordsAsync(reader)).First().ToContract();
-            }
+            item.UserRatings = (await Model.UserRating.Static.ReadFromRecordsAsync(reader)).First().ToContract(languageName);
 
             if (!await reader.NextResultAsync())
             {
@@ -462,12 +482,18 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                // RatingType
+                Persistent.ValidateRecord(
+                    reader,
+                    new[] { Character.IdColumn, Person.IdColumn, Role.IdColumn, Department.IdColumn });
+                var characterId = (int)reader[Character.IdColumn];
+                var personId = (int)reader[Person.IdColumn];
+                var roleId = (int)reader[Role.IdColumn];
+                var departmentId = (int)reader[Department.IdColumn];
             }
 
             if (!await reader.NextResultAsync())
             {
-                throw new MissingResultException(2, $"{nameof(Movie)}{LanguageTitleCollection.TitlesColumn}");
+                throw new MissingResultException(3, $"{nameof(Movie)}{LanguageTitleCollection.TitlesColumn}");
             }
 
             while (await reader.ReadAsync())

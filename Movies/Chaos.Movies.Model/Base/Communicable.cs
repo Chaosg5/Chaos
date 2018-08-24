@@ -16,6 +16,14 @@ namespace Chaos.Movies.Model.Base
         /// <returns>The <typeparamref name="TDto"/>.</returns>
         public abstract TDto ToContract();
 
+        /// <summary>Converts this <typeparamref name="T"/> to a <typeparamref name="TDto"/>.</summary>
+        /// <param name="languageName">The name of the language to convert underlying objects to.</param>
+        /// <returns>The <typeparamref name="TDto"/>.</returns>
+        public virtual TDto ToContract(string languageName)
+        {
+            return this.ToContract();
+        }
+
         /// <summary>Converts the <paramref name="contract"/> to a <typeparamref name="T"/>.</summary>
         /// <param name="contract">The contract¨to convert.</param>
         /// <returns>The <typeparamref name="T"/>.</returns>

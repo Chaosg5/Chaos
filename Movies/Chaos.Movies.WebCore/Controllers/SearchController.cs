@@ -30,7 +30,8 @@ namespace Chaos.Movies.WebCore.Controllers
                 var movies = await Movie.Static.SearchAsync(
                     new SearchParametersDto { RequireExactMatch = false, SearchLimit = 10, SearchText = searchText },
                     session);
-                result.AddRange(movies.Select(m => m.ToContract()));
+                var userLanguage = "sv-SE";
+                result.AddRange(movies.Select(m => m.ToContract(userLanguage)));
                 await Movie.Static.GetUserRatingsAsync(result, session);
                 result = result.OrderByDescending(m => m.ExternalRatings.FirstOrDefault()?.Value).ToList();
             }

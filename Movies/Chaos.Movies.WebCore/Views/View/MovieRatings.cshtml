@@ -1,0 +1,99 @@
+﻿@using Chaos.Movies.Contract
+@model UserRatingDto
+
+@{ var headTitle = $"rating{Model.RatingType.Id}"; }
+<h3 class="accordion-toggle" data-toggle="collapse" data-target="#@headTitle">
+    @Model.RatingType.Titles.UserTitle.Title
+    @Model.DisplayValue
+</h3>
+<div id="@headTitle" class="collapse in">
+    @foreach (var mainRatings in Model.SubRatings)
+    {
+        <div class="item right" style="display: block;">
+            @{
+                var mainTitle = $"rating{mainRatings.RatingType.Id}";
+                if (mainRatings.SubRatings.Count > 0)
+                {
+                    <h4 class="accordion-toggle collapsed" data-toggle="collapse" data-target="#@mainTitle" style="display: inline-block;">
+                        @mainRatings.RatingType.Titles.UserTitle.Title
+                    </h4>
+                }
+                else
+                {
+                    <h4 style="display: inline-block;">
+                        @mainRatings.RatingType.Titles.UserTitle.Title
+                    </h4>
+                }
+            }
+            <div class="ratingRow" style="display: inline-block;">
+                <div class="ratingIcon">
+                    <h4>@mainRatings.DisplayValue</h4>
+                </div>
+                <div class="ratingBackground">
+                    <div style="background-color: @mainRatings.HexColor; height: 100%; width: @mainRatings.Width;">
+                        <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                    </div>
+                </div>
+                <div class="ratingStars clickable">
+                    <img src="~/images/StarRowTransparent.svg" />
+                </div>
+            </div>
+            <div id="@mainTitle" class="collapse">
+                @foreach (var secondaryRatings in mainRatings.SubRatings)
+                {
+                    <div>
+                        @{
+                            var secondaryTitle = $"rating{secondaryRatings.RatingType.Id}";
+                            if (secondaryRatings.SubRatings.Count > 0)
+                            {
+                                <h5 class="accordion-toggle collapsed" data-toggle="collapse" data-target="#@secondaryTitle" style="display: inline-block;">
+                                    @secondaryRatings.RatingType.Titles.UserTitle.Title
+                                </h5>
+                            }
+                            else
+                            {
+                                <h5 style="display: inline-block;">
+                                    @secondaryRatings.RatingType.Titles.UserTitle.Title
+                                </h5>
+                            }
+                        }
+                        <div class="ratingRow" style="display: inline-block;">
+                            <div class="ratingIcon">
+                                @secondaryRatings.DisplayValue
+                            </div>
+                            <div class="ratingBackground">
+                                <div style="background-color: @secondaryRatings.HexColor; height: 100%; width: @secondaryRatings.Width;">
+                                    <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                                </div>
+                            </div>
+                            <div class="ratingStars clickable">
+                                <img src="~/images/StarRowTransparent.svg" />
+                            </div>
+                        </div>
+                        <div id="@secondaryTitle" class="collapse">
+                            @foreach (var detailRatings in secondaryRatings.SubRatings)
+                            {
+                                <h6 style="display: inline-block; width: 30%;">
+                                    @detailRatings.RatingType.Titles.UserTitle.Title
+                                </h6>
+                                <div class="ratingRow" style="display: inline-block;">
+                                    <div class="ratingIcon">
+                                        @detailRatings.DisplayValue
+                                    </div>
+                                    <div class="ratingBackground">
+                                        <div style="background-color: @detailRatings.HexColor; height: 100%; width: @detailRatings.Width;">
+                                            <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                                        </div>
+                                    </div>
+                                    <div class="ratingStars clickable">
+                                        <img src="~/images/StarRowTransparent.svg" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

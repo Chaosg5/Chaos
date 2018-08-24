@@ -28,11 +28,16 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the list of title of this <see cref="IconType"/> in different languages.</summary>
         public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
-        /// <summary>Converts this <see cref="IconType"/> to a <see cref="IconTypeDto"/>.</summary>
-        /// <returns>The <see cref="IconTypeDto"/>.</returns>
+        /// <inheritdoc />
         public override IconTypeDto ToContract()
         {
             return new IconTypeDto { Id = this.Id, Titles = this.Titles.ToContract() };
+        }
+
+        /// <inheritdoc />
+        public override IconTypeDto ToContract(string languageName)
+        {
+            return new IconTypeDto { Id = this.Id, Titles = this.Titles.ToContract(languageName) };
         }
 
         /// <inheritdoc />

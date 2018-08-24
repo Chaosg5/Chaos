@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Interface\IRating.cs" />
     <Compile Include="Interface\IUserSingleRating.cs" />
+    <Compile Include="LanguageDescriptionCollectionDto.cs" />
     <Compile Include="LanguageTitleCollectionDto.cs" />
     <Compile Include="LanguageType.cs" />
     <Compile Include="SearchParametersDto.cs" />

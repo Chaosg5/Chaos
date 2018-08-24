@@ -40,6 +40,16 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override WatchTypeDto ToContract(string languageName)
+        {
+            return new WatchTypeDto
+            {
+                Id = this.Id,
+                Titles = this.Titles.ToContract(languageName)
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public override WatchType FromContract(WatchTypeDto contract)

@@ -19,10 +19,11 @@ namespace Chaos.Movies.Model
     /// <summary>The title of a movie.</summary>
     public class LanguageTitleCollection : Listable<LanguageTitle, LanguageTitleDto, LanguageTitleCollection, LanguageTitleCollectionDto>
     {
-        /// <summary>The database column for this <see cref="LanguageTitleCollection"/>.</summary>
+        /// <summary>The database column for this collection of titles.</summary>
         internal const string TitlesColumn = "Titles";
 
         /// <summary>Gets the base title.</summary>
+        // ReSharper disable once ExceptionNotDocumented
         public string GetBaseTitle => this.GetTitle(null).Title;
 
         /// <summary>Gets all titles in a table which can be used to save them to the database.</summary>
@@ -54,6 +55,25 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override LanguageTitleCollectionDto ToContract(string language)
+        {
+            var contract = new LanguageTitleCollectionDto(this.Items.Select(t => t.ToContract(language)).ToList())
+            {
+                // ReSharper disable once ExceptionNotDocumented
+                UserTitle = this.GetTitle(language).ToContract(language)
+            };
+
+            // ReSharper disable once ExceptionNotDocumented
+            var originalTitle = this.GetTitle(LanguageType.Original.ToString())?.ToContract();
+            if (originalTitle != null && originalTitle.Title != contract.UserTitle.Title)
+            {
+                contract.OriginalTitle = originalTitle;
+            }
+
+            return contract;
+        }
+
+        /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override LanguageTitleCollection FromContract(LanguageTitleCollectionDto contract)
@@ -72,23 +92,34 @@ namespace Chaos.Movies.Model
             return list;
         }
 
-        /// <summary>Gets the title for the specified <paramref name="language"/>.</summary>
-        /// <param name="language">The language to get the title for.</param>
+        /// <summary>Gets the title for the specified <paramref name="languageName"/>.</summary>
+        /// <param name="languageName">The language to get the title for.</param>
         /// <returns>The title of the specified language; else the title of the default language</returns>
-        public LanguageTitle GetTitle(CultureInfo language)
+        /// <exception cref="InvalidSaveCandidateException">There are no titles. At least one title needs to be added.</exception>
+        public LanguageTitle GetTitle(string languageName)
         {
             if (this.Count == 0)
             {
-                return null;
+                throw new InvalidSaveCandidateException("There are no titles. At least one title needs to be added.");
             }
-
-            var languageName = GlobalCache.DefaultLanguage.Name;
-            if (!string.IsNullOrEmpty(language?.Name))
+            
+            if (string.Equals(languageName, LanguageType.Original.ToString(), StringComparison.OrdinalIgnoreCase))
             {
-                languageName = language.Name;
+                return this.FirstOrDefault(t => t.LanguageType == LanguageType.Original);
             }
 
-            return this.Items.FirstOrDefault(t => t.Language.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language.Name == GlobalCache.DefaultLanguage.Name) ?? this.Items.First();
+            if (string.Equals(languageName, LanguageType.Default.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                var title = this.FirstOrDefault(t => t.LanguageType == LanguageType.Default);
+                if (title != null)
+                {
+                    return title;
+                }
+
+                languageName = GlobalCache.BaseLanguage.Name;
+            }
+
+            return this.Items.FirstOrDefault(t => t.Language?.Name == languageName) ?? this.Items.FirstOrDefault(t => t.Language?.Name == GlobalCache.BaseLanguage.Name) ?? this.Items.First();
         }
 
         /// <summary>Changes the title of this movie series type.</summary>

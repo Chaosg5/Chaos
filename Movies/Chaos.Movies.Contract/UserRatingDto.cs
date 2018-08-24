@@ -37,6 +37,10 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public double Derived { get; set; }
 
+        /// <summary>Gets or sets the width in percent based on the <see cref="Value"/>/<see cref="Derived"/>.</summary>
+        [DataMember]
+        public string Width { get; set; }
+
         /// <inheritdoc />
         [DataMember]
         public string HexColor { get; set; }
