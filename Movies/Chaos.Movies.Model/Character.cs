@@ -67,7 +67,7 @@ namespace Chaos.Movies.Model
         public IconCollection Images { get; private set; } = new IconCollection();
 
         /// <summary>Gets the user ratings.</summary>
-        public UserSingleRating UserRating { get; private set; } = new UserSingleRating();
+        public TotalRating UserRating { get; private set; } = new TotalRating(typeof(Person));
 
         /// <summary>Gets the total rating.</summary>
         public TotalRating TotalRating { get; private set; } = new TotalRating(typeof(Character));
@@ -115,6 +115,7 @@ namespace Chaos.Movies.Model
                         { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), rating }
                     });
                 await Character.CustomDatabaseActionAsync(parameters, UserSingleRating.SaveUserMovieRatingProcedure, session);
+                return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
@@ -354,7 +355,8 @@ namespace Chaos.Movies.Model
                     rating = 0;
                 }
 
-                UserSingleRating.SetUserRating(character.UserRating, userId, rating);
+                // ToDo:
+                //UserSingleRating.SetUserRating(character.UserRating, userId, rating);
             }
         }
 

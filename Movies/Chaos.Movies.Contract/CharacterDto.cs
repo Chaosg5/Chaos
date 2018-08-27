@@ -31,7 +31,7 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets the user ratings.</summary>
         [DataMember]
-        public UserSingleRatingDto UserRating { get; set; }
+        public TotalRatingDto UserRating { get; set; }
 
         /// <summary>Gets or sets the total rating from all users.</summary>
         [DataMember]

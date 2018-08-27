@@ -65,7 +65,20 @@ namespace Chaos.Movies.WebCore.Controllers
         #endregion
 
         #region Edit
-        
+
+        [HttpPost]
+        public async Task<ActionResult> SaveMovieRating(int movieId, int ratingTypeId, int ratingValue)
+        {
+            var session = await this.ValidateSessionAsync();
+            if (session == null)
+            {
+                return this.RedirectToAction("Index", "Login");
+            }
+
+            await Model.Movie.SaveUserRatingAsync(movieId, ratingTypeId, ratingValue, session);
+            return Json("true");
+        }
+
         [HttpPost]
         public async Task<ActionResult> SavePersonRating(int movieId, int personId, int roleId, int departmentId, int ratingValue)
         {
@@ -76,7 +89,8 @@ namespace Chaos.Movies.WebCore.Controllers
             }
 
             await Model.Person.SaveUserRatingAsync(personId, roleId, departmentId, movieId, ratingValue, session);
-            return this.RedirectToAction("Movie", new { movieId });
+            return Json("true");
+            //return this.RedirectToAction("Movie", new { movieId });
         }
 
         [HttpPost]
@@ -91,7 +105,7 @@ namespace Chaos.Movies.WebCore.Controllers
                 }
 
                 await Model.Character.SaveUserRatingAsync(characterId, personId, movieId, ratingValue, session);
-                return this.RedirectToAction("Movie", new { movieId });
+                return Json("true");
             }
             catch (Exception e)
             {

@@ -108,13 +108,13 @@ namespace Chaos.Movies.Model
 
         /// <summary>Saves a <see cref="UserSingleRating"/> for the <see cref="User"/> of the <paramref name="session"/> for the specified <paramref name="movieId"/> and <paramref name="ratingTypeId"/>.</summary>
         /// <param name="movieId">The id of the <see cref="Movie"/> to rate the <see cref="Person"/> in.</param>
-        /// <param name="rating">The value of the <see cref="User"/>'s rating.</param>
         /// <param name="ratingTypeId">The rating Type Id.</param>
+        /// <param name="rating">The value of the <see cref="User"/>'s rating.</param>
         /// <param name="session">The <see cref="User"/>'s session.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="PersistentObjectRequiredException">All items to save needs to be persisted.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="session"/> is <see langword="null"/></exception>
-        public static async Task SaveUserRatingAsync(int movieId, int rating, int ratingTypeId, UserSession session)
+        public static async Task SaveUserRatingAsync(int movieId, int ratingTypeId, int rating, UserSession session)
         {
             if (movieId <= 0)
             {
@@ -141,7 +141,8 @@ namespace Chaos.Movies.Model
                         { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
                         { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), rating }
                     });
-                await Person.CustomDatabaseActionAsync(parameters, UserSingleRating.SaveUserMovieRatingProcedure, session);
+                await Movie.CustomDatabaseActionAsync(parameters, UserSingleRating.SaveUserMovieRatingProcedure, session);
+                return;
             }
 
             using (var service = new ChaosMoviesServiceClient())
@@ -484,11 +485,21 @@ namespace Chaos.Movies.Model
             {
                 Persistent.ValidateRecord(
                     reader,
-                    new[] { Character.IdColumn, Person.IdColumn, Role.IdColumn, Department.IdColumn });
+                    new[] { Character.IdColumn, Person.IdColumn, Role.IdColumn, Department.IdColumn, UserSingleRating.RatingColumn });
                 var characterId = (int)reader[Character.IdColumn];
                 var personId = (int)reader[Person.IdColumn];
                 var roleId = (int)reader[Role.IdColumn];
                 var departmentId = (int)reader[Department.IdColumn];
+                var character = item.Characters.FirstOrDefault(
+                    c => c.Character.Id == characterId
+                        && c.PersonInRole.Person.Id == personId
+                        && c.PersonInRole.Department.Id == departmentId
+                        && c.PersonInRole.Role.Id == roleId);
+                if (character != null)
+                {
+                    character.UserRating = (await this.UserRating.NewFromRecordAsync(reader)).ToContract();
+                    character.Character.UserRating = (await Character.Static.TotalRating.NewFromRecordAsync(reader)).ToContract();
+                }
             }
 
             if (!await reader.NextResultAsync())
@@ -498,7 +509,29 @@ namespace Chaos.Movies.Model
 
             while (await reader.ReadAsync())
             {
-                // RatingType
+                Persistent.ValidateRecord(
+                    reader,
+                    new[] { Person.IdColumn, Role.IdColumn, Department.IdColumn });
+                var personId = (int)reader[Person.IdColumn];
+                var roleId = (int)reader[Role.IdColumn];
+                var departmentId = (int)reader[Department.IdColumn];
+                var person = item.People.FirstOrDefault(
+                    p => p.Person.Id == personId
+                        && p.Department.Id == departmentId
+                        && p.Role.Id == roleId);
+                if (person != null)
+                {
+                    person.UserRating = (await this.UserRating.NewFromRecordAsync(reader)).ToContract();
+                    person.Person.UserRating = (await Person.Static.TotalRating.NewFromRecordAsync(reader)).ToContract();
+                    var character = item.Characters.FirstOrDefault(
+                        c => c.PersonInRole.Person.Id == personId
+                            && c.PersonInRole.Department.Id == departmentId
+                            && c.PersonInRole.Role.Id == roleId);
+                    if (character != null)
+                    {
+                        character.PersonInRole = person;
+                    }
+                }
             }
         }
     }

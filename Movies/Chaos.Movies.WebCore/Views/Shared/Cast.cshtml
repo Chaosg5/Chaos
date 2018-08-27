@@ -3,14 +3,13 @@
 @foreach (var personAsCharacter in Model.Characters)
 {
     <div class="row">
-        <div class="item left">
+        <div class="item">
             <div class="itemContent">
                 <a href="@Url.Action("Person", "View", new { movieId = personAsCharacter.PersonInRole.Person.Id})">
                     <div class="name">
                         <h4>@personAsCharacter.PersonInRole.Person.Name</h4>
                     </div>
                 </a>
-                <!---->
                 <div class="ratingRow">
                     <div class="ratingIcon">
                         <span class="ratingScore">@personAsCharacter.PersonInRole.UserRating.DisplayValue</span>
@@ -27,11 +26,24 @@
                 </div>
                 <div class="ratingRow">
                     <div class="ratingIcon">
-                        <span class="ratingScore">2.0</span>
+                        <span class="ratingScore">@personAsCharacter.PersonInRole.Person.UserRating.DisplayValue</span>
+                        <img src="~/images/User.svg" />
+                    </div>
+                    <div class="ratingBackground">
+                        <div style="background-color: @personAsCharacter.PersonInRole.Person.UserRating.HexColor; height: 100%; width: @((personAsCharacter.PersonInRole.Person.UserRating.Value*10))%;">
+                        </div>
+                    </div>
+                    <div class="ratingStars">
+                        <img src="~/images/StarRowTransparent.svg" />
+                    </div>
+                </div>
+                <div class="ratingRow">
+                    <div class="ratingIcon">
+                        <span class="ratingScore">@personAsCharacter.PersonInRole.TotalRating.DisplayValue</span>
                         <img src="~/images/CMDB.png" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: rgb(255, 153, 0); height: 100%; width: 40%; margin-left: 60%;">
+                        <div style="background-color: @personAsCharacter.PersonInRole.TotalRating.HexColor; height: 100%; width: @((personAsCharacter.PersonInRole.TotalRating.Value*10))%;">
                         </div>
                     </div>
                     <div class="ratingStars">
@@ -40,43 +52,17 @@
                 </div>
                 <div class="ratingRow">
                     <div class="ratingIcon">
-                        <span class="ratingScore">2.0</span>
-                        <img src="~/images/IMDB.ico" />
+                        <span class="ratingScore">@personAsCharacter.PersonInRole.Person.TotalRating.DisplayValue</span>
+                        <img src="~/images/CMDB.png" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: rgb(205, 230, 0); height: 100%; width: 60%; margin-left: 40%;">
+                        <div style="background-color: @personAsCharacter.PersonInRole.Person.TotalRating.HexColor; height: 100%; width: @((personAsCharacter.PersonInRole.Person.TotalRating.Value*10))%;">
                         </div>
                     </div>
                     <div class="ratingStars">
                         <img src="~/images/StarRowTransparent.svg" />
                     </div>
                 </div>
-                <div class="ratingRow">
-                    <div class="ratingIcon">
-                        <span class="ratingScore">2.0</span>
-                        <img src="~/images/TMDB.png" />
-                    </div>
-                    <div class="ratingBackground">
-                        <div style="background-color: rgb(102, 179, 0); height: 100%; width: 80%; margin-left: 20%;">
-                        </div>
-                    </div>
-                    <div class="ratingStars">
-                        <img src="~/images/StarRowTransparent.svg" />
-                    </div>
-                </div>
-                <div class="ratingRow">
-                    <div class="ratingIcon">
-                        <span class="ratingScore">2.0</span>
-                        <img src="~/images/TMDB.png" />
-                    </div>
-                    <div class="ratingBackground">
-                        <div style="background-color: green; height: 100%; width: 100%; margin-left: 0%;"></div>
-                    </div>
-                    <div class="ratingStars">
-                        <img src="~/images/StarRowTransparent.svg" />
-                    </div>
-                </div>
-                <!---->
             </div>
             <a href="@Url.Action("Person", "View", new { movieId = personAsCharacter.PersonInRole.Person.Id})">
                 <div class="listIcon">
@@ -84,7 +70,7 @@
                 </div>
             </a>
         </div>
-        <div class="item right">
+        <div class="item">
             <a href="@Url.Action("Character", "View", new { movieId = personAsCharacter.Character.Id})">
                 <div class="listIcon">
                     <img src="~/images/icons/Female.png" />
@@ -96,11 +82,10 @@
                         <h4>@personAsCharacter.Character.Name</h4>
                     </div>
                 </a>
-                <!---->
                 <div class="ratingRow">
                     <div class="ratingIcon">
-                        <img src="~/images/User.svg" />
                         <span class="ratingScore">@personAsCharacter.UserRating.DisplayValue</span>
+                        <img src="~/images/User.svg" />
                     </div>
                     <div class="ratingBackground">
                         <div style="background-color: @personAsCharacter.UserRating.HexColor; height: 100%; width: @((personAsCharacter.UserRating.Value*10))%;">
@@ -113,11 +98,24 @@
                 </div>
                 <div class="ratingRow">
                     <div class="ratingIcon">
+                        <span class="ratingScore">@personAsCharacter.Character.UserRating.DisplayValue</span>
+                        <img src="~/images/User.svg" />
+                    </div>
+                    <div class="ratingBackground">
+                        <div style="background-color: @personAsCharacter.Character.UserRating.HexColor; height: 100%; width: @((personAsCharacter.Character.UserRating.Value*10))%;">
+                        </div>
+                    </div>
+                    <div class="ratingStars">
+                        <img src="~/images/StarRowTransparent.svg" />
+                    </div>
+                </div>
+                <div class="ratingRow">
+                    <div class="ratingIcon">
+                        <span class="ratingScore">@personAsCharacter.TotalRating.DisplayValue</span>
                         <img src="~/images/CMDB.png" />
-                        <span class="ratingScore">4.0</span>
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: rgb(255, 153, 0); height: 100%; width: 40%;">
+                        <div style="background-color: @personAsCharacter.TotalRating.HexColor; height: 100%; width: @((personAsCharacter.TotalRating.Value*10))%;">
                         </div>
                     </div>
                     <div class="ratingStars">
@@ -126,43 +124,17 @@
                 </div>
                 <div class="ratingRow">
                     <div class="ratingIcon">
-                        <img src="~/images/IMDB.ico" />
-                        <span class="ratingScore">6.0</span>
+                        <span class="ratingScore">@personAsCharacter.Character.TotalRating.DisplayValue</span>
+                        <img src="~/images/CMDB.png" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: rgb(205, 230, 0); height: 100%; width: 60%;">
+                        <div style="background-color: @personAsCharacter.Character.TotalRating.HexColor; height: 100%; width: @((personAsCharacter.Character.TotalRating.Value*10))%;">
                         </div>
                     </div>
                     <div class="ratingStars">
                         <img src="~/images/StarRowTransparent.svg" />
                     </div>
                 </div>
-                <div class="ratingRow">
-                    <div class="ratingIcon">
-                        <img src="~/images/TMDB.png" />
-                        <span class="ratingScore">8.0</span>
-                    </div>
-                    <div class="ratingBackground">
-                        <div style="background-color: rgb(102, 179, 0); height: 100%; width: 80%;">
-                        </div>
-                    </div>
-                    <div class="ratingStars">
-                        <img src="~/images/StarRowTransparent.svg" />
-                    </div>
-                </div>
-                <div class="ratingRow">
-                    <div class="ratingIcon">
-                        <img src="~/images/TMDB.png" />
-                        <span class="ratingScore">10</span>
-                    </div>
-                    <div class="ratingBackground">
-                        <div style="background-color: green; height: 100%; width: 100%;"></div>
-                    </div>
-                    <div class="ratingStars">
-                        <img src="~/images/StarRowTransparent.svg" />
-                    </div>
-                </div>
-                <!---->
             </div>
         </div>
     </div>
@@ -170,12 +142,14 @@
 
 <script type="text/javascript">
     savePersonRating = function (event, sender, rightToLeft, personId, roleId, departmentId) {
+        var ratingValue = GetRatingFromPosition(event, sender, rightToLeft, 200);
         $.ajax({
             url: "@Url.Action("SavePersonRating", "View")",
-            data: { movieId: @Model.Id, personId: personId, roleId: roleId, departmentId: departmentId, ratingValue: GetRatingFromPosition(event, sender, rightToLeft, 200) },
+            data: { movieId: @Model.Id, personId: personId, roleId: roleId, departmentId: departmentId, ratingValue: ratingValue },
             type: "POST",
             success: function () {
-                alert("Saved");
+                $(sender).prev().children().first().css("width", ratingValue * 10 + "%");
+                $(sender).prev().prev().children().first().text(ratingValue);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.responseText);
@@ -185,12 +159,14 @@
     };
     
     saveCharacterRating = function (event, sender, rightToLeft, characterId, personId) {
+        var ratingValue = GetRatingFromPosition(event, sender, rightToLeft, 200);
         $.ajax({
             url: "@Url.Action("SaveCharacterRating", "View")",
-            data: { movieId: @Model.Id, characterId: characterId, personId: personId, ratingValue: GetRatingFromPosition(event, sender, rightToLeft, 200) },
+            data: { movieId: @Model.Id, characterId: characterId, personId: personId, ratingValue: ratingValue },
             type: "POST",
             success: function () {
-                alert("Saved");
+                $(sender).prev().children().first().css("width", ratingValue * 10 + "%");
+                $(sender).prev().prev().children().first().text(ratingValue);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.responseText);

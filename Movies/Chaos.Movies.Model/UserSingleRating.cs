@@ -19,9 +19,6 @@ namespace Chaos.Movies.Model
     /// <summary>A simple user rating, similar to <see cref="T:Chaos.Movies.Model.UserRating" /> but not using the <see cref="T:Chaos.Movies.Model.RatingType" />.</summary>
     public class UserSingleRating : Rating<UserSingleRating, UserSingleRatingDto>, IUserSingleRating
     {
-        /// <summary>The database column for <see cref="UserId"/>.</summary>
-        internal const string UserIdColumn = "UserId";
-
         /// <summary>The database procedure for saving a <see cref="User"/> rating for an item in a <see cref="Movie"/>.</summary>
         internal const string SaveUserMovieRatingProcedure = "SaveUserMovieRating";
         
@@ -100,14 +97,26 @@ namespace Chaos.Movies.Model
             return result;
         }
 
+        /// <inheritdoc cref="NewFromRecordAsync(IDataRecord)" />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
+        internal Task<UserSingleRating> NewFromRecordAsync(IDataRecord record, string ratingColumn)
+        {
+            var result = new UserSingleRating();
+            Persistent.ValidateRecord(record, new[] { ratingColumn, User.IdColumn });
+            this.Value = (int)record[ratingColumn];
+            this.UserId = (int)record[User.IdColumn];
+            return Task.FromResult(result);
+        }
+
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { RatingColumn, UserIdColumn });
-            this.Value = (int)record[RatingColumn];
-            this.UserId = (int)record[UserIdColumn];
+            Persistent.ValidateRecord(record, new[] { RatingColumn, User.IdColumn });
+            this.Value = (byte)record[RatingColumn];
+            this.UserId = (int)record[User.IdColumn];
             return Task.CompletedTask;
         }
     }

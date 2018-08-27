@@ -23,5 +23,9 @@ function GetRatingFromPosition(event, sender, rightToLeft, max) {
     }
 
     var rating = Math.floor(((position / max) * 10)) + 1;
+    if (position / max < 0.05) {
+        rating = 0;
+    }
+
     return rating;
 }

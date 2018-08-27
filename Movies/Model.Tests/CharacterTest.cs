@@ -35,9 +35,9 @@ namespace Chaos.Movies.Model.Tests
             contract.Name = "Character Name";
             contract.ExternalLookups = new ReadOnlyCollection<ExternalLookupDto>(new List<ExternalLookupDto>());
             contract.Images = new ReadOnlyCollection<IconDto>(new List<IconDto>());
-            contract.UserRating = new UserSingleRatingDto
+            contract.UserRating = new TotalRatingDto
             {
-                UserId = 1,
+                //UserId = 1,
                 Value = 6
             };
             contract.TotalRating = new TotalRatingDto
@@ -52,7 +52,7 @@ namespace Chaos.Movies.Model.Tests
             Assert.AreEqual(contract.Images.Count, character.Images.Count);
             Assert.AreEqual(contract.TotalRating.Value, character.TotalRating.Value);
             Assert.AreEqual(contract.UserRating.Value, character.UserRating.Value);
-            Assert.AreEqual(contract.UserRating.UserId, character.UserRating.UserId);
+            //Assert.AreEqual(contract.UserRating.UserId, character.UserRating.UserId);
         }
 
         /// <summary>Tests the <see cref="Character.SaveAsync"/>.</summary>

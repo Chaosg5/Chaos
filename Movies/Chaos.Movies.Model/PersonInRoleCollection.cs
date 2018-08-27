@@ -46,7 +46,7 @@ namespace Chaos.Movies.Model
                     table.Columns.Add(new DataColumn(Department.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn($"Parent{typeof(TParent).Name}Id", typeof(int)));
                     table.Columns.Add(new DataColumn(UserSingleRating.RatingColumn, typeof(int)));
-                    table.Columns.Add(new DataColumn(UserSingleRating.UserIdColumn, typeof(int)));
+                    table.Columns.Add(new DataColumn(User.IdColumn, typeof(int)));
                     foreach (var personInRole in this.Items)
                     {
                         table.Rows.Add(personInRole.Person.Id, personInRole.Role.Id, personInRole.Department.Id, this.ParentId, personInRole.UserRatings.Value, personInRole.UserRatings.UserId);

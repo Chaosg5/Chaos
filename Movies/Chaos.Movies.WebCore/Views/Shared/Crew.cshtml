@@ -4,25 +4,75 @@
 @foreach (var department in Model.People.GroupBy(p => p.Department.Id).Select(d => d.First().Department))
 {
     <h3 class="accordion-toggle" data-toggle="collapse" data-target="#Department_@department.Id">@department.Titles.First().Title</h3>
-    <div id="Department_@department.Id" class="col-md-12 collapse in">
+    <div id="Department_@department.Id" class="collapse in">
         @foreach (var personInRole in Model.People.Where(p => p.Department.Id == department.Id))
         {
             <div class="row">
                 <div class="item">
                     <a href="@Url.Action("Person", "View", new { movieId = personInRole.Person.Id})">
-                        <div class="listIcon small">
+                        <div class="listIcon medium">
                             <img src="~/images/icons/Male.png" />
                         </div>
                     </a>
                     <div class="itemContent">
                         <a href="@Url.Action("Person", "View", new { movieId = personInRole.Person.Id})">
                             <div class="name">
-                                <h4>@personInRole.Person.Name</h4>
+                                <h4>@personInRole.Person.Name - @personInRole.Role.Titles.First(t => t.LanguageType == LanguageType.Default).Title</h4>
                             </div>
                         </a>
-                        <h4>@personInRole.Role.Titles.First(t => t.LanguageType == LanguageType.Default).Title</h4>
-                        <!---->
-                        <!---->
+                        <div class="ratingRow">
+                            <div class="ratingIcon">
+                                <span class="ratingScore">@personInRole.UserRating.DisplayValue</span>
+                                <img src="~/images/User.svg" />
+                            </div>
+                            <div class="ratingBackground">
+                                <div style="background-color: @personInRole.UserRating.HexColor; height: 100%; width: @((personInRole.UserRating.Value*10))%;">
+                                    <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                                </div>
+                            </div>
+                            <div class="ratingStars clickable" onclick="savePersonRating(event, this, false, @personInRole.Person.Id, @personInRole.Role.Id, @personInRole.Department.Id);">
+                                <img src="~/images/StarRowTransparent.svg" />
+                            </div>
+                        </div>
+                        <div class="ratingRow">
+                            <div class="ratingIcon">
+                                <span class="ratingScore">@personInRole.Person.UserRating.DisplayValue</span>
+                                <img src="~/images/User.svg" />
+                            </div>
+                            <div class="ratingBackground">
+                                <div style="background-color: @personInRole.Person.UserRating.HexColor; height: 100%; width: @((personInRole.Person.UserRating.Value*10))%;">
+                                </div>
+                            </div>
+                            <div class="ratingStars">
+                                <img src="~/images/StarRowTransparent.svg" />
+                            </div>
+                        </div>
+                        <div class="ratingRow">
+                            <div class="ratingIcon">
+                                <span class="ratingScore">@personInRole.TotalRating.DisplayValue</span>
+                                <img src="~/images/CMDB.png" />
+                            </div>
+                            <div class="ratingBackground">
+                                <div style="background-color: @personInRole.TotalRating.HexColor; height: 100%; width: @((personInRole.TotalRating.Value*10))%;">
+                                </div>
+                            </div>
+                            <div class="ratingStars">
+                                <img src="~/images/StarRowTransparent.svg" />
+                            </div>
+                        </div>
+                        <div class="ratingRow">
+                            <div class="ratingIcon">
+                                <span class="ratingScore">@personInRole.Person.TotalRating.DisplayValue</span>
+                                <img src="~/images/CMDB.png" />
+                            </div>
+                            <div class="ratingBackground">
+                                <div style="background-color: @personInRole.Person.TotalRating.HexColor; height: 100%; width: @((personInRole.Person.TotalRating.Value*10))%;">
+                                </div>
+                            </div>
+                            <div class="ratingStars">
+                                <img src="~/images/StarRowTransparent.svg" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

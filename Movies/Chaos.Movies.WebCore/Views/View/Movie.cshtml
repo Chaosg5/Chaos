@@ -15,16 +15,70 @@
     <!--ToDo: Original title name-->
     <span>@Model.Titles.OriginalTitle.Title (Original title)</span>
 }
+<div class="col-md-12">
+    <div class="col-md-8">
+        <h2 class="accordion-toggle" data-toggle="collapse" data-target="#ratings">Ratings</h2>
+        <div id="ratings" class="collapse in">
+            @await Html.PartialAsync("MovieRatings", Model)
+        </div>
+        <h2 class="accordion-toggle" data-toggle="collapse" data-target="#characters">Actors/Characters</h2>
+        <div id="characters" class="collapse in">
+            @await Html.PartialAsync("Cast", Model)
+        </div>
+        <h2 class="accordion-toggle" data-toggle="collapse" data-target="#people">Cast/Crew</h2>
+        <div id="people" class="collapse in">
+            @await Html.PartialAsync("Crew", Model)
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h2>WatchNow</h2>
+        <div class="item actionButton" onclick="watchMovie();">
+            Stream
+        </div>
+        <div class="item actionButton">
+            Blu-Ray
+        </div>
+        <div class="item actionButton">
+            Cinema
+        </div>
+        <div class="item actionButton">
+            DVD
+        </div>
 
-<h2 class="accordion-toggle" data-toggle="collapse" data-target="#ratings">Ratings</h2>
-<div id="ratings" class="col-md-12 collapse in">
-    @await Html.PartialAsync("MovieRatings", Model.UserRatings)
+        <h2>Owned</h2>
+        <div class="item actionButton">
+            Blu-Ray
+        </div>
+        <div class="item actionButton">
+            Digital
+        </div>
+        <div class="item actionButton">
+            DVD
+        </div>
+
+        <h2>MovieSeries</h2>
+        
+    </div>
 </div>
-<h2 class="accordion-toggle" data-toggle="collapse" data-target="#characters">Actors/Characters</h2>
-<div id="characters" class="col-md-12 collapse in">
-    @await Html.PartialAsync("Cast", Model)
-</div>
-<h2 class="accordion-toggle" data-toggle="collapse" data-target="#people">Cast/Crew</h2>
-<div id="people" class="col-md-12 collapse in">
-    @await Html.PartialAsync("Crew", Model)
-</div>
+
+<script type="text/javascript">
+    watchMovie = function() {
+        var person = prompt("Date", formatDate(new Date()));
+
+        if (person != null) {
+            alert(person);
+        }
+    }
+
+    formatDate = function(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+</script>

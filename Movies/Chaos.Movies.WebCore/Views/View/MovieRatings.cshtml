@@ -1,15 +1,15 @@
 ﻿@using Chaos.Movies.Contract
-@model UserRatingDto
+@model MovieDto
 
-@{ var headTitle = $"rating{Model.RatingType.Id}"; }
+@{ var headTitle = $"rating{Model.UserRatings.RatingType.Id}"; }
 <h3 class="accordion-toggle" data-toggle="collapse" data-target="#@headTitle">
-    @Model.RatingType.Titles.UserTitle.Title
-    @Model.DisplayValue
+    @Model.UserRatings.RatingType.Titles.UserTitle.Title
+    @Model.UserRatings.DisplayValue
 </h3>
 <div id="@headTitle" class="collapse in">
-    @foreach (var mainRatings in Model.SubRatings)
+    @foreach (var mainRatings in Model.UserRatings.SubRatings)
     {
-        <div class="item right" style="display: block;">
+        <div class="item" style="display: block;">
             @{
                 var mainTitle = $"rating{mainRatings.RatingType.Id}";
                 if (mainRatings.SubRatings.Count > 0)
@@ -27,14 +27,14 @@
             }
             <div class="ratingRow" style="display: inline-block;">
                 <div class="ratingIcon">
-                    <h4>@mainRatings.DisplayValue</h4>
+                    <span class="ratingScore">@mainRatings.DisplayValue</span>
                 </div>
                 <div class="ratingBackground">
                     <div style="background-color: @mainRatings.HexColor; height: 100%; width: @mainRatings.Width;">
                         <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
                     </div>
                 </div>
-                <div class="ratingStars clickable">
+                <div class="ratingStars clickable" onclick="saveMovieRating(event, this, false, @mainRatings.RatingType.Id);">
                     <img src="~/images/StarRowTransparent.svg" />
                 </div>
             </div>
@@ -59,14 +59,14 @@
                         }
                         <div class="ratingRow" style="display: inline-block;">
                             <div class="ratingIcon">
-                                @secondaryRatings.DisplayValue
+                                <span class="ratingScore">@secondaryRatings.DisplayValue</span>
                             </div>
                             <div class="ratingBackground">
                                 <div style="background-color: @secondaryRatings.HexColor; height: 100%; width: @secondaryRatings.Width;">
                                     <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
                                 </div>
                             </div>
-                            <div class="ratingStars clickable">
+                            <div class="ratingStars clickable" onclick="saveMovieRating(event, this, false, @secondaryRatings.RatingType.Id);">
                                 <img src="~/images/StarRowTransparent.svg" />
                             </div>
                         </div>
@@ -78,14 +78,14 @@
                                 </h6>
                                 <div class="ratingRow" style="display: inline-block;">
                                     <div class="ratingIcon">
-                                        @detailRatings.DisplayValue
+                                        <span class="ratingScore">@detailRatings.DisplayValue</span>
                                     </div>
                                     <div class="ratingBackground">
                                         <div style="background-color: @detailRatings.HexColor; height: 100%; width: @detailRatings.Width;">
                                             <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
                                         </div>
                                     </div>
-                                    <div class="ratingStars clickable">
+                                    <div class="ratingStars clickable" onclick="saveMovieRating(event, this, false, @detailRatings.RatingType.Id);">
                                         <img src="~/images/StarRowTransparent.svg" />
                                     </div>
                                 </div>
@@ -97,3 +97,22 @@
         </div>
     }
 </div>
+<div id="errorMessa"></div>
+<script type="text/javascript">
+    saveMovieRating = function (event, sender, rightToLeft, ratingTypeId) {
+        var ratingValue = GetRatingFromPosition(event, sender, rightToLeft, 200);
+        $.ajax({
+            url: "@Url.Action("SaveMovieRating", "View")",
+            data: { movieId: @Model.Id, ratingTypeId: ratingTypeId, ratingValue: ratingValue },
+            type: "POST",
+            success: function () {
+                $(sender).prev().children().first().css("width", ratingValue * 10 + "%");
+                $(sender).prev().prev().children().first().text(ratingValue);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                document.getElementById("errorMessa").innerHTML = xhr.responseText;
+                alert(thrownError);
+            }
+        });
+    };
+</script>
