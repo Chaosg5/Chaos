@@ -110,6 +110,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override LanguageDescriptionDto ToContract(string languageName)
+        {
+            return new LanguageDescriptionDto { Title = this.Title, Description = this.Description, Language = this.Language, LanguageType = this.LanguageType };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override LanguageDescription FromContract(LanguageDescriptionDto contract)
         {

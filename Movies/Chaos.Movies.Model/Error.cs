@@ -108,6 +108,21 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override ErrorDto ToContract(string languageName)
+        {
+            return new ErrorDto
+            {
+                UserId = this.UserId,
+                ErrorTime = this.ErrorTime,
+                ErrorType = this.ErrorType,
+                Source = this.Source,
+                TargetSite = this.TargetSite,
+                Message = this.Message,
+                Value = this.Value
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override Error FromContract(ErrorDto contract)
         {

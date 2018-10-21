@@ -8,7 +8,9 @@ namespace Chaos.Movies.WebCore.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
@@ -29,13 +31,16 @@ namespace Chaos.Movies.WebCore.Controllers
             {
                 return this.RedirectToAction("Index", "Login");
             }
-
+            // string languageName
             var movie = await Model.Movie.Static.GetAsync(session, movieId);
             var userLanguage = "sv-SE";
             var result = movie.ToContract(userLanguage);
             await Model.Movie.Static.GetUserRatingsAsync(new List<MovieDto> { result }, session);
             await Model.Movie.Static.GetUserItemDetailsAsync(result, session, userLanguage);
-            return this.View(result);
+            var s = new Tuple<MovieDto, ReadOnlyCollection<WatchTypeDto>>(
+                result,
+                new ReadOnlyCollection<WatchTypeDto>((await GlobalCache.GetAllWatchTypesAsync()).Select(w => w.ToContract(userLanguage)).ToList()));
+            return this.View(s);
         }
 
         public async Task<IActionResult> Character(int movieId)
@@ -114,8 +119,33 @@ namespace Chaos.Movies.WebCore.Controllers
             }
         }
 
-        #endregion
+        [HttpPost]
+        public async Task<ActionResult> SaveWatchMovie(int movieId, DateTime watchDate, bool dateUncertain, int watchTypeId)
+        {
+            var session = await this.ValidateSessionAsync();
+            if (session == null)
+            {
+                return this.RedirectToAction("Index", "Login");
+            }
 
+            await Model.Movie.SaveWatchMovieAsync(movieId, watchDate, dateUncertain, watchTypeId, session);
+            return Json("true");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteWatchMovie(int movieId, int watchId, int watchTypeId)
+        {
+            var session = await this.ValidateSessionAsync();
+            if (session == null)
+            {
+                return this.RedirectToAction("Index", "Login");
+            }
+
+            await Model.Movie.DeleteWatchMovieAsync(watchId, movieId, watchTypeId, session);
+            return Json("true");
+        }
+
+        #endregion
 
         /// <summary>Validates the current user's session.</summary>
         /// <returns>The <see cref="UserSession"/>.</returns>

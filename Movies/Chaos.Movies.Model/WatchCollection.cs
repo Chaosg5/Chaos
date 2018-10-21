@@ -25,7 +25,7 @@ namespace Chaos.Movies.Model
     public class WatchCollection<TParent, TParentDto> : Collectable<Watch, WatchDto, WatchCollection<TParent, TParentDto>, ReadOnlyCollection<WatchDto>, TParent, TParentDto>
     {
         /// <summary>The database column for this <see cref="WatchCollection{TParent, TParentDto}"/>.</summary>
-        private const string WatchesColumn = "Watches";
+        internal const string WatchesColumn = "Watches";
 
         /// <inheritdoc />
         public WatchCollection(Persistable<TParent, TParentDto> parent)
@@ -42,7 +42,6 @@ namespace Chaos.Movies.Model
                 using (var table = new DataTable())
                 {
                     table.Locale = CultureInfo.InvariantCulture;
-                    table.Columns.Add(new DataColumn(Watch.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn(User.IdColumn, typeof(int)));
                     table.Columns.Add(new DataColumn($"Parent{typeof(TParent).Name}Id", typeof(int)));
                     table.Columns.Add(new DataColumn(Watch.WatchDateColumn, typeof(DateTime)));
@@ -51,7 +50,7 @@ namespace Chaos.Movies.Model
                     foreach (var watch in this.Items)
                     {
                         watch.ValidateSaveCandidate();
-                        table.Rows.Add(watch.Id, watch.UserId, this.ParentId, watch.WatchDate, watch.DateUncertain, watch.WatchType.Id);
+                        table.Rows.Add(watch.UserId, this.ParentId, watch.WatchDate, watch.DateUncertain, watch.WatchType.Id);
                     }
 
                     return table;
@@ -63,6 +62,12 @@ namespace Chaos.Movies.Model
         public override ReadOnlyCollection<WatchDto> ToContract()
         {
             return this.Items.Select(item => item.ToContract()).ToList().AsReadOnly();
+        }
+
+        /// <inheritdoc />
+        public override ReadOnlyCollection<WatchDto> ToContract(string languageName)
+        {
+            return this.Items.Select(item => item.ToContract(languageName)).ToList().AsReadOnly();
         }
 
         /// <inheritdoc />

@@ -48,6 +48,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override ReadOnlyCollection<RoleDto> ToContract(string languageName)
+        {
+            return new ReadOnlyCollection<RoleDto>(this.Items.Select(item => item.ToContract(languageName)).ToList());
+        }
+
+        /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override RoleCollection FromContract(ReadOnlyCollection<RoleDto> contract)

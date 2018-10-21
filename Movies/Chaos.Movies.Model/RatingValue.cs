@@ -47,6 +47,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override RatingValueDto ToContract(string languageName)
+        {
+            return new RatingValueDto { Value = this.Value, Derived = this.Derived };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override RatingValue FromContract(RatingValueDto contract)
         {

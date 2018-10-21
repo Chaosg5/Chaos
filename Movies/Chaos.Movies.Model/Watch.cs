@@ -18,16 +18,19 @@ namespace Chaos.Movies.Model
     using Exceptions;
 
     /// <summary>Represents an event where a <see cref="User"/> watched a <see cref="Movie"/>.</summary>
-    public class Watch : Loadable<Watch, WatchDto>
+    public class Watch : Persistable<Watch, WatchDto>
     {
-        /// <summary>The database column for <see cref="Id"/>.</summary>
-        internal const string IdColumn = "WatchId";
-
         /// <summary>The database column for <see cref="WatchDate"/>.</summary>
         internal const string WatchDateColumn = "WatchDate";
 
-        /// <summary>The database column for <see cref="Id"/>.</summary>
+        /// <summary>The database column for <see cref="DateUncertain"/>.</summary>
         internal const string DateUncertainColumn = "DateUncertain";
+
+        /// <summary>The database procedure for saving a <see cref="User"/> <see cref="Watch"/> of a a <see cref="Movie"/>.</summary>
+        internal const string UserWatchSaveProcedure = "UserWatchSave";
+
+        /// <summary>The database procedure for deleting a <see cref="User"/> <see cref="Watch"/> of a a <see cref="Movie"/>.</summary>
+        internal const string UserWatchDeleteProcedure = "UserWatchDelete";
 
         /// <summary>The earliest allowed date for the <see cref="WatchDate"/>.</summary>
         private readonly DateTime minDate = new DateTime(1900, 1, 1);
@@ -61,9 +64,6 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Watch Static { get; } = new Watch();
-
-        /// <summary>Gets or sets the id of this <see cref="Watch"/>.</summary>
-        public int Id { get; protected set; }
 
         /// <summary>Gets the id of the <see cref="User"/> who watched <see cref="Movie"/>.</summary>
         public int UserId
@@ -136,6 +136,19 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override WatchDto ToContract(string languageName)
+        {
+            return new WatchDto
+            {
+                Id = this.Id,
+                UserId = this.UserId,
+                WatchDate = this.WatchDate,
+                DateUncertain = this.DateUncertain,
+                WatchType = this.WatchType.ToContract(languageName)
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override Watch FromContract(WatchDto contract)
@@ -156,6 +169,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override Task SaveAsync(UserSession session)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Watch"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
@@ -165,7 +184,6 @@ namespace Chaos.Movies.Model
         /// <summary>Creates new <see cref="Watch"/>s from the <paramref name="reader"/>.</summary>
         /// <param name="reader">The reader containing data sets and records the data for the <see cref="Watch"/>s.</param>
         /// <returns>The list of <see cref="Watch"/>s.</returns>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         internal async Task<IEnumerable<Watch>> ReadFromRecordsAsync(DbDataReader reader)
         {
@@ -204,6 +222,12 @@ namespace Chaos.Movies.Model
             this.WatchDate = (DateTime)record[WatchDateColumn];
             this.DateUncertain = (bool)record[DateUncertainColumn];
             this.WatchType = await GlobalCache.GetWatchTypeAsync((int)record[WatchType.IdColumn]);
+        }
+
+        /// <inheritdoc />
+        protected override IReadOnlyDictionary<string, object> GetSaveParameters()
+        {
+            throw new NotImplementedException();
         }
     }
 }

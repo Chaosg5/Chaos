@@ -51,6 +51,8 @@ Rotten User
 Metacritics
 Metacritics User
 
+External source levels (Rotten, Fresh) and icon-name
+
 Like Love Hate Star
 
 User compare

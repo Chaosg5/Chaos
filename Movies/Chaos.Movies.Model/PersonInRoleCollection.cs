@@ -64,6 +64,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override ReadOnlyCollection<PersonInRoleDto> ToContract(string languageName)
+        {
+            return this.Items.Select(item => item.ToContract(languageName)).ToList().AsReadOnly();
+        }
+
+        /// <inheritdoc />
         /// <exception cref="NotSupportedException">This method is not supported.</exception>
         public override PersonInRoleCollection<TParent, TParentDto> FromContract(ReadOnlyCollection<PersonInRoleDto> contract)
         {

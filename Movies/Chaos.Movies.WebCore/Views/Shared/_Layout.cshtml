@@ -67,6 +67,11 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+    <div id="errorContainer" class="errorContainer" onclick="hideError();">
+        <div id="errorMessage" class="errorMessage">
+
+        </div>
+    </div>
 
     @RenderSection("Scripts", required: false)
 </body>

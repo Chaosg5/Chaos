@@ -125,9 +125,23 @@ namespace Chaos.Movies.Model
             }
         }
 
-        /// <summary>Converts this <see cref="ExternalSource"/> to a <see cref="ExternalSourceDto"/>.</summary>
-        /// <returns>The <see cref="ExternalSourceDto"/>.</returns>
+        /// <inheritdoc />
         public override ExternalSourceDto ToContract()
+        {
+            return new ExternalSourceDto
+            {
+                Id = this.Id,
+                Name = this.Name,
+                BaseAddress = this.BaseAddress,
+                PeopleAddress = this.PeopleAddress,
+                CharacterAddress = this.CharacterAddress,
+                GenreAddress = this.GenreAddress,
+                EpisodeAddress = this.EpisodeAddress
+            };
+        }
+
+        /// <inheritdoc />
+        public override ExternalSourceDto ToContract(string languageName)
         {
             return new ExternalSourceDto
             {

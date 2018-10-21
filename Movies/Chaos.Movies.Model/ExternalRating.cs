@@ -100,6 +100,19 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override ExternalRatingDto ToContract(string languageName)
+        {
+            return new ExternalRatingDto
+            {
+                ExternalSource = this.ExternalSource.ToContract(languageName),
+                Value = this.Value,
+                DisplayValue = this.DisplayValue,
+                HexColor = this.HexColor,
+                RatingCount = this.RatingCount
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override ExternalRating FromContract(ExternalRatingDto contract)
         {

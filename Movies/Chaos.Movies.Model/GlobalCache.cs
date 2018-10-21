@@ -50,7 +50,10 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets all available icon types.</summary>
         private static readonly AsyncCache<int, WatchType> WatchTypes = new AsyncCache<int, WatchType>(i => WatchType.Static.GetAsync(session, i));
-        
+
+        /// <summary>Gets all available icon types.</summary>
+        private static readonly AsyncCache<int, Genre> Genres = new AsyncCache<int, Genre>(i => Genre.Static.GetAsync(session, i));
+
         ////public static User SystemUser { get; private set; } = new User {Id = 1};
 
         /// <summary>The session.</summary>
@@ -62,11 +65,6 @@ namespace Chaos.Movies.Model
         public static CultureInfo BaseLanguage { get; } = new CultureInfo("en-US");
 
         public static IEnumerable<RatingType> RootRatingTypes { get; private set; }
-
-        internal static async Task<string> GetServerIpAsync()
-        {
-            return (await Dns.GetHostEntryAsync(Dns.GetHostName())).AddressList[0].ToString();
-        }
 
         /// <summary>Clears all cache objects.</summary>
         public static void ClearAllCache()
@@ -180,6 +178,29 @@ namespace Chaos.Movies.Model
             return await WatchTypes.GetValue(id);
         }
 
+        /// <summary>Gets all <see cref="WatchType"/>s.</summary>
+        /// <returns>The specified <see cref="WatchType"/>.</returns>
+        public static async Task<IEnumerable<WatchType>> GetAllWatchTypesAsync()
+        {
+            await InitCacheAsync();
+            var watchTypes = new List<WatchType>();
+            foreach (var pair in WatchTypes)
+            {
+                watchTypes.Add(await pair.Value);
+            }
+
+            return watchTypes;
+        }
+
+        /// <summary>Gets the specified <see cref="Genre"/>.</summary>
+        /// <param name="id">The id of the <see cref="Genre"/> to get.</param>
+        /// <returns>The specified <see cref="Genre"/>.</returns>
+        public static async Task<Genre> GetGenreAsync(int id)
+        {
+            await InitCacheAsync();
+            return await Genres.GetValue(id);
+        }
+
         /// <summary>Gets the specified <see cref="ExternalSource"/>.</summary>
         /// <param name="id">The id of the <see cref="ExternalSource"/> to get.</param>
         /// <returns>The specified <see cref="ExternalSource"/>.</returns>
@@ -189,8 +210,12 @@ namespace Chaos.Movies.Model
             return await ExternalSources.GetValue(id);
         }
 
+        internal static async Task<string> GetServerIpAsync()
+        {
+            return (await Dns.GetHostEntryAsync(Dns.GetHostName())).AddressList[0].ToString();
+        }
+
         /// <summary>Initializes a new instance of the <see cref="GlobalCache"/> class.</summary>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <returns>The <see cref="Task"/>.</returns>
         private static async Task InitCacheAsync()
         {
@@ -209,11 +234,13 @@ namespace Chaos.Movies.Model
                     await RolesLoadAllAsync();
                     await IconTypesLoadAllAsync();
                     await RatingTypesLoadAllAsync();
-                    //await WatchTypesLoadAllAsync();
+                    await WatchTypesLoadAllAsync();
+                    await GenresLoadAllAsync();
                 }
                 catch
                 {
                     IsInitiated = false;
+                    // ReSharper disable once ExceptionNotDocumented
                     throw;
                 }
             }
@@ -316,6 +343,18 @@ namespace Chaos.Movies.Model
             foreach (var ratingType in await WatchType.Static.GetAllAsync(session))
             {
                 WatchTypes.SetValue(ratingType.Id, ratingType);
+            }
+        }
+
+        /// <summary>Loads all <see cref="Genre"/>s from the database.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static async Task GenresLoadAllAsync()
+        {
+            Genres.Clear();
+            foreach (var ratingType in await Genre.Static.GetAllAsync(session))
+            {
+                Genres.SetValue(ratingType.Id, ratingType);
             }
         }
     }

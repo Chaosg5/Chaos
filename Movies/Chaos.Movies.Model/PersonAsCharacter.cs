@@ -105,6 +105,18 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override PersonAsCharacterDto ToContract(string languageName)
+        {
+            return new PersonAsCharacterDto
+            {
+                Character = this.Character.ToContract(languageName),
+                PersonInRole = this.PersonInRole.ToContract(languageName),
+                UserRating = this.UserRatings.ToContract(languageName),
+                TotalRating = this.TotalRating.ToContract(languageName)
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override PersonAsCharacter FromContract(PersonAsCharacterDto contract)

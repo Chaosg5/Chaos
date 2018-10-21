@@ -1,0 +1,116 @@
+﻿@using Chaos.Movies.Contract
+@model Tuple<MovieDto, System.Collections.ObjectModel.ReadOnlyCollection<WatchTypeDto>>
+
+@{ var movie = Model.Item1; }
+<h2>WatchNow</h2>
+<div>
+    @foreach (var watchType in Model.Item2)
+    {
+        <div class="item actionButton" onclick="watchMovie(@watchType.Id);">
+            @watchType.Titles.UserTitle.Title
+        </div>
+    }
+</div>
+
+<div id="watchMovie" style="display: none;" class="item">
+    Date: <input id="watchMovieWatchDate" type="text" /><br />
+    Unknown date: <input id="watchMovieDateUncertain" type="checkbox" /><br />
+    Type:
+    <select id="watchMovieWatchTypeId">
+        @foreach (var watchType in Model.Item2)
+        {
+            <option value="@watchType.Id">@watchType.Titles.UserTitle.Title</option>
+        }
+    </select>
+    <div onclick="saveWatchMovie();" class="item saveButton">Save</div>
+</div>
+
+<div id="movieWatches">
+    @foreach (var watch in movie.Watches)
+    {
+        var userLanguage = watch.WatchType.Titles.UserTitle;
+        var watchClass = "item fullRow";
+        if (watch.DateUncertain)
+        {
+            watchClass += " dateUncertain";
+        }
+
+        <div class="@watchClass">
+            <span>@watch.WatchDate.ToString(userLanguage.Language.DateTimeFormat.ShortDatePattern)</span>
+            <span>@userLanguage.Title</span>
+            <img src="~/images/icons/Delete.png" width="24" style="float: right;" alt="Delete" onclick="deleteWatchMovie(this, @watch.Id, @watch.WatchType.Id);" />
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    watchMovie = function (watchTypeId) {
+        document.getElementById("watchMovieWatchDate").value = formatDate(new Date());
+        document.getElementById("watchMovieWatchTypeId").value = watchTypeId;
+        document.getElementById("watchMovie").style.display = "block";
+    }
+
+    saveWatchMovie = function () {
+        var watchDate = document.getElementById("watchMovieWatchDate").value;
+        var dateUncertain = document.getElementById("watchMovieDateUncertain").checked;
+        var watchTypeSelect = document.getElementById("watchMovieWatchTypeId");
+        var watchTypeId = watchTypeSelect.value;
+        var watchType = watchTypeSelect.options[watchTypeSelect.selectedIndex].text;
+        $.ajax({
+            url: "@Url.Action("SaveWatchMovie", "View")",
+            data: { movieId: @movie.Id, watchDate: watchDate, dateUncertain: dateUncertain, watchTypeId: watchTypeId },
+            type: "POST",
+            success: function () {
+                document.getElementById("watchMovie").style.display = "none";
+                addWatchRow(watchDate, dateUncertain, watchType);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showError(xhr.responseText);
+            }
+        });
+    };
+
+    deleteWatchMovie = function (sender, watchId, watchTypeId) {
+        if (!confirm("Delete")) {
+            return;
+        }
+        alert(watchId);
+        alert(watchTypeId);
+        $.ajax({
+            url: "@Url.Action("DeleteWatchMovie", "View")",
+            data: { movieId: @movie.Id, watchId: watchId, watchTypeId: watchTypeId },
+            type: "POST",
+            success: function () {
+                sender.parentElement.style.display = "none";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showError(xhr.responseText);
+            }
+        });
+    };
+
+    addWatchRow = function (watchDate, dateUncertain, watchType) {
+        var watch = document.createElement("div");
+        watch.className = "item fullRow";
+        if (dateUncertain) {
+            watch.className = "item fullRow dateUncertain";
+        }
+
+        watch.innerHTML = "<span>" + watchDate + "</span><span>" + watchType + "</span>";
+
+        var watches = document.getElementById("movieWatches");
+        watches.insertBefore(watch, watches.childNodes[0] || null);
+    }
+
+    formatDate = function (date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+</script>

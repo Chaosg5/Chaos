@@ -143,6 +143,18 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override UserDto ToContract(string languageName)
+        {
+            return new UserDto
+            {
+                Id = this.Id,
+                Name = this.Name,
+                UserName = this.Username,
+                Email = this.Email
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override User FromContract(UserDto contract)
         {

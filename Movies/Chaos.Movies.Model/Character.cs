@@ -114,7 +114,7 @@ namespace Chaos.Movies.Model
                         { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
                         { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), rating }
                     });
-                await Character.CustomDatabaseActionAsync(parameters, UserSingleRating.SaveUserMovieRatingProcedure, session);
+                await Character.CustomDatabaseActionAsync(parameters, UserSingleRating.UserRatingSaveProcedure, session);
                 return;
             }
 
@@ -224,6 +224,20 @@ namespace Chaos.Movies.Model
                 Images = this.Images.ToContract(),
                 UserRating = this.UserRating.ToContract(),
                 TotalRating = this.TotalRating.ToContract()
+            };
+        }
+
+        /// <inheritdoc />
+        public override CharacterDto ToContract(string languageName)
+        {
+            return new CharacterDto
+            {
+                Id = this.Id,
+                Name = this.Name,
+                ExternalLookups = this.ExternalLookups.ToContract(languageName),
+                Images = this.Images.ToContract(languageName),
+                UserRating = this.UserRating.ToContract(languageName),
+                TotalRating = this.TotalRating.ToContract(languageName)
             };
         }
 

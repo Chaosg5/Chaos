@@ -47,6 +47,17 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc/>
+        public override TotalRatingDto ToContract(string languageName)
+        {
+            return new TotalRatingDto
+            {
+                Value = this.Value,
+                DisplayValue = this.DisplayValue,
+                HexColor = this.HexColor
+            };
+        }
+
+        /// <inheritdoc/>
         public override TotalRating FromContract(TotalRatingDto contract)
         {
             // ToDo: parentType will be null here

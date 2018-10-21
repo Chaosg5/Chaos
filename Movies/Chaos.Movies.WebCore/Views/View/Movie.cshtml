@@ -1,5 +1,5 @@
 ﻿@using Chaos.Movies.Contract
-@model MovieDto
+@model Tuple<MovieDto, System.Collections.ObjectModel.ReadOnlyCollection<WatchTypeDto>>
 <!--
 <div style="position: absolute; width: 750px; height: 1334px; border: black 1px solid;">
     <img src="~/images/StarTransparent.svg" />
@@ -9,41 +9,30 @@
 </div>
 -->
 
-<h1>@Model.Titles.UserTitle.Title (@Model.Year) (@Model.MovieType.Titles.UserTitle.Title)</h1>
-@if (Model.Titles.OriginalTitle != null)
+@{ var movie = Model.Item1; }
+<h1>@movie.Titles.UserTitle.Title (@movie.Year) (@movie.MovieType.Titles.UserTitle.Title)</h1>
+@if (movie.Titles.OriginalTitle != null)
 {
     <!--ToDo: Original title name-->
-    <span>@Model.Titles.OriginalTitle.Title (Original title)</span>
+    <span>@movie.Titles.OriginalTitle.Title (Original title)</span>
 }
 <div class="col-md-12">
     <div class="col-md-8">
         <h2 class="accordion-toggle" data-toggle="collapse" data-target="#ratings">Ratings</h2>
         <div id="ratings" class="collapse in">
-            @await Html.PartialAsync("MovieRatings", Model)
+            @await Html.PartialAsync("MovieRatings", movie)
         </div>
         <h2 class="accordion-toggle" data-toggle="collapse" data-target="#characters">Actors/Characters</h2>
         <div id="characters" class="collapse in">
-            @await Html.PartialAsync("Cast", Model)
+            @await Html.PartialAsync("Cast", movie)
         </div>
         <h2 class="accordion-toggle" data-toggle="collapse" data-target="#people">Cast/Crew</h2>
         <div id="people" class="collapse in">
-            @await Html.PartialAsync("Crew", Model)
+            @await Html.PartialAsync("Crew", movie)
         </div>
     </div>
     <div class="col-md-4">
-        <h2>WatchNow</h2>
-        <div class="item actionButton" onclick="watchMovie();">
-            Stream
-        </div>
-        <div class="item actionButton">
-            Blu-Ray
-        </div>
-        <div class="item actionButton">
-            Cinema
-        </div>
-        <div class="item actionButton">
-            DVD
-        </div>
+        @await Html.PartialAsync("WatchMovie", Model)
 
         <h2>Owned</h2>
         <div class="item actionButton">
@@ -57,28 +46,6 @@
         </div>
 
         <h2>MovieSeries</h2>
-        
+
     </div>
 </div>
-
-<script type="text/javascript">
-    watchMovie = function() {
-        var person = prompt("Date", formatDate(new Date()));
-
-        if (person != null) {
-            alert(person);
-        }
-    }
-
-    formatDate = function(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
-
-        return [year, month, day].join('-');
-    }
-</script>

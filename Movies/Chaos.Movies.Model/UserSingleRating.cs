@@ -20,8 +20,8 @@ namespace Chaos.Movies.Model
     public class UserSingleRating : Rating<UserSingleRating, UserSingleRatingDto>, IUserSingleRating
     {
         /// <summary>The database procedure for saving a <see cref="User"/> rating for an item in a <see cref="Movie"/>.</summary>
-        internal const string SaveUserMovieRatingProcedure = "SaveUserMovieRating";
-        
+        internal const string UserRatingSaveProcedure = "UserRatingSave";
+
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static UserSingleRating Static { get; } = new UserSingleRating();
 
@@ -47,6 +47,18 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         public override UserSingleRatingDto ToContract()
+        {
+            return new UserSingleRatingDto
+            {
+                UserId = this.UserId,
+                Value = this.Value,
+                DisplayValue = this.DisplayValue,
+                HexColor = this.HexColor
+            };
+        }
+
+        /// <inheritdoc />
+        public override UserSingleRatingDto ToContract(string languageName)
         {
             return new UserSingleRatingDto
             {

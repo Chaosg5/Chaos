@@ -88,6 +88,12 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override ExternalLookupDto ToContract(string languageName)
+        {
+            return new ExternalLookupDto { ExternalSource = this.ExternalSource.ToContract(languageName), ExternalId = this.ExternalId };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override ExternalLookup FromContract(ExternalLookupDto contract)
         {

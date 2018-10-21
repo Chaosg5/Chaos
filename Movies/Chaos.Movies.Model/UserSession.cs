@@ -138,6 +138,19 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
+        public override UserSessionDto ToContract(string languageName)
+        {
+            return new UserSessionDto
+            {
+                SessionId = this.SessionId,
+                ClientIp = this.ClientIp,
+                UserId = this.UserId,
+                ActiveFrom = this.ActiveFrom,
+                ActiveTo = this.ActiveTo
+            };
+        }
+
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override UserSession FromContract(UserSessionDto contract)
         {

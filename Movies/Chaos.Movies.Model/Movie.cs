@@ -43,6 +43,7 @@ namespace Chaos.Movies.Model
         {
             this.Characters = new PersonAsCharacterCollection<Movie, MovieDto>(this);
             this.People = new PersonInRoleCollection<Movie, MovieDto>(this);
+            this.Watches = new WatchCollection<Movie, MovieDto>(this);
         }
 
         /// <summary>Gets a reference to simulate static methods.</summary>
@@ -77,6 +78,9 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the list of <see cref="Person"/>s in this <see cref="Movie"/>.</summary>
         public PersonInRoleCollection<Movie, MovieDto> People { get; private set; }
+
+        /// <summary>Gets the list of <see cref="Watch"/>es in this <see cref="Movie"/>.</summary>
+        public WatchCollection<Movie, MovieDto> Watches { get; private set; }
 
         /// <summary>Gets or sets the type of the movie.</summary>
         public MovieType MovieType { get; set; }
@@ -141,7 +145,87 @@ namespace Chaos.Movies.Model
                         { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
                         { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), rating }
                     });
-                await Movie.CustomDatabaseActionAsync(parameters, UserSingleRating.SaveUserMovieRatingProcedure, session);
+                await Movie.CustomDatabaseActionAsync(parameters, UserSingleRating.UserRatingSaveProcedure, session);
+                return;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.PersonSearchAsync(session.ToContract(), this.ToContract());
+            }
+        }
+
+        public static async Task SaveWatchMovieAsync(int movieId, DateTime watchDate, bool dateUncertain, int watchTypeId, UserSession session)
+        {
+            if (movieId <= 0)
+            {
+                throw new PersistentObjectRequiredException($"The {nameof(Movie)} has to be saved.");
+            }
+
+            if (watchTypeId <= 0)
+            {
+                throw new PersistentObjectRequiredException($"The {nameof(Department)} has to be saved.");
+            }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+            
+            if (!Persistent.UseService)
+            {
+                var parameters = new ReadOnlyDictionary<string, object>(
+                    new Dictionary<string, object>
+                    {
+                        { Persistent.ColumnToVariable(IdColumn), movieId },
+                        { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
+                        { Persistent.ColumnToVariable(WatchType.IdColumn), watchTypeId },
+                        { Persistent.ColumnToVariable(Watch.WatchDateColumn), watchDate },
+                        { Persistent.ColumnToVariable(Watch.DateUncertainColumn), dateUncertain }
+                    });
+                await Movie.CustomDatabaseActionAsync(parameters, Watch.UserWatchSaveProcedure, session);
+                return;
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                ////await service.PersonSearchAsync(session.ToContract(), this.ToContract());
+            }
+        }
+
+        public static async Task DeleteWatchMovieAsync(int watchId, int movieId, int watchTypeId, UserSession session)
+        {
+            if (watchId <= 0)
+            {
+                throw new PersistentObjectRequiredException($"The {nameof(Watch)} has to be saved.");
+            }
+
+            if (movieId <= 0)
+            {
+                throw new PersistentObjectRequiredException($"The {nameof(Movie)} has to be saved.");
+            }
+
+            if (watchTypeId <= 0)
+            {
+                throw new PersistentObjectRequiredException($"The {nameof(WatchType)} has to be saved.");
+            }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            if (!Persistent.UseService)
+            {
+                var parameters = new ReadOnlyDictionary<string, object>(
+                    new Dictionary<string, object>
+                    {
+                        { Persistent.ColumnToVariable(Watch.IdColumn), watchId },
+                        { Persistent.ColumnToVariable(IdColumn), movieId },
+                        { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
+                        { Persistent.ColumnToVariable(WatchType.IdColumn), watchTypeId }
+                    });
+                await Movie.CustomDatabaseActionAsync(parameters, Watch.UserWatchDeleteProcedure, session);
                 return;
             }
 
@@ -173,6 +257,7 @@ namespace Chaos.Movies.Model
                 TotalRating = this.TotalRating.ToContract(),
                 Characters = this.Characters.ToContract(),
                 People = this.People.ToContract(),
+                Watches = this.Watches.ToContract(),
                 MovieType = this.MovieType.ToContract(),
                 Year = this.Year,
                 EndYear = this.EndYear,
@@ -196,6 +281,7 @@ namespace Chaos.Movies.Model
                 TotalRating = this.TotalRating.ToContract(languageName),
                 Characters = this.Characters.ToContract(languageName),
                 People = this.People.ToContract(languageName),
+                Watches = this.Watches.ToContract(languageName),
                 MovieType = this.MovieType.ToContract(languageName),
                 Year = this.Year,
                 EndYear = this.EndYear,
@@ -226,6 +312,7 @@ namespace Chaos.Movies.Model
                 TotalRating = this.TotalRating.FromContract(contract.TotalRating),
                 Characters = this.Characters.FromContract(contract.Characters),
                 People = this.People.FromContract(contract.People),
+                Watches = this.Watches.FromContract(contract.Watches),
                 MovieType = this.MovieType.FromContract(contract.MovieType),
                 Year = contract.Year
             };
@@ -379,7 +466,8 @@ namespace Chaos.Movies.Model
             while (await reader.ReadAsync())
             {
                 var movie = (Movie)this.GetFromResultsByIdInRecord(movies, reader, IdColumn);
-                movie.Genres.Add(await Genre.Static.NewFromRecordAsync(reader));
+                var genre = await Genre.Static.NewFromRecordAsync(reader);
+                movie.Genres.Add(await GlobalCache.GetGenreAsync(genre.Id));
             }
 
             if (!await reader.NextResultAsync())
@@ -497,8 +585,8 @@ namespace Chaos.Movies.Model
                         && c.PersonInRole.Role.Id == roleId);
                 if (character != null)
                 {
-                    character.UserRating = (await this.UserRating.NewFromRecordAsync(reader)).ToContract();
-                    character.Character.UserRating = (await Character.Static.TotalRating.NewFromRecordAsync(reader)).ToContract();
+                    character.UserRating = (await this.UserRating.NewFromRecordAsync(reader)).ToContract(languageName);
+                    character.Character.UserRating = (await Character.Static.TotalRating.NewFromRecordAsync(reader)).ToContract(languageName);
                 }
             }
 
@@ -521,8 +609,8 @@ namespace Chaos.Movies.Model
                         && p.Role.Id == roleId);
                 if (person != null)
                 {
-                    person.UserRating = (await this.UserRating.NewFromRecordAsync(reader)).ToContract();
-                    person.Person.UserRating = (await Person.Static.TotalRating.NewFromRecordAsync(reader)).ToContract();
+                    person.UserRating = (await this.UserRating.NewFromRecordAsync(reader)).ToContract(languageName);
+                    person.Person.UserRating = (await Person.Static.TotalRating.NewFromRecordAsync(reader)).ToContract(languageName);
                     var character = item.Characters.FirstOrDefault(
                         c => c.PersonInRole.Person.Id == personId
                             && c.PersonInRole.Department.Id == departmentId
@@ -533,6 +621,19 @@ namespace Chaos.Movies.Model
                     }
                 }
             }
+
+            if (!await reader.NextResultAsync())
+            {
+                throw new MissingResultException(4, $"{nameof(Movie)}{WatchCollection<Movie, MovieDto>.WatchesColumn}");
+            }
+
+            var watches = new List<WatchDto>();
+            while (await reader.ReadAsync())
+            {
+                watches.Add((await Watch.Static.NewFromRecordAsync(reader)).ToContract(languageName));
+            }
+
+            item.Watches = new ReadOnlyCollection<WatchDto>(watches);
         }
     }
 }

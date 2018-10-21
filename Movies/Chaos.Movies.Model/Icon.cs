@@ -125,11 +125,16 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the size of the <see cref="Data"/>.</summary>
         public int Size => this.Data?.Length ?? 0;
 
-        /// <summary>Converts this <see cref="Icon"/> to a <see cref="IconDto"/>.</summary>
-        /// <returns>The <see cref="IconDto"/>.</returns>
+        /// <inheritdoc />
         public override IconDto ToContract()
         {
             return new IconDto { Id = this.Id, IconType = this.IconType.ToContract(), Data = this.Data, Url = this.Url };
+        }
+
+        /// <inheritdoc />
+        public override IconDto ToContract(string languageName)
+        {
+            return new IconDto { Id = this.Id, IconType = this.IconType.ToContract(languageName), Data = this.Data, Url = this.Url };
         }
 
         /// <inheritdoc />
