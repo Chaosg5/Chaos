@@ -102,7 +102,7 @@ namespace Chaos.Movies.Model
         /// <returns><see langword="true"/> if the <paramref name="titleA"/> has the same value the <paramref name="titleB"/>; otherwise <see langword="false"/>.</returns>
         public static bool operator ==(LanguageTitle titleA, LanguageTitle titleB)
         {
-            return titleA?.Equals(titleB) ?? false;
+            return titleA?.Equals(titleB) ?? object.ReferenceEquals(titleB, null);
         }
 
         /// <summary>Returns a value indicating whether the <paramref name="titleB"/> is not equal to the specified <paramref name="titleB"/>.</summary>
@@ -111,7 +111,8 @@ namespace Chaos.Movies.Model
         /// <returns><see langword="true"/> if the <paramref name="titleA"/> doesn't have the same value the <paramref name="titleB"/>; otherwise <see langword="false"/>.</returns>
         public static bool operator !=(LanguageTitle titleA, LanguageTitle titleB)
         {
-            return !(titleA?.Equals(titleB) ?? false);
+
+            return !(titleA == titleB);
         }
 
         /// <summary>Returns a value indicating whether this instance is equal to the specified <paramref name="otherTitle"/>.</summary>
@@ -165,7 +166,7 @@ namespace Chaos.Movies.Model
             unchecked
             {
                 // ReSharper disable NonReadonlyMemberInGetHashCode
-                return ((this.title != null ? this.title.GetHashCode() : 0) * 397) ^ (this.language != null ? this.language.GetHashCode() : 0);
+                return ((this.title != null ? this.title.GetHashCode() : 0) * 397) ^ ((this.language != null ? this.language.GetHashCode() : 0) * 397);
                 // ReSharper restore NonReadonlyMemberInGetHashCode
             }
         }
