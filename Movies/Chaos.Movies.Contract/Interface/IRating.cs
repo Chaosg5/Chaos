@@ -17,5 +17,8 @@ namespace Chaos.Movies.Contract.Interface
 
         /// <summary>Gets the display color in RBG hex for this <see cref="IRating"/>'s <see cref="Value"/>.</summary>
         string HexColor { get; }
+
+        /// <summary>Gets the width in percent based on the <see cref="Value"/>.</summary>
+        string Width { get; }
     }
 }

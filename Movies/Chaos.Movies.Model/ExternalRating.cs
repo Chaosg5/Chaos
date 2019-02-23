@@ -15,8 +15,9 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
-    /// <summary>Represents a rating of an item in an <see cref="ExternalSource"/>.</summary>
-    public class ExternalRating : Rating<ExternalRating, ExternalRatingDto>, IRating
+    /// <inheritdoc cref="IRating" />
+    /// <summary>Represents a rating of an item in an <see cref="P:Chaos.Movies.Model.ExternalRating.ExternalSource" />.</summary>
+    public class ExternalRating : SingleRating<ExternalRating, ExternalRatingDto>, IRating
     {
         /// <summary>The database column for <see cref="RatingCount"/>.</summary>
         internal const string RatingCountColumn = "RatingCount";
@@ -95,6 +96,7 @@ namespace Chaos.Movies.Model
                 Value = this.Value,
                 DisplayValue = this.DisplayValue,
                 HexColor = this.HexColor,
+                Width = this.Width,
                 RatingCount = this.RatingCount
             };
         }
@@ -108,6 +110,7 @@ namespace Chaos.Movies.Model
                 Value = this.Value,
                 DisplayValue = this.DisplayValue,
                 HexColor = this.HexColor,
+                Width = this.Width,
                 RatingCount = this.RatingCount
             };
         }

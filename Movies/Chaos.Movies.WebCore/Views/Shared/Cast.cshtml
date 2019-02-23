@@ -5,7 +5,7 @@
     <div class="row">
         <div class="item">
             <div class="itemContent">
-                <a href="@Url.Action("Person", "View", new { movieId = personAsCharacter.PersonInRole.Person.Id})">
+                <a href="@Url.Action("Person", "View", new { personId = personAsCharacter.PersonInRole.Person.Id})">
                     <div class="name">
                         <h4>@personAsCharacter.PersonInRole.Person.Name</h4>
                     </div>
@@ -16,9 +16,7 @@
                         <img src="~/images/User.svg" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: @personAsCharacter.PersonInRole.UserRating.HexColor; height: 100%; width: @((personAsCharacter.PersonInRole.UserRating.Value*10))%;">
-                            <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
-                        </div>
+                        <div style="background-color: @personAsCharacter.PersonInRole.UserRating.HexColor; height: 100%; width: @personAsCharacter.PersonInRole.UserRating.Width;"></div>
                     </div>
                     <div class="ratingStars clickable" onclick="savePersonRating(event, this, false, @personAsCharacter.PersonInRole.Person.Id, @personAsCharacter.PersonInRole.Role.Id, @personAsCharacter.PersonInRole.Department.Id);">
                         <img src="~/images/StarRowTransparent.svg" />
@@ -30,7 +28,7 @@
                         <img src="~/images/User.svg" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: @personAsCharacter.PersonInRole.Person.UserRating.HexColor; height: 100%; width: @((personAsCharacter.PersonInRole.Person.UserRating.Value*10))%;">
+                        <div style="background-color: @personAsCharacter.PersonInRole.Person.UserRating.HexColor; height: 100%; width: @personAsCharacter.PersonInRole.Person.UserRating.Width;">
                         </div>
                     </div>
                     <div class="ratingStars">
@@ -43,7 +41,7 @@
                         <img src="~/images/CMDB.png" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: @personAsCharacter.PersonInRole.TotalRating.HexColor; height: 100%; width: @((personAsCharacter.PersonInRole.TotalRating.Value*10))%;">
+                        <div style="background-color: @personAsCharacter.PersonInRole.TotalRating.HexColor; height: 100%; width: @personAsCharacter.PersonInRole.TotalRating.Width;">
                         </div>
                     </div>
                     <div class="ratingStars">
@@ -56,7 +54,7 @@
                         <img src="~/images/CMDB.png" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: @personAsCharacter.PersonInRole.Person.TotalRating.HexColor; height: 100%; width: @((personAsCharacter.PersonInRole.Person.TotalRating.Value*10))%;">
+                        <div style="background-color: @personAsCharacter.PersonInRole.Person.TotalRating.HexColor; height: 100%; width: @personAsCharacter.PersonInRole.Person.TotalRating.Width;">
                         </div>
                     </div>
                     <div class="ratingStars">
@@ -64,20 +62,20 @@
                     </div>
                 </div>
             </div>
-            <a href="@Url.Action("Person", "View", new { movieId = personAsCharacter.PersonInRole.Person.Id})">
+            <a href="@Url.Action("Person", "View", new { personId = personAsCharacter.PersonInRole.Person.Id})">
                 <div class="listIcon">
                     <img src="~/images/icons/Male.png" />
                 </div>
             </a>
         </div>
         <div class="item">
-            <a href="@Url.Action("Character", "View", new { movieId = personAsCharacter.Character.Id})">
+            <a href="@Url.Action("Character", "View", new { characterId = personAsCharacter.Character.Id})">
                 <div class="listIcon">
                     <img src="~/images/icons/Female.png" />
                 </div>
             </a>
             <div class="itemContent">
-                <a href="@Url.Action("Character", "View", new { movieId = personAsCharacter.Character.Id})">
+                <a href="@Url.Action("Character", "View", new { characterId = personAsCharacter.Character.Id})">
                     <div class="name">
                         <h4>@personAsCharacter.Character.Name</h4>
                     </div>
@@ -88,9 +86,7 @@
                         <img src="~/images/User.svg" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: @personAsCharacter.UserRating.HexColor; height: 100%; width: @((personAsCharacter.UserRating.Value*10))%;">
-                            <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
-                        </div>
+                        <div style="background-color: @personAsCharacter.UserRating.HexColor; height: 100%; width: @personAsCharacter.UserRating.Width;"></div>
                     </div>
                     <div class="ratingStars clickable" onclick="saveCharacterRating(event, this, false, @personAsCharacter.Character.Id, @personAsCharacter.PersonInRole.Person.Id);">
                         <img src="~/images/StarRowTransparent.svg" />
@@ -102,7 +98,7 @@
                         <img src="~/images/User.svg" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: @personAsCharacter.Character.UserRating.HexColor; height: 100%; width: @((personAsCharacter.Character.UserRating.Value*10))%;">
+                        <div style="background-color: @personAsCharacter.Character.UserRating.HexColor; height: 100%; width: @personAsCharacter.Character.UserRating.Width;">
                         </div>
                     </div>
                     <div class="ratingStars">
@@ -115,7 +111,7 @@
                         <img src="~/images/CMDB.png" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: @personAsCharacter.TotalRating.HexColor; height: 100%; width: @((personAsCharacter.TotalRating.Value*10))%;">
+                        <div style="background-color: @personAsCharacter.TotalRating.HexColor; height: 100%; width: @personAsCharacter.TotalRating.Width;">
                         </div>
                     </div>
                     <div class="ratingStars">
@@ -128,7 +124,7 @@
                         <img src="~/images/CMDB.png" />
                     </div>
                     <div class="ratingBackground">
-                        <div style="background-color: @personAsCharacter.Character.TotalRating.HexColor; height: 100%; width: @((personAsCharacter.Character.TotalRating.Value*10))%;">
+                        <div style="background-color: @personAsCharacter.Character.TotalRating.HexColor; height: 100%; width: @personAsCharacter.Character.TotalRating.Width;">
                         </div>
                     </div>
                     <div class="ratingStars">
@@ -152,8 +148,7 @@
                 $(sender).prev().prev().children().first().text(ratingValue);
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-                alert(thrownError);
+                showError(xhr.responseText);
             }
         });
     };
@@ -169,8 +164,7 @@
                 $(sender).prev().prev().children().first().text(ratingValue);
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-                alert(thrownError);
+                showError(xhr.responseText);
             }
         });
     };

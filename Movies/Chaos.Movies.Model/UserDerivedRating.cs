@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="UserRating.cs">
+// <copyright file="UserDerivedRating.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -11,58 +11,63 @@ namespace Chaos.Movies.Model
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
-    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Windows.Media;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Contract.Interface;
     using Chaos.Movies.Model.Base;
 
     using Exceptions;
 
+    /// <inheritdoc cref="IDerivedRating" />
     /// <summary>A rating for a <see cref="Movie"/> set by a <see cref="User"/>.</summary>
-    public class UserRating : Loadable<UserRating, UserRatingDto>
+    public class UserDerivedRating : DerivedRating<UserDerivedRating, UserDerivedRatingDto>, IDerivedRating
     {
-        /// <summary>The database column for <see cref="CreatedDate"/>.r</summary>
-        internal const string CreatedDateColumn = "CreatedDate";
-
         /// <summary>The list of sub ratings for this rating.</summary>
-        private readonly List<UserRating> subRatings = new List<UserRating>();
+        private readonly List<UserDerivedRating> subRatings = new List<UserDerivedRating>();
 
-        /// <summary>Initializes a new instance of the <see cref="UserRating" /> class.</summary>
+        /// <inheritdoc />
+        /// <summary>Initializes a new instance of the <see cref="T:Chaos.Movies.Model.UserRating" /> class.</summary>
         /// <param name="ratingType">The type of the rating.</param>
-        public UserRating(RatingType ratingType)
+        public UserDerivedRating(RatingType ratingType)
         {
             this.RatingType = ratingType;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="UserRating" /> class.</summary>
+        /// <inheritdoc />
+        /// <summary>Initializes a new instance of the <see cref="UserDerivedRating" /> class.</summary>
         /// <param name="assignedValue">The value to set.</param>
         /// <param name="ratingType">The type of the rating.</param>
-        public UserRating(int assignedValue, RatingType ratingType)
+        public UserDerivedRating(int assignedValue, RatingType ratingType)
         {
-            this.RatingValue.Value = assignedValue;
+            base.Value = assignedValue;
+            this.ActualRating = assignedValue;
             this.RatingType = ratingType;
         }
 
-        /// <summary>Prevents a default instance of the <see cref="UserRating"/> class from being created.</summary>
-        private UserRating()
+        /// <inheritdoc />
+        /// <summary>Prevents a default instance of the <see cref="UserDerivedRating"/> class from being created.</summary>
+        private UserDerivedRating()
         {
         }
 
-        /// <summary>Initializes a new instance of the <see cref="UserRating"/> class.</summary>
+        /// <inheritdoc />
+        /// <summary>Initializes a new instance of the <see cref="UserDerivedRating"/> class.</summary>
         /// <param name="subRatings">The <see cref="subRatings"/> to set.</param>
-        /// <param name="ratingValue">The <see cref="RatingValue"/> to set.</param>
-        private UserRating(List<UserRating> subRatings, RatingValue ratingValue)
+        /// <param name="ratingValue">The <see cref="IRating.Value"/> to set.</param>
+        /// <param name="derivedValue">The <see cref="IDerivedRating.Derived"/> to set.</param>
+        private UserDerivedRating(List<UserDerivedRating> subRatings, int ratingValue, double derivedValue)
         {
             this.subRatings = subRatings;
-            this.RatingValue = ratingValue;
+            base.Value = ratingValue;
+            this.ActualRating = ratingValue;
+            this.Derived = derivedValue;
             this.ValueChanged = true;
         }
 
         /// <summary>Gets a reference to simulate static methods.</summary>
-        public static UserRating Static { get; } = new UserRating();
+        public static UserDerivedRating Static { get; } = new UserDerivedRating();
 
         /// <summary>Gets the id of the <see cref="User"/> who owns the rating.</summary>
         public int UserId { get; private set; }
@@ -74,106 +79,83 @@ namespace Chaos.Movies.Model
         public DateTime CreatedDate { get; private set; } = DateTime.Now;
 
         /// <summary>Gets the child ratings of this rating.</summary>
-        public ReadOnlyCollection<UserRating> SubRatings => this.subRatings.AsReadOnly();
+        public ReadOnlyCollection<UserDerivedRating> SubRatings => this.subRatings.AsReadOnly();
 
-        /// <summary>Gets the values of this rating.</summary>
-        public double Value
+        /// <inheritdoc />
+        public new double Value
         {
             get
             {
-                if (this.RatingValue.Value < 0 || this.RatingValue.Derived < 0)
+                if (base.Value < 0 || this.Derived < 0)
                 {
                     this.GetRatings(null);
                 }
 
-                return this.RatingValue.Value > 0 ? this.RatingValue.Value : this.RatingValue.Derived;
+                return base.Value > 0 ? base.Value : this.Derived;
             }
         }
 
         /// <summary>Gets the actual rating value for this rating, not counting derived values.</summary>
-        public int ActualRating => this.RatingValue.Value;
+        public int ActualRating { get; private set; }
 
-        /// <summary>Gets the display color in RBG hex for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
-        public string HexColor => GetHexColor(this.Value);
+        /// <summary>Gets the actual derived value for this rating.</summary>
+        public double DerivedRating => this.Derived;
 
-        /// <summary>Gets the display color for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
-        public Color Color => GetColor(this.Value);
-
-        /// <summary>Gets the display value for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
-        public string DisplayValue
-        {
-            get
-            {
-                var value = Math.Round(this.Value, 1, MidpointRounding.AwayFromZero);
-                if (value >= 10)
-                {
-                    return ((int)value).ToString(CultureInfo.InvariantCulture);
-                }
-
-                return value.ToString(CultureInfo.InvariantCulture);
-            }
-        }
-
-        /// <summary>Gets or sets the value of the rating.</summary>
-        private RatingValue RatingValue { get; set; } = new RatingValue(-1, -1);
-
-        /// <summary>Gets or sets a value indicating whether value has changed since last saved.</summary>
-        private bool ValueChanged { get; set; }
-
-        /// <summary>Gets the display color in RBG hex for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
-        /// <param name="value">The value to get the <see cref="Color"/> for.</param>
-        /// <returns>The <see cref="Color"/>.</returns>
-        public static string GetHexColor(double value)
-        {
-            var color = GetColor(value);
-            return string.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
-        }
-
-        /// <summary>Gets the display color for the <paramref name="value"/>.</summary>
-        /// <param name="value">The value to get the <see cref="Color"/> for.</param>
-        /// <returns>The <see cref="Color"/>.</returns>
-        public static Color GetColor(double value)
-        {
-            byte redValue = 255;
-            byte greenValue = 0;
-            if (value > 1 && value <= 5)
-            {
-                greenValue = (byte)((value - 1) * 51);
-            }
-
-            if (value > 5 && value < 6)
-            {
-                greenValue = (byte)(204 + ((value - 5) * 26));
-            }
-
-            if (value >= 6)
-            {
-                greenValue = (byte)(230 - ((value - 6) * 25.5));
-            }
-
-            if (value > 5)
-            {
-                redValue = (byte)(255 - ((value - 5) * 51));
-            }
-
-            return Color.FromRgb(redValue, greenValue, 0);
-        }
+        /// <summary>Gets a value indicating whether value has changed since last saved.</summary>
+        public bool ValueChanged { get; private set; }
 
         /// <summary>Sets the value of this rating.</summary>
         /// <param name="value">The value to set.</param>
         public void SetValue(int value)
         {
-            if (this.RatingValue.Value != value)
+            if (this.Value != value)
             {
                 this.ValueChanged = true;
             }
 
-            this.RatingValue.Value = value;
+            base.Value = value;
+            this.ActualRating = value;
         }
-        
+
+        /// <summary>Sets the value of this rating.</summary>
+        /// <param name="value">The value to set.</param>
+        /// <param name="ratingType">The rating Type.</param>
+        /// <returns>Always returns <see langword="true"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="ratingType"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="ratingType"/> does not exist.</exception>
+        public bool SetValue(int value, RatingType ratingType)
+        {
+            if (ratingType == null)
+            {
+                throw new ArgumentNullException(nameof(ratingType));
+            }
+
+            if (this.RatingType.Id == ratingType.Id)
+            {
+                if (this.Value != value)
+                {
+                    base.Value = value;
+                    this.ActualRating = value;
+                    this.ValueChanged = true;
+                }
+
+                return true;
+            }
+
+            foreach (var subRating in this.SubRatings)
+            {
+                if (subRating.SetValue(value, ratingType))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>Adds a sub rating to this rating.</summary>
         /// <param name="userRating">The sub rating to add.</param>
-        public void AddSubRating(UserRating userRating)
+        public void AddSubRating(UserDerivedRating userRating)
         {
             // ToDo: Remove?
             this.subRatings.Add(userRating);
@@ -182,9 +164,9 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the list of values for this rating.</summary>
         /// <param name="ratingSystem">The rating value system to calculate values based on.</param>
         /// <returns>The list of set rating values.</returns>
-        public Dictionary<RatingType, RatingValue> GetRatings(RatingSystem ratingSystem)
+        public Dictionary<RatingType, UserDerivedRating> GetRatings(RatingSystem ratingSystem)
         {
-            var allRatings = new Dictionary<RatingType, RatingValue>();
+            var allRatings = new Dictionary<RatingType, UserDerivedRating>();
             var derivedValues = new Dictionary<RatingType, double>();
             foreach (var childRating in this.subRatings)
             {
@@ -197,53 +179,57 @@ namespace Chaos.Movies.Model
             }
 
             this.CalculateValue(derivedValues, ratingSystem);
+            allRatings.Add(this.RatingType, this);
             return allRatings;
         }
         
         /// <inheritdoc />
-        public override UserRatingDto ToContract()
+        public override UserDerivedRatingDto ToContract()
         {
-            return new UserRatingDto
+            return new UserDerivedRatingDto
             {
                 UserId = this.UserId,
                 RatingType = this.RatingType.ToContract(),
                 SubRatings = this.subRatings.Select(r => r.ToContract()).ToList().AsReadOnly(),
-                Value = this.RatingValue.Value,
-                Derived = this.RatingValue.Derived,
+                Value = this.Value,
+                Derived = this.Derived,
                 HexColor = this.HexColor,
+                Width = this.Width,
                 DisplayValue = this.DisplayValue,
-                CreatedDate = this.CreatedDate
+                CreatedDate = this.CreatedDate,
+                ActualRating = this.ActualRating
             };
         }
 
         /// <inheritdoc />
-        public override UserRatingDto ToContract(string languageName)
+        public override UserDerivedRatingDto ToContract(string languageName)
         {
-            return new UserRatingDto
+            return new UserDerivedRatingDto
             {
                 UserId = this.UserId,
                 RatingType = this.RatingType.ToContract(languageName),
                 SubRatings = this.subRatings.Select(r => r.ToContract(languageName)).ToList().AsReadOnly(),
-                Value = this.RatingValue.Value,
-                Derived = this.RatingValue.Derived,
-                Width = $"{(this.Value*10).ToString(CultureInfo.InvariantCulture)}%",
+                Value = this.Value,
+                Derived = this.Derived,
+                Width = this.Width,
                 HexColor = this.HexColor,
                 DisplayValue = this.DisplayValue,
-                CreatedDate = this.CreatedDate
+                CreatedDate = this.CreatedDate,
+                ActualRating = this.ActualRating
             };
         }
 
         /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        public override UserRating FromContract(UserRatingDto contract)
+        public override UserDerivedRating FromContract(UserDerivedRatingDto contract)
         {
             if (contract == null)
             {
                 throw new ArgumentNullException(nameof(contract));
             }
 
-            return new UserRating(contract.SubRatings.Select(r => Static.FromContract(r)).ToList(), new RatingValue((int)contract.Value, -1))
+            return new UserDerivedRating(contract.SubRatings.Select(r => Static.FromContract(r)).ToList(), (int)contract.Value, contract.Derived)
             {
                 UserId = contract.UserId,
                 RatingType = RatingType.Static.FromContract(contract.RatingType),
@@ -251,13 +237,13 @@ namespace Chaos.Movies.Model
             };
         }
 
-        /// <summary>Creates new <see cref="UserRating"/>s from the <paramref name="reader"/>.</summary>
-        /// <param name="reader">The reader containing data sets and records the data for the <see cref="UserRating"/>s.</param>
-        /// <returns>The list of <see cref="UserRating"/>s.</returns>
+        /// <summary>Creates new <see cref="UserDerivedRating"/>s from the <paramref name="reader"/>.</summary>
+        /// <param name="reader">The reader containing data sets and records the data for the <see cref="UserDerivedRating"/>s.</param>
+        /// <returns>The list of <see cref="UserDerivedRating"/>s.</returns>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal async Task<IEnumerable<UserRating>> ReadFromRecordsAsync(DbDataReader reader)
+        internal async Task<IEnumerable<UserDerivedRating>> ReadFromRecordsAsync(DbDataReader reader)
         {
-            var userRatings = new List<UserRating>();
+            var userRatings = new List<UserDerivedRating>();
             if (!reader.HasRows)
             {
                 return userRatings;
@@ -273,7 +259,7 @@ namespace Chaos.Movies.Model
                 foreach (var ratingType in userRating.RatingType.Subtypes)
                 {
                     var subRating = userRatings.FirstOrDefault(r => r.RatingType.Id == ratingType.Id)
-                        ?? new UserRating { UserId = userRating.UserId, RatingType = ratingType, RatingValue = { Value = -1, Derived = -1 } };
+                        ?? new UserDerivedRating { UserId = userRating.UserId, RatingType = ratingType };
                     userRating.subRatings.Add(subRating);
                 }
             }
@@ -281,8 +267,8 @@ namespace Chaos.Movies.Model
             return userRatings.Where(r => r.RatingType.ParentRatingTypeId == 0);
         }
 
-        /// <summary>Validates that this <see cref="UserRating"/> is valid to be saved.</summary>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="UserRating"/> is not valid to be saved.</exception>
+        /// <inheritdoc />
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="UserDerivedRating"/> is not valid to be saved.</exception>
         internal override void ValidateSaveCandidate()
         {
             if (this.RatingType.Id == 0)
@@ -294,19 +280,14 @@ namespace Chaos.Movies.Model
             {
                 throw new InvalidSaveCandidateException("The id of the rating's user must be greater than zero.");
             }
-
-            if (this.RatingValue.Value < 0)
-            {
-                this.RatingValue.Value = 0;
-            }
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<UserRating> NewFromRecordAsync(IDataRecord record)
+        internal override async Task<UserDerivedRating> NewFromRecordAsync(IDataRecord record)
         {
-            var result = new UserRating();
+            var result = new UserDerivedRating();
             await result.ReadFromRecordAsync(record);
             return result;
         }
@@ -316,32 +297,30 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         protected override async Task ReadFromRecordAsync(IDataRecord record)
         {
-            Persistent.ValidateRecord(record, new[] { User.IdColumn, RatingType.IdColumn, RatingValue.RatingColumn, CreatedDateColumn });
+            Persistent.ValidateRecord(record, new[] { User.IdColumn, RatingType.IdColumn, RatingColumn, DerivedColumn, CreatedDateColumn });
             this.UserId = (int)record[User.IdColumn];
             this.RatingType = await GlobalCache.GetRatingTypeAsync((int)record[RatingType.IdColumn]);
-            this.RatingValue = await this.RatingValue.NewFromRecordAsync(record);
+            base.Value = (byte)record[RatingColumn];
+            this.ActualRating = (byte)record[RatingColumn];
+            this.Derived = (double)record[DerivedColumn];
+            base.Value = this.Value;
             this.CreatedDate = (DateTime)record[CreatedDateColumn];
         }
 
-        /// <summary>Calculates the derived value of this <see cref="UserRating"/>.</summary>
+        /// <summary>Calculates the derived value of this <see cref="UserDerivedRating"/>.</summary>
         /// <param name="derivedValues">The list of derived sub values.</param>
         /// <param name="ratingSystem">The rating value system to calculate values based on.</param>
         private void CalculateValue(Dictionary<RatingType, double> derivedValues, RatingSystem ratingSystem)
         {
-            if (this.RatingValue.Value < 0)
-            {
-                this.RatingValue.Value = 0;
-            }
-
             if (!derivedValues.Any())
             {
-                this.RatingValue.Derived = 0;
+                this.Derived = 0;
                 return;
             }
 
             if (ratingSystem == null)
             {
-                this.RatingValue.Derived = derivedValues.Values.Average();
+                this.Derived = derivedValues.Values.Average();
                 return;
             }
 
@@ -363,11 +342,11 @@ namespace Chaos.Movies.Model
 
             if (!(ratingTotal > 0 && systemTotal > 0))
             {
-                this.RatingValue.Derived = 0;
+                this.Derived = 0;
                 return;
             }
 
-            this.RatingValue.Derived = ratingTotal / systemTotal;
+            this.Derived = ratingTotal / systemTotal;
         }
     }
 }

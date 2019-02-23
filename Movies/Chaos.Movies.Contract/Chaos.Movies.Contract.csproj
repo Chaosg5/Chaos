@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterDetails.cs" />
+    <Compile Include="PersonDetails.cs" />
+    <Compile Include="Interface\IDerivedRating.cs" />
     <Compile Include="Interface\IRating.cs" />
     <Compile Include="Interface\IUserSingleRating.cs" />
     <Compile Include="LanguageDescriptionCollectionDto.cs" />
@@ -70,10 +73,9 @@
     <Compile Include="TotalRatingDto.cs" />
     <Compile Include="UserSingleRatingDto.cs" />
     <Compile Include="UserLogin.cs" />
-    <Compile Include="UserRatingDto.cs" />
+    <Compile Include="UserDerivedRatingDto.cs" />
     <Compile Include="RatingSystemDto.cs" />
     <Compile Include="RatingTypeDto.cs" />
-    <Compile Include="RatingValueDto.cs" />
     <Compile Include="RoleDto.cs" />
     <Compile Include="WatchDto.cs" />
     <Compile Include="WatchTypeDto.cs" />

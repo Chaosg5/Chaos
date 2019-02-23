@@ -61,7 +61,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\Rating.cs" />
+    <Compile Include="Base\SingleRating.cs" />
     <Compile Include="Base\Rateable.cs" />
     <Compile Include="Base\ISearchable.cs" />
     <Compile Include="Base\Orderable.cs" />
@@ -137,10 +137,10 @@
     <Compile Include="TotalRating.cs" />
     <Compile Include="WatchCollection.cs" />
     <Compile Include="UserRatingCollection.cs" />
-    <Compile Include="UserRating.cs" />
+    <Compile Include="UserDerivedRating.cs" />
     <Compile Include="RatingSystem.cs" />
     <Compile Include="RatingType.cs" />
-    <Compile Include="RatingValue.cs" />
+    <Compile Include="DerivedRating.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserSession.cs" />
     <Compile Include="UserSingleRating.cs" />

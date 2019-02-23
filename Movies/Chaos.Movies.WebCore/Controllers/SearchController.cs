@@ -16,7 +16,7 @@ namespace Chaos.Movies.WebCore.Controllers
 
     public class SearchController : Controller
     {
-        public async Task<IActionResult> Index(string searchText)
+        public async Task<IActionResult> Search(string searchText)
         {
             var session = await this.ValidateSessionAsync();
             if (session == null)
@@ -27,10 +27,10 @@ namespace Chaos.Movies.WebCore.Controllers
             var result = new List<MovieDto>();
             if (!string.IsNullOrWhiteSpace(searchText))
             {
+                var userLanguage = "sv-SE";
                 var movies = await Movie.Static.SearchAsync(
                     new SearchParametersDto { RequireExactMatch = false, SearchLimit = 10, SearchText = searchText },
                     session);
-                var userLanguage = "sv-SE";
                 result.AddRange(movies.Select(m => m.ToContract(userLanguage)));
                 await Movie.Static.GetUserRatingsAsync(result, session);
                 result = result.OrderByDescending(m => m.ExternalRatings.FirstOrDefault()?.Value).ToList();
@@ -38,7 +38,6 @@ namespace Chaos.Movies.WebCore.Controllers
 
             return this.View(result.AsReadOnly());
         }
-
 
         /// <summary>Validates the current user's session.</summary>
         /// <returns>The <see cref="UserSession"/>.</returns>

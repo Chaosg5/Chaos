@@ -30,6 +30,9 @@ namespace Chaos.Movies.Model
         /// <summary>The database column for <see cref="BaseAddress"/>.</summary>
         private const string BaseAddressColumn = "BaseAddress";
 
+        /// <summary>The database column for <see cref="LogoIcon"/>.</summary>
+        private const string LogoIconColumn = "LogoIcon";
+
         /// <summary>The database column for <see cref="PeopleAddress"/>.</summary>
         private const string PeopleAddressColumn = "PeopleAddress";
 
@@ -47,6 +50,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Initializes a new instance of the <see cref="ExternalSource"/> class.</summary>
         /// <param name="name">The <see cref="Name"/> to set.</param>
+        /// <param name="logoIcon">The <see cref="LogoIcon"/> to set.</param>
         /// <param name="baseAddress">The <see cref="BaseAddress"/> to set.</param>
         /// <param name="peopleAddress">The <see cref="PeopleAddress"/> to set.</param>
         /// <param name="characterAddress">The <see cref="CharacterAddress"/> to set.</param>
@@ -54,6 +58,7 @@ namespace Chaos.Movies.Model
         /// <param name="episodeAddress">The <see cref="EpisodeAddress"/> to set.</param>
         public ExternalSource(
             string name,
+            string logoIcon,
             string baseAddress,
             string peopleAddress,
             string characterAddress,
@@ -61,6 +66,7 @@ namespace Chaos.Movies.Model
             string episodeAddress)
         {
             this.Name = name;
+            this.LogoIcon = logoIcon ?? string.Empty;
             this.BaseAddress = baseAddress ?? string.Empty;
             this.PeopleAddress = peopleAddress ?? string.Empty;
             this.CharacterAddress = characterAddress ?? string.Empty;
@@ -91,6 +97,9 @@ namespace Chaos.Movies.Model
                 this.name = value;
             }
         }
+
+        /// <summary>Gets the base address.</summary>
+        public string LogoIcon { get; private set; } = string.Empty;
 
         /// <summary>Gets the base address.</summary>
         public string BaseAddress { get; private set; } = string.Empty;
@@ -132,6 +141,7 @@ namespace Chaos.Movies.Model
             {
                 Id = this.Id,
                 Name = this.Name,
+                LogoIcon = this.LogoIcon,
                 BaseAddress = this.BaseAddress,
                 PeopleAddress = this.PeopleAddress,
                 CharacterAddress = this.CharacterAddress,
@@ -147,6 +157,7 @@ namespace Chaos.Movies.Model
             {
                 Id = this.Id,
                 Name = this.Name,
+                LogoIcon = this.LogoIcon,
                 BaseAddress = this.BaseAddress,
                 PeopleAddress = this.PeopleAddress,
                 CharacterAddress = this.CharacterAddress,
@@ -168,6 +179,7 @@ namespace Chaos.Movies.Model
             {
                 Id = contract.Id,
                 Name = contract.Name,
+                LogoIcon = contract.LogoIcon,
                 BaseAddress = contract.BaseAddress,
                 PeopleAddress = contract.PeopleAddress,
                 CharacterAddress = contract.CharacterAddress,
@@ -269,6 +281,7 @@ namespace Chaos.Movies.Model
             {
                 IdColumn,
                 NameColumn,
+                LogoIconColumn,
                 BaseAddressColumn,
                 PeopleAddressColumn,
                 CharacterAddressColumn,
@@ -280,6 +293,7 @@ namespace Chaos.Movies.Model
                 requiredColumns);
             this.Id = (int)record[IdColumn];
             this.Name = (string)record[NameColumn];
+            this.LogoIcon = (string)record[LogoIconColumn];
             this.BaseAddress = (string)record[BaseAddressColumn];
             this.PeopleAddress = (string)record[PeopleAddressColumn];
             this.CharacterAddress = (string)record[CharacterAddressColumn];
@@ -296,6 +310,7 @@ namespace Chaos.Movies.Model
                 {
                     { Persistent.ColumnToVariable(IdColumn), this.Id },
                     { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(LogoIconColumn), this.LogoIcon },
                     { Persistent.ColumnToVariable(BaseAddressColumn), this.BaseAddress },
                     { Persistent.ColumnToVariable(PeopleAddressColumn), this.PeopleAddress },
                     { Persistent.ColumnToVariable(CharacterAddressColumn), this.CharacterAddress },

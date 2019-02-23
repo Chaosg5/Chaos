@@ -1,34 +1,78 @@
 ﻿@using Chaos.Movies.Contract
 @model MovieDto
 
-<h3>
-    @foreach (var externalRating in Model.ExternalRatings)
-    {
-        <div class="item right">
-            <div class="itemContent">
-                <div class="ratingRow">
-                    <div class="ratingIcon">
-                        <img src="~/images/IMDB.ico" />
+<div class="item right">
+    <div class="itemContent">
+        <div class="ratingRow">
+            <div class="ratingIcon">
+                <span class="ratingScore">@Model.TotalRating.DisplayValue</span>
+                <img src="~/images/icons/external/CMDB.ico" />
+            </div>
+            <div class="ratingBackground">
+                <div style="background-color: @Model.TotalRating.HexColor; height: 100%; width: @Model.TotalRating.Width;">
+                </div>
+            </div>
+            <div class="ratingStars">
+                <img src="~/images/StarRowTransparent.svg" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach (var externalRating in Model.ExternalRatings)
+{
+    // ToDo:
+    var externalLink = Model.ExternalLookups.FirstOrDefault(l => l.ExternalSource.Id == externalRating.ExternalSource.Id);
+    <div class="item right" title="@string.Format("{0} - {1} ({2}) 2018-To-Do", externalRating.ExternalSource.Name, externalRating.DisplayValue, externalRating.RatingCount)">
+        <div class="itemContent">
+            <div class="ratingRow">
+                <div class="ratingIcon">
+                    @if (externalLink != null)
+                    {
+                        <a href="https://www.imdb.com/title/@externalLink.ExternalId">
+                            <span class="ratingScore">@externalRating.DisplayValue</span>
+                            <img src="~/images/icons/external/@externalRating.ExternalSource.LogoIcon" />
+                        </a>
+                    }
+                    else
+                    {
                         <span class="ratingScore">@externalRating.DisplayValue</span>
+                        <img src="~/images/icons/external/@externalRating.ExternalSource.LogoIcon" />
+                    }
+                </div>
+                <div class="ratingBackground">
+                    <div style="background-color: @externalRating.HexColor; height: 100%; width: @externalRating.Width;">
                     </div>
-                    <div class="ratingBackground">
-                        <div style="background-color: @externalRating.HexColor; height: 100%; width: @((externalRating.Value*10))%;">
-                        </div>
-                    </div>
-                    <div class="ratingStars">
-                        <img src="~/images/StarRowTransparent.svg" />
-                    </div>
+                </div>
+                <div class="ratingStars">
+                    <img src="~/images/StarRowTransparent.svg" />
                 </div>
             </div>
         </div>
-    }
-</h3>
+    </div>
+}
 
+<br />
 @{ var headTitle = $"rating{Model.UserRatings.RatingType.Id}"; }
-<h3 class="accordion-toggle" data-toggle="collapse" data-target="#@headTitle">
+<h3 class="accordion-toggle" data-toggle="collapse" data-target="#@headTitle" style="display: inline-block;">
     @Model.UserRatings.RatingType.Titles.UserTitle.Title
-    @Model.UserRatings.DisplayValue
 </h3>
+<div class="ratingRow" style="display: inline-block;">
+    <div class="ratingIcon">
+        <span class="ratingScore">@Model.UserRatings.DisplayValue</span>
+    </div>
+    <div class="ratingBackground">
+        <div style="background-color: @Model.UserRatings.HexColor; height: 100%; width: @Model.UserRatings.Width;">
+            @if (Model.UserRatings.ActualRating == 0)
+            {
+                <div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>
+            }
+        </div>
+    </div>
+    <div class="ratingStars clickable" onclick="saveMovieRating(event, this, false, @Model.UserRatings.RatingType.Id);">
+        <img src="~/images/StarRowTransparent.svg" />
+    </div>
+</div>
 <div id="@headTitle" class="collapse in">
     @foreach (var mainRatings in Model.UserRatings.SubRatings)
     {
@@ -54,11 +98,14 @@
                 </div>
                 <div class="ratingBackground">
                     <div style="background-color: @mainRatings.HexColor; height: 100%; width: @mainRatings.Width;">
-                        <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                        @if (mainRatings.ActualRating == 0)
+                        {
+                            <div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>
+                        }
                     </div>
                 </div>
                 <div class="ratingStars clickable" onclick="saveMovieRating(event, this, false, @mainRatings.RatingType.Id);">
-                    <img src="~/images/StarRowTransparent.svg"/>
+                    <img src="~/images/StarRowTransparent.svg" />
                 </div>
             </div>
             <div id="@mainTitle" class="collapse">
@@ -86,11 +133,14 @@
                             </div>
                             <div class="ratingBackground">
                                 <div style="background-color: @secondaryRatings.HexColor; height: 100%; width: @secondaryRatings.Width;">
-                                    <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                                    @if (secondaryRatings.ActualRating == 0)
+                                    {
+                                        <div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>
+                                    }
                                 </div>
                             </div>
                             <div class="ratingStars clickable" onclick="saveMovieRating(event, this, false, @secondaryRatings.RatingType.Id);">
-                                <img src="~/images/StarRowTransparent.svg"/>
+                                <img src="~/images/StarRowTransparent.svg" />
                             </div>
                         </div>
                         <div id="@secondaryTitle" class="collapse">
@@ -105,11 +155,14 @@
                                     </div>
                                     <div class="ratingBackground">
                                         <div style="background-color: @detailRatings.HexColor; height: 100%; width: @detailRatings.Width;">
-                                            <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
+                                            @if (detailRatings.ActualRating == 0)
+                                            {
+                                                <div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>
+                                            }
                                         </div>
                                     </div>
                                     <div class="ratingStars clickable" onclick="saveMovieRating(event, this, false, @detailRatings.RatingType.Id);">
-                                        <img src="~/images/StarRowTransparent.svg"/>
+                                        <img src="~/images/StarRowTransparent.svg" />
                                     </div>
                                 </div>
                             }
@@ -132,8 +185,7 @@
                 $(sender).prev().prev().children().first().text(ratingValue);
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-                alert(thrownError);
+                showError(xhr.responseText);
             }
         });
     };

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="UserRatingDto.cs">
+// <copyright file="UserDerivedRatingDto.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -15,7 +15,7 @@ namespace Chaos.Movies.Contract
     /// <inheritdoc />
     /// <summary>Represents a user's rating for a specific <see cref="RatingTypeDto"/>.</summary>
     [DataContract]
-    public class UserRatingDto : IRating
+    public class UserDerivedRatingDto : IRating
     {
         /// <summary>Gets or sets the id of the <see cref="UserDto"/> who owns the rating.</summary>
         [DataMember]
@@ -27,7 +27,7 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets the child ratings of this rating.</summary>
         [DataMember]
-        public ReadOnlyCollection<UserRatingDto> SubRatings { get; set; }
+        public ReadOnlyCollection<UserDerivedRatingDto> SubRatings { get; set; }
 
         /// <inheritdoc />
         [DataMember]
@@ -37,7 +37,7 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public double Derived { get; set; }
 
-        /// <summary>Gets or sets the width in percent based on the <see cref="Value"/>/<see cref="Derived"/>.</summary>
+        /// <inheritdoc />
         [DataMember]
         public string Width { get; set; }
 
@@ -52,5 +52,9 @@ namespace Chaos.Movies.Contract
         /// <summary>Gets or sets the created date.</summary>
         [DataMember]
         public DateTime CreatedDate { get; set; }
+
+        /// <summary>Gets or sets the actual rating value for this rating, not counting derived values.</summary>
+        [DataMember]
+        public int ActualRating { get; set; }
     }
 }

@@ -9,13 +9,13 @@
         {
             <div class="row">
                 <div class="item">
-                    <a href="@Url.Action("Person", "View", new { movieId = personInRole.Person.Id})">
+                    <a href="@Url.Action("Person", "View", new { personId = personInRole.Person.Id})">
                         <div class="listIcon medium">
                             <img src="~/images/icons/Male.png" />
                         </div>
                     </a>
                     <div class="itemContent">
-                        <a href="@Url.Action("Person", "View", new { movieId = personInRole.Person.Id})">
+                        <a href="@Url.Action("Person", "View", new { personId = personInRole.Person.Id})">
                             <div class="name">
                                 <h4>@personInRole.Person.Name - @personInRole.Role.Titles.First(t => t.LanguageType == LanguageType.Default).Title</h4>
                             </div>
@@ -26,9 +26,7 @@
                                 <img src="~/images/User.svg" />
                             </div>
                             <div class="ratingBackground">
-                                <div style="background-color: @personInRole.UserRating.HexColor; height: 100%; width: @((personInRole.UserRating.Value*10))%;">
-                                    <!--<div style="height: 100%; width: 100%; background-image: url(/images/DerivedBackground.png)"></div>-->
-                                </div>
+                                <div style="background-color: @personInRole.UserRating.HexColor; height: 100%; width: @personInRole.UserRating.Width;"></div>
                             </div>
                             <div class="ratingStars clickable" onclick="savePersonRating(event, this, false, @personInRole.Person.Id, @personInRole.Role.Id, @personInRole.Department.Id);">
                                 <img src="~/images/StarRowTransparent.svg" />
@@ -40,7 +38,7 @@
                                 <img src="~/images/User.svg" />
                             </div>
                             <div class="ratingBackground">
-                                <div style="background-color: @personInRole.Person.UserRating.HexColor; height: 100%; width: @((personInRole.Person.UserRating.Value*10))%;">
+                                <div style="background-color: @personInRole.Person.UserRating.HexColor; height: 100%; width: @personInRole.Person.UserRating.Width;">
                                 </div>
                             </div>
                             <div class="ratingStars">
@@ -53,7 +51,7 @@
                                 <img src="~/images/CMDB.png" />
                             </div>
                             <div class="ratingBackground">
-                                <div style="background-color: @personInRole.TotalRating.HexColor; height: 100%; width: @((personInRole.TotalRating.Value*10))%;">
+                                <div style="background-color: @personInRole.TotalRating.HexColor; height: 100%; width: @personInRole.TotalRating.Width;">
                                 </div>
                             </div>
                             <div class="ratingStars">
@@ -66,7 +64,7 @@
                                 <img src="~/images/CMDB.png" />
                             </div>
                             <div class="ratingBackground">
-                                <div style="background-color: @personInRole.Person.TotalRating.HexColor; height: 100%; width: @((personInRole.Person.TotalRating.Value*10))%;">
+                                <div style="background-color: @personInRole.Person.TotalRating.HexColor; height: 100%; width: @personInRole.Person.TotalRating.Width;">
                                 </div>
                             </div>
                             <div class="ratingStars">

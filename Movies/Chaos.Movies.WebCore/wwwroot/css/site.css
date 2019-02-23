@@ -195,7 +195,7 @@ textarea { max-width: 280px; }
     padding-left: 4px;
 }
 
-.item .ratingRow .ratingIcon { margin-left: 200px; }
+.ratingRow .ratingIcon { margin-left: 200px; }
 
 /***************************/
 /*****     BUTTONS     *****/
@@ -207,6 +207,10 @@ textarea { max-width: 280px; }
     font-weight: bold;
     cursor: pointer;
 }
+
+    .actionButton.active {
+        background: greenyellow;
+    }
 
 .saveButton {
     padding: 10px;

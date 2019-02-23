@@ -22,6 +22,10 @@ namespace Chaos.Movies.Contract
 
         /// <summary>Gets or sets the base address.</summary>
         [DataMember]
+        public string LogoIcon { get; set; }
+
+        /// <summary>Gets or sets the base address.</summary>
+        [DataMember]
         public string BaseAddress { get; set; }
 
         /// <summary>Gets or sets the people address.</summary>

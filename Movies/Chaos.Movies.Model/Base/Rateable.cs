@@ -16,20 +16,26 @@ namespace Chaos.Movies.Model.Base
 
     using Chaos.Movies.Model.Exceptions;
 
-    public abstract class Rateable<T, TDto> : Readable<T, TDto> where T : Rateable<T, TDto>
+    public abstract class Rateable<T, TDto, TDetailsDto> : Readable<T, TDto> where T : Rateable<T, TDto, TDetailsDto>
     {
-        public abstract Task GetUserRatingsAsync(IEnumerable<TDto> items, UserSession session);
+        /// <summary>The database column for <see cref="GetUserDetailsFromDatabaseAsync"/>.</summary>
+        internal const string GetUserDetailsProcedure = "GetUserDetails";
 
-        public abstract Task GetUserItemDetailsAsync(TDto item, UserSession session, string languageName);
+        /// <summary>The database column for <see cref="GetUserRatingsFromDatabaseAsync"/>.</summary>
+        internal const string GetUserRatingsProcedure = "GetUserRatings";
 
+        public abstract Task GetUserRatingsAsync(ICollection<TDto> items, UserSession session);
+
+        public abstract Task<TDetailsDto> GetUserItemDetailsAsync(TDto item, UserSession session, string languageName);
+        
         protected abstract Task ReadUserRatingsAsync(IEnumerable<TDto> items, int userId, DbDataReader reader);
 
-        protected abstract Task ReadUserDetailsAsync(TDto item, int userId, DbDataReader reader, string languageName);
+        protected abstract Task<TDetailsDto> ReadUserDetailsAsync(TDto item, int userId, DbDataReader reader, string languageName);
 
-        protected async Task GetUserDetailsFromDatabaseAsync(
+        protected async Task<TDetailsDto> GetUserDetailsFromDatabaseAsync(
             TDto item,
             int id,
-            Func<TDto, int, DbDataReader, string, Task> readFromRecords,
+            Func<TDto, int, DbDataReader, string, Task<TDetailsDto>> readFromRecords,
             UserSession session,
             string languageName)
         {
@@ -50,7 +56,44 @@ namespace Chaos.Movies.Model.Base
 
             await session.ValidateSessionAsync();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}GetUserDetails", connection))
+            using (var command = new SqlCommand($"{typeof(T).Name}{GetUserDetailsProcedure}", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}Id"), id);
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable(User.IdColumn), session.UserId);
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    return await readFromRecords(item, session.UserId, reader, languageName);
+                }
+            }
+        }
+
+        protected async Task GetUserDetailsFromDatabaseAsync(
+            T item,
+            int id,
+            Func<T, int, DbDataReader, string, Task> readFromRecords,
+            UserSession session,
+            string languageName)
+        {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+
+            if (readFromRecords == null)
+            {
+                throw new ArgumentNullException(nameof(readFromRecords));
+            }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            await session.ValidateSessionAsync();
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"{typeof(T).Name}{GetUserDetailsProcedure}", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}Id"), id);
@@ -98,7 +141,7 @@ namespace Chaos.Movies.Model.Base
             
             await session.ValidateSessionAsync();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}GetUserRatings", connection))
+            using (var command = new SqlCommand($"{typeof(T).Name}{GetUserRatingsProcedure}", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}Ids"), Persistent.CreateIdCollectionTable(itemIds));

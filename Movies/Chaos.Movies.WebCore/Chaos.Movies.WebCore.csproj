@@ -24,8 +24,5 @@
     <ProjectReference Include="..\Chaos.Movies.Contract\Chaos.Movies.Contract.csproj" />
     <ProjectReference Include="..\Chaos.Movies.Model\Chaos.Movies.Model.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\images\icons\" />
-  </ItemGroup>
 
 </Project>

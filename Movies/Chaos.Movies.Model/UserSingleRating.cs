@@ -17,7 +17,7 @@ namespace Chaos.Movies.Model
 
     /// <inheritdoc cref="IUserSingleRating" />
     /// <summary>A simple user rating, similar to <see cref="T:Chaos.Movies.Model.UserRating" /> but not using the <see cref="T:Chaos.Movies.Model.RatingType" />.</summary>
-    public class UserSingleRating : Rating<UserSingleRating, UserSingleRatingDto>, IUserSingleRating
+    public class UserSingleRating : SingleRating<UserSingleRating, UserSingleRatingDto>, IUserSingleRating
     {
         /// <summary>The database procedure for saving a <see cref="User"/> rating for an item in a <see cref="Movie"/>.</summary>
         internal const string UserRatingSaveProcedure = "UserRatingSave";
@@ -53,7 +53,8 @@ namespace Chaos.Movies.Model
                 UserId = this.UserId,
                 Value = this.Value,
                 DisplayValue = this.DisplayValue,
-                HexColor = this.HexColor
+                HexColor = this.HexColor,
+                Width = this.Width
             };
         }
 
@@ -65,7 +66,8 @@ namespace Chaos.Movies.Model
                 UserId = this.UserId,
                 Value = this.Value,
                 DisplayValue = this.DisplayValue,
-                HexColor = this.HexColor
+                HexColor = this.HexColor,
+                Width = this.Width
             };
         }
 

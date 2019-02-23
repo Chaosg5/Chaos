@@ -26,5 +26,9 @@ namespace Chaos.Movies.Contract
         /// <inheritdoc />
         [DataMember]
         public string HexColor { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public string Width { get; set; }
     }
 }

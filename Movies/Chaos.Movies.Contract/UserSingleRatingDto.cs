@@ -29,6 +29,10 @@ namespace Chaos.Movies.Contract
 
         /// <inheritdoc />
         [DataMember]
+        public string Width { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
         public int UserId { get; set; }
 
         /// <inheritdoc />

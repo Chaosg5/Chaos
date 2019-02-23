@@ -31,6 +31,8 @@ namespace Chaos.Movies.Model.Tests
             var session = await UserTest.GetSystemSessionAsync();
             var movie = await Movie.Static.GetAsync(session, 766949);
             AssertMovie(movie);
+            var contract = movie.ToContract();
+            var movie2 = Movie.Static.FromContract(contract);
         }
 
         internal static void AssertMovie(Movie movie)

@@ -37,7 +37,7 @@ namespace Chaos.Movies.Model.Tests
 
         public static void TestGetColor(int value, byte red, byte green, byte blue, string hex)
         {
-            var rating = new UserRating(new RatingType());
+            var rating = new UserDerivedRating(new RatingType());
             rating.SetValue(value);
             var color = rating.Color;
             Assert.AreEqual(red, color.R);
@@ -48,19 +48,19 @@ namespace Chaos.Movies.Model.Tests
             Assert.AreEqual(hex, hexColor);
         }
 
-        private static UserRating GetRatings(string ratingString)
+        private static UserDerivedRating GetRatings(string ratingString)
         {
-            var rootRating = new UserRating(new RatingType());
+            var rootRating = new UserDerivedRating(new RatingType());
             var ratings = ratingString.Split(new[] { ";" }, StringSplitOptions.None);
             foreach (var groupValues in ratings)
             {
                 var subRatings = groupValues.Split(new[] { "-" }, StringSplitOptions.None);
                 var parentValues = subRatings[0].Split(new[] { ":" }, StringSplitOptions.None);
-                var parentRating = new UserRating(int.Parse(parentValues[1], CultureInfo.InvariantCulture), new RatingType(int.Parse(parentValues[0], CultureInfo.InvariantCulture)));
+                var parentRating = new UserDerivedRating(int.Parse(parentValues[1], CultureInfo.InvariantCulture), new RatingType(int.Parse(parentValues[0], CultureInfo.InvariantCulture)));
                 for (var i = 1; i < subRatings.Length; i++)
                 {
                     var values = subRatings[i].Split(new[] {":"}, StringSplitOptions.None);
-                    parentRating.AddSubRating(new UserRating(int.Parse(values[1], CultureInfo.InvariantCulture), new RatingType(int.Parse(values[0], CultureInfo.InvariantCulture))));
+                    parentRating.AddSubRating(new UserDerivedRating(int.Parse(values[1], CultureInfo.InvariantCulture), new RatingType(int.Parse(values[0], CultureInfo.InvariantCulture))));
                 }
 
                 rootRating.AddSubRating(parentRating);

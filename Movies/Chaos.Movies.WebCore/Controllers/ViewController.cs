@@ -31,19 +31,17 @@ namespace Chaos.Movies.WebCore.Controllers
             {
                 return this.RedirectToAction("Index", "Login");
             }
-            // string languageName
-            var movie = await Model.Movie.Static.GetAsync(session, movieId);
+
             var userLanguage = "sv-SE";
-            var result = movie.ToContract(userLanguage);
-            await Model.Movie.Static.GetUserRatingsAsync(new List<MovieDto> { result }, session);
-            await Model.Movie.Static.GetUserItemDetailsAsync(result, session, userLanguage);
+            var movie = (await Model.Movie.Static.GetAsync(session, movieId)).ToContract(userLanguage);
+            await Model.Movie.Static.GetUserItemDetailsAsync(movie, session, userLanguage);
             var s = new Tuple<MovieDto, ReadOnlyCollection<WatchTypeDto>>(
-                result,
+                movie,
                 new ReadOnlyCollection<WatchTypeDto>((await GlobalCache.GetAllWatchTypesAsync()).Select(w => w.ToContract(userLanguage)).ToList()));
             return this.View(s);
         }
 
-        public async Task<IActionResult> Character(int movieId)
+        public async Task<IActionResult> Character(int characterId)
         {
             var session = await this.ValidateSessionAsync();
             if (session == null)
@@ -51,11 +49,13 @@ namespace Chaos.Movies.WebCore.Controllers
                 return this.RedirectToAction("Index", "Login");
             }
 
-            var character = await Model.Character.Static.GetAsync(session, movieId);
-            return this.View(character.ToContract());
+            var userLanguage = "sv-SE";
+            var character = (await Model.Character.Static.GetAsync(session, characterId)).ToContract(userLanguage);
+            await Model.Character.Static.GetUserItemDetailsAsync(character, session, userLanguage);
+            return this.View(character);
         }
 
-        public async Task<IActionResult> Person(int movieId)
+        public async Task<IActionResult> Person(int personId)
         {
             var session = await this.ValidateSessionAsync();
             if (session == null)
@@ -63,8 +63,10 @@ namespace Chaos.Movies.WebCore.Controllers
                 return this.RedirectToAction("Index", "Login");
             }
 
-            var person = await Model.Person.Static.GetAsync(session, movieId);
-            return this.View(person.ToContract());
+            var userLanguage = "sv-SE";
+            var person = (await Model.Person.Static.GetAsync(session, personId)).ToContract(userLanguage);
+            await Model.Person.Static.GetUserItemDetailsAsync(person, session, userLanguage);
+            return this.View(person);
         }
 
         #endregion

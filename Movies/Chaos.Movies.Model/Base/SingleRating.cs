@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Rating.cs">
+// <copyright file="SingleRating.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -12,8 +12,8 @@ namespace Chaos.Movies.Model.Base
 
     using Chaos.Movies.Contract.Interface;
 
-    /// <inheritdoc />
-    public abstract class Rating<T, TDto> : Loadable<T, TDto> where T : Loadable<T, TDto>, IRating
+    /// <inheritdoc cref="IRating" />
+    public abstract class SingleRating<T, TDto> : Loadable<T, TDto> where T : Loadable<T, TDto>, IRating
     {
         /// <summary>The database column for <see cref="Value"/>.</summary>
         internal const string RatingColumn = "Rating";
@@ -40,13 +40,13 @@ namespace Chaos.Movies.Model.Base
             }
         }
 
-        /// <summary>Gets the display color in RBG hex for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
+        /// <summary>Gets the display color in RBG hex for this <see cref="UserDerivedRating"/>'s <see cref="Value"/>.</summary>
         public string HexColor => GetHexColor(this.Value);
 
-        /// <summary>Gets the display color for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
+        /// <summary>Gets the display color for this <see cref="UserDerivedRating"/>'s <see cref="Value"/>.</summary>
         public Color Color => GetColor(this.Value);
 
-        /// <summary>Gets the display value for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
+        /// <inheritdoc cref="IRating.DisplayValue" />
         public string DisplayValue
         {
             get
@@ -61,10 +61,13 @@ namespace Chaos.Movies.Model.Base
             }
         }
 
-        /// <summary>Gets the display color in RBG hex for this <see cref="UserRating"/>'s <see cref="Value"/>.</summary>
+        /// <inheritdoc cref="IRating.Width" />
+        public string Width => $"{(this.Value * 10).ToString(CultureInfo.InvariantCulture)}%";
+
+        /// <summary>Gets the display color in RBG hex for this <see cref="UserDerivedRating"/>'s <see cref="Value"/>.</summary>
         /// <param name="value">The value to get the <see cref="Color"/> for.</param>
         /// <returns>The <see cref="Color"/>.</returns>
-        public static string GetHexColor(double value)
+        private static string GetHexColor(double value)
         {
             var color = GetColor(value);
             return string.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
@@ -73,7 +76,7 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Gets the display color for the <paramref name="value"/>.</summary>
         /// <param name="value">The value to get the <see cref="Color"/> for.</param>
         /// <returns>The <see cref="Color"/>.</returns>
-        public static Color GetColor(double value)
+        private static Color GetColor(double value)
         {
             byte redValue = 255;
             byte greenValue = 0;

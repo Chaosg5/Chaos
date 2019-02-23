@@ -15,10 +15,10 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <inheritdoc cref="IRating" />
-    public class TotalRating : Rating<TotalRating, TotalRatingDto>, IRating
+    public class TotalRating : SingleRating<TotalRating, TotalRatingDto>, IRating
     {
         /// <summary>The database column for <see cref="IRating.Value"/>.</summary>
-        internal const string TotalRatingColumn = "TotalRating";
+        private const string TotalRatingColumn = "TotalRating";
 
         /// <summary>The <see cref="Type"/> of the parent object.</summary>
         private readonly Type parentType;
@@ -42,7 +42,8 @@ namespace Chaos.Movies.Model
             {
                 Value = this.Value,
                 DisplayValue = this.DisplayValue,
-                HexColor = this.HexColor
+                HexColor = this.HexColor,
+                Width = this.Width
             };
         }
 
@@ -53,7 +54,8 @@ namespace Chaos.Movies.Model
             {
                 Value = this.Value,
                 DisplayValue = this.DisplayValue,
-                HexColor = this.HexColor
+                HexColor = this.HexColor,
+                Width = this.Width
             };
         }
 

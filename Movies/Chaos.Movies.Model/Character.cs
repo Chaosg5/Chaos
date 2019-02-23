@@ -20,7 +20,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>Represents a character in a movie.</summary>
-    public class Character : Rateable<Character, CharacterDto>, ISearchable<Character>
+    public class Character : Rateable<Character, CharacterDto, CharacterDetails>, ISearchable<Character>
     {
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
@@ -152,12 +152,16 @@ namespace Chaos.Movies.Model
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="items"/> is <see langword="null"/></exception>
-        public override async Task GetUserRatingsAsync(IEnumerable<CharacterDto> items, UserSession session)
+        public override async Task GetUserRatingsAsync(ICollection<CharacterDto> items, UserSession session)
         {
+            if (items == null || !items.Any())
+            {
+                return;
+            }
+
             if (!Persistent.UseService)
             {
-                var itemList = items?.ToList();
-                await this.GetUserRatingsFromDatabaseAsync(itemList, itemList?.Select(i => i.Id), this.ReadUserRatingsAsync, session);
+                await this.GetUserRatingsFromDatabaseAsync(items, items.Select(i => i.Id), this.ReadUserRatingsAsync, session);
                 return;
             }
 
@@ -166,10 +170,20 @@ namespace Chaos.Movies.Model
                 //return (await service.MovieGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
             }
         }
-
-        public override Task GetUserItemDetailsAsync(CharacterDto item, UserSession session, string languageName)
+        
+        /// <inheritdoc />
+        public override async Task<CharacterDetails> GetUserItemDetailsAsync(CharacterDto item, UserSession session, string languageName)
         {
-            throw new NotImplementedException();
+            if (!Persistent.UseService)
+            {
+                return await this.GetUserDetailsFromDatabaseAsync(item, item.Id, this.ReadUserDetailsAsync, session, languageName);
+            }
+
+            using (var service = new ChaosMoviesServiceClient())
+            {
+                //return (await service.MovieGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
+                return null;
+            }
         }
 
         /// <inheritdoc />
@@ -374,7 +388,7 @@ namespace Chaos.Movies.Model
             }
         }
 
-        protected override Task ReadUserDetailsAsync(CharacterDto item, int userId, DbDataReader reader, string languageName)
+        protected override Task<CharacterDetails> ReadUserDetailsAsync(CharacterDto item, int userId, DbDataReader reader, string languageName)
         {
             throw new NotImplementedException();
         }

@@ -31,6 +31,10 @@ namespace Chaos.Movies.Contract
         [DataMember]
         public string HexColor { get; set; }
 
+        /// <inheritdoc />
+        [DataMember]
+        public string Width { get; set; }
+
         /// <summary>Gets or sets the count of votes for the rating.</summary>
         [DataMember]
         public int RatingCount { get; set; }

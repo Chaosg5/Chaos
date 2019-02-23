@@ -2,7 +2,7 @@
 @using Chaos.Movies.Contract
 @model ReadOnlyCollection<MovieDto>
 
-@using (Html.BeginForm("Index", "Search", FormMethod.Get))
+@using (Html.BeginForm("Search", "Search", FormMethod.Get))
 {
     <h1>
         Search:
@@ -29,7 +29,7 @@
                                 <span class="ratingScore">@movie.UserRating.DisplayValue</span>
                             </div>
                             <div class="ratingBackground">
-                                <div style="background-color: @movie.UserRating.HexColor; height: 100%; width: @((movie.UserRating.Value*10))%;">
+                                <div style="background-color: @movie.UserRating.HexColor; height: 100%; width: @movie.UserRating.Width;">
                                 </div>
                             </div>
                             <div class="ratingStars">
@@ -42,7 +42,7 @@
                                 <span class="ratingScore">@movie.TotalRating.DisplayValue</span>
                             </div>
                             <div class="ratingBackground">
-                                <div style="background-color: @movie.TotalRating.HexColor; height: 100%; width: @((movie.TotalRating.Value*10))%;">
+                                <div style="background-color: @movie.TotalRating.HexColor; height: 100%; width: @movie.TotalRating.Width;">
                                 </div>
                             </div>
                             <div class="ratingStars">
@@ -58,7 +58,7 @@
                                 <span class="ratingScore">@imdb.DisplayValue</span>
                             </div>
                             <div class="ratingBackground">
-                                <div style="background-color: @imdb.HexColor; height: 100%; width: @((imdb.Value*10))%;">
+                                <div style="background-color: @imdb.HexColor; height: 100%; width: @imdb.Width;">
                                 </div>
                             </div>
                             <div class="ratingStars">

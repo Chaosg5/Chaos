@@ -21,7 +21,7 @@ namespace Chaos.Movies.Model
     using Chaos.Movies.Model.Exceptions;
 
     /// <summary>A movie or a series.</summary>
-    public class Movie : Rateable<Movie, MovieDto>, ISearchable<Movie>
+    public class Movie : Rateable<Movie, MovieDto, bool>, ISearchable<Movie>
     {
         /// <summary>The database column for <see cref="Year"/>.</summary>
         private const string YearColumn = "Year";
@@ -65,7 +65,7 @@ namespace Chaos.Movies.Model
         public IconCollection Images { get; private set; } = new IconCollection();
 
         /// <summary>Gets the total rating score from the current user.</summary>
-        public UserRating UserRatings { get; private set; }
+        public UserDerivedRating UserRatings { get; private set; }
 
         /// <summary>Gets the user ratings.</summary>
         public UserSingleRating UserRating { get; private set; } = new UserSingleRating();
@@ -137,15 +137,29 @@ namespace Chaos.Movies.Model
 
             if (!Persistent.UseService)
             {
-                var parameters = new ReadOnlyDictionary<string, object>(
-                    new Dictionary<string, object>
+                // ToDo: Get Ratings Parents, not all
+                var movie = await Static.GetAsync(session, movieId);
+                await Static.GetUserDetailsFromDatabaseAsync(movie, movie.Id, Static.ReadUserMovieRatingsDetailsAsync, session, string.Empty);
+                var ratingType = await GlobalCache.GetRatingTypeAsync(ratingTypeId);
+                movie.UserRatings.SetValue(rating, ratingType);
+                var ratings = movie.UserRatings.GetRatings(null);
+                foreach (var userRating in ratings.Values)
+                {
+                    if (true)
                     {
-                        { Persistent.ColumnToVariable(IdColumn), movieId },
-                        { Persistent.ColumnToVariable(RatingType.IdColumn), ratingTypeId },
-                        { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
-                        { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), rating }
-                    });
-                await Movie.CustomDatabaseActionAsync(parameters, UserSingleRating.UserRatingSaveProcedure, session);
+                        var parameters = new ReadOnlyDictionary<string, object>(
+                            new Dictionary<string, object>
+                            {
+                                { Persistent.ColumnToVariable(IdColumn), movieId },
+                                { Persistent.ColumnToVariable(RatingType.IdColumn), userRating.RatingType.Id },
+                                { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
+                                { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), userRating.ActualRating },
+                                { Persistent.ColumnToVariable(UserDerivedRating.DerivedColumn), userRating.DerivedRating }
+                            });
+                        await Movie.CustomDatabaseActionAsync(parameters, UserSingleRating.UserRatingSaveProcedure, session);
+                    }
+                }
+
                 return;
             }
 
@@ -347,12 +361,16 @@ namespace Chaos.Movies.Model
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="items"/> is <see langword="null"/></exception>
-        public override async Task GetUserRatingsAsync(IEnumerable<MovieDto> items, UserSession session)
+        public override async Task GetUserRatingsAsync(ICollection<MovieDto> items, UserSession session)
         {
+            if (items == null || !items.Any())
+            {
+                return;
+            }
+
             if (!Persistent.UseService)
             {
-                var itemList = items?.ToList();
-                await this.GetUserRatingsFromDatabaseAsync(itemList, itemList?.Select(i => i.Id), this.ReadUserRatingsAsync, session);
+                await this.GetUserRatingsFromDatabaseAsync(items, items.Select(i => i.Id), this.ReadUserRatingsAsync, session);
                 return;
             }
 
@@ -363,17 +381,18 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        public override async Task GetUserItemDetailsAsync(MovieDto item, UserSession session, string languageName)
+        public override async Task<bool> GetUserItemDetailsAsync(MovieDto item, UserSession session, string languageName)
         {
             if (!Persistent.UseService)
             {
                 await this.GetUserDetailsFromDatabaseAsync(item, item.Id, this.ReadUserDetailsAsync, session, languageName);
-                return;
+                return true;
             }
 
             using (var service = new ChaosMoviesServiceClient())
             {
                 //return (await service.MovieGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
+                return false;
             }
         }
 
@@ -385,7 +404,13 @@ namespace Chaos.Movies.Model
         {
             if (!Persistent.UseService)
             {
-                return await this.GetAsync(session, await this.SearchDatabaseAsync(parametersDto, session));
+                var results = (await this.SearchDatabaseAsync(parametersDto, session)).ToList();
+                if (results.Any())
+                {
+                    return await this.GetAsync(session, results);
+                }
+
+                return new List<Movie>();
             }
 
             using (var service = new ChaosMoviesServiceClient())
@@ -557,12 +582,20 @@ namespace Chaos.Movies.Model
             }
         }
 
+        /// <inheritdoc cref="ReadUserDetailsAsync" />
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        protected async Task ReadUserMovieRatingsDetailsAsync(Movie item, int userId, DbDataReader reader, string languageName)
+        {
+            item.UserRatings = (await Model.UserDerivedRating.Static.ReadFromRecordsAsync(reader)).First();
+        }
+
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
-        protected override async Task ReadUserDetailsAsync(MovieDto item, int userId, DbDataReader reader, string languageName)
+        protected override async Task<bool> ReadUserDetailsAsync(MovieDto item, int userId, DbDataReader reader, string languageName)
         {
-            item.UserRatings = (await Model.UserRating.Static.ReadFromRecordsAsync(reader)).First().ToContract(languageName);
+            item.UserRatings = (await UserDerivedRating.Static.ReadFromRecordsAsync(reader)).First().ToContract(languageName);
+            UserSingleRating.SetUserRating(item.UserRating, userId, item.UserRatings.Value);
 
             if (!await reader.NextResultAsync())
             {
@@ -634,6 +667,7 @@ namespace Chaos.Movies.Model
             }
 
             item.Watches = new ReadOnlyCollection<WatchDto>(watches);
+            return true;
         }
     }
 }

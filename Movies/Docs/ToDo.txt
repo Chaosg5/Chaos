@@ -25,6 +25,8 @@ Uträknade (ärvda) betyg borde vara gråare, satta starkare så att man kan se vilk
 
 IMDB graphs for series
 
+search => CONTAINSTABLE (Transact-SQL) / FREETEXTTABLE (Transact-SQL)
+
 ***********************
 *****     GUI     *****
 ***********************

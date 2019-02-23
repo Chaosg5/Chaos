@@ -58,7 +58,7 @@ namespace Chaos.Movies.Model.Tests
             var source = allSources.FirstOrDefault(s => s.Name == name);
             if (source == null)
             {
-                source = new ExternalSource(name, "https://www.externalsource.com", string.Empty, string.Empty, string.Empty, string.Empty);
+                source = new ExternalSource(name, "https://www.externalsource.com", string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
                 await source.SaveAsync(session);
                 Assert.Greater(source.Id, 0);
                 Assert.AreEqual(name, source.Name);
