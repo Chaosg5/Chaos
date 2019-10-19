@@ -21,7 +21,7 @@ namespace Chaos.Movies.Model
     public static class Persistent
     {
         /// <summary>The connection string to the database read from configuration application settings.</summary>
-        public static readonly string ConnectionString = "Data Source=192.168.1.121;Initial Catalog=CMDB;User Id=WebUser;Password=MSdNhYK3haQ9SKcw;"; //ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        public static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
         /// <summary>If database interaction should be made through the service.</summary>
         public static readonly bool UseService = Settings.Default.UserService;

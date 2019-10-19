@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterDetails.cs" />
+    <Compile Include="MovieListItemDto.cs" />
     <Compile Include="PersonDetails.cs" />
     <Compile Include="Interface\IDerivedRating.cs" />
     <Compile Include="Interface\IRating.cs" />

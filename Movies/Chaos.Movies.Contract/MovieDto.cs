@@ -9,7 +9,7 @@ namespace Chaos.Movies.Contract
     using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
 
-    /// <summary>Represents a user.</summary>
+    /// <summary>Represents a movie.</summary>
     [DataContract]
     public class MovieDto
     {

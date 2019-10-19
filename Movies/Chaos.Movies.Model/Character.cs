@@ -165,10 +165,7 @@ namespace Chaos.Movies.Model
                 return;
             }
 
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                //return (await service.MovieGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
-            }
+            throw new NotImplementedException();
         }
         
         /// <inheritdoc />
@@ -179,11 +176,7 @@ namespace Chaos.Movies.Model
                 return await this.GetUserDetailsFromDatabaseAsync(item, item.Id, this.ReadUserDetailsAsync, session, languageName);
             }
 
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                //return (await service.MovieGetAsync(session.ToContract(), idList.ToList())).Select(this.FromContract);
-                return null;
-            }
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
@@ -202,11 +195,7 @@ namespace Chaos.Movies.Model
                 return items;
             }
 
-            using (var service = new ChaosMoviesServiceClient())
-            {
-                return new List<Character>();
-                //await service.CharacterSearchAsync(session.ToContract(), this.ToContract());
-            }
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />

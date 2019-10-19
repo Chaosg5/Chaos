@@ -68,6 +68,7 @@
     <Compile Include="Error.cs" />
     <Compile Include="Exceptions\InvalidSessionException.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="MovieWatchList.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

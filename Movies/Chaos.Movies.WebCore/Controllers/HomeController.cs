@@ -16,8 +16,12 @@ namespace Chaos.Movies.WebCore.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
+    /// <inheritdoc />
+    /// <summary>The home controller.</summary>
     public class HomeController : Controller
     {
+        /// <summary>The index.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
         public async Task<IActionResult> Index()
         {
             var session = await this.ValidateSessionAsync();
@@ -26,9 +30,11 @@ namespace Chaos.Movies.WebCore.Controllers
                 return this.RedirectToAction("Index", "Login");
             }
 
-            return View();
+            return this.View();
         }
 
+        /// <summary>The about.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
         public async Task<IActionResult> About()
         {
             var session = await this.ValidateSessionAsync();
@@ -37,11 +43,13 @@ namespace Chaos.Movies.WebCore.Controllers
                 return this.RedirectToAction("Index", "Login");
             }
 
-            ViewData["Message"] = "Your application description page.";
+            this.ViewData["Message"] = "Your application description page.";
 
-            return View();
+            return this.View();
         }
 
+        /// <summary>The contact.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
         public async Task<IActionResult> Contact()
         {
             var session = await this.ValidateSessionAsync();
@@ -50,14 +58,16 @@ namespace Chaos.Movies.WebCore.Controllers
                 return this.RedirectToAction("Index", "Login");
             }
 
-            ViewData["Message"] = "Your contact page.";
+            this.ViewData["Message"] = "Your contact page.";
 
-            return View();
+            return this.View();
         }
 
+        /// <summary>The error.</summary>
+        /// <returns>The <see cref="IActionResult"/>.</returns>
         public IActionResult Error()
         {
-            return View();
+            return this.View();
         }
 
         /// <summary>Validates the current user's session.</summary>
