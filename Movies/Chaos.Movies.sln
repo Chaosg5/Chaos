@@ -23,6 +23,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chaos.Movies.ApiCore", "Cha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chaos.Movies.WebCore", "Chaos.Movies.WebCore\Chaos.Movies.WebCore.csproj", "{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chaos.Wedding", "..\Wedding\Chaos.Wedding\Chaos.Wedding.csproj", "{1F422410-6DAF-4989-9ECB-77A2915FE998}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chaos.Wedding.Tests", "..\Wedding\Chaos.Wedding.Tests\Chaos.Wedding.Tests.csproj", "{7D7C595F-9F2C-49FD-B8F4-D7F31E395E87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,8 +57,19 @@ Global
 		{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{811AFBCE-5A3E-4D75-9F3B-D8FD4C0DDE8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F422410-6DAF-4989-9ECB-77A2915FE998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F422410-6DAF-4989-9ECB-77A2915FE998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F422410-6DAF-4989-9ECB-77A2915FE998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F422410-6DAF-4989-9ECB-77A2915FE998}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D7C595F-9F2C-49FD-B8F4-D7F31E395E87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D7C595F-9F2C-49FD-B8F4-D7F31E395E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D7C595F-9F2C-49FD-B8F4-D7F31E395E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D7C595F-9F2C-49FD-B8F4-D7F31E395E87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A034464-5CA7-4958-B81B-BBC2D8341E48}
 	EndGlobalSection
 EndGlobal
