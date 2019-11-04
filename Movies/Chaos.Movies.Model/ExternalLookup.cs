@@ -107,7 +107,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">This <see cref="ExternalLookup"/> is not valid to be saved.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (string.IsNullOrEmpty(this.ExternalId))
             {
@@ -118,7 +118,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<ExternalLookup> NewFromRecordAsync(IDataRecord record)
+        public override async Task<ExternalLookup> NewFromRecordAsync(IDataRecord record)
         {
             var result = new ExternalLookup();
             await result.ReadFromRecordAsync(record);
@@ -128,7 +128,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        public override async Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, ExternalIdColumn });
             this.ExternalSource = await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]);

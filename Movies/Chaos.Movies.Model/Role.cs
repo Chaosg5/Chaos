@@ -125,7 +125,7 @@ namespace Chaos.Movies.Model
 
         /// <summary>Validates that this <see cref="Role"/> is valid to be saved.</summary>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Role"/> is not valid to be saved.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (this.Titles.Count == 0)
             {
@@ -138,7 +138,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        internal override async Task<IEnumerable<Role>> ReadFromRecordsAsync(DbDataReader reader)
+        public override async Task<IEnumerable<Role>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var roles = new List<Role>();
             if (!reader.HasRows)
@@ -168,7 +168,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<Role> NewFromRecordAsync(IDataRecord record)
+        public override async Task<Role> NewFromRecordAsync(IDataRecord record)
         {
             var result = new Role();
             await result.ReadFromRecordAsync(record);
@@ -178,7 +178,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the <paramref name="record" />.</exception>
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="record" /> is <see langword="null" />.</exception>
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        public override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { "RoleId" });
             this.Id = (int)record["RoleId"];

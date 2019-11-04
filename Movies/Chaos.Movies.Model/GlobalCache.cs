@@ -210,7 +210,9 @@ namespace Chaos.Movies.Model
             return await ExternalSources.GetValue(id);
         }
 
-        internal static async Task<string> GetServerIpAsync()
+        /// <summary>The get server ip async.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public static async Task<string> GetServerIpAsync()
         {
             return (await Dns.GetHostEntryAsync(Dns.GetHostName())).AddressList[0].ToString();
         }

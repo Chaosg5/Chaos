@@ -198,14 +198,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<UserSession> NewFromRecordAsync(IDataRecord record)
+        public override async Task<UserSession> NewFromRecordAsync(IDataRecord record)
         {
             var result = new UserSession();
             await result.ReadFromRecordAsync(record);
@@ -215,7 +215,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        public override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn, ClientIpColumn, User.IdColumn, ActiveFromColumn, ActiveToColumn });
             this.SessionId = (Guid)record[IdColumn];

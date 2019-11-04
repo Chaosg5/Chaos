@@ -175,7 +175,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="PersonInRole"/> is not valid to be saved.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             this.Person.ValidateSaveCandidate();
             this.Role.ValidateSaveCandidate();
@@ -206,7 +206,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<PersonInRole> NewFromRecordAsync(IDataRecord record)
+        public override async Task<PersonInRole> NewFromRecordAsync(IDataRecord record)
         {
             var result = new PersonInRole();
             await result.ReadFromRecordAsync(record);
@@ -216,7 +216,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        public override async Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { Person.IdColumn, Role.IdColumn, Department.IdColumn });
             this.Person = await GlobalCache.GetPersonAsync((int)record[Person.IdColumn]);

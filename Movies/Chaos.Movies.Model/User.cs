@@ -260,13 +260,13 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override async Task<IEnumerable<User>> ReadFromRecordsAsync(DbDataReader reader)
+        public override async Task<IEnumerable<User>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var users = new List<User>();
             if (!reader.HasRows)
@@ -285,7 +285,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<User> NewFromRecordAsync(IDataRecord record)
+        public override async Task<User> NewFromRecordAsync(IDataRecord record)
         {
             var result = new User();
             await result.ReadFromRecordAsync(record);
@@ -295,7 +295,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        public override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn, UsernameColumn, NameColumn, EmailColumn });
             this.Id = (int)record[IdColumn];

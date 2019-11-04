@@ -20,7 +20,7 @@ namespace Chaos.Movies.Model
     public class LanguageTitleCollection : Listable<LanguageTitle, LanguageTitleDto, LanguageTitleCollection, LanguageTitleCollectionDto>
     {
         /// <summary>The database column for this collection of titles.</summary>
-        internal const string TitlesColumn = "Titles";
+        public const string TitlesColumn = "Titles";
 
         /// <summary>Gets the base title.</summary>
         // ReSharper disable once ExceptionNotDocumented
@@ -166,7 +166,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="LanguageTitleCollection"/> is not valid to be saved.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (this.Items.Count == 0)
             {

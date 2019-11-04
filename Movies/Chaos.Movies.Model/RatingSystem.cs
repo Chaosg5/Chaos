@@ -186,7 +186,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
-        internal override async Task<IEnumerable<RatingSystem>> ReadFromRecordsAsync(DbDataReader reader)
+        public override async Task<IEnumerable<RatingSystem>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var ratingSystems = new List<RatingSystem>();
             if (!reader.HasRows)
@@ -227,7 +227,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingSystem"/> is not valid to be saved.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             this.Titles.ValidateSaveCandidate();
             
@@ -237,7 +237,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">record is <see langword="null" />.</exception>
-        internal override async Task<RatingSystem> NewFromRecordAsync(IDataRecord record)
+        public override async Task<RatingSystem> NewFromRecordAsync(IDataRecord record)
         {
             var result = new RatingSystem();
             await result.ReadFromRecordAsync(record);
@@ -247,7 +247,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">record is <see langword="null" />.</exception>
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        public override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn });
             this.Id = (int)record[IdColumn];

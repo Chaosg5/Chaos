@@ -176,7 +176,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Watch"/> is not valid to be saved.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             this.WatchType.ValidateSaveCandidate();
         }
@@ -204,7 +204,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">record is <see langword="null" />.</exception>
-        internal override async Task<Watch> NewFromRecordAsync(IDataRecord record)
+        public override async Task<Watch> NewFromRecordAsync(IDataRecord record)
         {
             var result = new Watch();
             await result.ReadFromRecordAsync(record);
@@ -214,7 +214,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">record is <see langword="null" />.</exception>
-        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        public override async Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn, User.IdColumn, WatchDateColumn, DateUncertainColumn, WatchType.IdColumn });
             this.Id = (int)record[IdColumn];

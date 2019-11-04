@@ -162,7 +162,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">The parent of the collection has to be saved before saving the collection.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (this.ParentId <= 0)
             {

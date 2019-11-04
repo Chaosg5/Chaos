@@ -70,14 +70,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc/>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
         }
 
         /// <inheritdoc/>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<TotalRating> NewFromRecordAsync(IDataRecord record)
+        public override async Task<TotalRating> NewFromRecordAsync(IDataRecord record)
         {
             var result = new TotalRating(this.parentType);
             await result.ReadFromRecordAsync(record);
@@ -87,7 +87,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc/>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="record"/> is <see langword="null" />.</exception>
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        public override Task ReadFromRecordAsync(IDataRecord record)
         {
             var parentName = this.parentType == null ? string.Empty : this.parentType.Name;
             var columnName = $"{parentName}{TotalRatingColumn}";

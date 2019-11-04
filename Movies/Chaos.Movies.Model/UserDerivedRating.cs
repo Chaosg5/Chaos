@@ -269,7 +269,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="UserDerivedRating"/> is not valid to be saved.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (this.RatingType.Id == 0)
             {
@@ -285,7 +285,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<UserDerivedRating> NewFromRecordAsync(IDataRecord record)
+        public override async Task<UserDerivedRating> NewFromRecordAsync(IDataRecord record)
         {
             var result = new UserDerivedRating();
             await result.ReadFromRecordAsync(record);
@@ -295,7 +295,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        public override async Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { User.IdColumn, RatingType.IdColumn, RatingColumn, DerivedColumn, CreatedDateColumn });
             this.UserId = (int)record[User.IdColumn];

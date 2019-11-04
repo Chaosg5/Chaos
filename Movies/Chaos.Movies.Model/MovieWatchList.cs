@@ -111,19 +111,19 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        internal override Task<IEnumerable<MovieWatchList>> ReadFromRecordsAsync(DbDataReader reader)
+        public override Task<IEnumerable<MovieWatchList>> ReadFromRecordsAsync(DbDataReader reader)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        internal override Task<MovieWatchList> NewFromRecordAsync(IDataRecord record)
+        public override Task<MovieWatchList> NewFromRecordAsync(IDataRecord record)
         {
             throw new NotImplementedException();
         }
@@ -135,7 +135,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        public override Task ReadFromRecordAsync(IDataRecord record)
         {
             throw new NotImplementedException();
         }

@@ -230,7 +230,7 @@ namespace Chaos.Movies.Model
 
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">This <see cref="ExternalSource"/> is not valid to be saved.</exception>
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             if (string.IsNullOrEmpty(this.Name))
             {
@@ -246,7 +246,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        internal override async Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
+        public override async Task<IEnumerable<ExternalSource>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var externalSources = new List<ExternalSource>();
             if (!reader.HasRows)
@@ -265,7 +265,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<ExternalSource> NewFromRecordAsync(IDataRecord record)
+        public override async Task<ExternalSource> NewFromRecordAsync(IDataRecord record)
         {
             var result = new ExternalSource();
             await result.ReadFromRecordAsync(record);
@@ -275,7 +275,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override Task ReadFromRecordAsync(IDataRecord record)
+        public override Task ReadFromRecordAsync(IDataRecord record)
         {
             var requiredColumns = new[]
             {

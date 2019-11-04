@@ -6,6 +6,10 @@ using System.Web.Mvc;
 
 namespace Chaos.Wedding.Controllers
 {
+    using System.Threading.Tasks;
+
+    using Chaos.Wedding.Models;
+
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -13,9 +17,14 @@ namespace Chaos.Wedding.Controllers
             return View();
         }
 
-        public ActionResult Inbjudan()
+        public async Task<ActionResult> Inbjudan(string addressLookupId)
         {
             ViewBag.Message = "Inbjudan";
+
+            if (addressLookupId != null)
+            {
+                var address = await Address.Static.GetAsync(await SessionHandler.GetSessionAsync(), new Guid(addressLookupId));
+            }
 
             return View();
         }

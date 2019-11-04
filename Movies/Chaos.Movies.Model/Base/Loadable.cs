@@ -15,16 +15,16 @@ namespace Chaos.Movies.Model.Base
     public abstract class Loadable<T, TDto> : Communicable<T, TDto>
     {
         /// <summary>Validates that the this <typeparamref name="T"/> is valid to be saved.</summary>
-        internal abstract void ValidateSaveCandidate();
+        public abstract void ValidateSaveCandidate();
 
         /// <summary>Creates a new <typeparamref name="T"/> from the <paramref name="record"/>.</summary>
         /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        internal abstract Task<T> NewFromRecordAsync(IDataRecord record);
+        public abstract Task<T> NewFromRecordAsync(IDataRecord record);
 
         /// <summary>Updates the <typeparamref name="T"/> from the <paramref name="record"/>.</summary>
         /// <param name="record">The record containing the data for the <typeparamref name="T"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        protected abstract Task ReadFromRecordAsync(IDataRecord record);
+        public abstract Task ReadFromRecordAsync(IDataRecord record);
     }
 }

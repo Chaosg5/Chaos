@@ -74,7 +74,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
             foreach (var item in this.Items)
             {

@@ -17,12 +17,14 @@ namespace Chaos.Movies.Model.Base
     /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
     public abstract class Persistable<T, TDto> : Loadable<T, TDto>
     {
+        /// <summary>The database column for the id of the <typeparamref name="T"/>.</summary>
+        public static string IdColumn => $"{typeof(T).Name}Id";
+
         /// <summary>Gets or sets the id of this <typeparamref name="T"/>.</summary>
         public int Id { get; protected set; }
 
-        /// <summary>The database column for the id of the <typeparamref name="T"/>.</summary>
-        internal static string IdColumn => $"{typeof(T).Name}Id";
-        
+        protected string SchemaName { get; set; } = "dbo";
+
         /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
         /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>

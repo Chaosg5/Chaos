@@ -47,7 +47,7 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Creates new <typeparamref name="T"/>s from the <paramref name="reader"/>.</summary>
         /// <param name="reader">The reader containing data sets and records for the data for the <typeparamref name="T"/>s.</param>
         /// <returns>The list of <typeparamref name="T"/>s.</returns>
-        internal abstract Task<IEnumerable<T>> ReadFromRecordsAsync(DbDataReader reader);
+        public abstract Task<IEnumerable<T>> ReadFromRecordsAsync(DbDataReader reader);
 
         /// <summary>Gets a <typeparamref name="T"/> from the <paramref name="items"/> with the id specified in the <paramref name="record"/>.</summary>
         /// <param name="items">The list of <typeparamref name="T"/>s.</param>
@@ -96,6 +96,42 @@ namespace Chaos.Movies.Model.Base
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}Ids"), Persistent.CreateIdCollectionTable(idList));
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    return await readFromRecords(reader);
+                }
+            }
+        }
+
+        /// <summary>Gets the specified <typeparamref name="T"/>s.</summary>
+        /// <param name="lookupIdList">The list of lookup ids of the <typeparamref name="T"/>s to get.</param>
+        /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
+        /// <param name="session">The session.</param>
+        /// <returns>The list of <typeparamref name="T"/>s.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="lookupIdList"/> or <paramref name="readFromRecords"/> is <see langword="null"/></exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
+        protected async Task<IEnumerable<T>> GetFromDatabaseAsync(IEnumerable<Guid> lookupIdList, Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords, UserSession session)
+        {
+            if (readFromRecords == null)
+            {
+                throw new ArgumentNullException(nameof(readFromRecords));
+            }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            await session.ValidateSessionAsync();
+
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}LookupGet", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}LookupIds"), Persistent.CreateIdCollectionTable(lookupIdList));
                 await connection.OpenAsync();
                 using (var reader = await command.ExecuteReaderAsync())
                 {

@@ -162,7 +162,7 @@ namespace Chaos.Movies.Model.Base
         }
 
         /// <summary>Validates that the this <typeparamref name="TList"/> is valid to be saved.</summary>
-        internal abstract void ValidateSaveCandidate();
+        public abstract void ValidateSaveCandidate();
 
         /// <summary>Removes all <typeparamref name="T"/> from this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         protected void Clear()

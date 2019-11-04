@@ -133,14 +133,14 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        internal override void ValidateSaveCandidate()
+        public override void ValidateSaveCandidate()
         {
         }
 
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        internal override async Task<ExternalRating> NewFromRecordAsync(IDataRecord record)
+        public override async Task<ExternalRating> NewFromRecordAsync(IDataRecord record)
         {
             var result = new ExternalRating();
             await result.ReadFromRecordAsync(record);
@@ -150,7 +150,7 @@ namespace Chaos.Movies.Model
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the <paramref name="record"/>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
-        protected override async Task ReadFromRecordAsync(IDataRecord record)
+        public override async Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { ExternalSource.IdColumn, RatingColumn, RatingCountColumn });
             this.ExternalSource = await GlobalCache.GetExternalSourceAsync((int)record[ExternalSource.IdColumn]);
