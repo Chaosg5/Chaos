@@ -346,7 +346,7 @@ namespace Chaos.Movies.Model
             await session.ValidateSessionAsync();
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(User).Name}SetPassword", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(User).Name}SetPassword", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable(User.IdColumn), this.Id);

@@ -16,6 +16,9 @@ namespace Chaos.Wedding.Models
         Invited = 1,
 
         /// <summary>Invitation accepted.</summary>
-        Accepted = 1
+        Accepted = 2,
+
+        /// <summary>Invitation declined.</summary>
+        Declined = 3
     }
 }

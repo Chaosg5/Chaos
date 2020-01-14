@@ -775,7 +775,7 @@ namespace Chaos.Movies.Service
 
         public void LoadMovie(string movieIdentifier)
         {
-            var s = new TMDbLib.Client.TMDbClient(Properties.Settings.Default.TmdbApiKey);
+            ////var s = new TMDbLib.Client.TMDbClient(Properties.Settings.Default.TmdbApiKey);
 
             // s.GetMovieAsync()
         }

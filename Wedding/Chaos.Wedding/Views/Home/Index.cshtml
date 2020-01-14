@@ -1,10 +1,49 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Hej och välkomna till vår bröllopssida!";
 }
 
-<div>
-    Hej och välkomna till vår bröllopssida!
-    
-    Vår lilla berättelse.
-    Caroline och Erik träffades första gången 9 oktober 2016. På den tiden bodde Caroline i Växjö och Erik 
+<div class="contentBackground">
+    <h2>@ViewBag.Title</h2>
+    <p>
+        Erik & Caroline
+    </p>
+    <p id="countDownDate"></p>
+    <p>Mer information kommer här vid ett senare tillfälle.</p>
+    @*<p>
+            Vi träffades första gången oktober 2016.
+            På den tiden bodde Caroline i Växjö men Erik lät inte avståndet vara ett motstånd utan han tog chansen och åkte till Växjö för att hälsa på Caroline och sedan dess har de varit tillsammans.
+        </p>
+        <p>
+            Det som gjorde att Caroline fastnade för Erik var hans ärlighet och det som fick Erik att fastna för Caroline var hennes skönhet.
+        </p>
+        <p>
+            Caroline och Erik är som jämföras med mjölkchoklad där Erik är mjölken och Caroline chokladen.
+        </p>
+        <p>
+            Det Caroline uppskattar mest hos Erik är hans lugn och sätt att omtänksamhet. Om Caroline skulle välja en karaktär från en film som skulle representera Erik skulle hon tycka att det är svårt att hitta bara en då Erik är lika kärleksfull som Jack från Titanic. Erik kan vara lite skeptiskt som Mr. Darcy från Pride and Prejudicerande. Erik kan vara lika envis som Darth Vader från Star wars filmer men Erik är framför allt lika busig som Emil från Lönneberga och det är det Caroline älskar mest hos Erik.
+        </p>
+        <p>
+            Det Erik uppskattar mest hos Caroline är(...)
+        </p>
+        <p>
+            Caroline och Erik älskar att hitta på saker tillsammans men vill man göra de extra glada så är det god mat som gäller
+        </p>*@
 </div>
+
+<script type="text/javascript">
+    var countDownDate = new Date("Aug 8, 2020 14:00:00").getTime();
+    var x = setInterval(function () {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById("countDownDate").innerHTML = days + " dagar, " + hours + " timmar, "
+            + minutes + " minuter och " + seconds + " sekunder ";
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("countDownDate").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+</script>

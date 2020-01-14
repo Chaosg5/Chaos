@@ -92,7 +92,7 @@ namespace Chaos.Movies.Model.Base
             await session.ValidateSessionAsync();
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}Get", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}Get", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}Ids"), Persistent.CreateIdCollectionTable(idList));
@@ -163,7 +163,7 @@ namespace Chaos.Movies.Model.Base
             await session.ValidateSessionAsync();
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}Search", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}Search", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable(SearchTextColumn), parametersDto.SearchText);

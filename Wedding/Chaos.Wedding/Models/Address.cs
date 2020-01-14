@@ -13,13 +13,14 @@ namespace Chaos.Wedding.Models
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Chaos.Movies.Contract;
     using Chaos.Movies.Model;
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <inheritdoc cref="Readable{T, TDto}" />
     /// <summary>An address.</summary>
-    public class Address : Readable<Address, Address>, IReadableExtension<Address, Address>
+    public class Address : Readable<Address, Address>, IReadableExtension<Address, Address>, ISearchable<Address>
     {
         /// <summary>The database column for <see cref="Street"/>.</summary>
         private const string StreetColumn = "Street";
@@ -107,6 +108,12 @@ namespace Chaos.Wedding.Models
         {
             Persistent.ValidateRecord(record, new[] { IdColumn });
             this.Id = (int)record[IdColumn];
+            this.Street = (string)record[StreetColumn];
+            this.Apartment = (string)record[ApartmentColumn];
+            this.PostalCode = (string)record[PostalCodeColumn];
+            this.City = (string)record[CityColumn];
+            this.Country = (string)record[CountryColumn];
+            this.LookupId = (Guid)record[LookupIdColumn];
             return Task.CompletedTask;
         }
 
@@ -138,6 +145,22 @@ namespace Chaos.Wedding.Models
         public override async Task<IEnumerable<Address>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
             return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
+        }
+
+        /// <inheritdoc/>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public async Task<IEnumerable<Address>> SearchAsync(SearchParametersDto parametersDto, UserSession session)
+        {
+            // ToDo: Change SearchDatabase to return the real results instead
+            var results = (await this.SearchDatabaseAsync(parametersDto, session)).ToList();
+            if (results.Any())
+            {
+                return await this.GetAsync(session, results);
+            }
+
+            return new List<Address>();
         }
 
         /// <inheritdoc/>

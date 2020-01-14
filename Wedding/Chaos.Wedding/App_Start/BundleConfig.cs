@@ -24,7 +24,13 @@ namespace Chaos.Wedding
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/fontawesome.css",
+                      "~/Content/brands.css",
+                      "~/Content/regular.css",
+                      "~/Content/solid.css",
+                      "~/Content/svg-with-js.css",
+                      "~/Content/v4-shims.css"));
         }
     }
 }

@@ -156,7 +156,7 @@ namespace Chaos.Movies.Model
                                 { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), userRating.ActualRating },
                                 { Persistent.ColumnToVariable(UserDerivedRating.DerivedColumn), userRating.DerivedRating }
                             });
-                        await Movie.CustomDatabaseActionAsync(parameters, UserSingleRating.UserRatingSaveProcedure, session);
+                        await Static.CustomDatabaseActionAsync(parameters, UserSingleRating.UserRatingSaveProcedure, session);
                     }
                 }
 
@@ -197,7 +197,7 @@ namespace Chaos.Movies.Model
                         { Persistent.ColumnToVariable(Watch.WatchDateColumn), watchDate },
                         { Persistent.ColumnToVariable(Watch.DateUncertainColumn), dateUncertain }
                     });
-                await Movie.CustomDatabaseActionAsync(parameters, Watch.UserWatchSaveProcedure, session);
+                await Static.CustomDatabaseActionAsync(parameters, Watch.UserWatchSaveProcedure, session);
                 return;
             }
 
@@ -239,7 +239,7 @@ namespace Chaos.Movies.Model
                         { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
                         { Persistent.ColumnToVariable(WatchType.IdColumn), watchTypeId }
                     });
-                await Movie.CustomDatabaseActionAsync(parameters, Watch.UserWatchDeleteProcedure, session);
+                await Static.CustomDatabaseActionAsync(parameters, Watch.UserWatchDeleteProcedure, session);
                 return;
             }
 

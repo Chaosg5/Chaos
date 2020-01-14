@@ -32,7 +32,14 @@ namespace Chaos.Movies.Model
         private const string ActiveToColumn = "ActiveTo";
 
         /// <summary>Available sessions.</summary>
-        private static readonly AsyncCache<Guid, UserSession> UserSessions = new AsyncCache<Guid, UserSession>(GetFromDatabaseAsync);
+        private static readonly AsyncCache<Guid, UserSession> UserSessions;
+
+        /// <summary>Initializes static members of the <see cref="UserSession"/> class.</summary>
+        static UserSession()
+        {
+            Static = new UserSession();
+            UserSessions = new AsyncCache<Guid, UserSession>(Static.GetFromDatabaseAsync);
+        }
 
         /// <summary>Prevents a default instance of the <see cref="UserSession"/> class from being created.</summary>
         private UserSession()
@@ -40,7 +47,7 @@ namespace Chaos.Movies.Model
         }
 
         /// <summary>Gets a reference to simulate static methods.</summary>
-        public static UserSession Static { get; } = new UserSession();
+        public static UserSession Static { get; }
 
         /// <summary>Gets the session id.</summary>
         public Guid SessionId { get; private set; }
@@ -243,10 +250,10 @@ namespace Chaos.Movies.Model
         /// <summary>The get from database async.</summary>
         /// <param name="sessionId">The session id.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        private static async Task<UserSession> GetFromDatabaseAsync(Guid sessionId)
+        private async Task<UserSession> GetFromDatabaseAsync(Guid sessionId)
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(UserSession).Name}Get", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(UserSession).Name}Get", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 // ReSharper disable once ExceptionNotDocumented
@@ -291,7 +298,7 @@ namespace Chaos.Movies.Model
         private async Task<UserSession> CreateSessionToDatabaseAsync(UserLogin login)
         {
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{nameof(UserSession)}Save", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(UserSession).Name}Save", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 foreach (var commandParameter in this.GetSaveParameters(login))

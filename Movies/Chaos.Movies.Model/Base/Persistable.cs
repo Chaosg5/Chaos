@@ -23,6 +23,7 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Gets or sets the id of this <typeparamref name="T"/>.</summary>
         public int Id { get; protected set; }
 
+        /// <summary>Gets or sets the database schema name.</summary>
         protected string SchemaName { get; set; } = "dbo";
 
         /// <summary>Saves this <typeparamref name="T"/> to the database.</summary>
@@ -36,7 +37,7 @@ namespace Chaos.Movies.Model.Base
         /// <param name="session">The session.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <parmref name="commandParameters"/> is <see langword="null"/></exception>
-        protected static async Task CustomDatabaseActionAsync(IReadOnlyDictionary<string, object> commandParameters, string procedureSuffix, UserSession session)
+        protected async Task CustomDatabaseActionAsync(IReadOnlyDictionary<string, object> commandParameters, string procedureSuffix, UserSession session)
         {
             if (commandParameters == null)
             {
@@ -55,7 +56,7 @@ namespace Chaos.Movies.Model.Base
 
             await session.ValidateSessionAsync();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}{procedureSuffix}", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}{procedureSuffix}", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 foreach (var commandParameter in commandParameters)
@@ -94,7 +95,7 @@ namespace Chaos.Movies.Model.Base
             
             await session.ValidateSessionAsync();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}Save", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}Save", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 foreach (var commandParameter in commandParameters)

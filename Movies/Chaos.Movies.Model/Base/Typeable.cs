@@ -46,7 +46,7 @@ namespace Chaos.Movies.Model.Base
             await session.ValidateSessionAsync();
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}GetAll", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}GetAll", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 connection.Open();

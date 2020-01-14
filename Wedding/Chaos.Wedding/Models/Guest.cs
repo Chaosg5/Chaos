@@ -8,6 +8,7 @@ namespace Chaos.Wedding.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
     using System.Linq;
@@ -42,6 +43,37 @@ namespace Chaos.Wedding.Models
         /// <summary>The database column for <see cref="Information"/>.</summary>
         private const string InformationColumn = "Information";
 
+        /// <summary>The address id.</summary>
+        private readonly int addressId;
+
+        /// <summary>Initializes a new instance of the <see cref="Guest"/> class.</summary>
+        /// <param name="name">The <see cref="Name"/> to set.</param>
+        /// <param name="addressId">The address Id.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/></exception>
+        public Guest(string name, int addressId)
+        {
+            this.SchemaName = "wed";
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (addressId <= 0)
+            {
+                throw new ArgumentNullException(nameof(addressId));
+            }
+
+            this.Name = name;
+            this.LookupId = Guid.NewGuid();
+            this.addressId = addressId;
+        }
+
+        /// <summary>Prevents a default instance of the <see cref="Guest"/> class from being created.</summary>
+        private Guest()
+        {
+            this.SchemaName = "wed";
+        }
+        
         /// <summary>Gets a reference to simulate static methods.</summary>
         public static Guest Static { get; } = new Guest();
 
@@ -60,14 +92,14 @@ namespace Chaos.Wedding.Models
         /// <summary>Gets the titles.</summary>
         public LanguageTitleCollection Titles { get; private set; } = new LanguageTitleCollection();
 
-        /// <summary>Gets the reception.</summary>
-        public InvitationStatus Reception { get; private set; } = InvitationStatus.None;
+        /// <summary>Gets or sets the reception.</summary>
+        public InvitationStatus Reception { get; set; } = InvitationStatus.None;
 
-        /// <summary>Gets the dinner.</summary>
-        public InvitationStatus Dinner { get; private set; } = InvitationStatus.None;
+        /// <summary>Gets or sets the dinner.</summary>
+        public InvitationStatus Dinner { get; set; } = InvitationStatus.None;
 
-        /// <summary>Gets the information.</summary>
-        public string Information { get; private set; }
+        /// <summary>Gets or sets the information.</summary>
+        public string Information { get; set; }
 
         /// <inheritdoc/>
         public override Guest ToContract()
@@ -127,9 +159,11 @@ namespace Chaos.Wedding.Models
         }
 
         /// <inheritdoc/>
-        public override Task SaveAsync(UserSession session)
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task SaveAsync(UserSession session)
         {
-            throw new NotImplementedException();
+            this.ValidateSaveCandidate();
+            await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
         }
 
         /// <inheritdoc/>
@@ -157,7 +191,6 @@ namespace Chaos.Wedding.Models
         }
 
         /// <inheritdoc/>
-        /// <exception cref="MissingResultException">A required result is missing from the database.</exception>
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         public override async Task<IEnumerable<Guest>> ReadFromRecordsAsync(DbDataReader reader)
@@ -175,7 +208,7 @@ namespace Chaos.Wedding.Models
 
             if (!await reader.NextResultAsync() || !reader.HasRows)
             {
-                throw new MissingResultException(2, $"{nameof(Guest)}{LanguageTitleCollection.TitlesColumn}");
+                return guests;
             }
 
             while (await reader.ReadAsync())
@@ -190,7 +223,19 @@ namespace Chaos.Wedding.Models
         /// <inheritdoc/>
         protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
-            throw new NotImplementedException();
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(IdColumn), this.Id },
+                    { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable(LookupIdColumn), this.LookupId },
+                    { Persistent.ColumnToVariable(BornColumn), this.Born },
+                    { Persistent.ColumnToVariable(DeadColumn), this.Dead },
+                    { Persistent.ColumnToVariable(ReceptionColumn), this.Reception },
+                    { Persistent.ColumnToVariable(DinnerColumn), this.Dinner },
+                    { Persistent.ColumnToVariable(InformationColumn), this.Information },
+                    { Persistent.ColumnToVariable(Address.IdColumn), this.addressId }
+                });
         }
     }
 }

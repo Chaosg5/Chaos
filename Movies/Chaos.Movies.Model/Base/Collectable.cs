@@ -45,6 +45,9 @@ namespace Chaos.Movies.Model.Base
         /// <summary>Gets the id of the parent of this collection.</summary>
         public int ParentId => this.Parent.Id;
 
+        /// <summary>Gets or sets the database schema name.</summary>
+        protected string SchemaName { get; set; } = "dbo";
+
         /// <summary>Gets the parent of this collection.</summary>
         private Persistable<TParent, TParentDto> Parent { get; }
 
@@ -154,7 +157,7 @@ namespace Chaos.Movies.Model.Base
             await session.ValidateSessionAsync();
 
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(TParent).Name}{typeof(T).Name}Save", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(TParent).Name}{typeof(T).Name}Save", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 foreach (var commandParameter in commandParameters)

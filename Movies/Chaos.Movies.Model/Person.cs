@@ -149,7 +149,7 @@ namespace Chaos.Movies.Model
                         { Persistent.ColumnToVariable(User.IdColumn), session.UserId },
                         { Persistent.ColumnToVariable(UserSingleRating.RatingColumn), rating }
                     });
-                await Person.CustomDatabaseActionAsync(parameters, UserSingleRating.UserRatingSaveProcedure, session);
+                await Static.CustomDatabaseActionAsync(parameters, UserSingleRating.UserRatingSaveProcedure, session);
                 return;
             }
 

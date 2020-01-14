@@ -1,7 +1,206 @@
-﻿@{
+﻿@using Chaos.Wedding.Models
+@model Chaos.Wedding.Models.Address
+
+@{
     ViewBag.Title = "Inbjudan";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+<div class="contentBackground">
+    <h2>@ViewBag.Title</h2>
+    @if (Model == null)
+    {
+        <div>
+            <label for="EnterLookupShort">Ange din inbjudningskod:</label>
+            <input id="EnterLookupShort" type="text" onchange="enterLookupShort(this);" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" />
+            <div id="LookupShortSpinner" class="loadingSpinner" style="display: none"></div>
+            <div id="LookupShortError" style="display: none"></div>
+        </div>
+    }
+    else
+    {
+        <b>Ni var alldeles för snabba hit, men kom gärna tillbaka efter nyår så kommer det finnas möjlighet att säga att man kommer här.</b>
+        <br />
+        <b>Orkar ni inte vänta så säg till oss på annat valfritt sätt.</b>
+        <br />
+        <b>Hoppas vi ses på den stora dagen!</b>
+        <br />
+        <b>Kram</b>
+        <br />
+        <b>Caroline &amp; Erik</b>
 
-<p>Use this area to provide additional information.</p>
+        <br />
+        <br />
+        <br />
+        <div>@Model.Street</div>
+        <div>@FormattableString.Invariant($"{Model.PostalCode} {Model.City}")</div>
+        <table class="questionTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Fika</th>
+                    <th>Middag</th>
+                    <th>Allergier & annat</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var guest in Model.Guests)
+                {
+                <tr>
+                    <th>@guest.Name</th>
+                    @switch (guest.Reception)
+                    {
+                        case InvitationStatus.Declined:
+                            <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-times error"></i></td>
+                            break;
+                        case InvitationStatus.Accepted:
+                            <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Declined))"><i class="fas fa-check success"></i></td>
+                            break;
+                        case InvitationStatus.Invited:
+                            <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-question question"></i></td>
+                            break;
+                        case InvitationStatus.None:
+                        default:
+                            <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-minus error"></i></td>
+                            break;
+                    }
+                    @switch (guest.Dinner)
+                    {
+                        case InvitationStatus.Declined:
+                            <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-times error"></i></td>
+                            break;
+                        case InvitationStatus.Accepted:
+                            <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Declined))"><i class="fas fa-check success"></i></td>
+                            break;
+                        case InvitationStatus.Invited:
+                            <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-question question"></i></td>
+                            break;
+                        case InvitationStatus.None:
+                        default:
+                            <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-minus error"></i></td>
+                            break;
+                    }
+                    <td><textarea id="@FormattableString.Invariant($"informationGuest{guest.Id}")">@guest.Information</textarea></td>
+                    <td><i class="far fa-save" onclick="saveInformationStatus('@guest.Id')"></i></td>
+                </tr>
+                }
+            <tr>
+                <th><i class="fas fa-user-plus" onclick="document.getElementById('newUser').style.visibility = 'visible';"></i></th>
+            </tr>
+            <tr>
+                <td>
+                    <div id="newUser" style="visibility: collapse;">
+                        <b>Namn: </b>
+                        <input id="newUserName" type="text"/>
+                        <i class="far fa-save" onclick="saveNewGuest(@Model.Id)"></i>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    }
+</div>
+
+<script type="text/javascript">
+    var enteringLookup = false;
+
+    function enterLookupShort(inputElement) {
+        if (enteringLookup) {
+            return;
+        }
+
+        if (inputElement.value.length === 4) {
+            enteringLookup = true;
+            document.getElementById("LookupShortSpinner").style.display = "block";
+            $("LookupShortSpinner").show();
+            $.ajax({
+                url: "@Url.Action("GetLookupShort", "Home")",
+                data: { lookupShort: inputElement.value },
+                type: "POST",
+                success: function(lookupId) {
+                    window.location = "@Url.Action("Inbjudan", "Home")" + "?id=" + lookupId;
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    enteringLookup = false;
+                    document.getElementById("LookupShortSpinner").style.display = "none";
+                    document.getElementById("LookupShortError").style.display = "block";
+                    document.getElementById("LookupShortError").innerHTML =
+                        "<span style=\"color:red;\">Angiven kod finns inte, försök igen!</span>";
+                }
+            });
+        }
+    }
+
+    function setReceptionStatus(guestId, invitationStatus, confirmRemove) {
+        if (confirmRemove && !confirm("Är du säker på att...")) {
+            return;
+        }
+
+        setInvitationStatus(guestId, invitationStatus, "@Url.Action("SetReceptionStatus", "Home")");
+    }
+
+    function setDinnerStatus(guestId, invitationStatus, confirmRemove) {
+        if (confirmRemove && !confirm("Är du säker på att...")) {
+            return;
+        }
+
+        setInvitationStatus(guestId, invitationStatus, "@Url.Action("SetDinnerStatus", "Home")");
+    }
+
+    function setInvitationStatus(guestId, invitationStatus, url) {
+        $.ajax({
+            url: url,
+            data: { guestId: guestId, invitationStatus: invitationStatus },
+            type: "POST",
+            success: function() {
+                window.location.reload();
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                enteringLookup = false;
+                alert(JSON.stringify(xhr));
+            }
+        });
+    }
+
+    function saveInformationStatus(guestId) {
+        var information = document.getElementById("informationGuest" + guestId);
+        if (!information) {
+            // ToDo: Error
+            return;
+        }
+
+        $.ajax({
+            url: "@Url.Action("SaveGuestInformation", "Home")",
+            data: { guestId: guestId, information: information.value },
+            type: "POST",
+            success: function () {
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                enteringLookup = false;
+                alert(JSON.stringify(xhr));
+            }
+        });
+    }
+
+    function saveNewGuest(addressId) {
+        var newUserName = document.getElementById("newUserName");
+        if (!newUserName) {
+            // ToDo: Error
+            return;
+        }
+
+        $.ajax({
+            url: "@Url.Action("SaveNewGuest", "Home")",
+            data: { name: newUserName.value, addressId: addressId },
+            type: "POST",
+            success: function () {
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                enteringLookup = false;
+                alert(JSON.stringify(xhr));
+            }
+        });
+    }
+
+</script>

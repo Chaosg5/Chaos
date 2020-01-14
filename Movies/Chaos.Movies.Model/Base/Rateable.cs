@@ -56,7 +56,7 @@ namespace Chaos.Movies.Model.Base
 
             await session.ValidateSessionAsync();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}{GetUserDetailsProcedure}", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}{GetUserDetailsProcedure}", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}Id"), id);
@@ -93,7 +93,7 @@ namespace Chaos.Movies.Model.Base
 
             await session.ValidateSessionAsync();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}{GetUserDetailsProcedure}", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}{GetUserDetailsProcedure}", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}Id"), id);
@@ -141,7 +141,7 @@ namespace Chaos.Movies.Model.Base
             
             await session.ValidateSessionAsync();
             using (var connection = new SqlConnection(Persistent.ConnectionString))
-            using (var command = new SqlCommand($"{typeof(T).Name}{GetUserRatingsProcedure}", connection))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}{GetUserRatingsProcedure}", connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue(Persistent.ColumnToVariable($"{typeof(T).Name}Ids"), Persistent.CreateIdCollectionTable(itemIds));
