@@ -1,37 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿//-----------------------------------------------------------------------
+// <copyright file="HomeController.cs">
+//     Copyright (c) Erik Bunnstad. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Chaos.Wedding.Controllers
 {
+    using System;
+    using System.Globalization;
+    using System.Linq;
     using System.Threading.Tasks;
+    using System.Web.Mvc;
 
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model.Exceptions;
     using Chaos.Wedding.Models;
 
+    using NLog;
+
+    /// <inheritdoc />
+    /// <summary>The home controller.</summary>
     public class HomeController : Controller
     {
+        /// <summary>The logger.</summary>
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        /// <summary>The index.</summary>
+        /// <returns>The <see cref="ActionResult"/>.</returns>
         public ActionResult Index()
         {
-            return View();
+            return this.View();
         }
 
+        /// <summary>The invitation.</summary>
+        /// <param name="id">The id.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
         public async Task<ActionResult> Inbjudan(string id)
         {
-            ViewBag.Message = "Inbjudan";
-
-            if (id != null)
+            try
             {
-                var address = await Address.Static.GetAsync(await SessionHandler.GetSessionAsync(), new Guid(id));
-                return View(address);
-            }
+                ViewBag.Message = "Inbjudan";
 
-            return View();
+                if (id != null)
+                {
+                    var address = await Address.Static.GetAsync(await SessionHandler.GetSessionAsync(), new Guid(id));
+                    Logger.Info(CultureInfo.InvariantCulture, "Address viewed: {0}", address.LookupId);
+                    return this.View(address);
+                }
+
+                return this.View();
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception, CultureInfo.InvariantCulture, "Failed to get address with id {0}", id);
+                throw;
+            }
         }
 
+        /// <summary>The get lookup short.</summary>
+        /// <param name="lookupShort">The lookup short.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
         public async Task<ActionResult> GetLookupShort(string lookupShort)
         {
             try
@@ -43,10 +71,15 @@ namespace Chaos.Wedding.Controllers
             }
             catch (Exception exception)
             {
+                Logger.Error(exception);
                 throw;
             }
         }
 
+        /// <summary>The set reception status.</summary>
+        /// <param name="guestId">The guest id.</param>
+        /// <param name="invitationStatus">The invitation status.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
         public async Task<ActionResult> SetReceptionStatus(int guestId, int invitationStatus)
         {
             try
@@ -55,7 +88,7 @@ namespace Chaos.Wedding.Controllers
                 var guest = await Guest.Static.GetAsync(session, guestId);
                 if (!Enum.IsDefined(typeof(InvitationStatus), invitationStatus))
                 {
-                    throw new InvalidSaveCandidateException(string.Format("The invitation status {0} is not valid.", invitationStatus));
+                    throw new InvalidSaveCandidateException(string.Format(CultureInfo.InvariantCulture, "The invitation status {0} is not valid.", invitationStatus));
                 }
 
                 guest.Reception = (InvitationStatus)invitationStatus;
@@ -64,6 +97,7 @@ namespace Chaos.Wedding.Controllers
             }
             catch (Exception exception)
             {
+                Logger.Error(exception);
                 throw;
             }
         }
@@ -85,6 +119,7 @@ namespace Chaos.Wedding.Controllers
             }
             catch (Exception exception)
             {
+                Logger.Error(exception);
                 throw;
             }
         }
@@ -101,6 +136,7 @@ namespace Chaos.Wedding.Controllers
             }
             catch (Exception exception)
             {
+                Logger.Error(exception);
                 throw;
             }
         }
@@ -116,6 +152,7 @@ namespace Chaos.Wedding.Controllers
             }
             catch (Exception exception)
             {
+                Logger.Error(exception);
                 throw;
             }
         }
@@ -140,6 +177,16 @@ namespace Chaos.Wedding.Controllers
         }
 
         public ActionResult Stadsjakt()
+        {
+            return View();
+        }
+
+        public ActionResult Bilder()
+        {
+            return View();
+        }
+
+        public ActionResult Historia()
         {
             return View();
         }

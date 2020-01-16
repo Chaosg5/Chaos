@@ -25,10 +25,22 @@ textarea {
     max-width: 280px;
 }
 
+/* Change bootstrap menu visuals */
+nav.navbar-light li.nav-item a.nav-link {
+    color: #990b0b;
+    font-weight: bold;
+}
+
+nav.navbar-light a.navbar-brand {
+    color: #990b0b;
+    font-weight: bold;
+}
+
 h1, h2, h3 {
     color: #990b0b;
     font-weight: bolder;
-    margin-bottom: 50px;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 .contentBackground {
@@ -82,3 +94,15 @@ i.error {
 @keyframes spin {
     to {
         transform: rotate(360deg); } }
+
+/*  */
+.newsItem {
+    text-align: left;
+    margin: 10px 0;
+    border-top: #888888 1px solid;
+    padding: 10px 0;
+}
+
+.newsItem span {
+    color: #888888;
+}

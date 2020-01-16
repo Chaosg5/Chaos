@@ -17,21 +17,21 @@
     }
     else
     {
-        <b>Ni var alldeles för snabba hit, men kom gärna tillbaka efter nyår så kommer det finnas möjlighet att säga att man kommer här.</b>
-        <br />
-        <b>Orkar ni inte vänta så säg till oss på annat valfritt sätt.</b>
-        <br />
-        <b>Hoppas vi ses på den stora dagen!</b>
-        <br />
-        <b>Kram</b>
-        <br />
-        <b>Caroline &amp; Erik</b>
-
+        <p>
+            Nu kan ni bekräfta att ni kommer nedan.
+            <br />Vid frågor och funderingar finns kontaktuppgifter till oss på sidan @Html.ActionLink("Kontakt", "Info", "Home").
+            <br />Hoppas vi ses på den stora dagen!
+            <br />Kram
+            <br />Caroline &amp; Erik
+        </p>
         <br />
         <br />
+        <p>
+            Klicka en gång på <i class="fas fa-question question"></i> för att bekräfta att ni kommer på aktiviteten så att <i class="fas fa-check success"></i> visas.
+            <br/>Klicka ytterligare en gång om ni inte kan komma så att <i class="fas fa-times error"></i> visas.
+            <br/>Har vi glömt någon? Säg till oss och lägg själv till genom att klicka på <i class="fas fa-user-plus"></i> nedan.
+        </p>
         <br />
-        <div>@Model.Street</div>
-        <div>@FormattableString.Invariant($"{Model.PostalCode} {Model.City}")</div>
         <table class="questionTable">
             <thead>
                 <tr>
@@ -45,58 +45,62 @@
             <tbody>
                 @foreach (var guest in Model.Guests)
                 {
-                <tr>
-                    <th>@guest.Name</th>
-                    @switch (guest.Reception)
-                    {
-                        case InvitationStatus.Declined:
-                            <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-times error"></i></td>
-                            break;
-                        case InvitationStatus.Accepted:
-                            <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Declined))"><i class="fas fa-check success"></i></td>
-                            break;
-                        case InvitationStatus.Invited:
-                            <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-question question"></i></td>
-                            break;
-                        case InvitationStatus.None:
-                        default:
-                            <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-minus error"></i></td>
-                            break;
-                    }
-                    @switch (guest.Dinner)
-                    {
-                        case InvitationStatus.Declined:
-                            <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-times error"></i></td>
-                            break;
-                        case InvitationStatus.Accepted:
-                            <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Declined))"><i class="fas fa-check success"></i></td>
-                            break;
-                        case InvitationStatus.Invited:
-                            <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-question question"></i></td>
-                            break;
-                        case InvitationStatus.None:
-                        default:
-                            <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-minus error"></i></td>
-                            break;
-                    }
-                    <td><textarea id="@FormattableString.Invariant($"informationGuest{guest.Id}")">@guest.Information</textarea></td>
-                    <td><i class="far fa-save" onclick="saveInformationStatus('@guest.Id')"></i></td>
-                </tr>
+                    <tr>
+                        <th>@guest.Name</th>
+                        @switch (guest.Reception)
+                        {
+                            case InvitationStatus.Declined:
+                                <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-times error"></i></td>
+                                break;
+                            case InvitationStatus.Accepted:
+                                <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Declined))"><i class="fas fa-check success"></i></td>
+                                break;
+                            case InvitationStatus.Invited:
+                                <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-question question"></i></td>
+                                break;
+                            case InvitationStatus.None:
+                            default:
+                                <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-minus error"></i></td>
+                                break;
+                        }
+                        @switch (guest.Dinner)
+                        {
+                            case InvitationStatus.Declined:
+                                <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-times error"></i></td>
+                                break;
+                            case InvitationStatus.Accepted:
+                                <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Declined))"><i class="fas fa-check success"></i></td>
+                                break;
+                            case InvitationStatus.Invited:
+                                <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-question question"></i></td>
+                                break;
+                            case InvitationStatus.None:
+                            default:
+                                <td onclick="setDinnerStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-minus error"></i></td>
+                                break;
+                        }
+                        <td><textarea id="@FormattableString.Invariant($"informationGuest{guest.Id}")">@guest.Information</textarea></td>
+                        <td><i class="far fa-save" onclick="saveInformationStatus('@guest.Id')" title="Spara"></i></td>
+                    </tr>
                 }
-            <tr>
-                <th><i class="fas fa-user-plus" onclick="document.getElementById('newUser').style.visibility = 'visible';"></i></th>
-            </tr>
-            <tr>
-                <td>
-                    <div id="newUser" style="visibility: collapse;">
-                        <b>Namn: </b>
-                        <input id="newUserName" type="text"/>
-                        <i class="far fa-save" onclick="saveNewGuest(@Model.Id)"></i>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <th><i class="fas fa-user-plus" onclick="document.getElementById('newUser').style.visibility = 'visible';"></i></th>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="newUser" style="visibility: collapse;">
+                            <b>Namn: </b>
+                            <input id="newUserName" type="text" />
+                            <i class="far fa-save" onclick="saveNewGuest(@Model.Id)"></i>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
+        <br />
+        <div>Registrerad adress:</div>
+        <div>@Model.Street</div>
+        <div>@FormattableString.Invariant($"{Model.PostalCode} {Model.City}")</div>
     }
 </div>
 
