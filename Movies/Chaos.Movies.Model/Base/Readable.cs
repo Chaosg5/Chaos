@@ -17,9 +17,10 @@ namespace Chaos.Movies.Model.Base
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model.Exceptions;
 
+    /// <inheritdoc />
     /// <summary>Represents a persitable object that can be saved to the database and then read up again as a self-containing entity.</summary>
     /// <typeparam name="T">The base model logic type.</typeparam>
-    /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T"/>.</typeparam>
+    /// <typeparam name="TDto">The data transfer type to use for communicating the <typeparamref name="T" />.</typeparam>
     public abstract class Readable<T, TDto> : Persistable<T, TDto>
     {
         /// <summary>The database column for <see cref="SearchParametersDto.SearchText"/>.</summary>
@@ -43,7 +44,16 @@ namespace Chaos.Movies.Model.Base
         /// <returns>The list of <typeparamref name="T"/>s.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
         public abstract Task<IEnumerable<T>> GetAsync(UserSession session, IEnumerable<int> idList);
-        
+
+        /// <summary>Gets the specified <typeparamref name="T"/> and all it's details.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <param name="id">The id of the <typeparamref name="T"/> to get.</param>
+        /// <returns>The list of <typeparamref name="T"/>s.</returns>
+        public virtual async Task<T> GetDetailsAsync(UserSession session, int id)
+        {
+            return await this.GetAsync(session, id);
+        }
+
         /// <summary>Creates new <typeparamref name="T"/>s from the <paramref name="reader"/>.</summary>
         /// <param name="reader">The reader containing data sets and records for the data for the <typeparamref name="T"/>s.</param>
         /// <returns>The list of <typeparamref name="T"/>s.</returns>

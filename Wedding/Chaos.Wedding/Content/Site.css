@@ -5,6 +5,11 @@
     background-color: #752727;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
@@ -25,6 +30,13 @@ textarea {
     max-width: 280px;
 }
 
+h1, h2, h3 {
+    color: #990b0b;
+    font-weight: bolder;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
 /* Change bootstrap menu visuals */
 nav.navbar-light li.nav-item a.nav-link {
     color: #990b0b;
@@ -36,11 +48,28 @@ nav.navbar-light a.navbar-brand {
     font-weight: bold;
 }
 
-h1, h2, h3 {
-    color: #990b0b;
-    font-weight: bolder;
-    margin-top: 10px;
-    margin-bottom: 20px;
+.navbar.navbar-fixed-bottom {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    background-color: black;
+    -webkit-backface-visibility: hidden;
+}
+
+.navbar.navbar-fixed-bottom .navbar-nav {
+    width: 100%;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.navbar.navbar-fixed-bottom .navbar-nav .nav-item {
+    width: 20%;
+    text-align: center;
+    font-size: 3em;
+}
+
+.fixedContainer {
+    margin-bottom: 5.5em;
 }
 
 .contentBackground {
@@ -75,8 +104,13 @@ h1, h2, h3 {
 }
 
 .questionTable td i {
-    font-size: 25px;
+    font-size: 40px;
     cursor: pointer;
+}
+
+.questionTable td.giftImage img {
+    width: 100px;
+    height: 100px;
 }
 
 i.success {
@@ -87,15 +121,23 @@ i.question {
     color: skyblue;
 }
 
+i.warning {
+    color: orange;
+}
+
 i.error {
     color: red;
+}
+
+i.gold {
+    color: gold;
 }
 
 @keyframes spin {
     to {
         transform: rotate(360deg); } }
 
-/*  */
+/* News */
 .newsItem {
     text-align: left;
     margin: 10px 0;

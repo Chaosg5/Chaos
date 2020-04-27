@@ -53,7 +53,7 @@
                                 <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-times error"></i></td>
                                 break;
                             case InvitationStatus.Accepted:
-                                <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Declined))"><i class="fas fa-check success"></i></td>
+                                <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Declined), true)"><i class="fas fa-check success"></i></td>
                                 break;
                             case InvitationStatus.Invited:
                                 <td onclick="setReceptionStatus('@guest.Id', @((int)InvitationStatus.Accepted))"><i class="fas fa-question question"></i></td>
@@ -135,7 +135,7 @@
     }
 
     function setReceptionStatus(guestId, invitationStatus, confirmRemove) {
-        if (confirmRemove && !confirm("Är du säker på att...")) {
+        if (confirmRemove && !confirm("Är du säker på att du inte vill fika?")) {
             return;
         }
 
@@ -143,7 +143,7 @@
     }
 
     function setDinnerStatus(guestId, invitationStatus, confirmRemove) {
-        if (confirmRemove && !confirm("Är du säker på att...")) {
+        if (confirmRemove && !confirm("Är du säker på att du inte vill komma på middagen?")) {
             return;
         }
 

@@ -51,7 +51,7 @@ namespace Chaos.Movies.Model
         public RatingTypeCollection Subtypes { get; private set; }
 
         /// <summary>Gets the id of the parent <see cref="RatingType"/>.</summary>
-        internal int ParentRatingTypeId { get; private set; }
+        public int ParentRatingTypeId { get; private set; }
         
         /// <inheritdoc />
         /// <exception cref="InvalidSaveCandidateException">The <see cref="RatingType"/> is not valid to be saved.</exception>

@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style type="text/css">
+        body {
+            background: none;
+        }
+    </style>
+</head>
+<body style="background-color: #17252f">
+    <div class="fixedContainer">
+        @RenderBody()
+    </div>
+    <nav class="navbar navbar-fixed-bottom">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a href="@Url.Action("Index", "Game")"><i class="fas fa-map success"></i></a></li>
+            <li class="nav-item"><a href="@Url.Action("Score", "Game")"><i class="fas fa-list-ol gold"></i></a></li>
+            <li class="nav-item"><i class="fas fa-language question"></i></li>
+            <li class="nav-item"><a href="@Url.Action("Help", "Game")"><i class="fas fa-question question"></i></a></li>
+            <li class="nav-item"><a href="@Url.Action("Index", "Home")"><i class="fas fa-home question"></i></a></li>
+        </ul>
+    </nav>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

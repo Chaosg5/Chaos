@@ -1,10 +1,66 @@
-﻿
+﻿@using Chaos.Wedding.Models
+@model IEnumerable<Gift>
+
 @{
     ViewBag.Title = "Presenter";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="contentBackground">
     <h2>@ViewBag.Title</h2>
-    <p>Mer information kommer här vid ett senare tillfälle.</p>
+    <p>Hej!</p>
+    <p>Som ofta så har vi redan det mesta som vi behöver. Men nedan finner ni några specifika förslag på sådant som vi skulle tycka vara roligt att få.</p>
+    <p>Vill man ge något annat så fungerar det absolut, även presentkort eller aktiviteter, men det finns inga som helst krav på något.</p>
+    <p>Alla är välkomna med eller utan presenter, vi blir glada av att ni bara kommer och vill dela dagen med oss.</p>
+    <table class="questionTable">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Present</th>
+            <th>Markera som bokad</th>
+        </tr>
+        </thead>
+        @foreach (var gift in Model)
+        {
+            <tr>
+                <td class="giftImage">
+                    <img src="~/Content/images/store/@gift.ImageId" />
+                </td>
+                <td>
+                    @gift.Titles.First().Title<br />
+                    @gift.Titles.First().Description
+                </td>
+                <td class="icon50">
+                    @switch (gift.Booked)
+                    {
+                        case InvitationStatus.Accepted:
+                            <i class="far fa-check-circle success" onclick="setGiftBookedStatus('@gift.Id', @((int)InvitationStatus.Invited), true)"></i>
+                            break;
+                        default:
+                            <i class="far fa-circle" onclick="setGiftBookedStatus('@gift.Id', @((int)InvitationStatus.Accepted))"></i>
+                            break;
+                    }
+                </td>
+            </tr>
+        }
+    </table>
 </div>
 
+<script type="text/javascript">
+    function setGiftBookedStatus(giftId, bookedStatus, confirmRemove) {
+        if (confirmRemove && !confirm("Är du säker på att du vill avmarkera presenten?")) {
+            return;
+        }
+
+        $.ajax({
+            url: "@Url.Action("SetGiftBookedStatus", "Home")",
+            data: { giftId: giftId, bookedStatus: bookedStatus },
+            type: "POST",
+            success: function() {
+                window.location.reload();
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(JSON.stringify(xhr));
+            }
+        });
+    }
+</script>

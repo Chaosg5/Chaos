@@ -16,25 +16,25 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/10/2013 17:29:20</publishTime>
     </File>
     <File Include="bin/Chaos.Movies.Contract.dll">
-      <publishTime>01/14/2020 19:01:04</publishTime>
+      <publishTime>04/27/2020 09:02:45</publishTime>
     </File>
     <File Include="bin/Chaos.Movies.Contract.pdb">
-      <publishTime>01/14/2020 19:01:04</publishTime>
+      <publishTime>04/27/2020 09:02:45</publishTime>
     </File>
     <File Include="bin/Chaos.Movies.Model.dll">
-      <publishTime>01/14/2020 19:01:06</publishTime>
+      <publishTime>04/27/2020 09:02:46</publishTime>
     </File>
     <File Include="bin/Chaos.Movies.Model.dll.config">
       <publishTime>11/27/2018 21:56:41</publishTime>
     </File>
     <File Include="bin/Chaos.Movies.Model.pdb">
-      <publishTime>01/14/2020 19:01:06</publishTime>
+      <publishTime>04/27/2020 09:02:46</publishTime>
     </File>
     <File Include="bin/Chaos.Wedding.dll">
-      <publishTime>01/14/2020 19:01:10</publishTime>
+      <publishTime>04/27/2020 09:02:49</publishTime>
     </File>
     <File Include="bin/Chaos.Wedding.pdb">
-      <publishTime>01/14/2020 19:01:10</publishTime>
+      <publishTime>04/27/2020 09:02:49</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.TelemetryCorrelation.dll">
       <publishTime>09/20/2019 18:43:44</publishTime>
@@ -612,14 +612,47 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/images/background.jpg">
       <publishTime>11/03/2019 14:51:30</publishTime>
     </File>
+    <File Include="Content/images/GameMap.png">
+      <publishTime>02/11/2020 12:27:35</publishTime>
+    </File>
     <File Include="Content/images/icons/confirm.svg">
-      <publishTime>01/02/2020 13:28:12</publishTime>
+      <publishTime>01/16/2020 16:42:09</publishTime>
     </File>
     <File Include="Content/images/icons/delete.svg">
       <publishTime>01/02/2020 13:28:12</publishTime>
     </File>
     <File Include="Content/images/icons/question.svg">
       <publishTime>01/02/2020 13:28:12</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/alvarvas.jpg">
+      <publishTime>04/26/2020 17:02:54</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/brodrost.jpg">
+      <publishTime>04/26/2020 16:09:08</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/champis.jpg">
+      <publishTime>04/26/2020 16:43:11</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/koksmaskin.jpg">
+      <publishTime>04/26/2020 16:15:50</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/skal.jpg">
+      <publishTime>04/26/2020 16:19:43</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/skalkniv.jpg">
+      <publishTime>04/26/2020 17:18:55</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/tallrik18.jpg">
+      <publishTime>04/26/2020 16:34:28</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/tallrik27.jpg">
+      <publishTime>04/26/2020 16:25:24</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/vattenkokare.jpg">
+      <publishTime>04/26/2020 15:46:46</publishTime>
+    </File>
+    <File Include="Content/images/store/gifts/vin48.jpg">
+      <publishTime>04/26/2020 16:40:40</publishTime>
     </File>
     <File Include="Content/regular.css">
       <publishTime>01/02/2020 14:08:15</publishTime>
@@ -628,7 +661,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/02/2020 14:08:15</publishTime>
     </File>
     <File Include="Content/Site.css">
-      <publishTime>01/14/2020 18:26:51</publishTime>
+      <publishTime>04/27/2020 08:27:08</publishTime>
     </File>
     <File Include="Content/solid.css">
       <publishTime>01/02/2020 14:08:14</publishTime>
@@ -670,7 +703,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/19/2019 14:56:00</publishTime>
     </File>
     <File Include="nlog.config">
-      <publishTime>01/14/2020 18:51:40</publishTime>
+      <publishTime>01/14/2020 19:06:11</publishTime>
     </File>
     <File Include="Scripts/bootstrap.bundle.js">
       <publishTime>01/04/2020 13:48:59</publishTime>
@@ -1059,35 +1092,50 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/umd/popper.min.js.map">
       <publishTime>01/04/2020 13:48:53</publishTime>
     </File>
+    <File Include="Views/Game/Help.cshtml">
+      <publishTime>02/11/2020 14:45:55</publishTime>
+    </File>
+    <File Include="Views/Game/Index.cshtml">
+      <publishTime>02/11/2020 14:53:05</publishTime>
+    </File>
+    <File Include="Views/Game/Score.cshtml">
+      <publishTime>02/11/2020 12:20:17</publishTime>
+    </File>
     <File Include="Views/Home/Bilder.cshtml">
       <publishTime>01/14/2020 18:05:57</publishTime>
     </File>
     <File Include="Views/Home/Historia.cshtml">
-      <publishTime>01/14/2020 18:28:12</publishTime>
+      <publishTime>01/14/2020 19:12:49</publishTime>
     </File>
     <File Include="Views/Home/Inbjudan.cshtml">
-      <publishTime>01/14/2020 18:47:56</publishTime>
+      <publishTime>04/26/2020 17:40:42</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>01/14/2020 18:24:57</publishTime>
+      <publishTime>04/27/2020 08:49:29</publishTime>
     </File>
     <File Include="Views/Home/Info.cshtml">
       <publishTime>11/19/2019 17:17:24</publishTime>
     </File>
     <File Include="Views/Home/Presenter.cshtml">
-      <publishTime>11/19/2019 17:14:10</publishTime>
+      <publishTime>04/26/2020 18:02:25</publishTime>
     </File>
     <File Include="Views/Home/Schema.cshtml">
       <publishTime>11/19/2019 17:15:20</publishTime>
     </File>
     <File Include="Views/Home/Stadsjakt.cshtml">
-      <publishTime>01/04/2020 14:01:06</publishTime>
+      <publishTime>02/08/2020 18:53:28</publishTime>
+    </File>
+    <File Include="Views/Home/Svar.cshtml">
+      <publishTime>04/27/2020 08:46:05</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>10/19/2019 14:56:00</publishTime>
     </File>
+    <File Include="Views/Shared/_AppLayout.cshtml">
+      <publishTime>02/11/2020 15:37:25</publishTime>
+    </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>01/14/2020 18:08:28</publishTime>
+      <publishTime>04/14/2020 18:10:46</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>10/19/2019 14:56:00</publishTime>
@@ -1096,7 +1144,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/19/2019 14:56:00</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>01/14/2020 19:01:11</publishTime>
+      <publishTime>04/27/2020 09:02:49</publishTime>
     </File>
     <File Include="webfonts/fa-brands-400.eot">
       <publishTime>01/02/2020 14:08:13</publishTime>

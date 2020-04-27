@@ -102,6 +102,32 @@ namespace Chaos.Wedding.Controllers
             }
         }
 
+        /// <summary>The set reception status.</summary>
+        /// <param name="giftId">The gift id.</param>
+        /// <param name="bookedStatus">The booked status.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task<ActionResult> SetGiftBookedStatus(int giftId, int bookedStatus)
+        {
+            try
+            {
+                var session = await SessionHandler.GetSessionAsync();
+                var gift = await Gift.Static.GetAsync(session, giftId);
+                if (!Enum.IsDefined(typeof(InvitationStatus), bookedStatus))
+                {
+                    throw new InvalidSaveCandidateException(string.Format(CultureInfo.InvariantCulture, "The invitation status {0} is not valid.", bookedStatus));
+                }
+
+                gift.Booked = (InvitationStatus)bookedStatus;
+                await gift.SaveAsync(session);
+                return this.Content(string.Empty);
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                throw;
+            }
+        }
+
         public async Task<ActionResult> SetDinnerStatus(int guestId, int invitationStatus)
         {
             try
@@ -164,11 +190,11 @@ namespace Chaos.Wedding.Controllers
             return View();
         }
 
-        public ActionResult Presenter()
+        public async Task<ActionResult> Presenter()
         {
-            ViewBag.Message = "Information";
-
-            return View();
+            var session = await SessionHandler.GetSessionAsync();
+            var gifts = await Gift.Static.GetAllAsync(session);
+            return this.View(gifts.OrderBy(g => g.Price));
         }
 
         public ActionResult Schema()
@@ -187,6 +213,11 @@ namespace Chaos.Wedding.Controllers
         }
 
         public ActionResult Historia()
+        {
+            return View();
+        }
+
+        public ActionResult Svar()
         {
             return View();
         }

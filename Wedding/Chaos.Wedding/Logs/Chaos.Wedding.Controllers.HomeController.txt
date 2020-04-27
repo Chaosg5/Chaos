@@ -1,0 +1,85 @@
+2020-02-29 11:28:59.0552|Info|Address viewed: 8d35eb9e-fffa-4da1-8e2d-917840c57948|
+2020-02-29 11:29:14.8776|Info|Address viewed: 76a100bf-af6c-4098-a8ed-694f76a0747e|
+2020-04-26 17:49:18.5814|Error|System.InvalidOperationException: Sekvensen innehåller inga element
+   vid System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   vid Chaos.Wedding.Controllers.HomeController.<GetLookupShort>d__3.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\HomeController.cs:rad 70|System.InvalidOperationException: Sekvensen innehåller inga element
+   vid System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   vid Chaos.Wedding.Controllers.HomeController.<GetLookupShort>d__3.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\HomeController.cs:rad 75
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Web.Mvc.Async.TaskAsyncActionDescriptor.EndExecute(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass8_0.<BeginInvokeAsynchronousActionMethod>b__1(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_0.<InvokeActionMethodFilterAsynchronouslyRecursive>b__0()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_2.<InvokeActionMethodFilterAsynchronouslyRecursive>b__2()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass7_0.<BeginInvokeActionMethodWithFilters>b__1(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_6.<BeginInvokeAction>b__4()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeAction(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Controller.<>c.<BeginExecuteCore>b__152_1(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   vid System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Controller.<>c.<BeginExecute>b__151_2(IAsyncResult asyncResult, Controller controller)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   vid System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   vid System.Web.Mvc.MvcHandler.<>c.<BeginProcessRequest>b__20_1(IAsyncResult asyncResult, ProcessRequestState innerState)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   vid System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   vid System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   vid System.Web.HttpApplication.CallHandlerExecutionStep.<>c__DisplayClass7_0.<InvokeEndHandler>b__0()
+   vid System.Web.HttpApplication.StepInvoker.Invoke(Action executionStep)
+   vid System.Web.HttpApplication.StepInvoker.<>c__DisplayClass4_0.<Invoke>b__0()
+   vid Microsoft.AspNet.TelemetryCorrelation.TelemetryCorrelationHttpModule.OnExecuteRequestStep(HttpContextBase context, Action step)
+   vid System.Web.HttpApplication.<>c__DisplayClass284_0.<OnExecuteRequestStep>b__0(Action nextStepAction)
+   vid System.Web.HttpApplication.StepInvoker.Invoke(Action executionStep)
+   vid System.Web.HttpApplication.CallHandlerExecutionStep.InvokeEndHandler(IAsyncResult ar)
+   vid System.Web.HttpApplication.CallHandlerExecutionStep.OnAsyncHandlerCompletion(IAsyncResult ar)
+2020-04-26 17:49:20.0429|Error|System.InvalidOperationException: Sekvensen innehåller inga element
+   vid System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   vid Chaos.Wedding.Controllers.HomeController.<GetLookupShort>d__3.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\HomeController.cs:rad 70|System.InvalidOperationException: Sekvensen innehåller inga element
+   vid System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   vid Chaos.Wedding.Controllers.HomeController.<GetLookupShort>d__3.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\HomeController.cs:rad 75
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Web.Mvc.Async.TaskAsyncActionDescriptor.EndExecute(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass8_0.<BeginInvokeAsynchronousActionMethod>b__1(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_0.<InvokeActionMethodFilterAsynchronouslyRecursive>b__0()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_2.<InvokeActionMethodFilterAsynchronouslyRecursive>b__2()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass7_0.<BeginInvokeActionMethodWithFilters>b__1(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   vid System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_6.<BeginInvokeAction>b__4()
+2020-04-26 17:49:20.1137|Error|System.InvalidOperationException: Sekvensen innehåller inga element
+   vid System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   vid Chaos.Wedding.Controllers.HomeController.<GetLookupShort>d__3.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\HomeController.cs:rad 70|System.InvalidOperationException: Sekvensen innehåller inga element
+   vid System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   vid Chaos.Wedding.Controllers.HomeController.<GetLookupShort>d__3.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\HomeController.cs:rad 75
+2020-04-26 17:49:39.6103|Info|Address viewed: 8d35eb9e-fffa-4da1-8e2d-917840c57948|
+2020-04-26 17:50:05.8084|Info|Address viewed: 8d35eb9e-fffa-4da1-8e2d-917840c57948|
+2020-04-26 17:50:11.3627|Info|Address viewed: 8d35eb9e-fffa-4da1-8e2d-917840c57948|
+2020-04-26 17:56:40.9330|Info|Address viewed: 8d35eb9e-fffa-4da1-8e2d-917840c57948|
+2020-04-26 18:03:42.0071|Error|System.InvalidOperationException: Sekvensen innehåller inga element
+   vid System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   vid Chaos.Wedding.Controllers.HomeController.<GetLookupShort>d__3.MoveNext()|System.InvalidOperationException: Sekvensen innehåller inga element
+   vid System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   vid Chaos.Wedding.Controllers.HomeController.<GetLookupShort>d__3.MoveNext()
+2020-04-26 18:03:42.9149|Info|Address viewed: 8d35eb9e-fffa-4da1-8e2d-917840c57948|
+2020-04-26 18:03:55.7280|Info|Address viewed: 8d35eb9e-fffa-4da1-8e2d-917840c57948|
+2020-04-27 08:50:55.1816|Info|Address viewed: 8d35eb9e-fffa-4da1-8e2d-917840c57948|

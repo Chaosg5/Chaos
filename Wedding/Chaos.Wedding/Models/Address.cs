@@ -20,7 +20,7 @@ namespace Chaos.Wedding.Models
 
     /// <inheritdoc cref="Readable{T, TDto}" />
     /// <summary>An address.</summary>
-    public class Address : Readable<Address, Address>, IReadableExtension<Address, Address>, ISearchable<Address>
+    public class Address : Readable<Address, Address>, IReadableLookup<Address, Address>, ISearchable<Address>
     {
         /// <summary>The database column for <see cref="Street"/>.</summary>
         private const string StreetColumn = "Street";
