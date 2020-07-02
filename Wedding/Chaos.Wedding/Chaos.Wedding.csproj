@@ -150,8 +150,27 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Games\Alternative.cs" />
+    <Compile Include="Models\Games\Contract\Alternative.cs" />
+    <Compile Include="Models\Games\Contract\Challenge.cs" />
+    <Compile Include="Models\Games\Contract\ChallengeSubject.cs" />
+    <Compile Include="Models\Games\Contract\ChallengeType.cs" />
+    <Compile Include="Models\Games\Contract\Difficulty.cs" />
+    <Compile Include="Models\Games\Contract\Game.cs" />
+    <Compile Include="Models\Games\Contract\Question.cs" />
+    <Compile Include="Models\Games\Contract\Team.cs" />
+    <Compile Include="Models\Games\Contract\Zone.cs" />
+    <Compile Include="Models\Games\Difficulty.cs" />
+    <Compile Include="Models\Games\ChallengeType.cs" />
+    <Compile Include="Models\Games\Question.cs" />
+    <Compile Include="Models\Games\Challenge.cs" />
+    <Compile Include="Models\Games\ChallengeSubject.cs" />
+    <Compile Include="Models\Games\Team.cs" />
+    <Compile Include="Models\Games\Zone.cs" />
+    <Compile Include="Models\Games\Game.cs" />
     <Compile Include="Models\Gift.cs" />
-    <Compile Include="Models\GlobalCache.cs" />
+    <Compile Include="Models\GameCache.cs" />
+    <Compile Include="Models\IUpdateable.cs" />
     <Compile Include="Models\SessionHandler.cs" />
     <Compile Include="Models\IReadableLookup.cs" />
     <Compile Include="Models\InvitationStatus.cs" />
@@ -191,6 +210,10 @@
     <Content Include="Content\images\store\gifts\vin48.jpg" />
     <Content Include="Content\regular.css" />
     <Content Include="Content\regular.min.css" />
+    <Content Include="Scripts\bootstrap-notify.js" />
+    <Content Include="Scripts\bootstrap-notify.min.js" />
+    <Content Include="Scripts\game.js" />
+    <Content Include="Scripts\notification.js" />
     <Content Include="Content\solid.css" />
     <Content Include="Content\solid.min.css" />
     <Content Include="Content\svg-with-js.css" />
@@ -199,7 +222,7 @@
     <Content Include="Content\v4-shims.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\site.css" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-reboot.min.css.map" />
@@ -372,6 +395,14 @@
     <Content Include="Views\Game\Score.cshtml" />
     <Content Include="Views\Game\Help.cshtml" />
     <Content Include="Views\Home\Svar.cshtml" />
+    <Content Include="Views\Game\PlayChallenge.cshtml" />
+    <Content Include="Views\Game\PlayZone.cshtml" />
+    <Content Include="Views\Game\EditIndex.cshtml" />
+    <Content Include="Views\Game\EditGame.cshtml" />
+    <Content Include="Views\Game\EditZone.cshtml" />
+    <Content Include="Views\Game\EditChallenge.cshtml" />
+    <Content Include="Views\Game\EditQuestion.cshtml" />
+    <Content Include="Views\Game\PlayGame.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

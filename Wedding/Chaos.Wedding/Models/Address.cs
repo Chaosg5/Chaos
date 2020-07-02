@@ -94,7 +94,7 @@ namespace Chaos.Wedding.Models
         }
 
         /// <inheritdoc/>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public override async Task<Address> NewFromRecordAsync(IDataRecord record)
         {
             var result = new Address();
@@ -103,7 +103,7 @@ namespace Chaos.Wedding.Models
         }
 
         /// <inheritdoc/>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { IdColumn });
@@ -124,24 +124,24 @@ namespace Chaos.Wedding.Models
         }
 
         /// <inheritdoc/>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
-        /// <exception cref="T:System.Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public override async Task<Address> GetAsync(UserSession session, int id)
         {
             return (await this.GetAsync(session, new[] { id })).First();
         }
 
         /// <inheritdoc/>
-        /// <exception cref="T:System.Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         public async Task<Address> GetAsync(UserSession session, Guid lookupId)
         {
             return (await this.GetFromDatabaseAsync(new List<Guid> { lookupId }, this.ReadFromRecordsAsync, session)).First();
         }
 
         /// <inheritdoc/>
-        /// <exception cref="T:System.Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         public override async Task<IEnumerable<Address>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
             return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);

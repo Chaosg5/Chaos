@@ -50,7 +50,6 @@ namespace Chaos.Movies.Model.Base
 
         /// <summary>Adds all <typeparamref name="T"/> in the <paramref name="itemsToAdd"/> to this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         /// <param name="itemsToAdd">The <typeparamref name="T"/>s to add.</param>
-        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public void AddRange(IEnumerable<T> itemsToAdd)
         {
             if (itemsToAdd == null)
@@ -81,7 +80,6 @@ namespace Chaos.Movies.Model.Base
 
         /// <summary>Adds the <paramref name="item"/> to this <see cref="Listable{T, TDto, TList, TListDto}"/>.</summary>
         /// <param name="item">The <typeparamref name="T"/> to add.</param>
-        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/></exception>
         public void Add(T item)
         {
@@ -99,6 +97,7 @@ namespace Chaos.Movies.Model.Base
             {
                 if (newPersistable.Id <= 0)
                 {
+                    // ReSharper disable once ExceptionNotDocumented
                     throw new PersistentObjectRequiredException($"The {typeof(T).Name} has to be saved before added to the {typeof(TList).Name}.");
                 }
 

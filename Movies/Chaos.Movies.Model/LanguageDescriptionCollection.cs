@@ -7,6 +7,7 @@
 namespace Chaos.Movies.Model
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using System.Globalization;
     using System.Linq;
@@ -18,6 +19,19 @@ namespace Chaos.Movies.Model
     /// <summary>The title of a movie.</summary>
     public class LanguageDescriptionCollection : Listable<LanguageDescription, LanguageDescriptionDto, LanguageDescriptionCollection, LanguageDescriptionCollectionDto>
     {
+        /// <summary>Initializes a new instance of the <see cref="LanguageDescriptionCollection"/> class.</summary>
+        public LanguageDescriptionCollection()
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="LanguageDescriptionCollection"/> class.</summary>
+        /// <param name="titlesFromText">The <see cref="LanguageDescription"/> to set from <see cref="UpdateFromText"/>.</param>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="LanguageDescription"/> is not valid to be saved.</exception>
+        public LanguageDescriptionCollection(string titlesFromText)
+        {
+            this.UpdateFromText(titlesFromText);
+        }
+        
         /// <summary>Gets the base title.</summary>
         // ReSharper disable once ExceptionNotDocumented
         public string GetBaseTitle => this.GetTitle(GlobalCache.BaseLanguage.Name).Title;
@@ -69,7 +83,6 @@ namespace Chaos.Movies.Model
         }
 
         /// <inheritdoc />
-        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public override LanguageDescriptionCollection FromContract(LanguageDescriptionCollectionDto contract)
         {
@@ -90,12 +103,11 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the title for the specified <paramref name="languageName"/>.</summary>
         /// <param name="languageName">The language to get the title for.</param>
         /// <returns>The title of the specified language; else the title of the default language</returns>
-        /// <exception cref="InvalidSaveCandidateException">There are no titles. At least one title needs to be added.</exception>
         public LanguageDescription GetTitle(string languageName)
         {
             if (this.Count == 0)
             {
-                throw new InvalidSaveCandidateException("There are no titles. At least one title needs to be added.");
+                return LanguageDescription.EmptyTitle();
             }
 
             if (string.Equals(languageName, LanguageType.Original.ToString(), StringComparison.OrdinalIgnoreCase))
@@ -120,7 +132,6 @@ namespace Chaos.Movies.Model
         /// <summary>Changes the title of this movie series type.</summary>
         /// <param name="title">The title to set.</param>
         /// <exception cref="ArgumentNullException"><paramref name="title"/> is <see langword="null"/></exception>
-        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public void SetTitle(LanguageDescription title)
         {
             if (title == null)
@@ -136,7 +147,6 @@ namespace Chaos.Movies.Model
         /// <param name="description">The description to set for the specified <paramref name="language"/>.</param>
         /// <param name="language">The language of the specified <paramref name="title"/>.</param>
         /// <exception cref="ArgumentNullException">If the <paramref name="title"/> or <paramref name="language"/> is null.</exception>
-        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public void SetTitle(string title, string description, CultureInfo language)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -173,6 +183,84 @@ namespace Chaos.Movies.Model
             foreach (var item in this.Items)
             {
                 item.ValidateSaveCandidate();
+            }
+        }
+
+        /// <summary>Updates the <paramref name="titles"/>.</summary>
+        /// <param name="titles">The <see cref="LanguageDescription"/>s to update.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="titles"/> is <see langword="null"/></exception>
+        public void Update(LanguageDescriptionCollection titles)
+        {
+            if (titles == null)
+            {
+                throw new ArgumentNullException(nameof(titles));
+            }
+
+            foreach (var title in titles)
+            {
+                this.Update(title);
+            }
+        }
+
+        /// <summary>Updates the <paramref name="title"/>.</summary>
+        /// <param name="title">The <see cref="LanguageDescription"/> to update.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="title"/> is <see langword="null"/></exception>
+        public void Update(LanguageDescription title)
+        {
+            if (title == null)
+            {
+                throw new ArgumentNullException(nameof(title));
+            }
+
+            var existing = this.FirstOrDefault(l => l.Language.Name == title.Language.Name);
+            if (existing == null)
+            {
+                // ReSharper disable ExceptionNotDocumented
+                this.Add(title);
+            }
+            else
+            {
+                existing.Title = title.Title;
+                existing.Description = title.Description;
+            }
+        }
+
+        /// <summary>Adds or updates all <see cref="LanguageDescription"/> in the <paramref name="text"/> to this <see cref="LanguageDescriptionCollection"/>.</summary>
+        /// <param name="text">The text containing values for the <see cref="LanguageDescription"/>(s).</param>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="LanguageDescription"/> is not valid to be saved.</exception>
+        public void UpdateFromText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            var sets = text.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var set in sets)
+            {
+                var parts = set.Split(new[] { "¤" }, StringSplitOptions.None);
+                if (parts.All(string.IsNullOrWhiteSpace))
+                {
+                    continue;
+                }
+
+                if (parts.Length != 3)
+                {
+                    throw new InvalidSaveCandidateException($"Expected 3 parts of the title, found {parts.Length}.");
+                }
+
+                var newTitle = new LanguageDescription(parts[1], parts[2], new CultureInfo(parts[0]));
+                var existing = this.FirstOrDefault(l => l.Language.Name == newTitle.Language.Name);
+                if (existing == null)
+                {
+                    // ReSharper disable ExceptionNotDocumented
+                    this.Add(newTitle);
+                }
+                else
+                {
+                    existing.Title = newTitle.Title;
+                    existing.Description = newTitle.Description;
+                }
             }
         }
     }

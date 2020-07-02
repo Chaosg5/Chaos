@@ -43,10 +43,10 @@ namespace Chaos.Movies.Model
             }
 
             this.Title = title;
-            this.Description = description;
+            this.Description = description ?? string.Empty;
             this.Language = language;
         }
-
+        
         /// <summary>Prevents a default instance of the <see cref="LanguageDescription"/> class from being created.</summary>
         private LanguageDescription()
         {
@@ -103,6 +103,13 @@ namespace Chaos.Movies.Model
         /// <summary>Gets the type of the <see cref="LanguageDescription"/>.</summary>
         public LanguageType LanguageType { get; private set; }
 
+        /// <summary>Gets an empty <see cref="LanguageDescription"/>.</summary>
+        /// <returns>The <see cref="LanguageDescription"/>.</returns>
+        public static LanguageDescription EmptyTitle()
+        {
+            return new LanguageDescription { language = GlobalCache.BaseLanguage };
+        }
+
         /// <inheritdoc />
         public override LanguageDescriptionDto ToContract()
         {
@@ -147,6 +154,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public override Task ReadFromRecordAsync(IDataRecord record)
         {
+            // ToDo: Create custom CultureInfo for Default and Original
             Persistent.ValidateRecord(record, new[] { LanguageTitle.TitleColumn, DescriptionColumn, LanguageTitle.LanguageColumn });
             this.Title = (string)record[LanguageTitle.TitleColumn];
             this.Description = (string)record[DescriptionColumn];

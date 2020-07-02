@@ -6,10 +6,12 @@
 
 namespace Chaos.Wedding.Models
 {
+    using System;
     using System.Threading.Tasks;
 
     using Chaos.Movies.Contract;
     using Chaos.Movies.Model;
+    using Chaos.Movies.Model.Exceptions;
 
     /// <summary>The session handler.</summary>
     public static class SessionHandler
@@ -19,9 +21,9 @@ namespace Chaos.Wedding.Models
 
         /// <summary>Gets the session.</summary>
         /// <returns>The <see cref="UserSession"/>.</returns>
-        /// <exception cref="T:System.Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingResultException">Failed to create a new session.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
         public static async Task<UserSession> GetSessionAsync()
         {
             if (currentSession == null)
@@ -44,15 +46,15 @@ namespace Chaos.Wedding.Models
 
         /// <summary>Gets a <see cref="UserSession"/> for the system user.</summary>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="T:System.Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="T:Chaos.Movies.Model.Exceptions.MissingResultException">Failed to create a new session.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
         private static async Task<UserSession> GetSystemSessionAsync()
         {
             var login = new UserLogin(
                  Movies.Model.Properties.Settings.Default.SystemUserName,
                  Movies.Model.Properties.Settings.Default.SystemPassword,
-                await GlobalCache.GetServerIpAsync());
+                await GameCache.GetServerIpAsync());
             var session = await UserSession.Static.CreateSessionAsync(login);
             return session;
         }

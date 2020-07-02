@@ -95,7 +95,14 @@ namespace Chaos.Movies.Model
 
         /// <summary>Gets the type of the <see cref="LanguageTitle"/>.</summary>
         public LanguageType LanguageType { get; private set; }
-        
+
+        /// <summary>Gets an empty <see cref="LanguageDescription"/>.</summary>
+        /// <returns>The <see cref="LanguageDescription"/>.</returns>
+        public static LanguageTitle EmptyTitle()
+        {
+            return new LanguageTitle { language = GlobalCache.BaseLanguage };
+        }
+
         /// <summary>Returns a value indicating whether the <paramref name="titleB"/> is equal to the specified <paramref name="titleB"/>.</summary>
         /// <param name="titleA">The first title to compare to the <paramref name="titleB"/>.</param>
         /// <param name="titleB">The second title to compare to the <paramref name="titleA"/>.</param>
@@ -111,7 +118,6 @@ namespace Chaos.Movies.Model
         /// <returns><see langword="true"/> if the <paramref name="titleA"/> doesn't have the same value the <paramref name="titleB"/>; otherwise <see langword="false"/>.</returns>
         public static bool operator !=(LanguageTitle titleA, LanguageTitle titleB)
         {
-
             return !(titleA == titleB);
         }
 
@@ -215,6 +221,7 @@ namespace Chaos.Movies.Model
         /// <exception cref="ArgumentNullException">The <paramref name="record"/> is <see langword="null" />.</exception>
         public override Task ReadFromRecordAsync(IDataRecord record)
         {
+            // ToDo: Create custom CultureInfo for Default and Original
             Persistent.ValidateRecord(record, new[] { TitleColumn, LanguageColumn });
             this.Title = (string)record[TitleColumn];
             var languageType = (string)record[LanguageColumn];

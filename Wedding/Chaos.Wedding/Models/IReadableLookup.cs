@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IReadableExtension.cs">
+// <copyright file="IReadableLookup.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------

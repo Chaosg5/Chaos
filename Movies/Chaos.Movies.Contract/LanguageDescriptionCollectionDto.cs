@@ -8,14 +8,15 @@ namespace Chaos.Movies.Contract
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Globalization;
     using System.Runtime.Serialization;
 
+    /// <inheritdoc />
     /// <summary>Represents a user.</summary>
     [DataContract]
     public class LanguageDescriptionCollectionDto : ReadOnlyCollection<LanguageDescriptionDto>
     {
-        /// <summary>Initializes a new instance of the <see cref="LanguageDescriptionCollectionDto"/> class.</summary>
+        /// <inheritdoc />
+        /// <summary>Initializes a new instance of the <see cref="T:Chaos.Movies.Contract.LanguageDescriptionCollectionDto" /> class.</summary>
         /// <param name="items">The items.</param>
         public LanguageDescriptionCollectionDto(IList<LanguageDescriptionDto> items)
             : base(items)

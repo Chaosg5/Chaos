@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Chaos.Wedding.Models.Games.Contract.Game>
+
+@{
+    ViewBag.Title = "Edit games";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<h2>Edit games</h2>
+@foreach (var game in Model)
+{
+<div>
+    <div>@game.Titles.UserTitle.Title (@game.Titles.UserTitle.Language.Name)</div>
+    <div>
+        <a href="@Url.Action("EditGame", "Game", new { gameId = 0 })"><i class="fas fa-plus" title="Lägg till"></i></a>
+    </div>
+</div>
+}
