@@ -180,12 +180,17 @@ namespace Chaos.Wedding.Models.Games
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Alternative"/> is not valid to be saved.</exception>
         public override void ValidateSaveCandidate()
         {
+            if (this.QuestionId <= 0)
+            {
+                throw new InvalidSaveCandidateException("The alternative can't be saved without a question.");
+            }
+
             this.Titles.ValidateSaveCandidate();
         }
 
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Question"/> is not valid to be saved.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Alternative"/> is not valid to be saved.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public async Task UpdateAsync(Contract.Alternative contract, UserSession session)
         {
@@ -196,10 +201,10 @@ namespace Chaos.Wedding.Models.Games
 
             if (this.Id != contract.Id)
             {
-                throw new InvalidSaveCandidateException("The Question can't be saved without a zone.");
+                throw new InvalidSaveCandidateException($"The id {contract.Id} doesn't match the expected {this.Id}.");
             }
 
-            this.QuestionId = contract.QuestionId;
+            this.Id = contract.Id;
             this.QuestionId = contract.QuestionId;
             this.CorrectRow = contract.CorrectRow;
             this.CorrectColumn = contract.CorrectColumn;

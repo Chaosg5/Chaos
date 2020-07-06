@@ -43,7 +43,7 @@ namespace Chaos.Wedding.Models.Games
         /// <param name="challengeSubject">The <see cref="Subject"/>.</param>
         /// <param name="difficulty">The <see cref="Difficulty"/>.</param>
         /// <param name="titles">The <see cref="Titles"/>.</param>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Zone"/> is not valid to be saved.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Challenge"/> is not valid to be saved.</exception>
         public Challenge(int zoneId, ChallengeType challengeType, ChallengeSubject challengeSubject, Difficulty difficulty, string titles)
         {
             this.SchemaName = "game";
@@ -119,7 +119,8 @@ namespace Chaos.Wedding.Models.Games
         public LanguageDescriptionCollection Titles { get; } = new LanguageDescriptionCollection();
 
         /// <summary>Gets the children <see cref="Question"/>s.</summary>
-        public IEnumerable<Question> Questions => this.questions;
+        //// ToDo: Create ChildList - class, like listable but with reference to parent
+        public List<Question> Questions => this.questions;
 
         /// <inheritdoc />
         public override Contract.Challenge ToContract()
@@ -128,9 +129,9 @@ namespace Chaos.Wedding.Models.Games
             {
                 Id = this.Id,
                 ZoneId = this.ZoneId,
-                Type = this.Type.ToContract(),
-                Subject = this.Subject.ToContract(),
-                Difficulty = this.Difficulty.ToContract(),
+                Type = this.Type?.ToContract(),
+                Subject = this.Subject?.ToContract(),
+                Difficulty = this.Difficulty?.ToContract(),
                 Titles = this.Titles.ToContract(),
                 Questions = this.Questions.Select(q => q.ToContract())
             };
@@ -143,9 +144,9 @@ namespace Chaos.Wedding.Models.Games
             {
                 Id = this.Id,
                 ZoneId = this.ZoneId,
-                Type = this.Type.ToContract(languageName),
-                Subject = this.Subject.ToContract(languageName),
-                Difficulty = this.Difficulty.ToContract(languageName),
+                Type = this.Type?.ToContract(languageName),
+                Subject = this.Subject?.ToContract(languageName),
+                Difficulty = this.Difficulty?.ToContract(languageName),
                 Titles = this.Titles.ToContract(languageName),
                 Questions = this.Questions.Select(q => q.ToContract(languageName))
             };
@@ -188,6 +189,7 @@ namespace Chaos.Wedding.Models.Games
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Challenge"/> is not valid to be saved.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public async Task UpdateAsync(Contract.Challenge contract, UserSession session)
         {
             if (contract == null)

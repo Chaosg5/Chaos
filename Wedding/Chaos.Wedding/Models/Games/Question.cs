@@ -50,7 +50,7 @@ namespace Chaos.Wedding.Models.Games
         /// <param name="difficulty">The <see cref="Difficulty"/>.</param>
         /// <param name="imageId">The <see cref="ImageId"/>.</param>
         /// <param name="titles">The <see cref="Titles"/>.</param>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Zone"/> is not valid to be saved.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Question"/> is not valid to be saved.</exception>
         public Question(int challengeId, ChallengeType challengeType, ChallengeSubject challengeSubject, Difficulty difficulty, string imageId, string titles)
         {
             this.SchemaName = "game";
@@ -140,7 +140,8 @@ namespace Chaos.Wedding.Models.Games
         public LanguageDescriptionCollection Titles { get; } = new LanguageDescriptionCollection();
 
         /// <summary>Gets the children <see cref="Zone"/>s.</summary>
-        public IEnumerable<Alternative> Alternatives => this.alternatives;
+        //// ToDo: Create ChildList - class, like listable but with reference to parent
+        public List<Alternative> Alternatives => this.alternatives;
 
         /// <inheritdoc />
         public override Contract.Question ToContract()
@@ -149,9 +150,9 @@ namespace Chaos.Wedding.Models.Games
             {
                 Id = this.Id,
                 ChallengeId = this.ChallengeId,
-                Type = this.Type.ToContract(),
-                Subject = this.Subject.ToContract(),
-                Difficulty = this.Difficulty.ToContract(),
+                Type = this.Type?.ToContract(),
+                Subject = this.Subject?.ToContract(),
+                Difficulty = this.Difficulty?.ToContract(),
                 ImageId = this.ImageId,
                 Titles = this.Titles.ToContract(),
                 Alternatives = this.Alternatives.Select(a => a.ToContract())
@@ -165,9 +166,9 @@ namespace Chaos.Wedding.Models.Games
             {
                 Id = this.Id,
                 ChallengeId = this.ChallengeId,
-                Type = this.Type.ToContract(languageName),
-                Subject = this.Subject.ToContract(languageName),
-                Difficulty = this.Difficulty.ToContract(languageName),
+                Type = this.Type?.ToContract(languageName),
+                Subject = this.Subject?.ToContract(languageName),
+                Difficulty = this.Difficulty?.ToContract(languageName),
                 ImageId = this.ImageId,
                 Titles = this.Titles.ToContract(languageName),
                 Alternatives = this.Alternatives.Select(a => a.ToContract(languageName))
@@ -211,6 +212,7 @@ namespace Chaos.Wedding.Models.Games
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Question"/> is not valid to be saved.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
         public async Task UpdateAsync(Contract.Question contract, UserSession session)
         {
             if (contract == null)
@@ -220,7 +222,7 @@ namespace Chaos.Wedding.Models.Games
 
             if (this.Id != contract.Id)
             {
-                throw new InvalidSaveCandidateException("The Question can't be saved without a zone.");
+                throw new InvalidSaveCandidateException($"The id {contract.Id} doesn't match the expected {this.Id}.");
             }
 
             this.ChallengeId = contract.ChallengeId;
@@ -259,7 +261,7 @@ namespace Chaos.Wedding.Models.Games
         {
             Persistent.ValidateRecord(record, new[] { IdColumn });
             this.Id = (int)record[IdColumn];
-            this.ChallengeId = (int)record[Zone.IdColumn];
+            this.ChallengeId = (int)record[Challenge.IdColumn];
             this.Type = await GameCache.ChallengeTypeGetAsync((int)record[ChallengeType.IdColumn]);
             this.Subject = await GameCache.ChallengeSubjectGetAsync((int)record[ChallengeSubject.IdColumn]);
             this.Difficulty = await GameCache.DifficultyGetAsync((int)record[Difficulty.IdColumn]);

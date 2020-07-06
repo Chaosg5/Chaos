@@ -283,8 +283,8 @@ namespace Chaos.Movies.Model
                 new Dictionary<string, object>
                 {
                     { Persistent.ColumnToVariable(ClientIpColumn), userLogin.ClientIp },
-                    { Persistent.ColumnToVariable(ActiveFromColumn), this.ActiveFrom },
-                    { Persistent.ColumnToVariable(ActiveToColumn), this.ActiveTo },
+                    { Persistent.ColumnToVariable(ActiveFromColumn), DateTime.Now },
+                    { Persistent.ColumnToVariable(ActiveToColumn), DateTime.Now.AddMinutes(30) },
                     { Persistent.ColumnToVariable(User.UsernameColumn), userLogin.Username },
                     { Persistent.ColumnToVariable(User.PasswordColumn), userLogin.Password }
                 });

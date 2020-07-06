@@ -166,6 +166,7 @@
     <Compile Include="Models\Games\Challenge.cs" />
     <Compile Include="Models\Games\ChallengeSubject.cs" />
     <Compile Include="Models\Games\Team.cs" />
+    <Compile Include="Models\Games\SystemData.cs" />
     <Compile Include="Models\Games\Zone.cs" />
     <Compile Include="Models\Games\Game.cs" />
     <Compile Include="Models\Gift.cs" />
@@ -198,10 +199,18 @@
     </Content>
     <Content Include="Content\images\icons\delete.svg" />
     <Content Include="Content\images\icons\question.svg" />
+    <Content Include="Content\images\language\pt-BR.svg" />
+    <Content Include="Content\images\language\en-US.svg" />
+    <Content Include="Content\images\language\ReadMe.txt" />
+    <Content Include="Content\images\language\sv-SE.svg" />
+    <Content Include="Content\images\store\games\wedding\GameMap.png" />
     <Content Include="Content\images\store\gifts\alvarvas.jpg" />
     <Content Include="Content\images\store\gifts\brodrost.jpg" />
     <Content Include="Content\images\store\gifts\champis.jpg" />
+    <Content Include="Content\images\store\gifts\elvisp.jpg" />
+    <Content Include="Content\images\store\gifts\gryta.jpg" />
     <Content Include="Content\images\store\gifts\koksmaskin.jpg" />
+    <Content Include="Content\images\store\gifts\powerbank.png" />
     <Content Include="Content\images\store\gifts\skal.jpg" />
     <Content Include="Content\images\store\gifts\skalkniv.jpg" />
     <Content Include="Content\images\store\gifts\tallrik18.jpg" />
@@ -210,9 +219,12 @@
     <Content Include="Content\images\store\gifts\vin48.jpg" />
     <Content Include="Content\regular.css" />
     <Content Include="Content\regular.min.css" />
+    <Content Include="Content\games.css" />
     <Content Include="Scripts\bootstrap-notify.js" />
     <Content Include="Scripts\bootstrap-notify.min.js" />
-    <Content Include="Scripts\game.js" />
+    <Content Include="Scripts\games.js" />
+    <Content Include="Scripts\jquery.ddslick-1.0.2.js" />
+    <Content Include="Scripts\jquery.ddslick.min-1.0.2.js" />
     <Content Include="Scripts\notification.js" />
     <Content Include="Content\solid.css" />
     <Content Include="Content\solid.min.css" />
@@ -403,9 +415,12 @@
     <Content Include="Views\Game\EditChallenge.cshtml" />
     <Content Include="Views\Game\EditQuestion.cshtml" />
     <Content Include="Views\Game\PlayGame.cshtml" />
+    <Content Include="Views\Game\EditAlternative.cshtml" />
+    <Content Include="Views\Game\Language.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\images\store\games\caroline2020\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

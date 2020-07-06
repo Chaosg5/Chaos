@@ -1,0 +1,43 @@
+﻿.games-backward {
+    top: 0;
+    right: 0;
+    position: fixed;
+    font-size: 3em;
+    margin-right: 0.5em;
+}
+
+img.language {
+    width: 30%;
+}
+
+@media (max-width:632px) {
+    img.language {
+        width: 45%;
+    }
+}
+
+i {
+    font-size: 40px;
+}
+
+.game-edit-row {
+    margin: 0.5em 0;
+}
+
+.game-edit-row div {
+    display: inline-block;
+}
+
+    .game-edit-row .game-edit-columnHeader {
+        font-weight: bold;
+        width: 8em;
+    }
+
+    .game-edit-row .game-edit-title {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+.game-title-menu {
+    margin-left: 2em;
+}

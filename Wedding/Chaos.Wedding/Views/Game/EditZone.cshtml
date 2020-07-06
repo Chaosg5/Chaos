@@ -1,8 +1,146 @@
-﻿
+﻿@model Chaos.Wedding.Models.Games.Contract.Zone
+
 @{
-    ViewBag.Title = "Score";
+    ViewBag.Title = "EditZone";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-<h2>Score</h2>
+<div class="games-backward">
+    <a href="@Url.Action("EditGame", "Game", new { gameId = Model.GameId })">
+        <i class="fas fa-backward clickable success"></i>
+    </a>
+</div>
 
+<div class="game-edit-row">
+    <div>
+        <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
+    </div>
+    <div class="game-title-menu">
+        <i class="far fa-save clickable success" onclick="saveZone()" title="Save zone"></i>
+    </div>
+</div>
+
+<h3>Titles</h3>
+<div id="Titles">
+    @foreach (var title in (List<string>)Session["Languages"])
+    {
+        var existingTitle = Model.Titles.FirstOrDefault(t => t.Language.Name == title);
+        <div class="game-edit-row">
+            <div>
+                <div class="game-edit-columnHeader">Language</div>
+                <input type="text" id='@FormattableString.Invariant($"Language_{title}")' value="@title" disabled="disabled" />
+            </div>
+            <div>
+                <div class="game-edit-columnHeader">Title</div>
+                <input type="text" id='@FormattableString.Invariant($"Title_{title}")' value="@(existingTitle?.Title)" />
+            </div>
+            <div>
+                <div class="game-edit-columnHeader">Description</div>
+                <input type="text" id='@FormattableString.Invariant($"Description_{title}")' value="@(existingTitle?.Description)" />
+            </div>
+        </div>
+    }
+</div>
+
+<h3>Image</h3>
+<div class="game-edit-row">
+    <div>
+        <input type="text" id="ImageId" value="@Model.ImageId" class="input-wide" />
+    </div>
+</div>
+
+<h3>Width</h3>
+<div class="game-edit-row">
+    <div>
+        <input type="text" id="Width" value="@Model.Width" />
+    </div>
+</div>
+
+<h3>Height</h3>
+<div class="game-edit-row">
+    <div>
+        <input type="text" id="Height" value="@Model.Height" />
+    </div>
+</div>
+
+<h3>PositionX</h3>
+<div class="game-edit-row">
+    <div>
+        <input type="text" id="PositionX" value="@Model.Width" />
+    </div>
+</div>
+
+<h3>PositionY</h3>
+<div class="game-edit-row">
+    <div>
+        <input type="text" id="PositionY" value="@Model.Height" />
+    </div>
+</div>
+
+<h3>Challenges</h3>
+@foreach (var challenge in Model.Challenges)
+{
+    <div class="game-edit-row">
+        <div class="game-edit-title">@challenge.Titles.UserTitle.Title (@challenge.Titles.UserTitle.Language.Name)</div>
+        <div><i class="@challenge.Type.ImageId" title="@challenge.Type.Titles.UserTitle.Title"></i></div>
+        <div><i class="@challenge.Subject.ImageId" title="@challenge.Subject.Titles.UserTitle.Title"></i></div>
+        <div><i class="@challenge.Difficulty.ImageId" title="@challenge.Difficulty.Titles.UserTitle.Title"></i></div>
+        <div><b>@challenge.Questions.Count()</b></div>
+        <div>
+            <a href="@Url.Action("EditChallenge", "Game", new { challengeId = challenge.Id, zoneId = Model.Id })">
+                <i class="fas fa-pen" title="Edit zone"></i>
+            </a>
+        </div>
+    </div>
+}
+
+@if (Model.Id > 0)
+{
+    <div class="game-edit-row">
+        <a href="@Url.Action("EditChallenge", "Game", new { challengeId = 0, zoneId = Model.Id })">
+            <i class="fas fa-plus" title="Add zone"></i>
+        </a>
+    </div>
+}
+
+<script type="text/javascript">
+    function saveZone() {
+        try {
+            var zoneId = @Model.Id;
+            var gameId = @Model.GameId;
+            var imageId = document.getElementById("ImageId").value;
+            var width = document.getElementById("Width").value;
+            var height = document.getElementById("Height").value;
+            var positionX = document.getElementById("PositionX").value;
+            var positionY = document.getElementById("PositionY").value;
+            var titles = "";
+
+            var titleInputs = document.getElementById("Titles").getElementsByTagName("input");
+            for (var i = 0; i < titleInputs.length; i++) {
+                var language = titleInputs[i].value;
+                var title = titleInputs[i + 1].value;
+                var description = titleInputs[i + 2].value;
+                i++;
+                i++;
+                if (title) {
+                    titles += language + "¤" + title + "¤" + description + "|";
+                }
+            }
+
+            var url = "@Url.Action("SaveZone", "Game")";
+            var data = {
+                zoneId: zoneId,
+                gameId: gameId,
+                imageId: imageId,
+                width: width,
+                height: height,
+                positionX: positionX,
+                positionY: positionY,
+                titles: titles
+            };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+</script>

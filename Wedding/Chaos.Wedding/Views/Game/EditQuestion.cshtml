@@ -1,8 +1,207 @@
-﻿
+﻿@using Chaos.Wedding.Models.Games
+@model Chaos.Wedding.Models.Games.Contract.Question
+
 @{
-    ViewBag.Title = "Score";
+    ViewBag.Title = "EditQuestion";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
-<h2>Score</h2>
+<div class="games-backward">
+    <a href="@Url.Action("EditChallenge", "Game", new { challengeId = Model.ChallengeId })">
+        <i class="fas fa-backward clickable success"></i>
+    </a>
+</div>
 
+<div class="game-edit-row">
+    <div>
+        <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
+    </div>
+    <div class="game-title-menu">
+        <i class="far fa-save clickable success" onclick="saveQuestion()" title="Save question"></i>
+    </div>
+</div>
+
+<h3>Titles</h3>
+<div id="Titles">
+    @foreach (var title in (List<string>)Session["Languages"])
+    {
+        var existingTitle = Model.Titles.FirstOrDefault(t => t.Language.Name == title);
+        <div class="game-edit-row">
+            <div>
+                <div class="game-edit-columnHeader">Language</div>
+                <input type="text" id='@FormattableString.Invariant($"Language_{title}")' value="@title" disabled="disabled" />
+            </div>
+            <div>
+                <div class="game-edit-columnHeader">Title</div>
+                <input type="text" id='@FormattableString.Invariant($"Title_{title}")' value="@(existingTitle?.Title)" />
+            </div>
+            <div>
+                <div class="game-edit-columnHeader">Description</div>
+                <input type="text" id='@FormattableString.Invariant($"Description_{title}")' value="@(existingTitle?.Description)" />
+            </div>
+        </div>
+    }
+</div>
+
+@{
+    var selectedType = Model.Type?.Id ?? systemData.ChallengeTypes.First().Id;
+    var selectedSubject = Model.Subject?.Id ?? systemData.ChallengeSubjects.First().Id;
+    var selectedDifficulty = Model.Difficulty?.Id ?? systemData.Difficulties.First().Id;
+}
+
+<h3>Type</h3>
+<input id="Type" type="text" style="display: none;" value="@selectedType" />
+<div id="TypeSelect">
+    <select>
+        @foreach (var challengeType in systemData.ChallengeTypes)
+        {
+            if (challengeType.Id == selectedType)
+            {
+                <option value="@challengeType.Id" data-description="@challengeType.Titles.UserTitle.Description" selected="selected">
+                    &lt;i class=&quot;@challengeType.ImageId&quot;&gt;&lt;/i&gt; @challengeType.Titles.UserTitle.Title
+                </option>
+            }
+            else
+            {
+                <option value="@challengeType.Id" data-description="@challengeType.Titles.UserTitle.Description">
+                    &lt;i class=&quot;@challengeType.ImageId&quot;&gt;&lt;/i&gt; @challengeType.Titles.UserTitle.Title
+                </option>
+            }
+        }
+    </select>
+</div>
+
+<h3>Subject</h3>
+<input id="Subject" type="text" style="display: none;" value="@selectedSubject" />
+<div id="SubjectSelect">
+    <select>
+        @foreach (var challengeSubject in systemData.ChallengeSubjects)
+        {
+            if (challengeSubject.Id == selectedSubject)
+            {
+                <option value="@challengeSubject.Id" selected="selected">
+                    &lt;i class=&quot;@challengeSubject.ImageId&quot;&gt;&lt;/i&gt; @challengeSubject.Titles.UserTitle.Title
+                </option>
+            }
+            else
+            {
+                <option value="@challengeSubject.Id">
+                    &lt;i class=&quot;@challengeSubject.ImageId&quot;&gt;&lt;/i&gt; @challengeSubject.Titles.UserTitle.Title
+                </option>
+            }
+        }
+    </select>
+</div>
+
+<h3>Difficulty</h3>
+<input id="Difficulty" type="text" style="display: none;" value="@selectedDifficulty" />
+<div id="DifficultySelect">
+    <select>
+        @foreach (var difficulty in systemData.Difficulties)
+        {
+            if (difficulty.Id == selectedDifficulty)
+            {
+                <option value="@difficulty.Id" selected="selected">
+                    &lt;i class=&quot;@difficulty.ImageId&quot;&gt;&lt;/i&gt; @difficulty.Titles.UserTitle.Title
+                </option>
+            }
+            else
+            {
+                <option value="@difficulty.Id">
+                    &lt;i class=&quot;@difficulty.ImageId&quot;&gt;&lt;/i&gt; @difficulty.Titles.UserTitle.Title
+                </option>
+            }
+        }
+    </select>
+</div>
+
+<h3>Alternatives</h3>
+@foreach (var alternative in Model.Alternatives)
+{
+    <div class="game-edit-row">
+        <div class="game-edit-title">@alternative.Titles.UserTitle.Title (@alternative.Titles.UserTitle.Language.Name)</div>
+        <div>@alternative.CorrectColumn/@alternative.CorrectRow</div>
+        <div>
+            @if (alternative.IsCorrect)
+            {
+                <i class="fas fa-check" title="@alternative.IsCorrect"></i>
+            }
+            else
+            {
+                <i class="fas fa-times" title="@alternative.IsCorrect"></i>
+            }
+        </div>
+        <div>@alternative.ScoreValue/@alternative.CorrectAnswer</div>
+        <div>
+            <a href="@Url.Action("EditAlternative", "Game", new { alternativeId = alternative.Id, questionId = Model.Id })">
+                <i class="fas fa-pen" title="Edit question"></i>
+            </a>
+        </div>
+    </div>
+}
+
+@if (Model.Id > 0)
+{
+    <div class="game-edit-row">
+        <a href="@Url.Action("EditAlternative", "Game", new { alternativeId = 0, questionId = Model.Id })">
+            <i class="fas fa-plus" title="Add question"></i>
+        </a>
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#TypeSelect').ddslick({
+            onSelected: function (selectedData) {
+                document.getElementById("Type").value = selectedData.selectedData.value;
+            }
+        });
+        $('#SubjectSelect').ddslick({
+            onSelected: function (selectedData) {
+                document.getElementById("Subject").value = selectedData.selectedData.value;
+            }
+        });
+        $('#DifficultySelect').ddslick({
+            onSelected: function (selectedData) {
+                document.getElementById("Difficulty").value = selectedData.selectedData.value;
+            }
+        });
+    });
+
+    function saveQuestion() {
+        try {
+            var questionId = @Model.Id;
+            var challengeId = @Model.ChallengeId;
+            var type = document.getElementById("Type").value;
+            var subject = document.getElementById("Subject").value;
+            var difficulty = document.getElementById("Difficulty").value;
+            var titles = "";
+
+            var titleInputs = document.getElementById("Titles").getElementsByTagName("input");
+            for (var i = 0; i < titleInputs.length; i++) {
+                var language = titleInputs[i].value;
+                var title = titleInputs[i + 1].value;
+                var description = titleInputs[i + 2].value;
+                i++;
+                i++;
+                if (title) {
+                    titles += language + "¤" + title + "¤" + description + "|";
+                }
+            }
+
+            var url = "@Url.Action("SaveQuestion", "Game")";
+            var data = {
+                questionId: questionId,
+                challengeId: challengeId,
+                challengeTypeId: type,
+                challengeSubjectId: subject,
+                difficultyId: difficulty,
+                titles: titles
+            };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+</script>

@@ -2,16 +2,26 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
     <style type="text/css">
         body {
             background: none;
         }
     </style>
     <script src="~/Scripts/notification.js"></script>
+    <script src="~/Scripts/games.js"></script>
+    @if (ViewBag.NotificationScript != null)
+    {
+        <script>
+            $(document).ready(function () {
+                @Html.Raw(ViewBag.NotificationScript);
+            });
+        </script>
+    }
 </head>
 <body>
     <div class="fixedContainer">
@@ -19,15 +29,16 @@
     </div>
     <nav class="navbar navbar-fixed-bottom">
         <ul class="navbar-nav">
-            <li class="nav-item"><a href="@Url.Action("Index", "Game")"><i class="fas fa-map success"></i></a></li>
-            <li class="nav-item"><a href="@Url.Action("Score", "Game")"><i class="fas fa-list-ol gold"></i></a></li>
-            <li class="nav-item"><i class="fas fa-language question"></i></li>
-            <li class="nav-item"><a href="@Url.Action("Help", "Game")"><i class="fas fa-question question"></i></a></li>
-            <li class="nav-item"><a href="@Url.Action("Index", "Home")"><i class="fas fa-home question"></i></a></li>
+            <li class="nav-item"><a href="@Url.Action("Index", "Game")"><i class="fas fa-map clickable success"></i></a></li>
+            <li class="nav-item"><a href="@Url.Action("Score", "Game")"><i class="fas fa-list-ol clickable gold"></i></a></li>
+            <li class="nav-item"><a href="@Url.Action("Language", "Game")"><i class="fas fa-language clickable question"></i></a></li>
+            <li class="nav-item"><a href="@Url.Action("Help", "Game")"><i class="fas fa-question clickable question"></i></a></li>
+            <li class="nav-item"><a href="@Url.Action("Index", "Home")"><i class="fas fa-home clickable question"></i></a></li>
+            <li class="nav-item"><a href="@Url.Action("EditIndex", "Game")"><i class="fas fa-cogs clickable gray"></i></a></li>
         </ul>
     </nav>
-    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/custom")
     @RenderSection("scripts", required: false)
 </body>
 </html>

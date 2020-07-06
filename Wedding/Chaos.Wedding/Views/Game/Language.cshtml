@@ -1,0 +1,10 @@
+﻿@{
+    ViewBag.Title = "Score";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<h2>Language</h2>
+@foreach (var title in (List<string>)Session["Languages"])
+{
+    <img class="language" src="~/Content/images/language/@FormattableString.Invariant($"{title}.svg")" onclick="gamesCallAjax('@Url.Action("SetUserLanguage", "Game")', {language: '@title'})" />
+}

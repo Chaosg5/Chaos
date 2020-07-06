@@ -146,7 +146,8 @@ namespace Chaos.Wedding.Models.Games
         public LanguageDescriptionCollection Titles { get; } = new LanguageDescriptionCollection();
 
         /// <summary>Gets the children <see cref="Challenge"/>s.</summary>
-        public IEnumerable<Challenge> Challenges => this.challenges;
+        //// ToDo: Create ChildList - class, like listable but with reference to parent
+        public List<Challenge> Challenges => this.challenges;
 
         /// <inheritdoc />
         public override Contract.Zone ToContract()
@@ -215,16 +216,6 @@ namespace Chaos.Wedding.Models.Games
             if (this.Id != contract.Id)
             {
                 throw new InvalidSaveCandidateException($"The id {contract.Id} doesn't match the expected {this.Id}.");
-            }
-
-            if (contract.ImageId == null)
-            {
-                throw new InvalidSaveCandidateException("The image id can't be null.");
-            }
-
-            if (contract.GameId <= 0)
-            {
-                throw new InvalidSaveCandidateException("The zone can't be saved without a game.");
             }
 
             this.GameId = contract.GameId;

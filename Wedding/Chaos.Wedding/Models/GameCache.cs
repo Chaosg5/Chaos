@@ -176,13 +176,109 @@ namespace Chaos.Wedding.Models
         public static async Task<IEnumerable<Difficulty>> DifficultiesGetAllAsync()
         {
             await InitCacheAsync();
-            var challengeSubjects = new List<Difficulty>();
+            var difficulties = new List<Difficulty>();
             foreach (var pair in Difficulties)
             {
-                challengeSubjects.Add(await pair.Value);
+                difficulties.Add(await pair.Value);
             }
 
-            return challengeSubjects;
+            return difficulties;
+        }
+
+        /// <summary>Updates the cache with the new <see cref="Zone"/>.</summary>
+        /// <param name="zone">New <see cref="Zone"/> to add to it's cached parent <see cref="Game"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Zone"/> is not valid to be saved.</exception>
+        public static async Task ZoneAddedAsync(Zone zone)
+        {
+            await InitCacheAsync();
+            if (zone == null)
+            {
+                throw new ArgumentNullException(nameof(zone));
+            }
+
+            if (zone.Id <= 0)
+            {
+                throw new PersistentObjectRequiredException("The zone needs to be saved before cached.");
+            }
+            
+            zone.ValidateSaveCandidate();
+            var game = await Games.GetValue(zone.GameId);
+            game.Zones.Add(zone);
+        }
+
+        /// <summary>Updates the cache with the new <see cref="Challenge"/>.</summary>
+        /// <param name="challenge">New <see cref="Challenge"/> to add to it's cached parent <see cref="Zone"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Challenge"/> is not valid to be saved.</exception>
+        public static async Task ChallengeAddedAsync(Challenge challenge)
+        {
+            await InitCacheAsync();
+            if (challenge == null)
+            {
+                throw new ArgumentNullException(nameof(challenge));
+            }
+
+            if (challenge.Id <= 0)
+            {
+                throw new PersistentObjectRequiredException("The challenge needs to be saved before cached.");
+            }
+
+            challenge.ValidateSaveCandidate();
+            var zone = await Zones.GetValue(challenge.ZoneId);
+            zone.Challenges.Add(challenge);
+        }
+
+        /// <summary>Updates the cache with the new <see cref="Question"/>.</summary>
+        /// <param name="question">New <see cref="Question"/> to add to it's cached parent <see cref="Challenge"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Question"/> is not valid to be saved.</exception>
+        public static async Task QuestionAddedAsync(Question question)
+        {
+            await InitCacheAsync();
+            if (question == null)
+            {
+                throw new ArgumentNullException(nameof(question));
+            }
+
+            if (question.Id <= 0)
+            {
+                throw new PersistentObjectRequiredException("The question needs to be saved before cached.");
+            }
+
+            question.ValidateSaveCandidate();
+            var challenge = await Challenges.GetValue(question.ChallengeId);
+            challenge.Questions.Add(question);
+        }
+
+        /// <summary>Updates the cache with the new <see cref="Alternative"/>.</summary>
+        /// <param name="alternative">New <see cref="Alternative"/> to add to it's cached parent <see cref="Question"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Alternative"/> is not valid to be saved.</exception>
+        public static async Task AlternativeAddedAsync(Alternative alternative)
+        {
+            await InitCacheAsync();
+            if (alternative == null)
+            {
+                throw new ArgumentNullException(nameof(alternative));
+            }
+
+            if (alternative.Id <= 0)
+            {
+                throw new PersistentObjectRequiredException("The alternative needs to be saved before cached.");
+            }
+
+            alternative.ValidateSaveCandidate();
+            var question = await Questions.GetValue(alternative.QuestionId);
+            question.Alternatives.Add(alternative);
         }
 
         /// <summary>The get server ip async.</summary>
@@ -211,6 +307,7 @@ namespace Chaos.Wedding.Models
                 {
                     await ChallengeSubjectsLoadAllAsync();
                     await ChallengeTypesLoadAllAsync();
+                    await DifficultiesLoadAllAsync();
                 }
                 catch
                 {
@@ -256,6 +353,18 @@ namespace Chaos.Wedding.Models
             foreach (var challengeType in await ChallengeType.Static.GetAllAsync(session))
             {
                 ChallengeTypes.SetValue(challengeType.Id, challengeType);
+            }
+        }
+
+        /// <summary>Loads all <see cref="Difficulties"/>s from the database.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static async Task DifficultiesLoadAllAsync()
+        {
+            Difficulties.Clear();
+            foreach (var difficulty in await Difficulty.Static.GetAllAsync(session))
+            {
+                Difficulties.SetValue(difficulty.Id, difficulty);
             }
         }
     }

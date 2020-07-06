@@ -27,8 +27,14 @@ html, body {
 input,
 select,
 textarea {
-    max-width: 280px;
+    width: 16em;
 }
+
+    input.input-wide,
+    select.input-wide,
+    textarea.input-wide {
+        width: 32em;
+    }
 
 h1, h2, h3 {
     color: #990b0b;
@@ -63,7 +69,7 @@ nav.navbar-light a.navbar-brand {
 }
 
 .navbar.navbar-fixed-bottom .navbar-nav .nav-item {
-    width: 20%;
+    width: 16%;
     text-align: center;
     font-size: 3em;
 }
@@ -113,25 +119,57 @@ nav.navbar-light a.navbar-brand {
     height: 100px;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 i.success {
     color: green;
 }
+
+    i.success.clickable:hover {
+        color: lightgreen;
+    }
 
 i.question {
     color: skyblue;
 }
 
+    i.question.clickable:hover {
+        color: blue;
+    }
+
 i.warning {
     color: orange;
 }
+
+    i.warning.clickable:hover {
+        color: orangered;
+    }
 
 i.error {
     color: red;
 }
 
+    i.error.clickable:hover {
+        color: purple;
+    }
+
 i.gold {
     color: gold;
 }
+
+    i.gold.clickable:hover {
+        color: coral;
+    }
+
+i.gray {
+    color: darkgray;
+}
+
+    i.gray.clickable:hover {
+        color: gray;
+    }
 
 @keyframes spin {
     to {

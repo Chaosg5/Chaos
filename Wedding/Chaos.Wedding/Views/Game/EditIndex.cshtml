@@ -11,7 +11,9 @@
 <div>
     <div>@game.Titles.UserTitle.Title (@game.Titles.UserTitle.Language.Name)</div>
     <div>
-        <a href="@Url.Action("EditGame", "Game", new { gameId = 0 })"><i class="fas fa-plus" title="Lägg till"></i></a>
+        <a href="@Url.Action("EditGame", "Game", new { gameId = game.Id })"><i class="fas fa-pen" title="Edit game"></i></a>
     </div>
 </div>
 }
+
+<a href="@Url.Action("EditGame", "Game", new { gameId = 0 })"><i class="fas fa-plus" title="Add game"></i></a>

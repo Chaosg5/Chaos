@@ -20,7 +20,7 @@ namespace Chaos.Wedding.Models.Games
 
     /// <inheritdoc cref="Readable{T, TDto}" />
     /// <summary>A game containing a set of <see cref="Zone" />s.</summary>
-    public sealed class Game : Readable<Game, Contract.Game>, IUpdateable<Game, Contract.Game>
+    public sealed class Game : Typeable<Game, Contract.Game>, IUpdateable<Game, Contract.Game>
     {
         /// <summary>The database column for <see cref="ImageId"/>.</summary>
         private const string ImageIdColumn = "ImageId";
@@ -98,7 +98,8 @@ namespace Chaos.Wedding.Models.Games
         public LanguageDescriptionCollection Titles { get; } = new LanguageDescriptionCollection();
 
         /// <summary>Gets the children <see cref="Zone"/>s.</summary>
-        public IEnumerable<Zone> Zones => this.zones;
+        //// ToDo: Create ChildList - class, like listable but with reference to parent
+        public List<Zone> Zones => this.zones;
         
         /// <inheritdoc />
         public override Contract.Game ToContract()
@@ -216,6 +217,13 @@ namespace Chaos.Wedding.Models.Games
         public override async Task<IEnumerable<Game>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
             return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public override async Task<IEnumerable<Game>> GetAllAsync(UserSession session)
+        {
+            return await this.GetAllFromDatabaseAsync(this.ReadFromRecordsAsync, session);
         }
 
         /// <inheritdoc />
