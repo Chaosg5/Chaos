@@ -14,10 +14,13 @@ namespace Chaos.Wedding.Controllers
     using System.Web.Mvc;
     using System.Web.SessionState;
 
+    using Chaos.Movies.Contract;
     using Chaos.Movies.Model;
     using Chaos.Movies.Model.Exceptions;
     using Chaos.Wedding.Models;
     using Chaos.Wedding.Models.Games;
+
+    using NLog;
 
     using Contract = Chaos.Wedding.Models.Games.Contract;
 
@@ -39,15 +42,159 @@ namespace Chaos.Wedding.Controllers
             Notification
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string teamLookup = null)
         {
-            // if (this.Session["Team"] != null)
-            if (this.Session["GameId"] != null && int.TryParse(this.Session["GameId"].ToString(), out var gameId))
+            Team team = null;
+            if (Guid.TryParse(teamLookup, out var teamId))
             {
-                this.RedirectToAction("PlayGame", new { GameId = gameId });
+                team = await Team.Static.GetAsync(await SessionHandler.GetSessionAsync(), teamId);
+                this.Session["TeamId"] = team.Id;
+                ViewBag.TeamLookup = team.LookupId.ToString("D").Substring(0, 4);
             }
 
-            return this.View();
+            if (this.Session["TeamId"] == null)
+            {
+                return this.View();
+            }
+
+            team = team ?? await Team.Static.GetAsync(await SessionHandler.GetSessionAsync(), (int)this.Session["TeamId"]);
+            if (team.GameScores.Count == 1)
+            {
+                this.Session["GameId"] = team.GameScores.Keys.First();
+            }
+
+            if (this.Session["GameId"] != null)
+            {
+                return this.RedirectToAction("PlayGame", new { GameId = (int)this.Session["GameId"] });
+            }
+            
+            await this.SetSystemData();
+            var games = await Game.Static.GetAllAsync(await SessionHandler.GetSessionAsync());
+            return this.View(games.Select(g => g.ToContract(this.GetUserLanguage())));
+        }
+
+        public async Task<ActionResult> GetTeamLookupShort(string lookupShort)
+        {
+            var teams = (await Team.Static.SearchAsync(
+                new SearchParametersDto { SearchText = lookupShort },
+                await SessionHandler.GetSessionAsync())).ToList();
+            if (!teams.Any())
+            {
+                throw new MissingResultException(string.Format(CultureInfo.InvariantCulture, "The specified team '{0}' doesn't exist.", lookupShort));
+            }
+
+            return this.Json(
+                this.JsonResult(
+                    ResponseAction.Redirect,
+                    NotificationLevel.Success,
+                    "The team has been successfully found.",
+                    Url.Action("Index", "Game", new { teamLookup = teams.First().LookupId })));
+        }
+
+        public async Task<ActionResult> PlayGame(int gameId)
+        {
+            if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+            {
+                return this.RedirectToAction("Index", "Game");
+            }
+
+            var game = await GameCache.GameGetAsync(gameId);
+            this.Session["GameId"] = game.Id;
+            var team = await GameCache.TeamGetAsync((int)this.Session["TeamId"]);
+            if (!team.GameScores.ContainsKey(gameId))
+            {
+                team.GameScores.Add(gameId, 0);
+                await team.SaveAsync(await SessionHandler.GetSessionAsync());
+            }
+
+            if (!game.TeamIds.Contains(team.Id))
+            {
+                game.TeamIds.Add(team.Id);
+            }
+
+            return this.View(game.ToContract(this.GetUserLanguage()));
+        }
+
+        public async Task<ActionResult> PlayZone(int zoneId)
+        {
+            if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+            {
+                return this.RedirectToAction("Index", "Game");
+            }
+
+            var zone = await GameCache.ZoneGetAsync(zoneId);
+            return this.View(zone.ToContract(this.GetUserLanguage()));
+        }
+
+        public async Task<ActionResult> PlayChallenge(int challengeId)
+        {
+            if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+            {
+                return this.RedirectToAction("Index", "Game");
+            }
+
+            var teamChallenge = await GameCache.TeamChallengeGetAsync(teamId, challengeId);
+            ViewBag.ChallengeLocked = teamChallenge.IsLocked;
+            var challenge = await GameCache.ChallengeGetAsync(challengeId);
+            var model = teamChallenge.MergeAnswersIntoChallenge(challenge, this.GetUserLanguage());
+            return this.View(model);
+        }
+
+        public async Task<ActionResult> LockTeamChallenge(int challengeId)
+        {
+            if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+            {
+                throw new InvalidSaveCandidateException("A team needs to be specified.");
+            }
+
+            var session = await SessionHandler.GetSessionAsync();
+            var teamChallenge = await GameCache.TeamChallengeGetAsync(teamId, challengeId);
+            var challenge = await GameCache.ChallengeGetAsync(challengeId);
+            teamChallenge.CalculateScore(challenge.ToContract());
+            if (!teamChallenge.IsLocked)
+            {
+                teamChallenge.IsLocked = true;
+                await teamChallenge.SaveAsync(session);
+            }
+
+            return this.Json(
+                this.JsonResult(
+                    ResponseAction.Notification,
+                    NotificationLevel.Success,
+                    "The challenge has been successfully locked."));
+        }
+
+        public async Task<ActionResult> SaveTeamAnswer(
+            int alternativeId,
+            bool isAnswered,
+            byte answeredRow = 0,
+            byte answeredColumn = 0,
+            string answer = "")
+        {
+            if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+            {
+                throw new InvalidSaveCandidateException("A team needs to be specified.");
+            }
+
+            var session = await SessionHandler.GetSessionAsync();
+            var alternative = await GameCache.AlternativeGetAsync(alternativeId);
+            var question = await GameCache.QuestionGetAsync(alternative.QuestionId);
+            var teamChallenge = await GameCache.TeamChallengeGetAsync(teamId, question.ChallengeId);
+            await teamChallenge.UpdateAnswerAsync(
+                new Contract.TeamAnswer
+                {
+                    TeamId = teamId,
+                    ChallengeId = question.ChallengeId,
+                    QuestionId = alternative.QuestionId,
+                    AlternativeId = alternativeId,
+                    AnsweredRow = answeredRow,
+                    AnsweredColumn = answeredColumn,
+                    IsAnswered = isAnswered,
+                    Answer = answer
+                },
+                session);
+
+            return this.Json(this.JsonResult(ResponseAction.Notification, NotificationLevel.Success, "The answer has been successfully saved."));
         }
 
         public async Task<ActionResult> Help()
@@ -57,7 +204,14 @@ namespace Chaos.Wedding.Controllers
 
         public async Task<ActionResult> Score()
         {
-            return this.View();
+            if (this.Session["GameId"] == null)
+            {
+                return this.RedirectToAction("Index", "Game");
+            }
+
+            var game = await GameCache.GameGetAsync((int)this.Session["GameId"]);
+            var teams = await Task.WhenAll(game.TeamIds.Select(async t => await GameCache.TeamGetAsync(t)));
+            return this.View(teams.Select(t => t.ToContract(this.GetUserLanguage())));
         }
 
         /// <summary>View to choose <see cref="CultureInfo"/> for the current <see cref="HttpSessionState"/>.</summary>
@@ -493,20 +647,43 @@ namespace Chaos.Wedding.Controllers
                     Url.Action("EditQuestion", "Game", new { questionId = alternative.QuestionId })));
         }
 
-        public async Task<ActionResult> PlayGame(int gameId)
-        {
-            var game = await GameCache.GameGetAsync(gameId);
-            return this.View(game);
-        }
 
-        public async Task<ActionResult> PlayZone()
+        /// <summary>Saves a <see cref="Team"/>.</summary>
+        /// <param name="teamId">The <see cref="Team.Id"/>.</param>
+        /// <param name="name">The <see cref="Team.Name"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Game"/> is not valid to be saved.</exception>
+        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        public async Task<ActionResult> SaveTeam(int teamId, string name)
         {
-            return this.View();
-        }
+            if (teamId == 0)
+            {
+                var newTeam = new Team(name);
+                await newTeam.SaveAsync(await SessionHandler.GetSessionAsync());
+                return this.Json(
+                    this.JsonResult(
+                        ResponseAction.Redirect,
+                        NotificationLevel.Success,
+                        "The team has been successfully created.",
+                        Url.Action("Index", "Game", new { teamLookup = newTeam.LookupId })));
+            }
 
-        public async Task<ActionResult> PlayChallenge()
-        {
-            return this.View();
+            var team = await GameCache.TeamGetAsync(teamId);
+            await team.UpdateAsync(
+                new Contract.Team
+                {
+                    Id = teamId,
+                    Name = name
+                },
+                await SessionHandler.GetSessionAsync());
+            return this.Json(
+                this.JsonResult(
+                    ResponseAction.Redirect,
+                    NotificationLevel.Success,
+                    "The team has been successfully updated.",
+                    Url.Action("Index", "Game", new { teamLookup = team.LookupId })));
         }
 
         private static int GetDelayFromLevel(NotificationLevel level)

@@ -110,6 +110,22 @@ namespace Chaos.Movies.Model
 
         /// <summary>Creates a data table containing a single column and rows for each item in <paramref name="ids"/>.</summary>
         /// <param name="ids">The list of ids.</param>
+        /// <param name="columnNames">The name of the column for the table.</param>
+        /// <returns>The created <see cref="DataTable"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="ids"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public static DataTable CreateDictionaryCollectionTable(Dictionary<int, int> ids, KeyValuePair<string, string> columnNames)
+        {
+            if (ids.Keys.Any(i => i <= 0))
+            {
+                throw new PersistentObjectRequiredException("All items to get needs to be persisted.");
+            }
+
+            return CreateTable(ids, columnNames);
+        }
+
+        /// <summary>Creates a data table containing a single column and rows for each item in <paramref name="ids"/>.</summary>
+        /// <param name="ids">The list of ids.</param>
         /// <returns>The created <see cref="DataTable"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="ids"/> is <see langword="null"/></exception>
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
@@ -157,6 +173,28 @@ namespace Chaos.Movies.Model
                 foreach (var value in values)
                 {
                     table.Rows.Add(value);
+                }
+
+                return table;
+            }
+        }
+
+        /// <summary>Creates a data table containing a single column and rows for each item in <paramref name="values"/>.</summary>
+        /// <param name="values">The value to add to the table.</param>
+        /// <param name="columnNames">The name of the column for the table.</param>
+        /// <typeparam name="TKey">The type of the key for the table.</typeparam>
+        /// <typeparam name="TValue">The type of the value for the table.</typeparam>
+        /// <returns>The created <see cref="DataTable"/>.</returns>
+        private static DataTable CreateTable<TKey, TValue>(Dictionary<TKey, TValue> values, KeyValuePair<string, string> columnNames)
+        {
+            using (var table = new DataTable())
+            {
+                table.Locale = CultureInfo.InvariantCulture;
+                table.Columns.Add(new DataColumn(columnNames.Key, typeof(TKey)));
+                table.Columns.Add(new DataColumn(columnNames.Value, typeof(TValue)));
+                foreach (var pair in values)
+                {
+                    table.Rows.Add(pair.Key, pair.Value);
                 }
 
                 return table;

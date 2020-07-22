@@ -1,9 +1,14 @@
-﻿.games-backward {
+﻿a {
+    color: inherit;
+}
+
+.games-backward {
     top: 0;
     right: 0;
     position: fixed;
     font-size: 3em;
     margin-right: 0.5em;
+    z-index: 1000;
 }
 
 img.language {
@@ -20,24 +25,95 @@ i {
     font-size: 40px;
 }
 
-.game-edit-row {
+.game-row {
     margin: 0.5em 0;
 }
 
-.game-edit-row div {
-    display: inline-block;
+    .game-row div {
+        display: inline-block;
+    }
+
+.game-columnHeader {
+    font-weight: bold;
+    width: 8em;
 }
 
-    .game-edit-row .game-edit-columnHeader {
-        font-weight: bold;
-        width: 8em;
-    }
-
-    .game-edit-row .game-edit-title {
-        font-weight: bold;
-        font-size: 1.5rem;
-    }
+.game-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
 
 .game-title-menu {
     margin-left: 2em;
 }
+
+.game-question {
+    margin: 5px;
+    border-radius: 12px;
+    border: 1px solid #cccccc;
+    box-shadow: 3px 3px 5px #cccccc;
+}
+
+.game-question-type {
+    font-size: 1rem;
+    border-bottom: 1px solid #cccccc;
+    padding: 5px;
+}
+
+.game-question-type div  {
+    display: inline-block;
+}
+
+    .game-question-type i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+.game-question-content {
+    padding: 5px;
+}
+
+.game-alternatives {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.game-alternative-choice {
+    display: inline-block;
+    background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+    border-radius: 6px;
+    border: 1px solid #cccccc;
+    cursor: pointer;
+    padding: 6px 24px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #ffffff;
+    margin: 2px;
+}
+
+    .game-alternative-choice.selected {
+        background: linear-gradient(to bottom, #0000ff 5%, #7777ff 100%);
+        text-shadow: 0px -1px 0px #5b6178;
+        color: #ffffff;
+    }
+
+    .game-alternative-choice.correct {
+        background: linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);
+        text-shadow: 0px 1px 0px #aade7c;
+        color: #333333;
+    }
+
+    .game-alternative-choice.incorrect {
+        background: linear-gradient(to bottom, #ce0100 5%, #fe1a00 100%);
+        text-shadow: 0px 1px 0px #b23e35;
+        color: #ffffff;
+    }
+
+    .game-alternative-choice.missed {
+        background: linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+        text-shadow: 0px 1px 0px #ffee66;
+        color: #333333;
+    }
+
+/*https://www.bestcssbuttongenerator.com/#/26*/

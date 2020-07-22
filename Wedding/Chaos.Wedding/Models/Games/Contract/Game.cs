@@ -31,12 +31,18 @@ namespace Chaos.Wedding.Models.Games.Contract
         [DataMember]
         public short Width { get; set; }
 
+        /// <summary>Gets or sets the <see cref="Height"/> for CSS.</summary>
+        public string CssHeight => $"{this.Height}px";
+
+        /// <summary>Gets or sets the <see cref="Width"/> for CSS.</summary>
+        public string CssWidth => $"{this.Width}px";
+
         /// <summary>Gets or sets the titles of the <see cref="Game"/>.</summary>
         [DataMember]
         public LanguageDescriptionCollectionDto Titles { get; set; }
 
         /// <summary>Gets or sets the children <see cref="Zone"/>s.</summary>
         [DataMember]
-        public IEnumerable<Zone> Zones { get; set; }
+        public IReadOnlyCollection<Zone> Zones { get; set; }
     }
 }

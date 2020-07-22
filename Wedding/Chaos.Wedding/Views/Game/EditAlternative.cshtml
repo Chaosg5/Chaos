@@ -11,7 +11,7 @@
     </a>
 </div>
 
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
     </div>
@@ -25,17 +25,17 @@
     @foreach (var title in (List<string>)Session["Languages"])
     {
         var existingTitle = Model.Titles.FirstOrDefault(t => t.Language.Name == title);
-        <div class="game-edit-row">
+        <div class="game-row">
             <div>
-                <div class="game-edit-columnHeader">Language</div>
+                <div class="game-columnHeader">Language</div>
                 <input type="text" id='@FormattableString.Invariant($"Language_{title}")' value="@title" disabled="disabled" />
             </div>
             <div>
-                <div class="game-edit-columnHeader">Title</div>
+                <div class="game-columnHeader">Title</div>
                 <input type="text" id='@FormattableString.Invariant($"Title_{title}")' value="@(existingTitle?.Title)" />
             </div>
             <div>
-                <div class="game-edit-columnHeader">Description</div>
+                <div class="game-columnHeader">Description</div>
                 <input type="text" id='@FormattableString.Invariant($"Description_{title}")' value="@(existingTitle?.Description)" />
             </div>
         </div>
@@ -43,42 +43,42 @@
 </div>
 
 <h3>Image</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="text" id="ImageId" value="@Model.ImageId" class="input-wide" />
     </div>
 </div>
 
 <h3>CorrectRow</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="text" id="CorrectRow" value="@Model.CorrectRow" />
     </div>
 </div>
 
 <h3>CorrectColumn</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="text" id="CorrectColumn" value="@Model.CorrectColumn" />
     </div>
 </div>
 
 <h3>IsCorrect</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="checkbox" id="IsCorrect" value="@Model.IsCorrect" />
     </div>
 </div>
 
 <h3>ScoreValue</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="text" id="ScoreValue" value="@Model.ScoreValue" />
     </div>
 </div>
 
 <h3>CorrectAnswer</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="text" id="CorrectAnswer" value="@Model.CorrectAnswer" />
     </div>

@@ -133,7 +133,7 @@ namespace Chaos.Wedding.Models.Games
                 Subject = this.Subject?.ToContract(),
                 Difficulty = this.Difficulty?.ToContract(),
                 Titles = this.Titles.ToContract(),
-                Questions = this.Questions.Select(q => q.ToContract())
+                Questions = new ReadOnlyCollection<Contract.Question>(this.Questions.Select(q => q.ToContract()).ToList())
             };
         }
 
@@ -148,7 +148,7 @@ namespace Chaos.Wedding.Models.Games
                 Subject = this.Subject?.ToContract(languageName),
                 Difficulty = this.Difficulty?.ToContract(languageName),
                 Titles = this.Titles.ToContract(languageName),
-                Questions = this.Questions.Select(q => q.ToContract(languageName))
+                Questions = new ReadOnlyCollection<Contract.Question>(this.Questions.Select(q => q.ToContract(languageName)).ToList())
             };
         }
 

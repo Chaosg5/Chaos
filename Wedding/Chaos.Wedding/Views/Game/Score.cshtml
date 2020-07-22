@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<Chaos.Wedding.Models.Games.Contract.Team>
+
 @{
     ViewBag.Title = "Score";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
@@ -6,3 +7,31 @@
 
 <h2>Score</h2>
 
+@{ var index = 0; }
+@foreach (var team in Model)
+{
+<div class="game-row">
+    <div>
+        @{
+            index++;
+            switch (index)
+            {
+                case 1:
+                    <i class="fas fa-medal gold"></i>
+                    break;
+                case 2:
+                    <i class="fas fa-medal silver"></i>
+                    break;
+                case 3:
+                    <i class="fas fa-medal bronze"></i>
+                    break;
+                default:
+                    <i class="fas fa-users black"></i>
+                    break;
+            }
+        }
+    </div>
+    <div><h2>@team.Name</h2></div>
+    <div><h2>@team.TeamScore</h2></div>
+</div>
+}

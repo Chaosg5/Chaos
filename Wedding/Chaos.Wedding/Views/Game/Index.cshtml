@@ -1,10 +1,59 @@
-﻿
+﻿@model IEnumerable<Chaos.Wedding.Models.Games.Contract.Game>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-@*<img src="~/Content/images/GameMap.png" style="width: 100%; height: 100%;" />*@
-<img src="~/Content/images/GameMap.png" style="width: 2000px; height: 2000px;"/>
-<div style="background-color: gold; width: 100px; height: 30px; left: 100px; top: 100px; position: absolute;"></div>
-<div style="background-color: red; width: 100px; height: 30px; left: 200px; top: 200px; position: absolute;"></div>
+@if (ViewBag.TeamLookup != null)
+{
+    <div style="position: absolute; z-index: 900;">
+        <h3>Skriv ner följande kod:</h3>
+        <h1>@ViewBag.TeamLookup</h1>
+    </div>
+}
+
+@if (Model == null)
+{
+    <div>
+        <label for="EnterTeamLookupShort">Ange lagets kod:</label>
+        <input id="EnterTeamLookupShort" type="text" onchange="enterLookupShort(this);" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" />
+        <label for="EnterNewTeam">Eller skapa ett nytt lag:</label>
+        <input id="EnterNewTeam" type="text" onchange="createNewTeam(this);" />
+        <i class="far fa-save" onclick="createNewTeam()" title="Create new team"></i>
+    </div>
+}
+else
+{
+    foreach (var game in Model)
+    {
+        <div>
+            <div>@game.Titles.UserTitle.Title (@game.Titles.UserTitle.Language.Name)</div>
+            <div>
+                <a href="@Url.Action("PlayGame", "Game", new { gameId = game.Id })"><i class="fas fa-play" title="Play game"></i></a>
+            </div>
+        </div>
+    }
+}
+
+<script type="text/javascript">
+    function enterLookupShort(inputElement) {
+        if (inputElement.value.length === 4) {
+            var url = "@Url.Action("GetTeamLookupShort", "Game")";
+            var data = { lookupShort: inputElement.value };
+            gamesCallAjax(url, data);
+        }
+    }
+
+    function createNewTeam() {
+        try {
+            var teamId = 0;
+            var name = document.getElementById("EnterNewTeam").value;
+            var url = "@Url.Action("SaveTeam", "Game")";
+            var data = { teamId: teamId, name: name };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+
+</script>

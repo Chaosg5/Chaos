@@ -159,14 +159,19 @@
     <Compile Include="Models\Games\Contract\Game.cs" />
     <Compile Include="Models\Games\Contract\Question.cs" />
     <Compile Include="Models\Games\Contract\Team.cs" />
+    <Compile Include="Models\Games\Contract\TeamAnswer.cs" />
+    <Compile Include="Models\Games\Contract\TeamChallenge.cs" />
     <Compile Include="Models\Games\Contract\Zone.cs" />
     <Compile Include="Models\Games\Difficulty.cs" />
     <Compile Include="Models\Games\ChallengeType.cs" />
+    <Compile Include="Models\Games\QuestionType.cs" />
     <Compile Include="Models\Games\Question.cs" />
     <Compile Include="Models\Games\Challenge.cs" />
     <Compile Include="Models\Games\ChallengeSubject.cs" />
     <Compile Include="Models\Games\Team.cs" />
     <Compile Include="Models\Games\SystemData.cs" />
+    <Compile Include="Models\Games\TeamAnswer.cs" />
+    <Compile Include="Models\Games\TeamChallenge.cs" />
     <Compile Include="Models\Games\Zone.cs" />
     <Compile Include="Models\Games\Game.cs" />
     <Compile Include="Models\Gift.cs" />
@@ -417,6 +422,7 @@
     <Content Include="Views\Game\PlayGame.cshtml" />
     <Content Include="Views\Game\EditAlternative.cshtml" />
     <Content Include="Views\Game\Language.cshtml" />
+    <Content Include="Views\Game\_AnswerQuestion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

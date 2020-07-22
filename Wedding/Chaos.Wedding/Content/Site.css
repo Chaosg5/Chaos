@@ -139,6 +139,14 @@ i.question {
         color: blue;
     }
 
+i.blue {
+    color: blue;
+}
+
+    i.blue.clickable:hover {
+        color: skyblue;
+    }
+
 i.warning {
     color: orange;
 }
@@ -163,11 +171,35 @@ i.gold {
         color: coral;
     }
 
+i.silver {
+    color: silver;
+}
+
+    i.silver.clickable:hover {
+        color: gray;
+    }
+
+i.bronze {
+    color: #CD7F32;
+}
+
+    i.bronze.clickable:hover {
+        color: coral;
+    }
+
 i.gray {
     color: darkgray;
 }
 
     i.gray.clickable:hover {
+        color: gray;
+    }
+
+i.black {
+    color: black;
+}
+
+    i.black.clickable:hover {
         color: gray;
     }
 

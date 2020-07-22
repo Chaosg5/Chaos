@@ -160,6 +160,7 @@ namespace Chaos.Movies.Model.Base
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
         protected async Task<IEnumerable<int>> SearchDatabaseAsync(SearchParametersDto parametersDto, UserSession session)
         {
+            // ToDo: Change SearchDatabase to return the real results instead
             if (string.IsNullOrWhiteSpace(parametersDto?.SearchText))
             {
                 throw new ArgumentNullException(nameof(parametersDto));

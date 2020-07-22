@@ -64,10 +64,24 @@ namespace Chaos.Movies.Model.Base
         /// <inheritdoc cref="IRating.Width" />
         public string Width => $"{(this.Value * 10).ToString(CultureInfo.InvariantCulture)}%";
 
+        /// <summary>Normalizes the <paramref name="value"/> to a value from 0 to 10.</summary>
+        /// <param name="value">The value.</param>
+        /// <param name="min">The smallest possible value.</param>
+        /// <param name="max">The largest possible value.</param>
+        /// <returns>The <see cref="double"/>.</returns>
+        public static double NormalizeValue(double value, int min = 0, int max = 10)
+        {
+            var minValueOffset = 0 - min;
+            max += minValueOffset;
+            value += minValueOffset;
+            var maxValueScale = max / 10;
+            return value / maxValueScale;
+        }
+
         /// <summary>Gets the display color in RBG hex for this <see cref="UserDerivedRating"/>'s <see cref="Value"/>.</summary>
         /// <param name="value">The value to get the <see cref="Color"/> for.</param>
         /// <returns>The <see cref="Color"/>.</returns>
-        private static string GetHexColor(double value)
+        public static string GetHexColor(double value)
         {
             var color = GetColor(value);
             return string.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);

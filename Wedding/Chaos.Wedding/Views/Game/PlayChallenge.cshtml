@@ -1,8 +1,28 @@
-﻿
+﻿@model Chaos.Wedding.Models.Games.Contract.Challenge
 @{
     ViewBag.Title = "Score";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-<h2>Score</h2>
+<div class="games-backward">
+    <!--ToDo: Set question as locked and show all correct answers-->
+    <a href="@Url.Action("LockTeamChallenge", "Game", new { challengeId = Model.Id })">
+        <i class="fas fa-check-square clickable success"></i>
+    </a>
+    <a href="@Url.Action("PlayZone", "Game", new { zoneId = Model.ZoneId })">
+        <i class="fas fa-backward clickable blue"></i>
+    </a>
+</div>
 
+<div class="game-row">
+    <div>
+        <h2>@Model.Titles.UserTitle.Title</h2>
+    </div>
+</div>
+
+@foreach (var question in Model.Questions)
+{
+    <div class="game-question">
+        @Html.Partial("_AnswerQuestion", question)
+    </div>
+}

@@ -13,7 +13,7 @@
     </a>
 </div>
 
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
     </div>
@@ -27,17 +27,17 @@
     @foreach (var title in (List<string>)Session["Languages"])
     {
         var existingTitle = Model.Titles.FirstOrDefault(t => t.Language.Name == title);
-        <div class="game-edit-row">
+        <div class="game-row">
             <div>
-                <div class="game-edit-columnHeader">Language</div>
+                <div class="game-columnHeader">Language</div>
                 <input type="text" id='@FormattableString.Invariant($"Language_{title}")' value="@title" disabled="disabled" />
             </div>
             <div>
-                <div class="game-edit-columnHeader">Title</div>
+                <div class="game-columnHeader">Title</div>
                 <input type="text" id='@FormattableString.Invariant($"Title_{title}")' value="@(existingTitle?.Title)" />
             </div>
             <div>
-                <div class="game-edit-columnHeader">Description</div>
+                <div class="game-columnHeader">Description</div>
                 <input type="text" id='@FormattableString.Invariant($"Description_{title}")' value="@(existingTitle?.Description)" />
             </div>
         </div>
@@ -119,8 +119,8 @@
 <h3>Questions</h3>
 @foreach (var question in Model.Questions)
 {
-    <div class="game-edit-row">
-        <div class="game-edit-title">@question.Titles.UserTitle.Title (@question.Titles.UserTitle.Language.Name)</div>
+    <div class="game-row">
+        <div class="game-title">@question.Titles.UserTitle.Title (@question.Titles.UserTitle.Language.Name)</div>
         <div><i class="@question.Type.ImageId" title="@question.Type.Titles.UserTitle.Title"></i></div>
         <div><i class="@question.Subject.ImageId" title="@question.Subject.Titles.UserTitle.Title"></i></div>
         <div><i class="@question.Difficulty.ImageId" title="@question.Difficulty.Titles.UserTitle.Title"></i></div>
@@ -135,7 +135,7 @@
 
 @if (Model.Id > 0)
 {
-    <div class="game-edit-row">
+    <div class="game-row">
         <a href="@Url.Action("EditQuestion", "Game", new { questionId = 0, challengeId = Model.Id })">
             <i class="fas fa-plus" title="Add challenge"></i>
         </a>

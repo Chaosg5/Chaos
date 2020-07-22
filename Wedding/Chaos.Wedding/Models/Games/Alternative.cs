@@ -204,7 +204,6 @@ namespace Chaos.Wedding.Models.Games
                 throw new InvalidSaveCandidateException($"The id {contract.Id} doesn't match the expected {this.Id}.");
             }
 
-            this.Id = contract.Id;
             this.QuestionId = contract.QuestionId;
             this.CorrectRow = contract.CorrectRow;
             this.CorrectColumn = contract.CorrectColumn;

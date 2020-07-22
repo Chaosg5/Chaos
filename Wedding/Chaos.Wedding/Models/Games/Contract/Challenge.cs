@@ -41,6 +41,10 @@ namespace Chaos.Wedding.Models.Games.Contract
 
         /// <summary>Gets or sets the children <see cref="Question"/>s.</summary>
         [DataMember]
-        public IEnumerable<Question> Questions { get; set; }
+        public IReadOnlyCollection<Question> Questions { get; set; }
+
+        /// <summary>Gets or sets the <see cref="TeamChallenge"/>.</summary>
+        [DataMember]
+        public TeamChallenge TeamChallenge { get; set; }
     }
 }

@@ -101,6 +101,10 @@ namespace Chaos.Wedding.Models.Games
         //// ToDo: Create ChildList - class, like listable but with reference to parent
         public List<Zone> Zones => this.zones;
         
+        /// <summary>Gets the <see cref="Game"/>s that the <see cref="Team"/> has played.</summary>
+        //// ToDo: Create ChildList - class, like listable but with reference to parent
+        public List<int> TeamIds { get; } = new List<int>();
+
         /// <inheritdoc />
         public override Contract.Game ToContract()
         {
@@ -111,7 +115,7 @@ namespace Chaos.Wedding.Models.Games
                 Height = this.Height,
                 Width = this.Width,
                 Titles = this.Titles.ToContract(),
-                Zones = this.Zones.Select(z => z.ToContract())
+                Zones = new ReadOnlyCollection<Contract.Zone>(this.Zones.Select(z => z.ToContract()).ToList())
             };
         }
 
@@ -125,7 +129,7 @@ namespace Chaos.Wedding.Models.Games
                 Height = this.Height,
                 Width = this.Width,
                 Titles = this.Titles.ToContract(languageName),
-                Zones = this.Zones.Select(z => z.ToContract(languageName))
+                Zones = new ReadOnlyCollection<Contract.Zone>(this.Zones.Select(z => z.ToContract(languageName)).ToList())
             };
         }
 
@@ -165,7 +169,6 @@ namespace Chaos.Wedding.Models.Games
                 throw new InvalidSaveCandidateException($"The id {contract.Id} doesn't match the expected {this.Id}.");
             }
 
-            this.Id = contract.Id;
             this.ImageId = contract.ImageId;
             this.Height = contract.Height;
             this.Width = contract.Width;
@@ -263,7 +266,18 @@ namespace Chaos.Wedding.Models.Games
                 var game = (Game)this.GetFromResultsByIdInRecord(games, reader, IdColumn);
                 game.zones.Add(await GameCache.ZoneGetAsync((int)reader[Zone.IdColumn]));
             }
-            
+
+            if (!await reader.NextResultAsync() || !reader.HasRows)
+            {
+                return games;
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var game = (Game)this.GetFromResultsByIdInRecord(games, reader, IdColumn);
+                game.TeamIds.Add((int)reader[Team.IdColumn]);
+            }
+
             return games;
         }
 

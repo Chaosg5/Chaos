@@ -1,0 +1,83 @@
+﻿@model Chaos.Wedding.Models.Games.Contract.Question
+
+<div class="game-question-type">
+    <div><i class="@Model.Type.ImageId" title="@Model.Type.Titles.UserTitle.Title"></i>@Model.Type.Titles.UserTitle.Title</div>
+    <div><i class="@Model.Subject.ImageId" title="@Model.Subject.Titles.UserTitle.Title"></i>@Model.Subject.Titles.UserTitle.Title</div>
+    <div><i class="@Model.Difficulty.ImageId" title="@Model.Difficulty.Titles.UserTitle.Title"></i>@Model.Difficulty.Titles.UserTitle.Title</div>
+    @if (ViewBag.ChallengeLocked)
+    {
+        <div><i class="fas fa-lock gray" title="Locked"></i></div>
+    }
+</div>
+<div class="game-question-content">
+    <div class="game-title">@Model.Titles.UserTitle.Title</div>
+    <div class="game-alternatives">
+        @switch (Model.Type.Id)
+        {
+            case 1: //SingleChoice
+                foreach (var alternative in Model.Alternatives)
+                {
+                    if (ViewBag.ChallengeLocked)
+                    {
+                        <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" onclick="selectedSingleChoice(this, '@alternative.Id');">@alternative.Titles.UserTitle.Title</div>
+                    }
+                    else
+                    {
+                        <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@alternative.Titles.UserTitle.Title</div>
+                    }
+                }
+                break;
+            case 2: //MultiChoice
+                foreach (var alternative in Model.Alternatives)
+                {
+                    if (ViewBag.ChallengeLocked)
+                    {
+                        <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" onclick="selectedMultiChoice(this, '@alternative.Id');">@alternative.Titles.UserTitle.Title</div>
+                    }
+                    else
+                    {
+                        <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@alternative.Titles.UserTitle.Title</div>
+                    }
+                }
+                break;
+            case 5: // TrueOrFalse
+
+                break;
+        }
+    </div>
+</div>
+
+@*<div class="game-alternative-choice correct" onclick="selectedSingleChoice(this);">Correct</div>
+<div class="game-alternative-choice selected" onclick="selectedSingleChoice(this);">Selected</div>
+<div class="game-alternative-choice incorrect" onclick="selectedSingleChoice(this);">Incorrect</div>
+<div class="game-alternative-choice missed" onclick="selectedSingleChoice(this);">Missed</div>*@
+
+<script type="text/javascript">
+    var selectedClass = "selected";
+    function selectedSingleChoice(alternative, alternativeId) {
+        for (var i = 0; i < alternative.parentNode.childNodes.length; i++) {
+            var sibling = alternative.parentNode.childNodes[i];
+            if (!sibling.classList) {
+                continue;
+            }
+
+            var isSelected = alternative.classList.contains(selectedClass);
+            if (!isSelected) {
+                continue;
+            }
+
+            selectedMultiChoice(alternative, alternativeId);
+        }
+
+        selectedMultiChoice(alternative, alternativeId);
+    }
+
+    function selectedMultiChoice(alternative, alternativeId) {
+        var isSelected = alternative.classList.contains(selectedClass);
+        alternative.classList.toggle(selectedClass);
+        
+        var url = "@Url.Action("SaveTeamAnswer", "Game")";
+        var data = { alternativeId: alternativeId, isAnswered: !isSelected };
+        gamesCallAjax(url, data);
+    }
+</script>

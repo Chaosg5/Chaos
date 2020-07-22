@@ -1,12 +1,52 @@
-﻿@model Chaos.Wedding.Models.Games.Game
+﻿@model Chaos.Wedding.Models.Games.Contract.Game
 
 @{
     ViewBag.Title = "Game";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-<h2>@Model.Titles.GetTitle("sv-SE").Title</h2>
-@foreach (var zone in Model.Zones)
-{
-    <h3>Zone: @zone.Titles.GetTitle("sv-Se").Title</h3>
-}
+<div class="games-backward">
+    <i class="fas fa-plus clickable blue" onclick="scaleGameBoard(true);"></i>
+    <i class="fas fa-minus clickable blue" onclick="scaleGameBoard(false);"></i>
+</div>
+
+<div class="game-row" style="position: absolute">
+    <div>
+        <h2>@Model.Titles.UserTitle.Title</h2>
+    </div>
+</div>
+
+<div id="gameBoard" style="transform: scale(1); transform-origin: top left; height: @Model.CssHeight">
+    <img src="~/Content/images/store/@Model.ImageId" style="width: @Model.CssWidth; height: @Model.CssHeight;" />
+    @foreach (var zone in Model.Zones)
+    {
+        <a href="@Url.Action("PlayZone", "Game", new { zoneId = zone.Id })">
+            <div style="background-color: gold; opacity: 0.5; width: @zone.CssWidth; height: @zone.CssHeight; left: @zone.CssPositionX; top: @zone.CssPositionY; position: absolute;">
+            </div>
+        </a>
+    }
+</div>
+
+<script type="text/javascript">
+    var currentScale = 1;
+    function scaleGameBoard(zoom) {
+        var fullHeight = @Model.Height;
+        var minScale = 0.2;
+        var maxScale = 2.0;
+        if (zoom) {
+            currentScale += 0.2;
+        } else {
+            currentScale -= 0.2;
+        }
+
+        if (currentScale < minScale) {
+            currentScale = minScale;
+        } else if (currentScale > maxScale) {
+            currentScale = maxScale;
+        }
+
+        var gameBoard = document.getElementById("gameBoard");
+        gameBoard.style.transform = "scale(" + currentScale + ")";
+        gameBoard.style.height = fullHeight * currentScale + "px";
+    }
+</script>

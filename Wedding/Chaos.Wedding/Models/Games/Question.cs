@@ -11,6 +11,7 @@ namespace Chaos.Wedding.Models.Games
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -88,11 +89,13 @@ namespace Chaos.Wedding.Models.Games
         public ChallengeType Type
         {
             get => this.type;
+            [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Reviewed. Suppression is OK here.")]
             private set
             {
                 if (value != null)
                 {
                     this.type = value;
+                    this.QuestionType = (QuestionType)value.Id;
                 }
             }
         }
@@ -136,6 +139,9 @@ namespace Chaos.Wedding.Models.Games
             }
         }
 
+        /// <summary>Gets the type of the <see cref="Question"/> as defined by the <see cref="Type"/> <see cref="ChallengeType"/>.</summary>
+        public QuestionType QuestionType { get; private set; }
+
         /// <summary>Gets the titles of the <see cref="Question"/>.</summary>
         public LanguageDescriptionCollection Titles { get; } = new LanguageDescriptionCollection();
 
@@ -154,8 +160,9 @@ namespace Chaos.Wedding.Models.Games
                 Subject = this.Subject?.ToContract(),
                 Difficulty = this.Difficulty?.ToContract(),
                 ImageId = this.ImageId,
+                QuestionType = this.QuestionType,
                 Titles = this.Titles.ToContract(),
-                Alternatives = this.Alternatives.Select(a => a.ToContract())
+                Alternatives = new ReadOnlyCollection<Contract.Alternative>(this.Alternatives.Select(a => a.ToContract()).ToList())
             };
         }
 
@@ -170,8 +177,9 @@ namespace Chaos.Wedding.Models.Games
                 Subject = this.Subject?.ToContract(languageName),
                 Difficulty = this.Difficulty?.ToContract(languageName),
                 ImageId = this.ImageId,
+                QuestionType = this.QuestionType,
                 Titles = this.Titles.ToContract(languageName),
-                Alternatives = this.Alternatives.Select(a => a.ToContract(languageName))
+                Alternatives = new ReadOnlyCollection<Contract.Alternative>(this.Alternatives.Select(a => a.ToContract(languageName)).ToList())
             };
         }
 

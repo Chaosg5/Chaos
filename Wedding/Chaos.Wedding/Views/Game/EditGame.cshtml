@@ -11,7 +11,7 @@
     </a>
 </div>
 
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
     </div>
@@ -25,17 +25,17 @@
     @foreach (var title in (List<string>)Session["Languages"])
     {
         var existingTitle = Model.Titles.FirstOrDefault(t => t.Language.Name == title);
-        <div class="game-edit-row">
+        <div class="game-row">
             <div>
-                <div class="game-edit-columnHeader">Language</div>
+                <div class="game-columnHeader">Language</div>
                 <input type="text" id='@FormattableString.Invariant($"Language_{title}")' value="@title" disabled="disabled" />
             </div>
             <div>
-                <div class="game-edit-columnHeader">Title</div>
+                <div class="game-columnHeader">Title</div>
                 <input type="text" id='@FormattableString.Invariant($"Title_{title}")' value="@(existingTitle?.Title)" />
             </div>
             <div>
-                <div class="game-edit-columnHeader">Description</div>
+                <div class="game-columnHeader">Description</div>
                 <input type="text" id='@FormattableString.Invariant($"Description_{title}")' value="@(existingTitle?.Description)" />
             </div>
         </div>
@@ -43,21 +43,21 @@
 </div>
 
 <h3>Image</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="text" id="ImageId" value="@Model.ImageId" class="input-wide" />
     </div>
 </div>
 
 <h3>Width</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="text" id="Width" value="@Model.Width" />
     </div>
 </div>
 
 <h3>Height</h3>
-<div class="game-edit-row">
+<div class="game-row">
     <div>
         <input type="text" id="Height" value="@Model.Height" />
     </div>
@@ -66,8 +66,8 @@
 <h3>Zones</h3>
 @foreach (var zone in Model.Zones)
 {
-    <div class="game-edit-row">
-        <div class="game-edit-title">@zone.Titles.UserTitle.Title (@zone.Titles.UserTitle.Language.Name)</div>
+    <div class="game-row">
+        <div class="game-title">@zone.Titles.UserTitle.Title (@zone.Titles.UserTitle.Language.Name)</div>
         <div>
             <a href="@Url.Action("EditZone", "Game", new { zoneId = zone.Id, gameId = Model.Id })">
                 <i class="fas fa-pen" title="Edit zone"></i>
@@ -78,7 +78,7 @@
 
 @if (Model.Id > 0)
 {
-    <div class="game-edit-row">
+    <div class="game-row">
         <a href="@Url.Action("EditZone", "Game", new { zoneId = 0, gameId = Model.Id })">
             <i class="fas fa-plus" title="Add zone"></i>
         </a>

@@ -14,19 +14,32 @@ namespace Chaos.Wedding.Models.Games
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Chaos.Movies.Contract;
     using Chaos.Movies.Model;
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
 
     /// <inheritdoc cref="Readable{T, TDto}" />
     /// <summary>A team.</summary>
-    public sealed class Team : Readable<Team, Contract.Team>, IReadableLookup<Team, Contract.Team>
+    public sealed class Team : Readable<Team, Contract.Team>, IReadableLookup<Team, Contract.Team>, IUpdateable<Team, Contract.Team>, ISearchable<Team>
     {
         /// <summary>The database column for <see cref="LookupId"/>.</summary>
         private const string LookupIdColumn = "LookupId";
 
         /// <summary>The database column for <see cref="Name"/>.</summary>
         private const string NameColumn = "Name";
+
+        /// <summary>The database column for <see cref="GameScores"/>.</summary>
+        private const string ScoreColumn = "Score";
+
+        /// <summary>Initializes a new instance of the <see cref="Team"/> class.</summary>
+        /// <param name="name">The <see cref="Name"/>.</param>
+        public Team(string name)
+        {
+            this.SchemaName = "game";
+            this.Name = name;
+            this.LookupId = Guid.NewGuid();
+        }
 
         /// <summary>Prevents a default instance of the <see cref="Team"/> class from being created.</summary>
         private Team()
@@ -42,7 +55,11 @@ namespace Chaos.Wedding.Models.Games
 
         /// <summary>Gets the name of the <see cref="Team"/>.</summary>
         public string Name { get; private set; }
-
+        
+        /// <summary>Gets the <see cref="Team"/>'s scores per <see cref="Game"/>.</summary>
+        //// ToDo: Create ChildList - class, like listable but with reference to parent
+        public Dictionary<int, int> GameScores { get; } = new Dictionary<int, int>();
+        
         /// <inheritdoc />
         public override Contract.Team ToContract()
         {
@@ -76,6 +93,31 @@ namespace Chaos.Wedding.Models.Games
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Team"/> is not valid to be saved.</exception>
         public override void ValidateSaveCandidate()
         {
+            if (string.IsNullOrWhiteSpace(this.Name))
+            {
+                throw new InvalidSaveCandidateException("The team needs a name.");
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Team"/> is not valid to be saved.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="contract"/> is <see langword="null"/></exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public async Task UpdateAsync(Contract.Team contract, UserSession session)
+        {
+            if (contract == null)
+            {
+                throw new ArgumentNullException(nameof(contract));
+            }
+
+            if (this.Id != contract.Id)
+            {
+                throw new InvalidSaveCandidateException($"The id {contract.Id} doesn't match the expected {this.Id}.");
+            }
+
+            this.Name = contract.Name;
+            await this.SaveAsync(session);
         }
 
         /// <inheritdoc />
@@ -100,6 +142,8 @@ namespace Chaos.Wedding.Models.Games
 
         /// <inheritdoc />
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="InvalidSaveCandidateException">The <see cref="Team"/> is not valid to be saved.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         public override async Task SaveAsync(UserSession session)
         {
             this.ValidateSaveCandidate();
@@ -130,8 +174,25 @@ namespace Chaos.Wedding.Models.Games
             return (await this.GetFromDatabaseAsync(new List<Guid> { lookupId }, this.ReadFromRecordsAsync, session)).First();
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
+        public async Task<IEnumerable<Team>> SearchAsync(SearchParametersDto parametersDto, UserSession session)
+        {
+            // ToDo: Change SearchDatabase to return the real results instead
+            var results = (await this.SearchDatabaseAsync(parametersDto, session)).ToList();
+            if (results.Any())
+            {
+                return await this.GetAsync(session, results);
+            }
+
+            return new List<Team>();
+        }
+
         /// <inheritdoc />
         /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
+        /// <exception cref="SqlResultSyncException">Two or more of the SQL results are out of sync with each other.</exception>
         public override async Task<IEnumerable<Team>> ReadFromRecordsAsync(DbDataReader reader)
         {
             var teams = new List<Team>();
@@ -144,11 +205,23 @@ namespace Chaos.Wedding.Models.Games
             {
                 teams.Add(await this.NewFromRecordAsync(reader));
             }
-            
+
+            if (!await reader.NextResultAsync() || !reader.HasRows)
+            {
+                return teams;
+            }
+
+            while (await reader.ReadAsync())
+            {
+                var team = (Team)this.GetFromResultsByIdInRecord(teams, reader, IdColumn);
+                team.GameScores[(int)reader[Game.IdColumn]] = (int)reader[ScoreColumn];
+            }
+
             return teams;
         }
 
         /// <inheritdoc />
+        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         protected override IReadOnlyDictionary<string, object> GetSaveParameters()
         {
             return new ReadOnlyDictionary<string, object>(
@@ -156,7 +229,8 @@ namespace Chaos.Wedding.Models.Games
                 {
                     { Persistent.ColumnToVariable(IdColumn), this.Id },
                     { Persistent.ColumnToVariable(LookupIdColumn), this.LookupId },
-                    { Persistent.ColumnToVariable(NameColumn), this.Name }
+                    { Persistent.ColumnToVariable(NameColumn), this.Name },
+                    { Persistent.ColumnToVariable($"{Game.IdColumn}s"), Persistent.CreateDictionaryCollectionTable(this.GameScores,  new KeyValuePair<string, string>("Id", "Order")) }
                 });
         }
     }

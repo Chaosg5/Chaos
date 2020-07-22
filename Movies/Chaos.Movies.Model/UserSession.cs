@@ -120,7 +120,7 @@ namespace Chaos.Movies.Model
             }
 
             // Updates ActiveTo from the database, since the cache may not be up to date
-            session = await GetFromDatabaseAsync(this.SessionId);
+            session = await this.GetFromDatabaseAsync(this.SessionId);
             if (session.ActiveTo > DateTime.Now)
             {
                 UserSessions.SetValue(session.SessionId, session);

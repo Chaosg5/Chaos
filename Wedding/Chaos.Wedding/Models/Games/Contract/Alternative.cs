@@ -14,6 +14,21 @@ namespace Chaos.Wedding.Models.Games.Contract
     [DataContract]
     public class Alternative
     {
+        /// <summary>The base class.</summary>
+        public const string BaseClass = "game-alternative-choice";
+
+        /// <summary>The selected class.</summary>
+        public const string SelectedClass = BaseClass + " selected";
+
+        /// <summary>The missed class.</summary>
+        public const string MissedClass = BaseClass + " missed";
+
+        /// <summary>The incorrect class.</summary>
+        public const string IncorrectClass = BaseClass + " incorrect";
+
+        /// <summary>The correct.</summary>
+        public const string CorrectClass = BaseClass + " correct";
+
         /// <summary>Gets or sets the id of the <see cref="Alternative"/>.</summary>
         [DataMember]
         public int Id { get; set; }
@@ -49,5 +64,9 @@ namespace Chaos.Wedding.Models.Games.Contract
         /// <summary>Gets or sets the titles of the <see cref="Alternative"/>.</summary>
         [DataMember]
         public LanguageDescriptionCollectionDto Titles { get; set; }
+
+        /// <summary>Gets or sets the <see cref="TeamAnswer"/>.</summary>
+        [DataMember]
+        public TeamAnswer TeamAnswer { get; set; }
     }
 }

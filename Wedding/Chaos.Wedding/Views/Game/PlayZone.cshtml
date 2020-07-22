@@ -1,8 +1,35 @@
-﻿
+﻿@model Chaos.Wedding.Models.Games.Contract.Zone
 @{
     ViewBag.Title = "Score";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-<h2>Score</h2>
+<div class="games-backward">
+    <a href="@Url.Action("PlayGame", "Game", new { gameId = Model.GameId })">
+        <i class="fas fa-backward clickable success"></i>
+    </a>
+</div>
 
+<div class="game-row">
+    <div>
+        <h2>@Model.Titles.UserTitle.Title</h2>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ImageId))
+{
+    <img src="~/Content/images/store/@Model.ImageId" style="width: @Model.CssWidth; height: @Model.CssHeight;"/>
+}
+
+@foreach (var challenge in Model.Challenges)
+{
+    <a href="@Url.Action("PlayChallenge", "Game", new { challengeId = challenge.Id })">
+        <div class="game-row">
+            <div class="game-title">@challenge.Titles.UserTitle.Title (@challenge.Titles.UserTitle.Language.Name)</div>
+            <div><i class="@challenge.Type.ImageId" title="@challenge.Type.Titles.UserTitle.Title"></i></div>
+            <div><i class="@challenge.Subject.ImageId" title="@challenge.Subject.Titles.UserTitle.Title"></i></div>
+            <div><i class="@challenge.Difficulty.ImageId" title="@challenge.Difficulty.Titles.UserTitle.Title"></i></div>
+            <div><b>@challenge.Questions.Count()</b></div>
+        </div>
+    </a>
+}

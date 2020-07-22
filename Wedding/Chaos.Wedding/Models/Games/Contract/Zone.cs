@@ -35,6 +35,12 @@ namespace Chaos.Wedding.Models.Games.Contract
         [DataMember]
         public short Width { get; set; }
 
+        /// <summary>Gets or sets the <see cref="Height"/> for CSS.</summary>
+        public string CssHeight => $"{this.Height}px";
+
+        /// <summary>Gets or sets the <see cref="Width"/> for CSS.</summary>
+        public string CssWidth => $"{this.Width}px";
+
         /// <summary>Gets or sets the X position of the <see cref="Zone"/>.</summary>
         [DataMember]
         public short PositionX { get; set; }
@@ -43,12 +49,18 @@ namespace Chaos.Wedding.Models.Games.Contract
         [DataMember]
         public short PositionY { get; set; }
 
+        /// <summary>Gets or sets the <see cref="PositionX"/> for CSS.</summary>
+        public string CssPositionX => $"{this.PositionX}px";
+
+        /// <summary>Gets or sets the <see cref="PositionY"/> for CSS.</summary>
+        public string CssPositionY => $"{this.PositionY}px";
+
         /// <summary>Gets or sets the titles of the <see cref="Zone"/>.</summary>
         [DataMember]
         public LanguageDescriptionCollectionDto Titles { get; set; }
 
         /// <summary>Gets or sets the children <see cref="Challenge"/>s.</summary>
         [DataMember]
-        public IEnumerable<Challenge> Challenges { get; set; }
+        public IReadOnlyCollection<Challenge> Challenges { get; set; }
     }
 }

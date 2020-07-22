@@ -9,6 +9,7 @@ namespace Chaos.Wedding.Models
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -47,6 +48,8 @@ namespace Chaos.Wedding.Models
 
         /// <summary>Gets all available <see cref="Zone"/>s.</summary>
         private static readonly AsyncCache<int, Zone> Zones = new AsyncCache<int, Zone>(i => Zone.Static.GetAsync(session, i));
+        
+        private static readonly AsyncCache<Tuple<int, int>, TeamChallenge> TeamChallenges = new AsyncCache<Tuple<int, int>, TeamChallenge>(i => TeamChallenge.EnsureTeamChallengeAsync(i.Item1, i.Item2, session));
         
         /// <summary>The session.</summary>
         private static UserSession session;
@@ -132,6 +135,16 @@ namespace Chaos.Wedding.Models
         {
             await InitCacheAsync();
             return await Teams.GetValue(id);
+        }
+
+        /// <summary>Gets the specified <see cref="TeamChallenge"/>.</summary>
+        /// <param name="teamId">The id of the <see cref="TeamChallenge.TeamId"/> to get.</param>
+        /// <param name="challengeId">The id of the <see cref="TeamChallenge.ChallengeId"/> to get.</param>
+        /// <returns>The specified <see cref="TeamChallenge"/>.</returns>
+        public static async Task<TeamChallenge> TeamChallengeGetAsync(int teamId, int challengeId)
+        {
+            await InitCacheAsync();
+            return await TeamChallenges.GetValue(new Tuple<int, int>(teamId, challengeId));
         }
 
         /// <summary>Gets the specified <see cref="Zone"/>.</summary>

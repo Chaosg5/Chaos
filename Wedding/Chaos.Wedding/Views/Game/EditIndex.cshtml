@@ -8,7 +8,7 @@
 <h2>Edit games</h2>
 @foreach (var game in Model)
 {
-<div>
+<div class="game-row">
     <div>@game.Titles.UserTitle.Title (@game.Titles.UserTitle.Language.Name)</div>
     <div>
         <a href="@Url.Action("EditGame", "Game", new { gameId = game.Id })"><i class="fas fa-pen" title="Edit game"></i></a>
