@@ -1,37 +1,39 @@
-﻿@model IEnumerable<Chaos.Wedding.Models.Games.Contract.Team>
+﻿@using Chaos.Wedding.Models.Games
+@model IEnumerable<Chaos.Wedding.Models.Games.Contract.Team>
 
 @{
     ViewBag.Title = "Score";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
-<h2>Score</h2>
+<h2>@systemData.GetTitle("Score")</h2>
 
 @{ var index = 0; }
 @foreach (var team in Model)
 {
-<div class="game-row">
-    <div>
-        @{
-            index++;
-            switch (index)
-            {
-                case 1:
-                    <i class="fas fa-medal gold"></i>
-                    break;
-                case 2:
-                    <i class="fas fa-medal silver"></i>
-                    break;
-                case 3:
-                    <i class="fas fa-medal bronze"></i>
-                    break;
-                default:
-                    <i class="fas fa-users black"></i>
-                    break;
+    <div class="game-row">
+        <div>
+            @{
+                index++;
+                switch (index)
+                {
+                    case 1:
+                        <i class="fas fa-medal gold"></i>
+                        break;
+                    case 2:
+                        <i class="fas fa-medal silver"></i>
+                        break;
+                    case 3:
+                        <i class="fas fa-medal bronze"></i>
+                        break;
+                    default:
+                        <i class="fas fa-users black"></i>
+                        break;
+                }
             }
-        }
+        </div>
+        <div class="game-title">@team.Name</div>
+        <div class="game-title">@team.TeamScore</div>
     </div>
-    <div><h2>@team.Name</h2></div>
-    <div><h2>@team.TeamScore</h2></div>
-</div>
 }

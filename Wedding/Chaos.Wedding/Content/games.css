@@ -2,12 +2,16 @@
     color: inherit;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 .games-backward {
     top: 0;
     right: 0;
     position: fixed;
     font-size: 3em;
-    margin-right: 0.5em;
+    margin: 0.17em 0.17em 0 0;
     z-index: 1000;
 }
 
@@ -43,11 +47,18 @@ i {
     font-size: 1.5rem;
 }
 
-.game-title-menu {
-    margin-left: 2em;
+.game-title-background {
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    opacity: 0.8;
+    padding: 0 1rem;
+    background-color: white;
+    margin-left: 10px;
 }
 
 .game-question {
+    max-width: 600px;
     margin: 5px;
     border-radius: 12px;
     border: 1px solid #cccccc;
@@ -56,13 +67,14 @@ i {
 
 .game-question-type {
     font-size: 1rem;
+    border-radius: 12px 12px 0 0;
     border-bottom: 1px solid #cccccc;
     padding: 5px;
 }
 
-.game-question-type div  {
-    display: inline-block;
-}
+    .game-question-type div {
+        display: inline-block;
+    }
 
     .game-question-type i {
         font-size: 1rem;
@@ -71,15 +83,66 @@ i {
 
 .game-question-content {
     padding: 5px;
+    width: 100%;
+    border-radius: 0 0 12px 12px;
 }
 
-.game-alternatives {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    .game-question-content img {
+        max-width: 100%;
+    }
+
+    .game-question-content.ready {
+        background-color: #ff0000;
+        background-color: rgba(255,0,0,0.5);
+    }
+
+    .game-question-content.locked {
+        background-color: #00ff00;
+        background-color: rgba(0,255,0,0.5);
+    }
+
+.game-alternatives-choice {
+    width: 100%;
 }
 
-.game-alternative-choice {
+.game-alternatives-grid1 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+}
+
+.game-alternatives-grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.game-alternatives-grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.game-alternatives-container {
+    min-width: 100%;
+    min-height: 6em;
+    background-color: #f6f6f6;
+    background-image: url(images/icons/drag.svg), linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 6px;
+    border: 1px solid #cccccc;
+}
+
+.game-alternative-drop {
+    display: inline-block;
+    background-color: #f6f6f6;
+    background-image: url(images/icons/drag.svg), linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 6px;
+    border: 1px solid #cccccc;
+}
+
+.game-alternative {
+    touch-action: none; /* ToDo: does this work?*/
     display: inline-block;
     background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
     border-radius: 6px;
@@ -90,30 +153,47 @@ i {
     text-decoration: none;
     text-shadow: 0px 1px 0px #ffffff;
     margin: 2px;
+    width: 100%;
 }
 
-    .game-alternative-choice.selected {
+    .game-alternative.selected {
         background: linear-gradient(to bottom, #0000ff 5%, #7777ff 100%);
         text-shadow: 0px -1px 0px #5b6178;
         color: #ffffff;
     }
 
-    .game-alternative-choice.correct {
+    .game-alternative.correct {
         background: linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);
         text-shadow: 0px 1px 0px #aade7c;
         color: #333333;
     }
 
-    .game-alternative-choice.incorrect {
+    .game-alternative.incorrect {
         background: linear-gradient(to bottom, #ce0100 5%, #fe1a00 100%);
         text-shadow: 0px 1px 0px #b23e35;
         color: #ffffff;
     }
 
-    .game-alternative-choice.missed {
+    .game-alternative.missed {
         background: linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
         text-shadow: 0px 1px 0px #ffee66;
         color: #333333;
     }
 
+    .game-alternative.frozen {
+        background: linear-gradient(to bottom, #333333 5%, #cccccc 100%);
+        text-shadow: 0px -1px 0px #5b6178;
+        color: #ffffff;
+    }
+
+/*@media only screen and (max-width: 600px) {
+    .game-alternative {
+        width: 100%;
+    }
+}*/
+
 /*https://www.bestcssbuttongenerator.com/#/26*/
+
+.bottom-breaker {
+    height: 5px;
+}

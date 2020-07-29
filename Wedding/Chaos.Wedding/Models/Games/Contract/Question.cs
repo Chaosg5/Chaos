@@ -8,6 +8,7 @@ namespace Chaos.Wedding.Models.Games.Contract
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.Serialization;
 
     using Chaos.Movies.Contract;
@@ -52,6 +53,56 @@ namespace Chaos.Wedding.Models.Games.Contract
         [DataMember]
         public IReadOnlyCollection<Alternative> Alternatives { get; set; }
 
+        /// <summary>Gets the maximum score value.</summary>
+        public int MaxScore
+        {
+            get
+            {
+                return this.Alternatives.Where(a => a.IsCorrect).Sum(a => a.ScoreValue);
+            }
+        }
+
+        /// <summary>Gets the maximum number of choices.</summary>
+        public int MaxChoices
+        {
+            get
+            {
+                switch (this.QuestionType)
+                {
+                    case QuestionType.SingleChoice:
+                        return 1;
+                    case QuestionType.MultiChoice:
+                        return this.Alternatives.Count(a => a.IsCorrect);
+                    default:
+                        return 0;
+                }
+            }
+        }
+
+        /// <summary>Gets the number of columns.</summary>
+        public int ColumnCount
+        {
+            get
+            {
+                return this.Alternatives.Max(a => a.CorrectColumn);
+            }
+        }
+
+        /// <summary>Gets the number of columns.</summary>
+        public int RowCount
+        {
+            get
+            {
+                return this.Alternatives.Max(a => a.CorrectRow);
+            }
+        }
+
+        /// <summary>Gets the CSS class for the <paramref name="alternative"/> based on it's <see cref="Alternative.TeamAnswer"/>.</summary>
+        /// <param name="alternative">The <see cref="Alternative"/>.</param>
+        /// <param name="isLocked">The <see cref="TeamChallenge.IsLocked"/>.</param>
+        /// <returns>The CSS class.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="alternative"/> is <see langword="null"/></exception>
+        //// ReSharper disable once CyclomaticComplexity
         public string GetAlternativeCssClass(Alternative alternative, bool isLocked)
         {
             if (alternative == null)
@@ -77,6 +128,7 @@ namespace Chaos.Wedding.Models.Games.Contract
                     }
 
                 case QuestionType.Text:
+                case QuestionType.MultiText:
                     if (!isLocked)
                     {
                         return string.IsNullOrWhiteSpace(alternative.TeamAnswer?.Answer) ? Alternative.BaseClass : Alternative.SelectedClass;
@@ -94,36 +146,69 @@ namespace Chaos.Wedding.Models.Games.Contract
                         return Alternative.IncorrectClass;
                     }
 
+                case QuestionType.Match:
+                case QuestionType.Sort:
+                case QuestionType.SortAndMatch:
+                    if (!isLocked)
+                    {
+                        return alternative.TeamAnswer?.IsAnswered == true ? Alternative.SelectedClass : Alternative.BaseClass;
+                    }
+                    else if (alternative.TeamAnswer?.IsAnswered == true)
+                    {
+                        if (alternative.TeamAnswer.AnsweredRow == alternative.CorrectRow)
+                        {
+                            return Alternative.CorrectClass;
+                        }
+                        else
+                        {
+                            return Alternative.IncorrectClass;
+                        }
+                    }
+                    else
+                    {
+                        return Alternative.MissedClass;
+                    }
+
+                    return Alternative.BaseClass;
                 case QuestionType.Unknown:
                 default:
                     return Alternative.BaseClass;
             }
         }
 
-        public int GetScore(Alternative alternative)
+        /// <summary>Gets the score for the <see cref="Question"/> for all of the current <see cref="Team"/>s <see cref="TeamAnswer"/>s.</summary>
+        /// <returns>The <see cref="int"/>.</returns>
+        public int GetScore()
         {
-            if (alternative == null)
-            {
-                throw new ArgumentNullException(nameof(alternative));
-            }
-
+            int score;
+            IEnumerable<Alternative> correctAlternatives;
             switch (this.QuestionType)
             {
-                case QuestionType.MultiChoice:
                 case QuestionType.SingleChoice:
-                    if (!alternative.IsCorrect)
-                    {
-                        return 0;
-                    }
-
-                    if (alternative.TeamAnswer?.IsAnswered != true)
-                    {
-                        return 0;
-                    }
-
-                    return alternative.ScoreValue;
+                case QuestionType.MultiChoice:
+                    correctAlternatives = this.Alternatives.Where(a => a.TeamAnswer?.IsAnswered == a.IsCorrect);
+                    score = correctAlternatives.Sum(a => a.ScoreValue);
+                    return score > 0 ? score : 0;
                 case QuestionType.Text:
-                    return 0;
+                case QuestionType.MultiText:
+                    correctAlternatives = this.Alternatives.Where(a => a.TeamAnswer?.Answer == a.CorrectAnswer);
+                    score = correctAlternatives.Sum(a => a.ScoreValue);
+                    return score > 0 ? score : 0;
+                case QuestionType.Match:
+                    correctAlternatives = this.Alternatives.Where(a => a.CorrectColumn > 1 && a.TeamAnswer?.AnsweredRow == a.CorrectRow);
+                    score = correctAlternatives.Sum(a => a.ScoreValue);
+                    return score > 0 ? score : 0;
+                case QuestionType.Sort:
+                case QuestionType.SortAndMatch:
+                    correctAlternatives = this.Alternatives.Where(a => a.CorrectColumn == 1 && a.TeamAnswer?.AnsweredRow == a.CorrectRow);
+                    score = correctAlternatives.Sum(a => a.ScoreValue);
+                    for (var column = 2; column <= this.ColumnCount; column++)
+                    {
+                        correctAlternatives = this.Alternatives.Where(a => a.CorrectColumn == 1 && a.TeamAnswer?.AnsweredRow == a.CorrectRow);
+                        score += correctAlternatives.Sum(a => a.ScoreValue);
+                    }
+
+                    return score > 0 ? score : 0;
                 default:
                     return 0;
             }

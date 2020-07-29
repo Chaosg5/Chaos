@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="GlobalCache.cs">
+// <copyright file="GameCache.cs">
 //     Copyright (c) Erik Bunnstad. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -9,7 +9,6 @@ namespace Chaos.Wedding.Models
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Linq;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -22,12 +21,6 @@ namespace Chaos.Wedding.Models
     /// <summary>Provides a global cache of objects.</summary>
     public static class GameCache
     {
-        /// <summary>Gets all available <see cref="Alternative"/>s.</summary>
-        private static readonly AsyncCache<int, Alternative> Alternatives = new AsyncCache<int, Alternative>(i => Alternative.Static.GetAsync(session, i));
-
-        /// <summary>Gets all available <see cref="Challenge"/>s.</summary>
-        private static readonly AsyncCache<int, Challenge> Challenges = new AsyncCache<int, Challenge>(i => Challenge.Static.GetAsync(session, i));
-
         /// <summary>Gets all available <see cref="ChallengeSubject"/>s.</summary>
         private static readonly AsyncCache<int, ChallengeSubject> ChallengeSubjects = new AsyncCache<int, ChallengeSubject>(i => ChallengeSubject.Static.GetAsync(session, i));
 
@@ -40,17 +33,27 @@ namespace Chaos.Wedding.Models
         /// <summary>Gets all available <see cref="Game"/>s.</summary>
         private static readonly AsyncCache<int, Game> Games = new AsyncCache<int, Game>(i => Game.Static.GetAsync(session, i));
 
+        /// <summary>Gets all available <see cref="Zone"/>s.</summary>
+        private static readonly AsyncCache<int, Zone> Zones = new AsyncCache<int, Zone>(i => Zone.Static.GetAsync(session, i));
+
+        /// <summary>Gets all available <see cref="Challenge"/>s.</summary>
+        private static readonly AsyncCache<int, Challenge> Challenges = new AsyncCache<int, Challenge>(i => Challenge.Static.GetAsync(session, i));
+
         /// <summary>Gets all available <see cref="Question"/>s.</summary>
         private static readonly AsyncCache<int, Question> Questions = new AsyncCache<int, Question>(i => Question.Static.GetAsync(session, i));
 
+        /// <summary>Gets all available <see cref="Alternative"/>s.</summary>
+        private static readonly AsyncCache<int, Alternative> Alternatives = new AsyncCache<int, Alternative>(i => Alternative.Static.GetAsync(session, i));
+
         /// <summary>Gets all available <see cref="Team"/>s.</summary>
         private static readonly AsyncCache<int, Team> Teams = new AsyncCache<int, Team>(i => Team.Static.GetAsync(session, i));
-
-        /// <summary>Gets all available <see cref="Zone"/>s.</summary>
-        private static readonly AsyncCache<int, Zone> Zones = new AsyncCache<int, Zone>(i => Zone.Static.GetAsync(session, i));
         
+        /// <summary>Gets all available <see cref="TeamChallenge"/>s.</summary>
         private static readonly AsyncCache<Tuple<int, int>, TeamChallenge> TeamChallenges = new AsyncCache<Tuple<int, int>, TeamChallenge>(i => TeamChallenge.EnsureTeamChallengeAsync(i.Item1, i.Item2, session));
-        
+
+        /// <summary>Gets all available <see cref="SystemText"/>s.</summary>
+        private static readonly AsyncCache<int, SystemText> SystemTexts = new AsyncCache<int, SystemText>(i => SystemText.Static.GetAsync(session, i));
+
         /// <summary>The session.</summary>
         private static UserSession session;
 
@@ -63,6 +66,18 @@ namespace Chaos.Wedding.Models
         /// <summary>Clears all cache objects.</summary>
         public static void ClearAllCache()
         {
+            Alternatives.Clear();
+            Challenges.Clear();
+            ChallengeSubjects.Clear();
+            ChallengeTypes.Clear();
+            Difficulties.Clear();
+            Games.Clear();
+            Questions.Clear();
+            Teams.Clear();
+            Zones.Clear();
+            TeamChallenges.Clear();
+            SystemTexts.Clear();
+            IsInitiated = false;
         }
 
         /// <summary>Gets the specified <see cref="Alternative"/>.</summary>
@@ -147,6 +162,15 @@ namespace Chaos.Wedding.Models
             return await TeamChallenges.GetValue(new Tuple<int, int>(teamId, challengeId));
         }
 
+        /// <summary>Gets the specified <see cref="SystemText"/>.</summary>
+        /// <param name="id">The id of the <see cref="SystemText"/> to get.</param>
+        /// <returns>The specified <see cref="SystemText"/>.</returns>
+        public static async Task<SystemText> SystemTextGetAsync(int id)
+        {
+            await InitCacheAsync();
+            return await SystemTexts.GetValue(id);
+        }
+
         /// <summary>Gets the specified <see cref="Zone"/>.</summary>
         /// <param name="id">The id of the <see cref="Zone"/> to get.</param>
         /// <returns>The specified <see cref="Zone"/>.</returns>
@@ -196,6 +220,20 @@ namespace Chaos.Wedding.Models
             }
 
             return difficulties;
+        }
+
+        /// <summary>Gets all <see cref="SystemText"/>s.</summary>
+        /// <returns>The specified <see cref="SystemText"/>.</returns>
+        public static async Task<IEnumerable<SystemText>> SystemTextsGetAllAsync()
+        {
+            await InitCacheAsync();
+            var systemTexts = new List<SystemText>();
+            foreach (var pair in SystemTexts)
+            {
+                systemTexts.Add(await pair.Value);
+            }
+
+            return systemTexts;
         }
 
         /// <summary>Updates the cache with the new <see cref="Zone"/>.</summary>
@@ -321,6 +359,7 @@ namespace Chaos.Wedding.Models
                     await ChallengeSubjectsLoadAllAsync();
                     await ChallengeTypesLoadAllAsync();
                     await DifficultiesLoadAllAsync();
+                    await SystemTextsLoadAllAsync();
                 }
                 catch
                 {
@@ -378,6 +417,18 @@ namespace Chaos.Wedding.Models
             foreach (var difficulty in await Difficulty.Static.GetAllAsync(session))
             {
                 Difficulties.SetValue(difficulty.Id, difficulty);
+            }
+        }
+
+        /// <summary>Loads all <see cref="SystemTexts"/>s from the database.</summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static async Task SystemTextsLoadAllAsync()
+        {
+            SystemTexts.Clear();
+            foreach (var systemText in await SystemText.Static.GetAllAsync(session))
+            {
+                SystemTexts.SetValue(systemText.Id, systemText);
             }
         }
     }

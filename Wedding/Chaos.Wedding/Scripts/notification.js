@@ -110,8 +110,8 @@ function notify(data) {
                 align: "right"
             },
             offset: {
-                x: 30,
-                y: 80
+                x: 0,
+                y: 0
             },
             spacing: 10,
             z_index: 1031,

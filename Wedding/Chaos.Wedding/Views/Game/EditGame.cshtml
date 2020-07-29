@@ -7,6 +7,7 @@
 
 <div class="games-backward">
     <a href="@Url.Action("EditIndex", "Game")">
+        <i class="far fa-save clickable success" onclick="saveGame()" title="Spara"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -14,9 +15,6 @@
 <div class="game-row">
     <div>
         <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
-    </div>
-    <div class="game-title-menu">
-        <i class="far fa-save clickable success" onclick="saveGame()" title="Spara"></i>
     </div>
 </div>
 
@@ -67,12 +65,9 @@
 @foreach (var zone in Model.Zones)
 {
     <div class="game-row">
-        <div class="game-title">@zone.Titles.UserTitle.Title (@zone.Titles.UserTitle.Language.Name)</div>
-        <div>
-            <a href="@Url.Action("EditZone", "Game", new { zoneId = zone.Id, gameId = Model.Id })">
-                <i class="fas fa-pen" title="Edit zone"></i>
-            </a>
-        </div>
+        <a href="@Url.Action("EditZone", "Game", new { zoneId = zone.Id, gameId = Model.Id })">
+            <div class="game-title">@zone.Titles.UserTitle.Title (@zone.Titles.UserTitle.Language.Name)</div>
+        </a>
     </div>
 }
 

@@ -5,15 +5,73 @@
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-<h2>Edit games</h2>
-@foreach (var game in Model)
+@if (int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
 {
-<div class="game-row">
-    <div>@game.Titles.UserTitle.Title (@game.Titles.UserTitle.Language.Name)</div>
-    <div>
-        <a href="@Url.Action("EditGame", "Game", new { gameId = game.Id })"><i class="fas fa-pen" title="Edit game"></i></a>
-    </div>
-</div>
+    <h2>Edit team</h2>
+    <a href="@Url.Action("EditTeam", "Game", new { gameId = teamId })">
+        <i class="fas fa-users clickable"></i>
+        <i class="fas fa-pen clickable"></i>
+    </a>
 }
 
-<a href="@Url.Action("EditGame", "Game", new { gameId = 0 })"><i class="fas fa-plus" title="Add game"></i></a>
+@if ((bool)this.Session["SystemAdmin"])
+{
+    <h2>Edit games</h2>
+    foreach (var game in Model)
+    {
+        <div class="game-row">
+            <a href="@Url.Action("EditGame", "Game", new { gameId = game.Id })">
+                <div class="game-title">@game.Titles.UserTitle.Title (@game.Titles.UserTitle.Language.Name)</div>
+            </a>
+        </div>
+    }
+
+    <a href="@Url.Action("EditGame", "Game", new { gameId = 0 })"><i class="fas fa-plus" title="Add game"></i></a>
+
+    <h2>System</h2>
+    <i class="fas fa-bolt" onclick="resetCache();"></i>
+}
+else
+{
+    <div class="game-row">
+        <div>
+            Username:
+        </div>
+        <div>
+            <input type="text" id="Username" name="username" />
+        </div>
+    </div>
+    <div class="game-row">
+        <div>
+            Password:
+        </div>
+        <div>
+            <input type="password" id="Password" />
+        </div>
+    </div>
+    <i class="fas fa-sign-out-alt clickable error" onclick="adminLogin();" title="Log in"></i>
+}
+
+<script type="text/javascript">
+    function resetCache() {
+        try {
+            var url = "@Url.Action("ResetGameCache", "Game")";
+            var data = {};
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+
+    function adminLogin() {
+        try {
+            var username = document.getElementById("Username").value;
+            var password = document.getElementById("Password").value;
+            var url = "@Url.Action("AdminLogin", "Game")";
+            var data = { username: username, password: password };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+</script>

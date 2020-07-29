@@ -59,7 +59,19 @@ namespace Chaos.Wedding.Models.Games
         /// <summary>Gets the <see cref="Team"/>'s scores per <see cref="Game"/>.</summary>
         //// ToDo: Create ChildList - class, like listable but with reference to parent
         public Dictionary<int, int> GameScores { get; } = new Dictionary<int, int>();
-        
+
+        /// <summary>Updates the <see cref="GameScores"/>.</summary>
+        /// <param name="session">The <see cref="UserSession"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task UpdateScoreAsync(UserSession session)
+        {
+            var team = await this.GetAsync(session, this.Id);
+            foreach (var pair in team.GameScores)
+            {
+                this.GameScores[pair.Key] = pair.Value;
+            }
+        }
+
         /// <inheritdoc />
         public override Contract.Team ToContract()
         {
@@ -79,6 +91,21 @@ namespace Chaos.Wedding.Models.Games
                 Id = this.Id,
                 LookupId = this.LookupId,
                 Name = this.Name
+            };
+        }
+
+        /// <summary>Converts this <see cref="Team"/> to a <see cref="Contract.Team"/>.</summary>
+        /// <param name="gameId">The game Id.</param>
+        /// <returns>The <see cref="Contract.Team"/>.</returns>
+        public Contract.Team ToContract(int gameId)
+        {
+            this.GameScores.TryGetValue(gameId, out var score);
+            return new Contract.Team
+            {
+                Id = this.Id,
+                LookupId = this.LookupId,
+                Name = this.Name,
+                TeamScore = score
             };
         }
 

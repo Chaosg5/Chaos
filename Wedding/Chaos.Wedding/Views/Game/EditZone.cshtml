@@ -7,6 +7,7 @@
 
 <div class="games-backward">
     <a href="@Url.Action("EditGame", "Game", new { gameId = Model.GameId })">
+        <i class="far fa-save clickable success" onclick="saveZone()" title="Save zone"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -14,9 +15,6 @@
 <div class="game-row">
     <div>
         <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
-    </div>
-    <div class="game-title-menu">
-        <i class="far fa-save clickable success" onclick="saveZone()" title="Save zone"></i>
     </div>
 </div>
 
@@ -80,18 +78,15 @@
 <h3>Challenges</h3>
 @foreach (var challenge in Model.Challenges)
 {
-    <div class="game-row">
-        <div class="game-title">@challenge.Titles.UserTitle.Title (@challenge.Titles.UserTitle.Language.Name)</div>
-        <div><i class="@challenge.Type.ImageId" title="@challenge.Type.Titles.UserTitle.Title"></i></div>
-        <div><i class="@challenge.Subject.ImageId" title="@challenge.Subject.Titles.UserTitle.Title"></i></div>
-        <div><i class="@challenge.Difficulty.ImageId" title="@challenge.Difficulty.Titles.UserTitle.Title"></i></div>
-        <div><b>@challenge.Questions.Count()</b></div>
-        <div>
-            <a href="@Url.Action("EditChallenge", "Game", new { challengeId = challenge.Id, zoneId = Model.Id })">
-                <i class="fas fa-pen" title="Edit zone"></i>
-            </a>
+    <a href="@Url.Action("EditChallenge", "Game", new { challengeId = challenge.Id, zoneId = Model.Id })">
+        <div class="game-row">
+            <div class="game-title">@challenge.Titles.UserTitle.Title (@challenge.Titles.UserTitle.Language.Name)</div>
+            <div><i class="@challenge.Type.ImageId" title="@challenge.Type.Titles.UserTitle.Title"></i></div>
+            <div><i class="@challenge.Subject.ImageId" title="@challenge.Subject.Titles.UserTitle.Title"></i></div>
+            <div><i class="@challenge.Difficulty.ImageId" title="@challenge.Difficulty.Titles.UserTitle.Title"></i></div>
+            <div><b>@challenge.Questions.Count</b></div>
         </div>
-    </div>
+    </a>
 }
 
 @if (Model.Id > 0)

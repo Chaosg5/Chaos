@@ -132,6 +132,24 @@ namespace Chaos.Wedding.Models.Games
             {
                 throw new InvalidSaveCandidateException("An alternative needs to be specified.");
             }
+
+            if (this.AnsweredColumn > 0 || this.AnsweredRow > 0)
+            {
+                if (this.AnsweredColumn == 0 || this.AnsweredRow == 0)
+                {
+                    this.AnsweredColumn = 0;
+                    this.AnsweredRow = 0;
+                    this.IsAnswered = false;
+                }
+                else
+                {
+                    this.IsAnswered = true;
+                }
+            }
+            else if (!string.IsNullOrWhiteSpace(this.Answer))
+            {
+                this.IsAnswered = true;
+            }
         }
 
         /// <inheritdoc />

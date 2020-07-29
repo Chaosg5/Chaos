@@ -1,4 +1,5 @@
 ﻿@using Chaos.Wedding.Models.Games
+@using Chaos.Wedding.Models.Games.Contract
 @model Chaos.Wedding.Models.Games.Contract.Question
 
 @{
@@ -9,6 +10,7 @@
 
 <div class="games-backward">
     <a href="@Url.Action("EditChallenge", "Game", new { challengeId = Model.ChallengeId })">
+        <i class="far fa-save clickable success" onclick="saveQuestion()" title="Save question"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -16,9 +18,6 @@
 <div class="game-row">
     <div>
         <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
-    </div>
-    <div class="game-title-menu">
-        <i class="far fa-save clickable success" onclick="saveQuestion()" title="Save question"></i>
     </div>
 </div>
 
@@ -116,29 +115,72 @@
     </select>
 </div>
 
-<h3>Alternatives</h3>
-@foreach (var alternative in Model.Alternatives)
-{
-    <div class="game-row">
-        <div class="game-title">@alternative.Titles.UserTitle.Title (@alternative.Titles.UserTitle.Language.Name)</div>
-        <div>@alternative.CorrectColumn/@alternative.CorrectRow</div>
-        <div>
-            @if (alternative.IsCorrect)
-            {
-                <i class="fas fa-check" title="@alternative.IsCorrect"></i>
-            }
-            else
-            {
-                <i class="fas fa-times" title="@alternative.IsCorrect"></i>
-            }
-        </div>
-        <div>@alternative.ScoreValue/@alternative.CorrectAnswer</div>
-        <div>
-            <a href="@Url.Action("EditAlternative", "Game", new { alternativeId = alternative.Id, questionId = Model.Id })">
-                <i class="fas fa-pen" title="Edit question"></i>
-            </a>
-        </div>
+<h3>Image</h3>
+<div class="game-row">
+    <div>
+        <input type="text" id="ImageId" value="@Model.ImageId" class="input-wide" />
     </div>
+</div>
+
+<h3>Alternatives</h3>
+@{ var alternatives = Model.Alternatives.ToList(); }
+@if (Model.QuestionType == QuestionType.Match || Model.QuestionType == QuestionType.Sort || Model.QuestionType == QuestionType.SortAndMatch)
+{
+    <div class="@($"game-alternatives-grid{Model.ColumnCount}")">
+        @for (var row = 1; row <= Model.RowCount; row++)
+        {
+            for (var column = 1; column <= Model.ColumnCount; column++)
+            {
+                var alternative = alternatives.FirstOrDefault(a => a.CorrectRow == row && a.CorrectColumn == column);
+                if (alternative == null)
+                {
+                    <div class="game-alternative incorrect">Error</div>
+                }
+                else
+                {
+                    alternatives.Remove(alternative);
+                    <a href="@Url.Action("EditAlternative", "Game", new { alternativeId = alternative.Id, questionId = Model.Id })">
+                        <div class="game-row">
+                            <div class="game-title">@alternative.Titles.UserTitle.Title (@alternative.Titles.UserTitle.Language.Name)</div>
+                            <div>@alternative.CorrectColumn/@alternative.CorrectRow</div>
+                            <div>
+                                @if (alternative.IsCorrect)
+                                {
+                                    <i class="fas fa-check" title="@alternative.IsCorrect"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-times" title="@alternative.IsCorrect"></i>
+                                }
+                            </div>
+                            <div>@alternative.ScoreValue/@alternative.CorrectAnswer</div>
+                        </div>
+                    </a>
+                }
+            }
+        }
+    </div>
+}
+
+@foreach (var alternative in alternatives)
+{
+    <a href="@Url.Action("EditAlternative", "Game", new { alternativeId = alternative.Id, questionId = Model.Id })">
+        <div class="game-row">
+            <div class="game-title">@alternative.Titles.UserTitle.Title (@alternative.Titles.UserTitle.Language.Name)</div>
+            <div>@alternative.CorrectColumn/@alternative.CorrectRow</div>
+            <div>
+                @if (alternative.IsCorrect)
+                {
+                    <i class="fas fa-check" title="@alternative.IsCorrect"></i>
+                }
+                else
+                {
+                    <i class="fas fa-times" title="@alternative.IsCorrect"></i>
+                }
+            </div>
+            <div>@alternative.ScoreValue/@alternative.CorrectAnswer</div>
+        </div>
+    </a>
 }
 
 @if (Model.Id > 0)
@@ -176,6 +218,7 @@
             var type = document.getElementById("Type").value;
             var subject = document.getElementById("Subject").value;
             var difficulty = document.getElementById("Difficulty").value;
+            var imageId = document.getElementById("ImageId").value;
             var titles = "";
 
             var titleInputs = document.getElementById("Titles").getElementsByTagName("input");
@@ -197,6 +240,7 @@
                 challengeTypeId: type,
                 challengeSubjectId: subject,
                 difficultyId: difficulty,
+                imageId: imageId,
                 titles: titles
             };
             gamesCallAjax(url, data);

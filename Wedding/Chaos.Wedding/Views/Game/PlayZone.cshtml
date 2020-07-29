@@ -24,12 +24,22 @@
 @foreach (var challenge in Model.Challenges)
 {
     <a href="@Url.Action("PlayChallenge", "Game", new { challengeId = challenge.Id })">
-        <div class="game-row">
-            <div class="game-title">@challenge.Titles.UserTitle.Title (@challenge.Titles.UserTitle.Language.Name)</div>
-            <div><i class="@challenge.Type.ImageId" title="@challenge.Type.Titles.UserTitle.Title"></i></div>
-            <div><i class="@challenge.Subject.ImageId" title="@challenge.Subject.Titles.UserTitle.Title"></i></div>
-            <div><i class="@challenge.Difficulty.ImageId" title="@challenge.Difficulty.Titles.UserTitle.Title"></i></div>
-            <div><b>@challenge.Questions.Count()</b></div>
+        <div class="game-question">
+            <div class="game-question-type">
+                <div><i class="@challenge.Type.ImageId" title="@challenge.Type.Titles.UserTitle.Title"></i>@challenge.Type.Titles.UserTitle.Title</div>
+                <div><i class="@challenge.Subject.ImageId" title="@challenge.Subject.Titles.UserTitle.Title"></i>@challenge.Subject.Titles.UserTitle.Title</div>
+                <div><i class="@challenge.Difficulty.ImageId" title="@challenge.Difficulty.Titles.UserTitle.Title"></i>@challenge.Difficulty.Titles.UserTitle.Title</div>
+                @if (challenge.TeamChallenge?.IsLocked == true)
+                {
+                    <div><i class="fas fa-lock gray" title="Locked"></i></div>
+                }
+                
+                <div>@($"{challenge.TeamChallenge?.Score ?? 0}/{challenge.MaxScore}")</div>
+            </div>
+            <div class="game-question-content @(challenge.TeamChallenge?.IsLocked == true ? "locked" : "ready")">
+                <div class="game-title">@challenge.Titles.UserTitle.Title</div>
+                <div><b>@challenge.Questions.Count frågor</b></div>
+            </div>
         </div>
     </a>
 }

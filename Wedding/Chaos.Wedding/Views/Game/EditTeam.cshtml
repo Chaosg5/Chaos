@@ -1,0 +1,47 @@
+﻿@model Chaos.Wedding.Models.Games.Contract.Team
+
+@{
+    ViewBag.Title = "EditGame";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="games-backward">
+    <i class="far fa-save clickable success" onclick="saveTeam();" title="Spara"></i>
+    <a href="@Url.Action("Index", "Game")">
+        <i class="fas fa-backward clickable success"></i>
+    </a>
+    <i class="fas fa-sign-out-alt clickable error" onclick="logOut();" title="Log out"></i>
+</div>
+
+<h2>Edit team</h2>
+
+<h3>Name</h3>
+<div class="game-row">
+    <div>
+        <input type="text" id="Name" value="@Model.Name" class="input-wide" />
+    </div>
+</div>
+
+<script type="text/javascript">
+    function saveTeam() {
+        try {
+            var teamId = @Model.Id;
+            var name = document.getElementById("Name").value;
+            var url = "@Url.Action("SaveTeam", "Game")";
+            var data = { teamId: teamId, name: name };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+
+    function logOut() {
+        try {
+            var url = "@Url.Action("LogOut", "Game")";
+            var data = { };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+</script>

@@ -7,9 +7,11 @@
 namespace Chaos.Wedding.Models.Games.Contract
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.Serialization;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model;
 
     /// <summary>A zone in a <see cref="Game" /> containing a set of <see cref="Challenge" />s.</summary>
     [DataContract]
@@ -62,5 +64,15 @@ namespace Chaos.Wedding.Models.Games.Contract
         /// <summary>Gets or sets the children <see cref="Challenge"/>s.</summary>
         [DataMember]
         public IReadOnlyCollection<Challenge> Challenges { get; set; }
+        
+        /// <summary>Gets a CSS color for the number of <see cref="Challenges"/> that are locked.</summary>
+        public string CssCompletion
+        {
+            get
+            {
+                return TotalRating.GetHexColor(
+                    TotalRating.NormalizeValue(this.Challenges.Count(c => c.TeamChallenge?.IsLocked == true), 0, this.Challenges.Count));
+            }
+        }
     }
 }

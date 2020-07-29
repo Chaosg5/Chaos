@@ -5,37 +5,39 @@
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-<div class="games-backward">
+<div class="games-backward game-title-background">
     <i class="fas fa-plus clickable blue" onclick="scaleGameBoard(true);"></i>
     <i class="fas fa-minus clickable blue" onclick="scaleGameBoard(false);"></i>
-</div>
-
-<div class="game-row" style="position: absolute">
-    <div>
-        <h2>@Model.Titles.UserTitle.Title</h2>
-    </div>
 </div>
 
 <div id="gameBoard" style="transform: scale(1); transform-origin: top left; height: @Model.CssHeight">
     <img src="~/Content/images/store/@Model.ImageId" style="width: @Model.CssWidth; height: @Model.CssHeight;" />
     @foreach (var zone in Model.Zones)
     {
-        <a href="@Url.Action("PlayZone", "Game", new { zoneId = zone.Id })">
-            <div style="background-color: gold; opacity: 0.5; width: @zone.CssWidth; height: @zone.CssHeight; left: @zone.CssPositionX; top: @zone.CssPositionY; position: absolute;">
+        var zoneName = FormattableString.Invariant($"Zone-{zone.Id}");
+        <a onclick="saveActiveZone('@zoneName')" href="@Url.Action("PlayZone", "Game", new { zoneId = zone.Id })">
+            <div id="@zoneName" style="background-color: @zone.CssCompletion; opacity: 0.5; width: @zone.CssWidth; height: @zone.CssHeight; left: @zone.CssPositionX; top: @zone.CssPositionY; position: absolute;">
             </div>
         </a>
     }
 </div>
 
+<div class="game-row" style="position: absolute; top: 0;">
+    <div class="game-title-background">
+        <h2>@Model.Titles.UserTitle.Title</h2>
+    </div>
+</div>
+
 <script type="text/javascript">
     var currentScale = 1;
-    function scaleGameBoard(zoom) {
+
+    function scaleGameBoard(zoom, scrollTop, scrollLeft) {
         var fullHeight = @Model.Height;
         var minScale = 0.2;
         var maxScale = 2.0;
-        if (zoom) {
+        if (zoom === true) {
             currentScale += 0.2;
-        } else {
+        } else if (zoom === false) {
             currentScale -= 0.2;
         }
 
@@ -45,8 +47,48 @@
             currentScale = maxScale;
         }
 
+        if (typeof (Storage) !== "undefined") {
+            localStorage.setItem("gameZoom", currentScale);
+        }
+
         var gameBoard = document.getElementById("gameBoard");
         gameBoard.style.transform = "scale(" + currentScale + ")";
         gameBoard.style.height = fullHeight * currentScale + "px";
+
+        if (scrollTop && scrollLeft) {
+            document.documentElement.scrollTop = document.body.scrollTop = scrollTop;
+            document.documentElement.scrollLeft = document.body.scrollLeft = scrollLeft;
+        }
     }
+
+    function saveActiveZone() {
+        if (typeof (Storage) !== "undefined") {
+            localStorage.setItem("gameScrollTop", document.documentElement.scrollTop || document.body.scrollTop);
+            localStorage.setItem("gameScrollLeft", document.documentElement.scrollLeft || document.body.scrollLeft);
+        }
+    }
+
+    $(document).ready(function() {
+        if (typeof(Storage) !== "undefined") {
+            currentScale = parseFloat(localStorage.getItem("gameZoom"));
+            if (isNaN(currentScale)) {
+                currentScale = 1;
+            } else {
+                var scrollTop = parseFloat(localStorage.getItem("gameScrollTop"));
+                if (isNaN(scrollTop) || scrollTop < 1) {
+                    scrollTop = 1;
+                }
+
+                var scrollLeft = parseFloat(localStorage.getItem("gameScrollLeft"));
+                if (isNaN(scrollLeft) || scrollLeft < 1) {
+                    scrollLeft = 1;
+                }
+
+                console.log(scrollTop);
+                console.log(scrollLeft);
+
+                scaleGameBoard(null, scrollTop, scrollLeft);
+            }
+        }
+    });
 </script>

@@ -155,6 +155,7 @@
     <Compile Include="Models\Games\Contract\Challenge.cs" />
     <Compile Include="Models\Games\Contract\ChallengeSubject.cs" />
     <Compile Include="Models\Games\Contract\ChallengeType.cs" />
+    <Compile Include="Models\Games\Contract\SystemText.cs" />
     <Compile Include="Models\Games\Contract\Difficulty.cs" />
     <Compile Include="Models\Games\Contract\Game.cs" />
     <Compile Include="Models\Games\Contract\Question.cs" />
@@ -162,9 +163,10 @@
     <Compile Include="Models\Games\Contract\TeamAnswer.cs" />
     <Compile Include="Models\Games\Contract\TeamChallenge.cs" />
     <Compile Include="Models\Games\Contract\Zone.cs" />
+    <Compile Include="Models\Games\SystemText.cs" />
     <Compile Include="Models\Games\Difficulty.cs" />
     <Compile Include="Models\Games\ChallengeType.cs" />
-    <Compile Include="Models\Games\QuestionType.cs" />
+    <Compile Include="Models\Games\Contract\QuestionType.cs" />
     <Compile Include="Models\Games\Question.cs" />
     <Compile Include="Models\Games\Challenge.cs" />
     <Compile Include="Models\Games\ChallengeSubject.cs" />
@@ -199,15 +201,20 @@
     <Content Include="Content\fontawesome.min.css" />
     <Content Include="Content\images\background.jpg" />
     <Content Include="Content\images\GameMap.png" />
+    <Content Include="Content\images\hasse.png" />
     <Content Include="Content\images\icons\confirm.svg">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\images\icons\delete.svg" />
+    <Content Include="Content\images\icons\drag.svg" />
     <Content Include="Content\images\icons\question.svg" />
     <Content Include="Content\images\language\pt-BR.svg" />
     <Content Include="Content\images\language\en-US.svg" />
     <Content Include="Content\images\language\ReadMe.txt" />
     <Content Include="Content\images\language\sv-SE.svg" />
+    <Content Include="Content\images\parkering.png" />
+    <Content Include="Content\images\sofia.png" />
+    <Content Include="Content\images\store\games\wedding\colorfire.jpg" />
     <Content Include="Content\images\store\games\wedding\GameMap.png" />
     <Content Include="Content\images\store\gifts\alvarvas.jpg" />
     <Content Include="Content\images\store\gifts\brodrost.jpg" />
@@ -423,6 +430,7 @@
     <Content Include="Views\Game\EditAlternative.cshtml" />
     <Content Include="Views\Game\Language.cshtml" />
     <Content Include="Views\Game\_AnswerQuestion.cshtml" />
+    <Content Include="Views\Game\EditTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

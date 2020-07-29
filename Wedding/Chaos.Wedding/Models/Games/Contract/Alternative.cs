@@ -15,7 +15,7 @@ namespace Chaos.Wedding.Models.Games.Contract
     public class Alternative
     {
         /// <summary>The base class.</summary>
-        public const string BaseClass = "game-alternative-choice";
+        public const string BaseClass = "game-alternative";
 
         /// <summary>The selected class.</summary>
         public const string SelectedClass = BaseClass + " selected";

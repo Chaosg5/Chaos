@@ -7,9 +7,12 @@
 namespace Chaos.Wedding.Models.Games.Contract
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.Serialization;
 
     using Chaos.Movies.Contract;
+    using Chaos.Movies.Model;
+    using Chaos.Movies.Model.Base;
 
     /// <summary>A challenge in a <see cref="Zone" /> containing a set of <see cref="Question" />s.</summary>
     [DataContract]
@@ -46,5 +49,14 @@ namespace Chaos.Wedding.Models.Games.Contract
         /// <summary>Gets or sets the <see cref="TeamChallenge"/>.</summary>
         [DataMember]
         public TeamChallenge TeamChallenge { get; set; }
+
+        /// <summary>Gets the max score.</summary>
+        public int MaxScore
+        {
+            get
+            {
+                return this.Questions.Sum(q => q.MaxScore);
+            }
+        }
     }
 }

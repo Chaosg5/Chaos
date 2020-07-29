@@ -62,17 +62,17 @@ nav.navbar-light a.navbar-brand {
     -webkit-backface-visibility: hidden;
 }
 
-.navbar.navbar-fixed-bottom .navbar-nav {
-    width: 100%;
-    flex-wrap: nowrap;
-    flex-direction: row;
-}
+    .navbar.navbar-fixed-bottom .navbar-nav {
+        width: 100%;
+        flex-wrap: nowrap;
+        flex-direction: row;
+    }
 
-.navbar.navbar-fixed-bottom .navbar-nav .nav-item {
-    width: 16%;
-    text-align: center;
-    font-size: 3em;
-}
+        .navbar.navbar-fixed-bottom .navbar-nav .nav-item {
+            width: 16%;
+            text-align: center;
+            font-size: 3em;
+        }
 
 .fixedContainer {
     margin-bottom: 5.5em;
@@ -80,7 +80,7 @@ nav.navbar-light a.navbar-brand {
 
 .contentBackground {
     background: white;
-    background: rgba(255, 255, 255, 0.7); 
+    background: rgba(255, 255, 255, 0.7);
     border-radius: 50px;
     padding: 10px 40px 40px 40px;
     margin: 20px auto;
@@ -109,15 +109,15 @@ nav.navbar-light a.navbar-brand {
     padding: 5px;
 }
 
-.questionTable td i {
-    font-size: 40px;
-    cursor: pointer;
-}
+    .questionTable td i {
+        font-size: 40px;
+        cursor: pointer;
+    }
 
-.questionTable td.giftImage img {
-    width: 100px;
-    height: 100px;
-}
+    .questionTable td.giftImage img {
+        width: 100px;
+        height: 100px;
+    }
 
 .clickable {
     cursor: pointer;
@@ -205,7 +205,9 @@ i.black {
 
 @keyframes spin {
     to {
-        transform: rotate(360deg); } }
+        transform: rotate(360deg);
+    }
+}
 
 /* News */
 .newsItem {
@@ -215,6 +217,14 @@ i.black {
     padding: 10px 0;
 }
 
-.newsItem span {
-    color: #888888;
-}
+    .newsItem span {
+        color: #888888;
+    }
+
+    .newsItem img {
+        max-width: 100%;
+    }
+
+    .newsItem a {
+        color: #990b0b;
+    }

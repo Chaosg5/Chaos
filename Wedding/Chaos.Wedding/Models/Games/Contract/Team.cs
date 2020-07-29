@@ -27,6 +27,6 @@ namespace Chaos.Wedding.Models.Games.Contract
 
         /// <summary>Gets or sets total score of the <see cref="Team"/> for the current <see cref="Game"/>.</summary>
         [DataMember]
-        public string TeamScore { get; set; }
+        public int TeamScore { get; set; }
     }
 }

@@ -17,10 +17,14 @@
     <div>
         <label for="EnterTeamLookupShort">Ange lagets kod:</label>
         <input id="EnterTeamLookupShort" type="text" onchange="enterLookupShort(this);" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" />
+    </div>
+    if ((bool)this.Session["SystemAdmin"])
+    {
         <label for="EnterNewTeam">Eller skapa ett nytt lag:</label>
         <input id="EnterNewTeam" type="text" onchange="createNewTeam(this);" />
         <i class="far fa-save" onclick="createNewTeam()" title="Create new team"></i>
-    </div>
+    }
+
 }
 else
 {

@@ -224,6 +224,7 @@ namespace Chaos.Wedding.Models.Games
             this.PositionX = contract.PositionX;
             this.PositionY = contract.PositionY;
             this.ImageId = contract.ImageId;
+            this.Titles.Update(this.Titles.FromContract(contract.Titles));
             await this.SaveAsync(session);
         }
 

@@ -5,10 +5,14 @@
 }
 
 <div class="games-backward">
-    <!--ToDo: Set question as locked and show all correct answers-->
-    <a href="@Url.Action("LockTeamChallenge", "Game", new { challengeId = Model.Id })">
-        <i class="fas fa-check-square clickable success"></i>
-    </a>
+    @if (!ViewBag.ChallengeLocked)
+    {
+        <i class="fas fa-check-square clickable success" onclick="lockTeamChallenge(false);"></i>
+    }
+    else if ((bool)this.Session["SystemAdmin"])
+    {
+        <i class="fas fa-unlock-alt clickable gray" onclick="lockTeamChallenge(true);"></i>
+    }
     <a href="@Url.Action("PlayZone", "Game", new { zoneId = Model.ZoneId })">
         <i class="fas fa-backward clickable blue"></i>
     </a>
@@ -26,3 +30,213 @@
         @Html.Partial("_AnswerQuestion", question)
     </div>
 }
+
+<script type="text/javascript">
+    function lockTeamChallenge(unlock) {
+        try {
+            var url = "@Url.Action("LockTeamChallenge", "Game")";
+            var data = { challengeId: @Model.Id, unlock: unlock };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    var selectedClass = "selected";
+
+    function selectedSingleChoice(alternative, alternativeId) {
+        var isSelected = alternative.classList.contains(selectedClass);
+        if (isSelected) {
+            selectedMultiChoice(alternative, alternativeId, 0);
+            return;
+        }
+        
+        for (var i = 0; i < alternative.parentNode.children.length; i++) {
+            var sibling = alternative.parentNode.children[i];
+            if (!sibling.classList || sibling === alternative) {
+                continue;
+            }
+
+            var isSiblingSelected = sibling.classList.contains(selectedClass);
+            if (!isSiblingSelected) {
+                continue;
+            }
+
+            var siblingId = parseInt(sibling.getAttribute('data-alternative'));
+            if (!isNaN(siblingId)) {
+                selectedMultiChoice(sibling, siblingId, 0);
+            }
+        }
+
+        selectedMultiChoice(alternative, alternativeId, 0);
+    }
+
+    function selectedMultiChoice(alternative, alternativeId, maxChoices) {
+        var isBeingSelected = !alternative.classList.contains(selectedClass);
+        if (maxChoices && isBeingSelected) {
+            var selectedSiblings = 0;
+            for (var i = 0; i < alternative.parentNode.children.length; i++) {
+                var sibling = alternative.parentNode.children[i];
+                if (sibling.classList && sibling.classList.contains(selectedClass)) {
+                    selectedSiblings++;
+                }
+            }
+
+            if (selectedSiblings >= maxChoices) {
+                window.notification("warning", "The maximum number of alternatives have been chosen.", "", 5000);
+                return;
+            }
+        }
+
+        alternative.classList.toggle(selectedClass);
+        var url = "@Url.Action("SaveTeamAnswer", "Game")";
+        var data = { alternativeId: alternativeId, isAnswered: isBeingSelected };
+        gamesCallAjax(url, data);
+    }
+
+    /***************************/
+    /* Desktop - Drag and Drop */
+    /***************************/
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        addAlternativeToTarget(document.getElementById(data), ev.target);
+    }
+
+    function extractIdSet(element) {
+        var result = {
+            "isTarget": false,
+            "isContainer": false,
+            "isAlternative": false,
+            "row": 0,
+            "column": 0,
+            "questionId": 0,
+            "alternativeId" : 0
+        }
+
+        if (!element || !element.id) {
+            return result;
+        }
+
+        var rowId = parseInt(element.getAttribute('data-row'));
+        if (!isNaN(rowId)) {
+            result.row = rowId;
+        }
+
+        var columnId = parseInt(element.getAttribute('data-column'));
+        if (!isNaN(columnId)) {
+            result.column = columnId;
+        }
+
+        var questionId = parseInt(element.getAttribute('data-question'));
+        if (!isNaN(questionId)) {
+            result.questionId = questionId;
+        }
+
+        var alternativeId = parseInt(element.getAttribute('data-alternative'));
+        if (!isNaN(alternativeId)) {
+            result.alternativeId = alternativeId;
+        }
+
+        if (element.id.startsWith("DragTarget")) {
+            result.isTarget = true;
+        } else if (element.id.startsWith("DragContainer")) {
+            result.isContainer = true;
+        } else if (element.id.startsWith("DragAlternative") && result.alternativeId > 0) {
+            result.isAlternative = true;
+        }
+
+        return result;
+    }
+
+    function addAlternativeToTarget(alternative, target) {
+        var targetSet = extractIdSet(target);
+        var alternativeSet = extractIdSet(alternative);
+        if (!alternativeSet.isAlternative) {
+            return;
+        }
+
+        if (targetSet.isContainer) {
+            target.appendChild(alternative);
+            saveAlternativePosition(alternative, alternativeSet.alternativeId, false, 0, 0);
+            return;
+        }
+
+        if (!targetSet.isTarget || targetSet.questionId !== alternativeSet.questionId || targetSet.column !== alternativeSet.column) {
+            return;
+        }
+
+        for (var i = 0; i < target.children.length; i++) {
+            returnAlternativeToContainer(target.children[i], alternativeSet);
+        }
+        
+        target.appendChild(alternative);
+        saveAlternativePosition(alternative, alternativeSet.alternativeId, true, targetSet.row, targetSet.column);
+    }
+
+    function returnAlternativeToContainer(alternative, alternativeSet) {
+        if (alternativeSet.questionId <= 0) {
+            return;
+        }
+
+        var container = document.getElementById("DragContainer" + alternativeSet.questionId);
+        if (container) {
+            container.appendChild(alternative);
+            saveAlternativePosition(alternative, alternativeSet.alternativeId, false, 0, 0);
+        }
+    }
+
+    function saveAlternativePosition(alternative, alternativeId, isAnswered, answeredRow, answeredColumn) {
+        if (isAnswered) {
+            alternative.classList.add(selectedClass);
+        } else {
+            alternative.classList.remove(selectedClass);
+        }
+
+        var url = "@Url.Action("SaveTeamAnswer", "Game")";
+        var data = {
+            alternativeId: alternativeId,
+            isAnswered: isAnswered,
+            answeredRow: answeredRow,
+            answeredColumn: answeredColumn
+        };
+        gamesCallAjax(url, data);
+    }
+
+    /**************************/
+    /* Mobile - Drag and Drop */
+    /**************************/
+    $(document).ready(function() {
+        $('div[id^="DragAlternative"]').on("touchmove",
+            function(e) {
+                var touchLocation = e.targetTouches[0];
+                this.style.left = touchLocation.pageX + 'px';
+                this.style.top = touchLocation.pageY + 'px';
+                this.style.position = "absolute";
+            }).on("touchend",
+            function(e) {
+                var x = parseInt(this.style.left) - parseInt(document.documentElement.scrollLeft);
+                var y = parseInt(this.style.top) - parseInt(document.documentElement.scrollTop);
+                if (!isNaN(x) && !isNaN(y)) {
+                    var target = document.elementFromPoint(x, y);
+                    addAlternativeToTarget(this, target);
+                }
+
+                this.style.left = null;
+                this.style.top = null;
+                this.style.position = "relative";
+            });
+    });
+
+</script>

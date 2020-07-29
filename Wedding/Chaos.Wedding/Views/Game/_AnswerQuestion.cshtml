@@ -1,4 +1,5 @@
-﻿@model Chaos.Wedding.Models.Games.Contract.Question
+﻿@using Chaos.Wedding.Models.Games.Contract
+@model Chaos.Wedding.Models.Games.Contract.Question
 
 <div class="game-question-type">
     <div><i class="@Model.Type.ImageId" title="@Model.Type.Titles.UserTitle.Title"></i>@Model.Type.Titles.UserTitle.Title</div>
@@ -8,76 +9,107 @@
     {
         <div><i class="fas fa-lock gray" title="Locked"></i></div>
     }
+    <div>@($"{Model.GetScore()}/{Model.MaxScore}")</div>
 </div>
 <div class="game-question-content">
     <div class="game-title">@Model.Titles.UserTitle.Title</div>
-    <div class="game-alternatives">
-        @switch (Model.Type.Id)
-        {
-            case 1: //SingleChoice
-                foreach (var alternative in Model.Alternatives)
-                {
-                    if (ViewBag.ChallengeLocked)
-                    {
-                        <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" onclick="selectedSingleChoice(this, '@alternative.Id');">@alternative.Titles.UserTitle.Title</div>
-                    }
-                    else
-                    {
-                        <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@alternative.Titles.UserTitle.Title</div>
-                    }
-                }
-                break;
-            case 2: //MultiChoice
-                foreach (var alternative in Model.Alternatives)
-                {
-                    if (ViewBag.ChallengeLocked)
-                    {
-                        <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" onclick="selectedMultiChoice(this, '@alternative.Id');">@alternative.Titles.UserTitle.Title</div>
-                    }
-                    else
-                    {
-                        <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@alternative.Titles.UserTitle.Title</div>
-                    }
-                }
-                break;
-            case 5: // TrueOrFalse
+    @if (!string.IsNullOrEmpty(Model.ImageId))
+    {
+        <img src="~/Content/images/store/@Model.ImageId" />
+    }
 
-                break;
-        }
-    </div>
+    @if (Model.QuestionType == QuestionType.SingleChoice || Model.QuestionType == QuestionType.TrueOrFalse)
+    {
+        <div class="game-alternatives-choice">
+            @foreach (var alternative in Model.Alternatives)
+            {
+                if (ViewBag.ChallengeLocked)
+                {
+                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@alternative.Titles.UserTitle.Title</div>
+                }
+                else
+                {
+                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" data-alternative="@alternative.Id" onclick="selectedSingleChoice(this, '@alternative.Id');">@alternative.Titles.UserTitle.Title</div>
+                }
+            }
+        </div>
+    }
+    else if (Model.QuestionType == QuestionType.MultiChoice)
+    {
+        <div class="game-alternatives-choice">
+            @foreach (var alternative in Model.Alternatives)
+            {
+                if (ViewBag.ChallengeLocked)
+                {
+                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@alternative.Titles.UserTitle.Title</div>
+                }
+                else
+                {
+                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" data-alternative="@alternative.Id" onclick="selectedMultiChoice(this, '@alternative.Id', @Model.MaxChoices);">@alternative.Titles.UserTitle.Title</div>
+                }
+            }
+        </div>
+    }
+    else if (Model.QuestionType == QuestionType.Match || Model.QuestionType == QuestionType.Sort || Model.QuestionType == QuestionType.SortAndMatch)
+    {
+        var unansweredAlternatives = Model.Alternatives.ToList();
+        <div class="@($"game-alternatives-grid{Model.ColumnCount}")">
+            @for (var row = 1; row <= Model.RowCount; row++)
+            {
+                for (var column = 1; column <= Model.ColumnCount; column++)
+                {
+                    var alternative = Model.Alternatives.FirstOrDefault(a => a.CorrectRow == row && a.CorrectColumn == column);
+                    if (alternative == null)
+                    {
+                        <div class="game-alternative incorrect">Error</div>
+                    }
+                    else if (column == 1 && Model.QuestionType == QuestionType.Match)
+                    {
+                        unansweredAlternatives.Remove(alternative);
+                        <div class="game-alternative frozen">@alternative.Titles.UserTitle.Title</div>
+                    }
+                    else
+                    {
+                        var answer = Model.Alternatives.FirstOrDefault(a => a.TeamAnswer?.AnsweredRow == row && a.TeamAnswer?.AnsweredColumn == column);
+                        <div id="@($"DragTarget{alternative.Id}")" data-question="@Model.Id" data-row="@alternative.CorrectRow" data-column="@alternative.CorrectColumn" class="game-alternative-drop" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            @if (answer != null)
+                            {
+                                unansweredAlternatives.Remove(answer);
+                                if (ViewBag.ChallengeLocked)
+                                {
+                                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@answer.Titles.UserTitle.Title</div>
+                                }
+                                else
+                                {
+                                    <div id="@($"DragAlternative{answer.Id}")" data-question="@Model.Id" data-row="@answer.CorrectRow" data-column="@answer.CorrectColumn" data-alternative="@answer.Id" class="game-alternative selected" draggable="true" ondragstart="drag(event)">@answer.Titles.UserTitle.Title</div>
+                                }
+                            }
+                            else if (ViewBag.ChallengeLocked)
+                            {
+                                <div class="game-alternative missed">@alternative.Titles.UserTitle.Title</div>
+                            }
+                        </div>
+                    }
+                }
+            }
+        </div>
+        <div id="@($"DragContainer{Model.Id}")" data-question="@Model.Id" class="game-alternatives-container" ondrop="drop(event)" ondragover="allowDrop(event)">
+            @foreach (var alternative in unansweredAlternatives)
+            {
+                if (ViewBag.ChallengeLocked)
+                {
+                    <div class="game-alternative missed">@alternative.Titles.UserTitle.Title</div>
+                }
+                else
+                {
+                    <div id="@($"DragAlternative{alternative.Id}")" data-question="@Model.Id" data-row="@alternative.CorrectRow" data-column="@alternative.CorrectColumn" data-alternative="@alternative.Id" class="game-alternative" draggable="true" ondragstart="drag(event)">@alternative.Titles.UserTitle.Title</div>
+                }
+            }
+        </div>
+    }
 </div>
 
 @*<div class="game-alternative-choice correct" onclick="selectedSingleChoice(this);">Correct</div>
-<div class="game-alternative-choice selected" onclick="selectedSingleChoice(this);">Selected</div>
-<div class="game-alternative-choice incorrect" onclick="selectedSingleChoice(this);">Incorrect</div>
-<div class="game-alternative-choice missed" onclick="selectedSingleChoice(this);">Missed</div>*@
-
-<script type="text/javascript">
-    var selectedClass = "selected";
-    function selectedSingleChoice(alternative, alternativeId) {
-        for (var i = 0; i < alternative.parentNode.childNodes.length; i++) {
-            var sibling = alternative.parentNode.childNodes[i];
-            if (!sibling.classList) {
-                continue;
-            }
-
-            var isSelected = alternative.classList.contains(selectedClass);
-            if (!isSelected) {
-                continue;
-            }
-
-            selectedMultiChoice(alternative, alternativeId);
-        }
-
-        selectedMultiChoice(alternative, alternativeId);
-    }
-
-    function selectedMultiChoice(alternative, alternativeId) {
-        var isSelected = alternative.classList.contains(selectedClass);
-        alternative.classList.toggle(selectedClass);
-        
-        var url = "@Url.Action("SaveTeamAnswer", "Game")";
-        var data = { alternativeId: alternativeId, isAnswered: !isSelected };
-        gamesCallAjax(url, data);
-    }
-</script>
+    <div class="game-alternative-choice selected" onclick="selectedSingleChoice(this);">Selected</div>
+    <div class="game-alternative-choice incorrect" onclick="selectedSingleChoice(this);">Incorrect</div>
+    <div class="game-alternative-choice missed" onclick="selectedSingleChoice(this);">Missed</div>*@

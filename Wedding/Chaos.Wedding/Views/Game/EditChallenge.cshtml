@@ -9,6 +9,7 @@
 
 <div class="games-backward">
     <a href="@Url.Action("EditZone", "Game", new { zoneId = Model.ZoneId })">
+        <i class="far fa-save clickable success" onclick="saveChallenge()" title="Save challenge"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -16,9 +17,6 @@
 <div class="game-row">
     <div>
         <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
-    </div>
-    <div class="game-title-menu">
-        <i class="far fa-save clickable success" onclick="saveChallenge()" title="Save challenge"></i>
     </div>
 </div>
 
@@ -51,7 +49,7 @@
 }
 
 <h3>Type</h3>
-<input id="Type" type="text" style="display: none;" value="@selectedType"/>
+<input id="Type" type="text" style="display: none;" value="@selectedType" />
 <div id="TypeSelect">
     <select>
         @foreach (var challengeType in systemData.ChallengeTypes)
@@ -119,18 +117,15 @@
 <h3>Questions</h3>
 @foreach (var question in Model.Questions)
 {
-    <div class="game-row">
-        <div class="game-title">@question.Titles.UserTitle.Title (@question.Titles.UserTitle.Language.Name)</div>
-        <div><i class="@question.Type.ImageId" title="@question.Type.Titles.UserTitle.Title"></i></div>
-        <div><i class="@question.Subject.ImageId" title="@question.Subject.Titles.UserTitle.Title"></i></div>
-        <div><i class="@question.Difficulty.ImageId" title="@question.Difficulty.Titles.UserTitle.Title"></i></div>
-        <div><b>@question.Alternatives.Count()</b></div>
-        <div>
-            <a href="@Url.Action("EditQuestion", "Game", new { questionId = question.Id, challengeId = Model.Id })">
-                <i class="fas fa-pen" title="Edit challenge"></i>
-            </a>
+    <a href="@Url.Action("EditQuestion", "Game", new { questionId = question.Id, challengeId = Model.Id })">
+        <div class="game-row">
+            <div class="game-title">@question.Titles.UserTitle.Title (@question.Titles.UserTitle.Language.Name)</div>
+            <div><i class="@question.Type.ImageId" title="@question.Type.Titles.UserTitle.Title"></i></div>
+            <div><i class="@question.Subject.ImageId" title="@question.Subject.Titles.UserTitle.Title"></i></div>
+            <div><i class="@question.Difficulty.ImageId" title="@question.Difficulty.Titles.UserTitle.Title"></i></div>
+            <div><b>@question.Alternatives.Count()</b></div>
         </div>
-    </div>
+    </a>
 }
 
 @if (Model.Id > 0)
@@ -169,7 +164,7 @@
             var subject = document.getElementById("Subject").value;
             var difficulty = document.getElementById("Difficulty").value;
             var titles = "";
-            
+
             var titleInputs = document.getElementById("Titles").getElementsByTagName("input");
             for (var i = 0; i < titleInputs.length; i++) {
                 var language = titleInputs[i].value;

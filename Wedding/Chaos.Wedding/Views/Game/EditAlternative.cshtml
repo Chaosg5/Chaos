@@ -6,7 +6,8 @@
 }
 
 <div class="games-backward">
-    <a href="@Url.Action("EditGame", "Game", new { gameId = Model.QuestionId })">
+    <a href="@Url.Action("EditQuestion", "Game", new { questionId = Model.QuestionId })">
+        <i class="far fa-save clickable success" onclick="saveAlternative()" title="Save alternative"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -14,9 +15,6 @@
 <div class="game-row">
     <div>
         <h2>@Model.Titles.UserTitle.Title (@Model.Titles.UserTitle.Language.Name)</h2>
-    </div>
-    <div class="game-title-menu">
-        <i class="far fa-save clickable success" onclick="saveAlternative()" title="Save alternative"></i>
     </div>
 </div>
 
@@ -66,7 +64,7 @@
 <h3>IsCorrect</h3>
 <div class="game-row">
     <div>
-        <input type="checkbox" id="IsCorrect" value="@Model.IsCorrect" />
+        <input type="checkbox" id="IsCorrect" value="@Model.IsCorrect" checked="checked" />
     </div>
 </div>
 

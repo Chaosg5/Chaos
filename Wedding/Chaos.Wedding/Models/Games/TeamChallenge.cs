@@ -11,6 +11,7 @@ namespace Chaos.Wedding.Models.Games
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Data.Common;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -76,7 +77,7 @@ namespace Chaos.Wedding.Models.Games
             }
         }
 
-        /// <summary>Gets the list of answered <see cref="GetAlternative"/>s.</summary>
+        /// <summary>Gets the list of answered <see cref="Alternative"/>s.</summary>
         public List<TeamAnswer> Answers { get; } = new List<TeamAnswer>();
         
         /// <summary>Ensures a <see cref="TeamChallenge"/>.</summary>
@@ -100,6 +101,36 @@ namespace Chaos.Wedding.Models.Games
             return teamChallenge;
         }
 
+        /// <summary>Adds <see cref="Contract.TeamChallenge"/>s to the <see cref="Contract.Zone.Challenges"/> of the <paramref name="game"/>.</summary>
+        /// <param name="game">The <see cref="Game"/>.</param>
+        /// <param name="teamId">The active <see cref="Team.Id"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public static async Task AddTeamChallengesAsync(Contract.Game game, int teamId)
+        {
+            foreach (var zone in game.Zones)
+            {
+                await AddTeamChallengesAsync(zone, teamId);
+            }
+        }
+
+        /// <summary>Adds <see cref="Contract.TeamChallenge"/>s to the <see cref="Contract.Zone.Challenges"/> or the <paramref name="zone"/>.</summary>
+        /// <param name="zone">The <see cref="Zone"/>.</param>
+        /// <param name="teamId">The active <see cref="Team.Id"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public static async Task AddTeamChallengesAsync(Contract.Zone zone, int teamId)
+        {
+            foreach (var challenge in zone.Challenges)
+            {
+                challenge.TeamChallenge = (await GameCache.TeamChallengeGetAsync(teamId, challenge.Id)).ToContract();
+            }
+        }
+
+        /// <summary>Merges <see cref="Answers"/> into a <see cref="Contract.Challenge"/> of the <paramref name="challengeModel"/>.</summary>
+        /// <param name="challengeModel">The <see cref="Challenge"/>.</param>
+        /// <param name="languageName">The <see cref="CultureInfo.Name"/>.</param>
+        /// <returns>The <see cref="Contract.Challenge"/>.</returns>
+        /// <exception cref="ArgumentNullException">The <see cref="Challenge.Id"/> doesn't match the <see cref="ChallengeId"/>.</exception>
+        /// <exception cref="Exception">A <see cref="Question"/> or <see cref="Alternative"/> is not valid.</exception>
         public Contract.Challenge MergeAnswersIntoChallenge(Challenge challengeModel, string languageName)
         {
             var challenge = challengeModel.ToContract(languageName);
@@ -124,23 +155,14 @@ namespace Chaos.Wedding.Models.Games
             return challenge;
         }
 
-
-        public void CalculateScore(Contract.Challenge challenge)
+        /// <summary>Calculates the <see cref="Score"/> for a <see cref="Question"/>s based on the <see cref="Answers"/>.</summary>
+        /// <param name="challengeModel">The <see cref="Challenge"/>.</param>
+        /// <param name="languageName">The <see cref="CultureInfo.Name"/>.</param>
+        /// <exception cref="Exception">A <see cref="Question"/> is not valid.</exception>
+        public void CalculateScore(Challenge challengeModel, string languageName)
         {
-            var calculatedScore = 0;
-            foreach (var teamAnswer in this.Answers)
-            {
-                var question = challenge.Questions.FirstOrDefault(q => q.Id == teamAnswer.QuestionId);
-                var alternative = question?.Alternatives?.FirstOrDefault(a => a.Id == teamAnswer.AlternativeId);
-                if (alternative == null)
-                {
-                    throw new Exception("ToDo:");
-                }
-
-                calculatedScore += question.GetScore(alternative);
-            }
-
-            this.Score = calculatedScore;
+            var challenge = this.MergeAnswersIntoChallenge(challengeModel, languageName);
+            this.Score = challenge.Questions.Sum(question => question.GetScore());
         }
 
         /// <summary>The update answer async.</summary>

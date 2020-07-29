@@ -18,6 +18,7 @@ namespace Chaos.Wedding.Models.Games
     using Chaos.Movies.Model;
     using Chaos.Movies.Model.Base;
     using Chaos.Movies.Model.Exceptions;
+    using Chaos.Wedding.Models.Games.Contract;
 
     /// <inheritdoc cref="Readable{T, TDto}" />
     /// <summary>A question in a <see cref="Challenge" /> containing a set of <see cref="Alternative" />s.</summary>
@@ -250,7 +251,7 @@ namespace Chaos.Wedding.Models.Games
                 this.Difficulty = await GameCache.DifficultyGetAsync(contract.Difficulty.Id);
             }
 
-            this.Titles.FromContract(contract.Titles);
+            this.Titles.Update(this.Titles.FromContract(contract.Titles));
             await this.SaveAsync(session);
         }
 

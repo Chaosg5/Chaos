@@ -185,6 +185,15 @@ namespace Chaos.Wedding.Models.Games
                 throw new InvalidSaveCandidateException("The alternative can't be saved without a question.");
             }
 
+            if (!this.IsCorrect)
+            {
+                this.ScoreValue = 0;
+            }
+            else if (this.ScoreValue == 0)
+            {
+                this.ScoreValue = 1;
+            }
+            
             this.Titles.ValidateSaveCandidate();
         }
 
@@ -211,7 +220,7 @@ namespace Chaos.Wedding.Models.Games
             this.ScoreValue = contract.ScoreValue;
             this.CorrectAnswer = contract.CorrectAnswer;
             this.ImageId = contract.ImageId;
-            this.Titles.FromContract(contract.Titles);
+            this.Titles.Update(this.Titles.FromContract(contract.Titles));
             await this.SaveAsync(session);
         }
 

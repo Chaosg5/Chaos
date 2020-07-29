@@ -218,7 +218,7 @@ namespace Chaos.Wedding.Models.Games
                 this.Difficulty = await GameCache.DifficultyGetAsync(contract.Difficulty.Id);
             }
 
-            this.Titles.FromContract(contract.Titles);
+            this.Titles.Update(this.Titles.FromContract(contract.Titles));
             await this.SaveAsync(session);
         }
 
@@ -250,6 +250,12 @@ namespace Chaos.Wedding.Models.Games
         {
             this.ValidateSaveCandidate();
             await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
+        }
+
+        internal static async Task<Challenge> GetAsync(int id)
+        {
+            var session = await SessionHandler.GetSessionAsync();
+            return (await Static.GetAsync(session, new[] { id })).First();
         }
 
         /// <inheritdoc />
