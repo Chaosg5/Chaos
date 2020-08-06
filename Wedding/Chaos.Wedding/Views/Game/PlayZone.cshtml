@@ -1,7 +1,9 @@
-﻿@model Chaos.Wedding.Models.Games.Contract.Zone
+﻿@using Chaos.Wedding.Models.Games
+@model Chaos.Wedding.Models.Games.Contract.Zone
 @{
     ViewBag.Title = "Score";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
 <div class="games-backward">
@@ -16,30 +18,85 @@
     </div>
 </div>
 
-@if (!string.IsNullOrEmpty(Model.ImageId))
+@if (!string.IsNullOrEmpty(Model.Titles.UserTitle.Description))
 {
-    <img src="~/Content/images/store/@Model.ImageId" style="width: @Model.CssWidth; height: @Model.CssHeight;"/>
+    <div class="game-description">
+        <span>@Model.Titles.UserTitle.Description</span>
+    </div>
 }
 
-@foreach (var challenge in Model.Challenges)
+@if (!string.IsNullOrEmpty(Model.LockCode) && Model.TeamZone?.Unlocked == false)
 {
-    <a href="@Url.Action("PlayChallenge", "Game", new { challengeId = challenge.Id })">
-        <div class="game-question">
-            <div class="game-question-type">
-                <div><i class="@challenge.Type.ImageId" title="@challenge.Type.Titles.UserTitle.Title"></i>@challenge.Type.Titles.UserTitle.Title</div>
-                <div><i class="@challenge.Subject.ImageId" title="@challenge.Subject.Titles.UserTitle.Title"></i>@challenge.Subject.Titles.UserTitle.Title</div>
-                <div><i class="@challenge.Difficulty.ImageId" title="@challenge.Difficulty.Titles.UserTitle.Title"></i>@challenge.Difficulty.Titles.UserTitle.Title</div>
-                @if (challenge.TeamChallenge?.IsLocked == true)
-                {
-                    <div><i class="fas fa-lock gray" title="Locked"></i></div>
-                }
-                
-                <div>@($"{challenge.TeamChallenge?.Score ?? 0}/{challenge.MaxScore}")</div>
+    <div class="game-question-content">
+        <img src="~/Content/images/store/@Model.ImageId" />
+        <h3>@($"{Model.LockCode.Length} tecken")</h3>
+        <div class="game-row">
+            <div>
+                <input id="LockCode" type="text" style="font-size: 5rem; height: auto; width: auto;" autofocus="autofocus" size="@Model.LockCode.Length" maxlength="@Model.LockCode.Length" />
             </div>
-            <div class="game-question-content @(challenge.TeamChallenge?.IsLocked == true ? "locked" : "ready")">
-                <div class="game-title">@challenge.Titles.UserTitle.Title</div>
-                <div><b>@challenge.Questions.Count frågor</b></div>
+            <div>
+                <i class="fas fa-unlock-alt clickable" onclick="unlockTeamZone(true)"></i>
             </div>
         </div>
-    </a>
+    </div>
 }
+else
+{
+    foreach (var challenge in Model.Challenges)
+    {
+        <a href="@Url.Action("PlayChallenge", "Game", new { challengeId = challenge.Id })">
+            <div class="game-question">
+                <div class="game-question-type">
+                    @if (!challenge.Questions.Any())
+                    {
+                        <div><i class="@challenge.Type.ImageId" title="@challenge.Type.Titles.UserTitle.Title"></i>@challenge.Type.Titles.UserTitle.Title</div>
+                        <div><i class="@challenge.Subject.ImageId" title="@challenge.Subject.Titles.UserTitle.Title"></i>@challenge.Subject.Titles.UserTitle.Title</div>
+                        <div><i class="@challenge.Difficulty.ImageId" title="@challenge.Difficulty.Titles.UserTitle.Title"></i>@challenge.Difficulty.Titles.UserTitle.Title</div>
+                    }
+                    else
+                    {
+                        foreach (var type in challenge.Questions.GroupBy(q => q.Type.Id).Select(g => g.First().Type))
+                        {
+                            <div><i class="@type.ImageId" title="@type.Titles.UserTitle.Title"></i>@type.Titles.UserTitle.Title</div>
+                        }
+                        foreach (var subject in challenge.Questions.GroupBy(q => q.Subject.Id).Select(g => g.First().Subject))
+                        {
+                            <div><i class="@subject.ImageId" title="@subject.Titles.UserTitle.Title"></i>@subject.Titles.UserTitle.Title</div>
+                        }
+                        foreach (var difficulty in challenge.Questions.GroupBy(q => q.Difficulty.Id).Select(g => g.First().Difficulty))
+                        {
+                            <div><i class="@difficulty.ImageId" title="@difficulty.Titles.UserTitle.Title"></i>@difficulty.Titles.UserTitle.Title</div>
+                        }
+                    }
+                    @if (challenge.TeamChallenge?.IsLocked == true)
+                    {
+                        <div><i class="fas fa-lock gray" title="@systemData.GetTitle("Locked")"></i></div>
+                    }
+
+                    <div><i class="fas fa-medal gold"></i>@($"{challenge.TeamChallenge?.Score ?? 0} {systemData.GetTitle("Of")} {challenge.MaxScore}")</div>
+                </div>
+                <div class="game-question-content @(challenge.TeamChallenge?.IsLocked == true ? "locked" : "ready")">
+                    <div class="game-title">@challenge.Titles.UserTitle.Title</div>
+                    <div><b>@challenge.Questions.Count frågor</b></div>
+                </div>
+            </div>
+        </a>
+    }
+}
+
+<script type="text/javascript">
+    function unlockTeamZone(unlock) {
+        try {
+            var lockCode = document.getElementById("LockCode").value;
+            var url = "@Url.Action("UnlockTeamZone", "Game")";
+            var data = {
+                zoneId: @Model.Id,
+                unlock: unlock,
+                lockCode: lockCode
+            };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+</script>

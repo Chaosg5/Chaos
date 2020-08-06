@@ -1,8 +1,10 @@
-﻿@model Chaos.Wedding.Models.Games.Contract.Game
+﻿@using Chaos.Wedding.Models.Games
+@model Chaos.Wedding.Models.Games.Contract.Game
 
 @{
     ViewBag.Title = "Game";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
 <div class="games-backward game-title-background">
@@ -16,7 +18,15 @@
     {
         var zoneName = FormattableString.Invariant($"Zone-{zone.Id}");
         <a onclick="saveActiveZone('@zoneName')" href="@Url.Action("PlayZone", "Game", new { zoneId = zone.Id })">
-            <div id="@zoneName" style="background-color: @zone.CssCompletion; opacity: 0.5; width: @zone.CssWidth; height: @zone.CssHeight; left: @zone.CssPositionX; top: @zone.CssPositionY; position: absolute;">
+            <div id="@zoneName" class="game-zone" style="background-color: @zone.CssCompletion; width: @zone.CssWidth; height: @zone.CssHeight; left: @zone.CssPositionX; top: @zone.CssPositionY; position: absolute;">
+                <div class="game-question-type @(zone.Width > 250 ? string.Empty : zone.Width > 160 ? "small" : "tiny")">
+                    @foreach (var challengeSubject in zone.Challenges.SelectMany(c => c.Questions).GroupBy(q => q.Subject.Id).Select(g => g.First().Subject))
+                    {
+                        <div><i class="@challengeSubject.ImageId" title="@challengeSubject.Titles.UserTitle.Title"></i></div>
+                    }
+                    <div><i class="fas fa-lock gray" title="@systemData.GetTitle("Locked")"></i>@($"{zone.Challenges.Count(c => c.TeamChallenge?.IsLocked == true)} {systemData.GetTitle("Of")} {zone.Challenges.Count}")</div>
+                    <div><i class="fas fa-medal gold"></i>@($"{zone.TeamScore} {systemData.GetTitle("Of")} {zone.MaxScore}")</div>
+                </div>
             </div>
         </a>
     }

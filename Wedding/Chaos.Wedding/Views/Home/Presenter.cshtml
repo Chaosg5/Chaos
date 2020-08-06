@@ -59,7 +59,7 @@
                 window.location.reload();
             },
             error: function(xhr, ajaxOptions, thrownError) {
-                alert(JSON.stringify(xhr));
+                window.notification("danger", thrownError, xhr.responseText, 60000);
             }
         });
     }

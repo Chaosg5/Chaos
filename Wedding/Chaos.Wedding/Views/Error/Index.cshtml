@@ -1,0 +1,25 @@
+﻿@model HandleErrorInfo
+@{
+    ViewBag.Title = "Error";
+}
+
+<div class="contentBackground">
+    <div class="error-card">
+        <p class="error-type">Ett fel har uppstått</p>
+        <br/>
+        <a href="@Url.Action("Index", "Game")"><h4>Fortsätt spela</h4></a>
+        <br />
+        <a href="@Url.Action("Index", "Home")"><h4>Eller gå till startsidan</h4></a>
+        <div class="mt-5">
+            <div class="detailed-block mb-3" title="Information">
+                <p class="mb-2"><b>Exception:</b> @Model.Exception.Message</p>
+                <p class="mb-2"><b>Controller:</b> @Model.ControllerName</p>
+                <p class="mb-0"><b>Action:</b> @Model.ActionName</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" data-target="#stacktrace" aria-expanded="false" aria-controls="stacktrace">Stacktrace</button>
+            <div id="stacktrace" class="collapse mt-2">
+                <pre class="mb-0">@Model.Exception.StackTrace</pre>
+            </div>
+        </div>
+    </div>
+</div>

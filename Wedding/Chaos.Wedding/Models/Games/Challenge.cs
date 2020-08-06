@@ -252,12 +252,6 @@ namespace Chaos.Wedding.Models.Games
             await this.SaveToDatabaseAsync(this.GetSaveParameters(), this.ReadFromRecordAsync, session);
         }
 
-        internal static async Task<Challenge> GetAsync(int id)
-        {
-            var session = await SessionHandler.GetSessionAsync();
-            return (await Static.GetAsync(session, new[] { id })).First();
-        }
-
         /// <inheritdoc />
         /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>

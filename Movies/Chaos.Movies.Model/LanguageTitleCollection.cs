@@ -134,7 +134,6 @@ namespace Chaos.Movies.Model
         /// <summary>Changes the title of this movie series type.</summary>
         /// <param name="title">The title to set.</param>
         /// <exception cref="ArgumentNullException"><paramref name="title"/> is <see langword="null"/></exception>
-        /// <exception cref="PersistentObjectRequiredException">Items of type <see cref="Persistable{T, TDto}"/> has to be saved before added.</exception>
         public void SetTitle(LanguageTitle title)
         {
             if (title == null)
@@ -249,7 +248,7 @@ namespace Chaos.Movies.Model
                     throw new InvalidSaveCandidateException($"Expected 2 parts of the title, found {parts.Length}.");
                 }
 
-                var newTitle = new LanguageTitle(parts[1], new CultureInfo(parts[0]));
+                var newTitle = new LanguageTitle(parts[1], new CultureInfo(parts[0].Trim()));
                 var existing = this.FirstOrDefault(l => l.Language.Name == newTitle.Language.Name);
                 if (existing == null)
                 {

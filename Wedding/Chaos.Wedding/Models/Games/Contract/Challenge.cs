@@ -11,8 +11,6 @@ namespace Chaos.Wedding.Models.Games.Contract
     using System.Runtime.Serialization;
 
     using Chaos.Movies.Contract;
-    using Chaos.Movies.Model;
-    using Chaos.Movies.Model.Base;
 
     /// <summary>A challenge in a <see cref="Zone" /> containing a set of <see cref="Question" />s.</summary>
     [DataContract]
@@ -46,7 +44,7 @@ namespace Chaos.Wedding.Models.Games.Contract
         [DataMember]
         public IReadOnlyCollection<Question> Questions { get; set; }
 
-        /// <summary>Gets or sets the <see cref="TeamChallenge"/>.</summary>
+        /// <summary>Gets or sets the <see cref="Contract.TeamChallenge"/>.</summary>
         [DataMember]
         public TeamChallenge TeamChallenge { get; set; }
 

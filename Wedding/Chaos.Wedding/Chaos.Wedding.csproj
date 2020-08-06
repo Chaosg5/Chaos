@@ -146,6 +146,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\GameController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -161,8 +162,10 @@
     <Compile Include="Models\Games\Contract\Question.cs" />
     <Compile Include="Models\Games\Contract\Team.cs" />
     <Compile Include="Models\Games\Contract\TeamAnswer.cs" />
+    <Compile Include="Models\Games\Contract\TeamZone.cs" />
     <Compile Include="Models\Games\Contract\TeamChallenge.cs" />
     <Compile Include="Models\Games\Contract\Zone.cs" />
+    <Compile Include="Models\Games\Extensions.cs" />
     <Compile Include="Models\Games\SystemText.cs" />
     <Compile Include="Models\Games\Difficulty.cs" />
     <Compile Include="Models\Games\ChallengeType.cs" />
@@ -173,6 +176,7 @@
     <Compile Include="Models\Games\Team.cs" />
     <Compile Include="Models\Games\SystemData.cs" />
     <Compile Include="Models\Games\TeamAnswer.cs" />
+    <Compile Include="Models\Games\TeamZone.cs" />
     <Compile Include="Models\Games\TeamChallenge.cs" />
     <Compile Include="Models\Games\Zone.cs" />
     <Compile Include="Models\Games\Game.cs" />
@@ -214,8 +218,55 @@
     <Content Include="Content\images\language\sv-SE.svg" />
     <Content Include="Content\images\parkering.png" />
     <Content Include="Content\images\sofia.png" />
+    <Content Include="Content\images\stadsjakt.png" />
+    <Content Include="Content\images\store\games\wedding\af.png" />
+    <Content Include="Content\images\store\games\wedding\amv.png" />
     <Content Include="Content\images\store\games\wedding\colorfire.jpg" />
+    <Content Include="Content\images\store\games\wedding\em.png" />
+    <Content Include="Content\images\store\games\wedding\fhm.png" />
+    <Content Include="Content\images\store\games\wedding\fk.png" />
+    <Content Include="Content\images\store\games\wedding\frankrike.png" />
     <Content Include="Content\images\store\games\wedding\GameMap.png" />
+    <Content Include="Content\images\store\games\wedding\indonesia.png" />
+    <Content Include="Content\images\store\games\wedding\italien.png" />
+    <Content Include="Content\images\store\games\wedding\japan.jpg" />
+    <Content Include="Content\images\store\games\wedding\kf.png" />
+    <Content Include="Content\images\store\games\wedding\lakemedelv.png" />
+    <Content Include="Content\images\store\games\wedding\lmv.png" />
+    <Content Include="Content\images\store\games\wedding\matte.png" />
+    <Content Include="Content\images\store\games\wedding\matte01.png" />
+    <Content Include="Content\images\store\games\wedding\mv.png" />
+    <Content Include="Content\images\store\games\wedding\picasso.jpg" />
+    <Content Include="Content\images\store\games\wedding\polis.png" />
+    <Content Include="Content\images\store\games\wedding\riksantik.png" />
+    <Content Include="Content\images\store\games\wedding\sjv.png" />
+    <Content Include="Content\images\store\games\wedding\skl.png" />
+    <Content Include="Content\images\store\games\wedding\skv.png" />
+    <Content Include="Content\images\store\games\wedding\sos.png" />
+    <Content Include="Content\images\store\games\wedding\ts.png" />
+    <Content Include="Content\images\store\games\wedding\tyskland.png" />
+    <Content Include="Content\images\store\games\wedding\zone\carolus.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\garniten.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\gasellen.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\gotaland.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\gruvan.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\guvenoren.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\hallonet.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\hamnparken.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\harven.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\helgonet.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\hogskolan.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\jagmastaren.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\jarnbararen.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\junedal.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\jupiter.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\munksjo.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\perbrahe.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\pilen.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\radhusparken.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\slottskyrkogarden.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\sofiahuset.jpg" />
+    <Content Include="Content\images\store\games\wedding\zone\tandsticka.jpg" />
     <Content Include="Content\images\store\gifts\alvarvas.jpg" />
     <Content Include="Content\images\store\gifts\brodrost.jpg" />
     <Content Include="Content\images\store\gifts\champis.jpg" />
@@ -377,7 +428,6 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Inbjudan.cshtml" />
     <Content Include="Views\Home\Info.cshtml" />
@@ -431,6 +481,8 @@
     <Content Include="Views\Game\Language.cshtml" />
     <Content Include="Views\Game\_AnswerQuestion.cshtml" />
     <Content Include="Views\Game\EditTeam.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Game\_AnswerAlternative.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

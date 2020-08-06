@@ -1,7 +1,9 @@
-﻿@model Chaos.Wedding.Models.Games.Contract.Challenge
+﻿@using Chaos.Wedding.Models.Games
+@model Chaos.Wedding.Models.Games.Contract.Challenge
 @{
     ViewBag.Title = "Score";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
 <div class="games-backward">
@@ -24,6 +26,13 @@
     </div>
 </div>
 
+@if (!string.IsNullOrEmpty(Model.Titles.UserTitle.Description))
+{
+    <div class="game-description">
+        <span>@Model.Titles.UserTitle.Description</span>
+    </div>
+}
+
 @foreach (var question in Model.Questions)
 {
     <div class="game-question">
@@ -33,6 +42,10 @@
 
 <script type="text/javascript">
     function lockTeamChallenge(unlock) {
+        if (!unlock && !confirm("Är du säker på att du vill låsa?")) {
+            return;
+        }
+
         try {
             var url = "@Url.Action("LockTeamChallenge", "Game")";
             var data = { challengeId: @Model.Id, unlock: unlock };
@@ -52,7 +65,7 @@
             selectedMultiChoice(alternative, alternativeId, 0);
             return;
         }
-        
+
         for (var i = 0; i < alternative.parentNode.children.length; i++) {
             var sibling = alternative.parentNode.children[i];
             if (!sibling.classList || sibling === alternative) {
@@ -162,6 +175,15 @@
 
     function addAlternativeToTarget(alternative, target) {
         var targetSet = extractIdSet(target);
+        if (targetSet.isAlternative && target.parentNode) {
+            target = target.parentNode;
+            targetSet = extractIdSet(target);
+            if (!targetSet.isTarget && target.parentNode) {
+                target = target.parentNode;
+                targetSet = extractIdSet(target);
+            }
+        }
+
         var alternativeSet = extractIdSet(alternative);
         if (!alternativeSet.isAlternative) {
             return;
@@ -177,10 +199,22 @@
             return;
         }
 
+        var oldParentSet = extractIdSet(alternative.parentNode);
         for (var i = 0; i < target.children.length; i++) {
-            returnAlternativeToContainer(target.children[i], alternativeSet);
+            var oldChild = target.children[i];
+            var oldChildSet = extractIdSet(oldChild);
+            if (!oldChildSet.isAlternative) {
+                continue;
+            }
+
+            if (i === 0 && oldParentSet.isTarget) {
+                alternative.parentNode.appendChild(oldChild);
+                saveAlternativePosition(oldChild, oldChildSet.alternativeId, true, oldParentSet.row, oldParentSet.column);
+            } else {
+                returnAlternativeToContainer(oldChild, oldChildSet);
+            }
         }
-        
+
         target.appendChild(alternative);
         saveAlternativePosition(alternative, alternativeSet.alternativeId, true, targetSet.row, targetSet.column);
     }
@@ -217,6 +251,20 @@
     /**************************/
     /* Mobile - Drag and Drop */
     /**************************/
+    var scrollingSpeed = 0;
+
+    setInterval(function() {
+        if (scrollingSpeed === 0) {
+            return;
+        }
+
+        var newScroll = parseInt(document.documentElement.scrollTop) + scrollingSpeed;
+        if (newScroll > 0) {
+            document.documentElement.scrollTop = newScroll;
+        }
+        },
+    100);
+
     $(document).ready(function() {
         $('div[id^="DragAlternative"]').on("touchmove",
             function(e) {
@@ -224,6 +272,19 @@
                 this.style.left = touchLocation.pageX + 'px';
                 this.style.top = touchLocation.pageY + 'px';
                 this.style.position = "absolute";
+
+                var scrollPosition = parseInt(document.documentElement.scrollTop);
+                var pageLocation = parseInt(touchLocation.pageY) - scrollPosition;
+                var pageSize = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+                var newScroll = 0;
+                if (pageLocation < 50) {
+                    newScroll = -50 + pageLocation;
+                } else if (pageSize - pageLocation < 50) {
+                    newScroll = 50 + pageSize - pageLocation;
+                }
+
+                scrollingSpeed = newScroll;
             }).on("touchend",
             function(e) {
                 var x = parseInt(this.style.left) - parseInt(document.documentElement.scrollLeft);

@@ -2,9 +2,9 @@
     color: inherit;
 }
 
-a:hover {
-    text-decoration: none;
-}
+    a:hover {
+        text-decoration: none;
+    }
 
 .games-backward {
     top: 0;
@@ -13,6 +13,10 @@ a:hover {
     font-size: 3em;
     margin: 0.17em 0.17em 0 0;
     z-index: 1000;
+    border-radius: 15px;
+    opacity: 0.8;
+    padding: 0 1rem;
+    background-color: white;
 }
 
 img.language {
@@ -48,13 +52,37 @@ i {
 }
 
 .game-title-background {
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
     border-radius: 15px;
     opacity: 0.8;
     padding: 0 1rem;
     background-color: white;
-    margin-left: 10px;
+    margin-left: 0.5em;
+}
+
+.game-zone {
+    border-radius: 12px 12px 0 0;
+}
+
+    .game-zone .game-question-type {
+        color: #fff;
+        font-weight: normal;
+        background: #000;
+        background: rgba(0,0,0,0.5);
+    }
+
+        .game-zone .game-question-type.small, .game-question-type.small i {
+            font-size: 0.8rem;
+        }
+
+        .game-zone .game-question-type.tiny, .game-question-type.tiny i {
+            font-size: 0.6rem;
+        }
+
+.game-description {
+    margin: 1em;
+    padding: 1em;
+    background-color: lightblue;
+    border-radius: 15px;
 }
 
 .game-question {
@@ -67,13 +95,15 @@ i {
 
 .game-question-type {
     font-size: 1rem;
+    font-weight: bold;
     border-radius: 12px 12px 0 0;
     border-bottom: 1px solid #cccccc;
-    padding: 5px;
 }
 
     .game-question-type div {
         display: inline-block;
+        border-right: 1px solid #cccccc;
+        padding: 5px;
     }
 
     .game-question-type i {
@@ -120,7 +150,17 @@ i {
     grid-template-columns: repeat(3, 1fr);
 }
 
-.game-alternatives-container {
+.game-alternatives-grid4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.game-alternatives-grid5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.game-alternatives-container1, .game-alternatives-container2, .game-alternatives-container3, .game-alternatives-container4, .game-alternatives-container5 {
     min-width: 100%;
     min-height: 6em;
     background-color: #f6f6f6;
@@ -131,6 +171,27 @@ i {
     border: 1px solid #cccccc;
 }
 
+    .game-alternatives-container1 .game-alternative {
+        width: 90%;
+    }
+
+    .game-alternatives-container2 .game-alternative {
+        width: 45%;
+    }
+
+    .game-alternatives-container3 .game-alternative {
+        width: 30%;
+    }
+
+    .game-alternatives-container4 .game-alternative {
+        width: 23%;
+    }
+
+    .game-alternatives-container5 .game-alternative {
+        width: 18%;
+    }
+
+
 .game-alternative-drop {
     display: inline-block;
     background-color: #f6f6f6;
@@ -139,10 +200,10 @@ i {
     background-position: center center;
     border-radius: 6px;
     border: 1px solid #cccccc;
+    min-height: 2em;
 }
 
 .game-alternative {
-    touch-action: none; /* ToDo: does this work?*/
     display: inline-block;
     background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
     border-radius: 6px;
@@ -154,7 +215,13 @@ i {
     text-shadow: 0px 1px 0px #ffffff;
     margin: 2px;
     width: 100%;
+    min-height: 2em;
+    word-break: break-all;
 }
+
+    .game-alternative.touch {
+        touch-action: none; /* ToDo: does this work?*/
+    }
 
     .game-alternative.selected {
         background: linear-gradient(to bottom, #0000ff 5%, #7777ff 100%);
@@ -186,14 +253,39 @@ i {
         color: #ffffff;
     }
 
-/*@media only screen and (max-width: 600px) {
-    .game-alternative {
-        width: 100%;
+    .game-alternative.half {
+        width: 48%;
+        padding: 0;
+        margin: 0;
     }
-}*/
 
+    .game-alternative img, .game-alternative span {
+        pointer-events: none;
+        user-select: none;
+    }
+
+.game-scores {
+    display: grid;
+    grid-template-columns: 3em 1em auto 3em;
+    font-size: 1.2rem;
+}
+
+    .game-scores div {
+        /*border-bottom: 1px solid #cccccc;
+        border-left: 1px solid #cccccc;*/
+        margin-bottom: 0.5em;
+    }
+
+        .game-scores div.active {
+            font-weight: bold;
+        }
+
+@media only screen and (max-height: 600px) {
+    .game-alternative img {
+        max-height: 5em;
+    }
+}
 /*https://www.bestcssbuttongenerator.com/#/26*/
-
 .bottom-breaker {
     height: 5px;
 }

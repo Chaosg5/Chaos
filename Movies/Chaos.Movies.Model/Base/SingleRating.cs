@@ -74,17 +74,27 @@ namespace Chaos.Movies.Model.Base
             var minValueOffset = 0 - min;
             max += minValueOffset;
             value += minValueOffset;
-            var maxValueScale = max / 10;
-            return value / maxValueScale;
+            var maxValueScale = (double)max / 10;
+            return maxValueScale == 0 ? 0 : value / maxValueScale;
         }
 
-        /// <summary>Gets the display color in RBG hex for this <see cref="UserDerivedRating"/>'s <see cref="Value"/>.</summary>
+        /// <summary>Gets the display color in RBG hex for the <paramref name="value"/>.</summary>
         /// <param name="value">The value to get the <see cref="Color"/> for.</param>
         /// <returns>The <see cref="Color"/>.</returns>
         public static string GetHexColor(double value)
         {
             var color = GetColor(value);
             return string.Format(CultureInfo.InvariantCulture, "#{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
+        }
+
+        /// <summary>Gets the display color in RBG hex for the <paramref name="value"/>.</summary>
+        /// <param name="value">The value to get the <see cref="Color"/> for.</param>
+        /// <param name="alpha">The alpha value.</param>
+        /// <returns>The <see cref="Color"/>.</returns>
+        public static string GetRgbaColor(double value, string alpha)
+        {
+            var color = GetColor(value);
+            return string.Format(CultureInfo.InvariantCulture, "rgba({0},{1},{2},{3})", color.R, color.G, color.B, alpha);
         }
 
         /// <summary>Gets the display color for the <paramref name="value"/>.</summary>

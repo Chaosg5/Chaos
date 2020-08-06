@@ -9,8 +9,8 @@
 }
 
 <div class="games-backward">
+    <i class="far fa-save clickable success" onclick="saveQuestion()" title="Save question"></i>
     <a href="@Url.Action("EditChallenge", "Game", new { challengeId = Model.ChallengeId })">
-        <i class="far fa-save clickable success" onclick="saveQuestion()" title="Save question"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<h3>Titles</h3>
+<h3>@systemData.GetTitle("Titles")</h3>
 <div id="Titles">
     @foreach (var title in (List<string>)Session["Languages"])
     {
@@ -115,7 +115,7 @@
     </select>
 </div>
 
-<h3>Image</h3>
+<h3>@systemData.GetTitle("Image")</h3>
 <div class="game-row">
     <div>
         <input type="text" id="ImageId" value="@Model.ImageId" class="input-wide" />
@@ -126,15 +126,25 @@
 @{ var alternatives = Model.Alternatives.ToList(); }
 @if (Model.QuestionType == QuestionType.Match || Model.QuestionType == QuestionType.Sort || Model.QuestionType == QuestionType.SortAndMatch)
 {
-    <div class="@($"game-alternatives-grid{Model.ColumnCount}")">
-        @for (var row = 1; row <= Model.RowCount; row++)
+    var maxColumn = Model.QuestionType == QuestionType.Sort ? 1 : Model.ColumnCount + 1;
+    <div class="@($"game-alternatives-grid{maxColumn}")">
+        @for (var row = 1; row <= Model.RowCount + 1; row++)
         {
-            for (var column = 1; column <= Model.ColumnCount; column++)
+            for (var column = 1; column <= maxColumn; column++)
             {
                 var alternative = alternatives.FirstOrDefault(a => a.CorrectRow == row && a.CorrectColumn == column);
                 if (alternative == null)
                 {
-                    <div class="game-alternative incorrect">Error</div>
+                    <a href="@Url.Action("EditAlternative", "Game", new { alternativeId = 0, questionId = Model.Id, correctColumn = column, correctRow = row })">
+                        @if (row > Model.RowCount || column > Model.ColumnCount)
+                        {
+                            <div class="game-alternative selected">Add</div>
+                        }
+                        else
+                        {
+                            <div class="game-alternative incorrect">Error</div>
+                        }
+                    </a>
                 }
                 else
                 {

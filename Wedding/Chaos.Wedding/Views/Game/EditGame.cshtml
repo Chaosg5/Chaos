@@ -1,13 +1,15 @@
-﻿@model Chaos.Wedding.Models.Games.Contract.Game
+﻿@using Chaos.Wedding.Models.Games
+@model Chaos.Wedding.Models.Games.Contract.Game
 
 @{
     ViewBag.Title = "EditGame";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
 <div class="games-backward">
+    <i class="far fa-save clickable success" onclick="saveGame()" title="Spara"></i>
     <a href="@Url.Action("EditIndex", "Game")">
-        <i class="far fa-save clickable success" onclick="saveGame()" title="Spara"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -18,7 +20,7 @@
     </div>
 </div>
 
-<h3>Titles</h3>
+<h3>@systemData.GetTitle("Titles")</h3>
 <div id="Titles">
     @foreach (var title in (List<string>)Session["Languages"])
     {
@@ -40,7 +42,7 @@
     }
 </div>
 
-<h3>Image</h3>
+<h3>@systemData.GetTitle("Image")</h3>
 <div class="game-row">
     <div>
         <input type="text" id="ImageId" value="@Model.ImageId" class="input-wide" />

@@ -1,8 +1,10 @@
-﻿@model IEnumerable<Chaos.Wedding.Models.Games.Contract.Game>
+﻿@using Chaos.Wedding.Models.Games
+@model IEnumerable<Chaos.Wedding.Models.Games.Contract.Game>
 
 @{
     ViewBag.Title = "Edit games";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
 @if (int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
@@ -29,7 +31,13 @@
     <a href="@Url.Action("EditGame", "Game", new { gameId = 0 })"><i class="fas fa-plus" title="Add game"></i></a>
 
     <h2>System</h2>
-    <i class="fas fa-bolt" onclick="resetCache();"></i>
+    <i class="fas fa-bolt clickable" onclick="resetCache();"></i>
+    if (this.Session["GameId"] != null)
+    {
+        <h2>LockAllChallenges</h2>
+        <i class="fas fa-user-lock clickable" onclick="lockAllChallenges(false);"></i>
+        <i class="fas fa-key clickable" onclick="lockAllChallenges(true);"></i>
+    }
 }
 else
 {
@@ -53,6 +61,24 @@ else
 }
 
 <script type="text/javascript">
+    function lockAllChallenges(unlock) {
+        try {
+            if (!unlock && !confirm("Är du säker på att du vill låsa allt?")) {
+                return;
+            }
+
+            if (unlock && !confirm("Är du säker på att du vill låsa upp allt?")) {
+                return;
+            }
+
+            var url = "@Url.Action("LockAllChallenges", "Game")";
+            var data = { unlock: unlock };
+            gamesCallAjax(url, data);
+        } catch (e) {
+            window.notification("danger", e, "", 60000);
+        }
+    }
+
     function resetCache() {
         try {
             var url = "@Url.Action("ResetGameCache", "Game")";

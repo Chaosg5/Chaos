@@ -1,0 +1,14 @@
+﻿@model Chaos.Wedding.Models.Games.Contract.Alternative
+@if (!string.IsNullOrEmpty(Model.ImageId))
+{
+    <img src="~/Content/images/store/@Model.ImageId" />
+}
+else
+{
+    <span>@Model.Titles.UserTitle.Title</span>
+}
+
+@if (ViewBag.ChallengeLocked && !string.IsNullOrEmpty(Model.Titles.UserTitle.Description))
+{
+    <span>@($" | {Model.Titles.UserTitle.Description}")</span>
+}

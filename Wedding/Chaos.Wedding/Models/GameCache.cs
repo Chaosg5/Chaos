@@ -51,6 +51,9 @@ namespace Chaos.Wedding.Models
         /// <summary>Gets all available <see cref="TeamChallenge"/>s.</summary>
         private static readonly AsyncCache<Tuple<int, int>, TeamChallenge> TeamChallenges = new AsyncCache<Tuple<int, int>, TeamChallenge>(i => TeamChallenge.EnsureTeamChallengeAsync(i.Item1, i.Item2, session));
 
+        /// <summary>Gets all available <see cref="TeamZone"/>s.</summary>
+        private static readonly AsyncCache<Tuple<int, int>, TeamZone> TeamZones = new AsyncCache<Tuple<int, int>, TeamZone>(i => TeamZone.EnsureTeamZoneAsync(i.Item1, i.Item2, session));
+
         /// <summary>Gets all available <see cref="SystemText"/>s.</summary>
         private static readonly AsyncCache<int, SystemText> SystemTexts = new AsyncCache<int, SystemText>(i => SystemText.Static.GetAsync(session, i));
 
@@ -76,6 +79,7 @@ namespace Chaos.Wedding.Models
             Teams.Clear();
             Zones.Clear();
             TeamChallenges.Clear();
+            TeamZones.Clear();
             SystemTexts.Clear();
             IsInitiated = false;
         }
@@ -160,6 +164,16 @@ namespace Chaos.Wedding.Models
         {
             await InitCacheAsync();
             return await TeamChallenges.GetValue(new Tuple<int, int>(teamId, challengeId));
+        }
+
+        /// <summary>Gets the specified <see cref="TeamZone"/>.</summary>
+        /// <param name="teamId">The id of the <see cref="TeamZone.TeamId"/> to get.</param>
+        /// <param name="zoneId">The id of the <see cref="TeamZone.ZoneId"/> to get.</param>
+        /// <returns>The specified <see cref="TeamZone"/>.</returns>
+        public static async Task<TeamZone> TeamZoneGetAsync(int teamId, int zoneId)
+        {
+            await InitCacheAsync();
+            return await TeamZones.GetValue(new Tuple<int, int>(teamId, zoneId));
         }
 
         /// <summary>Gets the specified <see cref="SystemText"/>.</summary>

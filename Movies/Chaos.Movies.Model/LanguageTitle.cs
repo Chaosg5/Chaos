@@ -43,7 +43,7 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(title));
             }
 
-            this.Title = title;
+            this.Title = title.Trim();
             this.Language = language;
         }
 

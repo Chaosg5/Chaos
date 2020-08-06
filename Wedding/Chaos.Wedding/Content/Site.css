@@ -228,3 +228,57 @@ i.black {
     .newsItem a {
         color: #990b0b;
     }
+
+/* Error */
+.error-card {
+    margin: 0 auto;
+}
+
+    .error-card .error-type {
+        font-size: 30px;
+        font-size: 1.875rem;
+        font-weight: 600;
+        word-break: break-all;
+    }
+
+    .error-card .error-message {
+        font-weight: 600;
+        margin-bottom: 0;
+        color: #a0a0a0;
+    }
+
+    .error-card .error-instruction {
+        font-size: 18px;
+        font-size: 1.125rem;
+    }
+
+    .error-card .detailed-block {
+        border: 1px solid #cfd9db;
+        border-radius: 3px;
+        padding: 0.9375rem;
+        position: relative;
+        word-break: break-all;
+    }
+
+        .error-card .detailed-block::before {
+            background: #fff;
+            border: 1px solid #cfd9db;
+            color: #a0a0a0;
+            content: attr(title);
+            font-size: 14px;
+            font-size: 0.875rem;
+            left: 0.625rem;
+            padding: 0 0.25rem;
+            position: absolute;
+            top: -0.75rem;
+        }
+
+    .error-card #stacktrace {
+        background: #dee5e6;
+        border: 1px solid #cfd9db;
+        border-radius: 3px;
+    }
+
+        .error-card #stacktrace pre {
+            padding: 0.625rem;
+        }

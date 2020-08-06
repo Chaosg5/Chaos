@@ -115,6 +115,45 @@ namespace Chaos.Movies.Model.Base
         }
 
         /// <summary>Gets the specified <typeparamref name="T"/>s.</summary>
+        /// <param name="commandParameters">The list of key/values to add <see cref="SqlParameter"/>s to the <see cref="SqlCommand"/>.</param>
+        /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
+        /// <param name="session">The session.</param>
+        /// <returns>The list of <typeparamref name="T"/>s.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="commandParameters"/> or <paramref name="readFromRecords"/> is <see langword="null"/></exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "The design is made to minimize the amount of code in the inheriting classes and to ensure they implement all required methods.")]
+        protected async Task<IEnumerable<T>> GetFromDatabaseAsync(IReadOnlyDictionary<string, object> commandParameters, Func<DbDataReader, Task<IEnumerable<T>>> readFromRecords, UserSession session)
+        {
+            if (readFromRecords == null)
+            {
+                throw new ArgumentNullException(nameof(readFromRecords));
+            }
+
+            if (session == null)
+            {
+                throw new ArgumentNullException(nameof(session));
+            }
+
+            await session.ValidateSessionAsync();
+
+            using (var connection = new SqlConnection(Persistent.ConnectionString))
+            using (var command = new SqlCommand($"{SchemaName}.{typeof(T).Name}Get", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                foreach (var commandParameter in commandParameters)
+                {
+                    command.Parameters.AddWithValue(commandParameter.Key, commandParameter.Value);
+                }
+
+                await connection.OpenAsync();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    return await readFromRecords(reader);
+                }
+            }
+        }
+
+        /// <summary>Gets the specified <typeparamref name="T"/>s.</summary>
         /// <param name="lookupIdList">The list of lookup ids of the <typeparamref name="T"/>s to get.</param>
         /// <param name="readFromRecords">The callback method to use for reading the <typeparamref name="T"/>s from data to object.</param>
         /// <param name="session">The session.</param>

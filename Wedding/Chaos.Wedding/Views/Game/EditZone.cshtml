@@ -1,13 +1,15 @@
-﻿@model Chaos.Wedding.Models.Games.Contract.Zone
+﻿@using Chaos.Wedding.Models.Games
+@model Chaos.Wedding.Models.Games.Contract.Zone
 
 @{
     ViewBag.Title = "EditZone";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
 <div class="games-backward">
+    <i class="far fa-save clickable success" onclick="saveZone()" title="Save zone"></i>
     <a href="@Url.Action("EditGame", "Game", new { gameId = Model.GameId })">
-        <i class="far fa-save clickable success" onclick="saveZone()" title="Save zone"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -18,7 +20,7 @@
     </div>
 </div>
 
-<h3>Titles</h3>
+<h3>@systemData.GetTitle("Titles")</h3>
 <div id="Titles">
     @foreach (var title in (List<string>)Session["Languages"])
     {
@@ -40,10 +42,17 @@
     }
 </div>
 
-<h3>Image</h3>
+<h3>@systemData.GetTitle("Image")</h3>
 <div class="game-row">
     <div>
         <input type="text" id="ImageId" value="@Model.ImageId" class="input-wide" />
+    </div>
+</div>
+
+<h3>LockCode</h3>
+<div class="game-row">
+    <div>
+        <input type="text" id="LockCode" value="@Model.LockCode" class="input-wide" />
     </div>
 </div>
 
@@ -104,6 +113,7 @@
             var zoneId = @Model.Id;
             var gameId = @Model.GameId;
             var imageId = document.getElementById("ImageId").value;
+            var lockCode = document.getElementById("LockCode").value;
             var width = document.getElementById("Width").value;
             var height = document.getElementById("Height").value;
             var positionX = document.getElementById("PositionX").value;
@@ -127,6 +137,7 @@
                 zoneId: zoneId,
                 gameId: gameId,
                 imageId: imageId,
+                lockCode: lockCode,
                 width: width,
                 height: height,
                 positionX: positionX,

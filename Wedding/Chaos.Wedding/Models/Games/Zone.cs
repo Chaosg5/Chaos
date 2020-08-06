@@ -37,6 +37,9 @@ namespace Chaos.Wedding.Models.Games
         /// <summary>The database column for <see cref="PositionY"/>.</summary>
         private const string PositionYColumn = "Y";
 
+        /// <summary>The database column for <see cref="LockCode"/>.</summary>
+        private const string LockCodeColumn = "LockCode";
+
         /// <summary>Private part of the <see cref="Challenges"/> property.</summary>
         private readonly List<Challenge> challenges = new List<Challenge>();
 
@@ -58,6 +61,9 @@ namespace Chaos.Wedding.Models.Games
         /// <summary>Private part of the <see cref="PositionY"/> property.</summary>
         private short positionY;
 
+        /// <summary>Private part of the <see cref="LockCode"/> property.</summary>
+        private string lockCode = string.Empty;
+
         /// <summary>Initializes a new instance of the <see cref="Zone"/> class.</summary>
         /// <param name="gameId">The <see cref="GameId"/>.</param>
         /// <param name="width">The <see cref="Width"/>.</param>
@@ -65,9 +71,10 @@ namespace Chaos.Wedding.Models.Games
         /// <param name="positionX">The <see cref="PositionX"/>.</param>
         /// <param name="positionY">The <see cref="PositionY"/>.</param>
         /// <param name="imageId">The <see cref="ImageId"/>.</param>
+        /// <param name="lockCode">The <see cref="LockCode"/>.</param>
         /// <param name="titles">The <see cref="Titles"/>.</param>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="Zone"/> is not valid to be saved.</exception>
-        public Zone(int gameId, short width, short height, short positionX, short positionY, string imageId, string titles)
+        public Zone(int gameId, short width, short height, short positionX, short positionY, string imageId, string lockCode, string titles)
         {
             this.SchemaName = "game";
             this.GameId = gameId;
@@ -76,6 +83,7 @@ namespace Chaos.Wedding.Models.Games
             this.PositionX = positionX;
             this.PositionY = positionY;
             this.ImageId = imageId;
+            this.LockCode = lockCode;
             this.Titles.UpdateFromText(titles);
         }
 
@@ -110,6 +118,19 @@ namespace Chaos.Wedding.Models.Games
                 if (!string.IsNullOrWhiteSpace(value))
                 {
                     this.imageId = value;
+                }
+            }
+        }
+
+        /// <summary>Gets the lock code <see cref="Zone"/>.</summary>
+        public string LockCode
+        {
+            get => this.lockCode;
+            private set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    this.lockCode = value;
                 }
             }
         }
@@ -157,6 +178,7 @@ namespace Chaos.Wedding.Models.Games
                 Id = this.Id,
                 GameId = this.GameId,
                 ImageId = this.ImageId,
+                LockCode = this.LockCode,
                 Height = this.Height,
                 Width = this.Width,
                 PositionX = this.PositionX,
@@ -174,6 +196,7 @@ namespace Chaos.Wedding.Models.Games
                 Id = this.Id,
                 GameId = this.GameId,
                 ImageId = this.ImageId,
+                LockCode = this.LockCode,
                 Height = this.Height,
                 Width = this.Width,
                 PositionX = this.PositionX,
@@ -224,6 +247,7 @@ namespace Chaos.Wedding.Models.Games
             this.PositionX = contract.PositionX;
             this.PositionY = contract.PositionY;
             this.ImageId = contract.ImageId;
+            this.LockCode = contract.LockCode;
             this.Titles.Update(this.Titles.FromContract(contract.Titles));
             await this.SaveAsync(session);
         }
@@ -245,6 +269,7 @@ namespace Chaos.Wedding.Models.Games
             this.Id = (int)record[IdColumn];
             this.GameId = (int)record[Game.IdColumn];
             this.ImageId = (string)record[ImageIdColumn];
+            this.LockCode = (string)record[LockCodeColumn];
             this.Height = (short)record[HeightColumn];
             this.Width = (short)record[WidthColumn];
             this.PositionX = (short)record[PositionXColumn];
@@ -327,6 +352,7 @@ namespace Chaos.Wedding.Models.Games
                     { Persistent.ColumnToVariable(IdColumn), this.Id },
                     { Persistent.ColumnToVariable(Game.IdColumn), this.GameId },
                     { Persistent.ColumnToVariable(ImageIdColumn), this.ImageId },
+                    { Persistent.ColumnToVariable(LockCodeColumn), this.LockCode },
                     { Persistent.ColumnToVariable(HeightColumn), this.Height },
                     { Persistent.ColumnToVariable(WidthColumn), this.Width },
                     { Persistent.ColumnToVariable(PositionXColumn), this.PositionX },

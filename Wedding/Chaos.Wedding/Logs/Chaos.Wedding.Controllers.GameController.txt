@@ -1,0 +1,1220 @@
+2020-08-03 12:22:09.8381|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The code '' is not correct.
+   vid Chaos.Wedding.Controllers.GameController.<UnlockTeamZone>d__10.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 268|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The code '' is not correct.
+   vid Chaos.Wedding.Controllers.GameController.<UnlockTeamZone>d__10.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 268
+2020-08-03 12:23:45.0893|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The code 'ett' is not correct.
+   vid Chaos.Wedding.Controllers.GameController.<UnlockTeamZone>d__10.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 268|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The code 'ett' is not correct.
+   vid Chaos.Wedding.Controllers.GameController.<UnlockTeamZone>d__10.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 268
+2020-08-03 12:45:56.3178|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd23d' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 119|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd23d' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 119
+2020-08-03 12:45:56.3437|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd23d' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 119|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd23d' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 119
+2020-08-03 12:45:57.9974|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd2dc' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 119|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd2dc' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 119
+2020-08-03 12:45:58.0528|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd2dc' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 119|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd2dc' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 119
+2020-08-04 13:17:38.4311|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: At least one title needs to be specified.
+   vid Chaos.Movies.Model.LanguageDescriptionCollection.ValidateSaveCandidate() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\LanguageDescriptionCollection.cs:rad 180
+   vid Chaos.Wedding.Models.Games.Alternative.ValidateSaveCandidate() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Alternative.cs:rad 197
+   vid Chaos.Wedding.Models.Games.Alternative.<SaveAsync>d__49.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Alternative.cs:rad 257
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveAlternative>d__27.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 891|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: At least one title needs to be specified.
+   vid Chaos.Movies.Model.LanguageDescriptionCollection.ValidateSaveCandidate() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\LanguageDescriptionCollection.cs:rad 180
+   vid Chaos.Wedding.Models.Games.Alternative.ValidateSaveCandidate() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Alternative.cs:rad 197
+   vid Chaos.Wedding.Models.Games.Alternative.<SaveAsync>d__49.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Alternative.cs:rad 257
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveAlternative>d__27.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 891
+2020-08-04 16:44:09.8357|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16
+2020-08-04 16:44:17.3136|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16
+2020-08-04 16:46:34.6327|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16
+2020-08-04 16:47:44.2747|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16
+2020-08-04 16:47:53.1687|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16
+2020-08-04 16:48:24.2845|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16
+2020-08-04 16:49:01.3936|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:b7f1b866-156a-4a59-8c62-985d7eb23b17
+Error Number:8152,State:10,Class:16
+2020-08-04 16:54:46.8275|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<UpdateAsync>d__40.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 255
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 833
+ClientConnectionId:ac9d7097-e570-4f14-a795-34abc37d202e
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<UpdateAsync>d__40.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 255
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 833
+ClientConnectionId:ac9d7097-e570-4f14-a795-34abc37d202e
+Error Number:8152,State:10,Class:16
+2020-08-05 09:46:01.5574|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: At least one title needs to be specified.
+   vid Chaos.Movies.Model.LanguageDescriptionCollection.ValidateSaveCandidate() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\LanguageDescriptionCollection.cs:rad 180
+   vid Chaos.Wedding.Models.Games.Question.ValidateSaveCandidate() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 218
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 285
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: At least one title needs to be specified.
+   vid Chaos.Movies.Model.LanguageDescriptionCollection.ValidateSaveCandidate() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\LanguageDescriptionCollection.cs:rad 180
+   vid Chaos.Wedding.Models.Games.Question.ValidateSaveCandidate() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 218
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 285
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+2020-08-05 11:06:21.0251|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:d9c47e07-ba8c-4f9d-8df3-fd1519e3237a
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:d9c47e07-ba8c-4f9d-8df3-fd1519e3237a
+Error Number:8152,State:10,Class:16
+2020-08-05 11:08:20.5739|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:404aee07-4df0-4eda-ab8c-3a8a501e4ac7
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:404aee07-4df0-4eda-ab8c-3a8a501e4ac7
+Error Number:8152,State:10,Class:16
+2020-08-05 11:41:19.4366|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:339683b4-b285-42ab-92e1-6b7cd5e6e524
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 822
+ClientConnectionId:339683b4-b285-42ab-92e1-6b7cd5e6e524
+Error Number:8152,State:10,Class:16
+2020-08-05 15:14:05.4717|Error|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 823
+ClientConnectionId:a39f7bfd-dfab-49d3-8b99-d48b34b62efe
+Error Number:8152,State:10,Class:16|System.Data.SqlClient.SqlException (0x80131904): String or binary data would be truncated.
+The data for table-valued parameter "@titles" doesn't conform to the table type of the parameter. SQL Server error is: 8152, state: 10
+The statement has been terminated.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 823
+ClientConnectionId:a39f7bfd-dfab-49d3-8b99-d48b34b62efe
+Error Number:8152,State:10,Class:16
+2020-08-05 15:15:55.1759|Error|System.Data.SqlClient.SqlException (0x80131904): The EXECUTE permission was denied on the object 'LanguageDescriptionCollection2', database 'CMDB', schema 'dbo'.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 823
+ClientConnectionId:a39f7bfd-dfab-49d3-8b99-d48b34b62efe
+Error Number:229,State:5,Class:14|System.Data.SqlClient.SqlException (0x80131904): The EXECUTE permission was denied on the object 'LanguageDescriptionCollection2', database 'CMDB', schema 'dbo'.
+   vid System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   vid System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   vid System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   vid System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   vid System.Data.SqlClient.SqlDataReader.get_MetaData()
+   vid System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   vid System.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   vid System.Data.SqlClient.SqlCommand.InternalEndExecuteReader(IAsyncResult asyncResult, String endMethod, Boolean isInternal)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderInternal(IAsyncResult asyncResult)
+   vid System.Data.SqlClient.SqlCommand.EndExecuteReaderAsync(IAsyncResult asyncResult)
+   vid System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Movies.Model.Base.Persistable`2.<SaveToDatabaseAsync>d__12.MoveNext() i C:\GitHub\Chaos\Movies\Chaos.Movies.Model\Base\Persistable.cs:rad 107
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.Question.<SaveAsync>d__43.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\Question.cs:rad 286
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveQuestion>d__26.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 823
+ClientConnectionId:a39f7bfd-dfab-49d3-8b99-d48b34b62efe
+Error Number:229,State:5,Class:14
+2020-08-05 18:09:44.0247|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team '54ed' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 124|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team '54ed' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 124
+2020-08-05 18:09:44.0929|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team '54ed' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 124|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team '54ed' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 124
+2020-08-05 18:09:47.0377|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team '54ed' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 124|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team '54ed' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 124
+2020-08-06 11:26:54.5304|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The code '30' is not correct.
+   vid Chaos.Wedding.Controllers.GameController.<UnlockTeamZone>d__11.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 314|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The code '30' is not correct.
+   vid Chaos.Wedding.Controllers.GameController.<UnlockTeamZone>d__11.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 314
+2020-08-06 11:27:02.6456|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The code '1264' is not correct.
+   vid Chaos.Wedding.Controllers.GameController.<UnlockTeamZone>d__11.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 314|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The code '1264' is not correct.
+   vid Chaos.Wedding.Controllers.GameController.<UnlockTeamZone>d__11.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 314
+2020-08-06 21:53:28.0971|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd35c' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 120|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd35c' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 120
+2020-08-06 21:53:28.1657|Error|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd35c' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 120|Chaos.Movies.Model.Exceptions.MissingResultException: The specified team 'd35c' doesn't exist.
+   vid Chaos.Wedding.Controllers.GameController.<GetTeamLookupShort>d__5.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 120
+2020-08-06 22:05:14.6001|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:05:16.4040|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:05:17.8767|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:05:19.3430|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:05:21.5255|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:08:15.9451|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:08:16.8866|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:08:18.6588|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:08:19.9558|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:10:39.1587|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:20:06.7224|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:20:57.5017|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:24:47.4657|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359
+2020-08-06 22:26:56.0365|Error|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359|Chaos.Movies.Model.Exceptions.InvalidSaveCandidateException: The team id 2 doesn't match the expected 1.
+   vid Chaos.Wedding.Models.Games.TeamAnswer.<UpdateAsync>d__48.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamAnswer.cs:rad 202
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   vid Chaos.Wedding.Models.Games.TeamChallenge.<UpdateAnswerAsync>d__31.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Models\Games\TeamChallenge.cs:rad 195
+--- Slut på stackspårningen från föregående plats där ett undantag utlöstes ---
+   vid System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   vid System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   vid Chaos.Wedding.Controllers.GameController.<SaveTeamAnswer>d__12.MoveNext() i C:\GitHub\Chaos\Wedding\Chaos.Wedding\Controllers\GameController.cs:rad 359

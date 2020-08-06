@@ -5,14 +5,19 @@
     ViewBag.Title = "Score";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
     var systemData = (SystemData)this.Session["SystemData"];
+    var teamId = (int)this.Session["TeamId"];
 }
 
 <h2>@systemData.GetTitle("Score")</h2>
 
 @{ var index = 0; }
-@foreach (var team in Model)
-{
-    <div class="game-row">
+<div class="game-scores">
+    <div class="active" style="grid-column: 1 / span 2;">Plats</div>
+    <div class="active">Lag</div>
+    <div class="active">Poäng</div>
+    @foreach (var team in Model.OrderByDescending(t => t.TeamScore))
+    {
+        var cssClass = teamId == team.Id ? "active" : string.Empty;
         <div>
             @{
                 index++;
@@ -33,7 +38,8 @@
                 }
             }
         </div>
-        <div class="game-title">@team.Name</div>
-        <div class="game-title">@team.TeamScore</div>
-    </div>
-}
+        <div class="@cssClass">@index</div>
+        <div class="@cssClass">@team.Name</div>
+        <div class="@cssClass">@team.TeamScore</div>
+    }
+</div>

@@ -85,13 +85,12 @@ namespace Chaos.Wedding.Models.Games
         /// <param name="challengeId">The <see cref="ChallengeId"/>.</param>
         /// <param name="session">The <see cref="UserSession"/>.</param>
         /// <returns>The <see cref="TeamChallenge"/>.</returns>
-        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         /// <exception cref="InvalidSaveCandidateException">The <see cref="TeamChallenge"/> is not valid to be saved.</exception>
         public static async Task<TeamChallenge> EnsureTeamChallengeAsync(int teamId, int challengeId, UserSession session)
         {
-            var teamChallenges = await Static.GetAsync(session, new List<int> { teamId });
-            var teamChallenge = teamChallenges.FirstOrDefault(c => c.ChallengeId == challengeId);
+            var teamChallenges = await Static.GetFromDatabaseAsync(GetLoadParameters(teamId, challengeId), Static.ReadFromRecordsAsync, session);
+            var teamChallenge = teamChallenges.FirstOrDefault();
             if (teamChallenge == null)
             {
                 teamChallenge = new TeamChallenge(teamId, challengeId);
@@ -113,7 +112,7 @@ namespace Chaos.Wedding.Models.Games
             }
         }
 
-        /// <summary>Adds <see cref="Contract.TeamChallenge"/>s to the <see cref="Contract.Zone.Challenges"/> or the <paramref name="zone"/>.</summary>
+        /// <summary>Adds <see cref="Contract.TeamChallenge"/>s to the <see cref="Contract.Zone.Challenges"/> of the <paramref name="zone"/>.</summary>
         /// <param name="zone">The <see cref="Zone"/>.</param>
         /// <param name="teamId">The active <see cref="Team.Id"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
@@ -259,8 +258,8 @@ namespace Chaos.Wedding.Models.Games
         public override Task ReadFromRecordAsync(IDataRecord record)
         {
             Persistent.ValidateRecord(record, new[] { Team.IdColumn });
-            this.Id = (int)record[Team.IdColumn];
-            this.TeamId = this.Id;
+            this.Id = (int)record[Challenge.IdColumn];
+            this.TeamId = (int)record[Team.IdColumn];
             this.ChallengeId = (int)record[Challenge.IdColumn];
             this.IsLocked = (bool)record[IsLockedColumn];
             this.Score = (int)record[ScoreColumn];
@@ -275,11 +274,10 @@ namespace Chaos.Wedding.Models.Games
         }
         
         /// <inheritdoc />
-        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public override async Task<IEnumerable<TeamChallenge>> GetAsync(UserSession session, IEnumerable<int> idList)
+        public override Task<IEnumerable<TeamChallenge>> GetAsync(UserSession session, IEnumerable<int> idList)
         {
-            return await this.GetFromDatabaseAsync(idList, this.ReadFromRecordsAsync, session);
+            // ReSharper disable once ExceptionNotDocumented
+            throw new NotSupportedException();
         }
 
         /// <inheritdoc />
@@ -314,7 +312,7 @@ namespace Chaos.Wedding.Models.Games
 
             while (await reader.ReadAsync())
             {
-                var teamChallenge = (TeamChallenge)this.GetFromResultsByIdInRecord(teamChallenges, reader, Team.IdColumn);
+                var teamChallenge = (TeamChallenge)this.GetFromResultsByIdInRecord(teamChallenges, reader, Challenge.IdColumn);
                 teamChallenge.Answers.Add(await TeamAnswer.Static.NewFromRecordAsync(reader));
             }
 
@@ -331,6 +329,20 @@ namespace Chaos.Wedding.Models.Games
                     { Persistent.ColumnToVariable(Challenge.IdColumn), this.ChallengeId },
                     { Persistent.ColumnToVariable(IsLockedColumn), this.IsLocked },
                     { Persistent.ColumnToVariable(ScoreColumn), this.Score }
+                });
+        }
+
+        /// <summary>Gets parameters for <see cref="EnsureTeamChallengeAsync"/>.</summary>
+        /// <param name="teamId">The <see cref="TeamId"/>.</param>
+        /// <param name="challengeId">The <see cref="ChallengeId"/>.</param>
+        /// <returns>The parameters.</returns>
+        private static IReadOnlyDictionary<string, object> GetLoadParameters(int teamId, int challengeId)
+        {
+            return new ReadOnlyDictionary<string, object>(
+                new Dictionary<string, object>
+                {
+                    { Persistent.ColumnToVariable(Team.IdColumn), teamId },
+                    { Persistent.ColumnToVariable(Challenge.IdColumn), challengeId }
                 });
         }
     }

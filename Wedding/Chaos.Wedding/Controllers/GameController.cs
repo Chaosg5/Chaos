@@ -21,12 +21,17 @@ namespace Chaos.Wedding.Controllers
     using Chaos.Wedding.Models;
     using Chaos.Wedding.Models.Games;
 
+    using NLog;
+
     using Contract = Chaos.Wedding.Models.Games.Contract;
 
     /// <inheritdoc />
     /// <summary>The <see cref="Controller"/> for <see cref="Models.Games"/>.</summary>
     public class GameController : Controller
     {
+        /// <summary>The logger.</summary>
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>The last <see cref="DateTime"/> when <see cref="Team.GameScores"/> was updated.</summary>
         private static DateTime lastGameScoreUpdate = DateTime.MinValue;
 
@@ -66,12 +71,13 @@ namespace Chaos.Wedding.Controllers
         [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public async Task<ActionResult> Index(string teamLookup = null)
         {
+            // ToDo: System texts
+            // ToDo: Score calculation for Sort
+            // ToDo: Display max number of answers for MultiChoice
+            // ToDo: Touch move center instead of corner
+
             // ToDo: Only show supported ChallengeTypes for admin?
-            // ToDo: Remove negative values for incorrect???? Or not and validate that they don't have a score?
             // ToDo: Validate Questions and alternatives when editing
-            // ToDo: Lock all challenges
-            // ToDo: Redirect and log errors
-            // ToDo: Create teams and print
             Team team = null;
             if (Guid.TryParse(teamLookup, out var teamId))
             {
@@ -96,7 +102,7 @@ namespace Chaos.Wedding.Controllers
             {
                 return this.RedirectToAction("PlayGame", new { GameId = (int)this.Session["GameId"] });
             }
-            
+
             var games = await Game.Static.GetAllAsync(await SessionHandler.GetSessionAsync());
             return this.View(games.Select(g => g.ToContract(this.GetUserLanguage())));
         }
@@ -104,26 +110,30 @@ namespace Chaos.Wedding.Controllers
         /// <summary>Looks up a <see cref="Team"/> with the <paramref name="lookupShort"/>.</summary>
         /// <param name="lookupShort">The short for the <see cref="Team.LookupId"/> of the <see cref="Team"/>.</param>
         /// <returns>The <see cref="ActionResult"/>.</returns>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="MissingResultException">The <see cref="Team"/> was not found for the <see cref="Team.LookupId"/>.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         public async Task<ActionResult> GetTeamLookupShort(string lookupShort)
         {
-            var teams = (await Team.Static.SearchAsync(
-                new SearchParametersDto { SearchText = lookupShort },
-                await SessionHandler.GetSessionAsync())).ToList();
-            if (!teams.Any())
+            try
             {
-                throw new MissingResultException(string.Format(CultureInfo.InvariantCulture, "The specified team '{0}' doesn't exist.", lookupShort));
-            }
+                var teams = (await Team.Static.SearchAsync(
+                    new SearchParametersDto { SearchText = lookupShort },
+                    await SessionHandler.GetSessionAsync())).ToList();
+                if (!teams.Any())
+                {
+                    throw new MissingResultException(string.Format(CultureInfo.InvariantCulture, "The specified team '{0}' doesn't exist.", lookupShort));
+                }
 
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Redirect,
-                    NotificationLevel.Success,
-                    "The team has been successfully logged in.",
-                    Url.Action("Index", "Game", new { teamLookup = teams.First().LookupId })));
+                return this.Json(
+                    this.JsonResult(
+                        ResponseAction.Redirect,
+                        NotificationLevel.Success,
+                        "The team has been successfully logged in.",
+                        Url.Action("Index", "Game", new { teamLookup = teams.First().LookupId })));
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Plays a <see cref="Game"/>.</summary>
@@ -175,6 +185,7 @@ namespace Chaos.Wedding.Controllers
             var zone = await GameCache.ZoneGetAsync(zoneId);
             var contract = zone.ToContract(this.GetUserLanguage());
             await TeamChallenge.AddTeamChallengesAsync(contract, teamId);
+            await TeamZone.AddTeamZonesAsync(contract, teamId);
             return this.View(contract);
         }
 
@@ -199,35 +210,127 @@ namespace Chaos.Wedding.Controllers
         /// <param name="challengeId">The <see cref="Challenge.Id"/> of the <see cref="Challenge"/> to lock.</param>
         /// <param name="unlock">If the <see cref="Challenge"/> should be unlocked instead.</param>
         /// <returns>The <see cref="ActionResult"/>.</returns>
-        /// <exception cref="InvalidSaveCandidateException">No current <see cref="Team"/> has been set.</exception>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
         public async Task<ActionResult> LockTeamChallenge(int challengeId, bool unlock = false)
         {
-            if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+            try
             {
-                throw new InvalidSaveCandidateException("A team needs to be specified.");
-            }
+                if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+                {
+                    throw new InvalidSaveCandidateException("A team needs to be specified.");
+                }
 
-            if (unlock && !(bool)this.Session["SystemAdmin"])
+                if (unlock && (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"]))
+                {
+                    throw new InvalidSaveCandidateException("Only an administrator can unlock a challenge.");
+                }
+
+                var session = await SessionHandler.GetSessionAsync();
+                var challenge = await GameCache.ChallengeGetAsync(challengeId);
+                var teamChallenge = await GameCache.TeamChallengeGetAsync(teamId, challenge.Id);
+                teamChallenge.CalculateScore(challenge, this.GetUserLanguage());
+                teamChallenge.IsLocked = !unlock;
+                await teamChallenge.SaveAsync(session);
+
+                return this.Json(
+                    this.JsonResult(
+                        ResponseAction.Redirect,
+                        NotificationLevel.Success,
+                        "The challenge has been successfully locked.",
+                        Url.Action("PlayChallenge", "Game", new { challengeId = challenge.Id })));
+            }
+            catch (Exception exception)
             {
-                throw new InvalidSaveCandidateException("Only an administrator can unload a challenge.");
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
             }
+        }
 
-            var session = await SessionHandler.GetSessionAsync();
-            var teamChallenge = await GameCache.TeamChallengeGetAsync(teamId, challengeId);
-            var challenge = await GameCache.ChallengeGetAsync(challengeId);
-            teamChallenge.CalculateScore(challenge, this.GetUserLanguage());
-            teamChallenge.IsLocked = !unlock;
-            await teamChallenge.SaveAsync(session);
+        /// <summary>Locks all <see cref="Challenge"/>s all <see cref="Team"/>s for the current <see cref="Game"/>.</summary>
+        /// <param name="unlock">If the <see cref="Challenge"/>s should be unlocked instead.</param>
+        /// <returns>The <see cref="ActionResult"/>.</returns>
+        public async Task<ActionResult> LockAllChallenges(bool unlock = false)
+        {
+            try
+            {
+                if (!int.TryParse(this.Session["GameId"]?.ToString(), out var gameId))
+                {
+                    throw new InvalidSaveCandidateException("A game needs to be specified.");
+                }
 
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Redirect,
-                    NotificationLevel.Success,
-                    "The challenge has been successfully locked.",
-                    Url.Action("PlayChallenge", "Game", new { challengeId = challenge.Id })));
+                if (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"])
+                {
+                    throw new InvalidSaveCandidateException("Only an administrator can lock all challenges.");
+                }
+
+                var session = await SessionHandler.GetSessionAsync();
+                var game = await GameCache.GameGetAsync(gameId);
+                foreach (var challenge in game.Zones.SelectMany(z => z.Challenges))
+                {
+                    foreach (var teamId in game.TeamIds)
+                    {
+                        var teamChallenge = await GameCache.TeamChallengeGetAsync(teamId, challenge.Id);
+                        if (teamChallenge.IsLocked == !unlock)
+                        {
+                            continue;
+                        }
+
+                        teamChallenge.CalculateScore(challenge, this.GetUserLanguage());
+                        teamChallenge.IsLocked = !unlock;
+                        await teamChallenge.SaveAsync(session);
+                    }
+                }
+
+                return this.Json(this.JsonResult(ResponseAction.Notification, NotificationLevel.Success, "All challenges have been successfully locked."));
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
+        }
+
+        /// <summary>Unlocks the <paramref name="zoneId"/> for the current <see cref="Team"/>.</summary>
+        /// <param name="zoneId">The <see cref="Zone.Id"/> of the <see cref="Zone"/> to unlock.</param>
+        /// <param name="lockCode">The <see cref="Zone.LockCode"/> to match.</param>
+        /// <param name="unlock">If the <see cref="Zone"/> should be locked instead.</param>
+        /// <returns>The <see cref="ActionResult"/>.</returns>
+        public async Task<ActionResult> UnlockTeamZone(int zoneId, string lockCode, bool unlock = true)
+        {
+            try
+            {
+                if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+                {
+                    throw new InvalidSaveCandidateException("A team needs to be specified.");
+                }
+
+                if (!unlock && (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"]))
+                {
+                    throw new InvalidSaveCandidateException("Only an administrator can lock a zone.");
+                }
+
+                var session = await SessionHandler.GetSessionAsync();
+                var zone = await GameCache.ZoneGetAsync(zoneId);
+                if (!string.Equals(lockCode, zone.LockCode, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidSaveCandidateException(string.Format(CultureInfo.InvariantCulture, "The code '{0}' is not correct.", lockCode));
+                }
+
+                var teamZone = await GameCache.TeamZoneGetAsync(teamId, zone.Id);
+                teamZone.Unlocked = unlock;
+                await teamZone.SaveAsync(session);
+
+                return this.Json(
+                    this.JsonResult(
+                        ResponseAction.Redirect,
+                        NotificationLevel.Success,
+                        "The zone has been successfully unlocked.",
+                        Url.Action("PlayZone", "Game", new { zoneId = zone.Id })));
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Save an <see cref="TeamAnswer"/> for the <paramref name="alternativeId"/>.</summary>
@@ -237,10 +340,6 @@ namespace Chaos.Wedding.Controllers
         /// <param name="answeredColumn">The <see cref="TeamAnswer.AnsweredColumn"/>.</param>
         /// <param name="answer">The <see cref="TeamAnswer.Answer"/>.</param>
         /// <returns>The <see cref="ActionResult"/>.</returns>
-        /// <exception cref="InvalidSaveCandidateException">No current <see cref="Team"/> has been set.</exception>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
         public async Task<ActionResult> SaveTeamAnswer(
             int alternativeId,
             bool isAnswered,
@@ -248,42 +347,50 @@ namespace Chaos.Wedding.Controllers
             byte answeredColumn = 0,
             string answer = "")
         {
-            if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
+            try
             {
-                throw new InvalidSaveCandidateException("A team needs to be specified.");
-            }
-
-            var session = await SessionHandler.GetSessionAsync();
-            var alternative = await GameCache.AlternativeGetAsync(alternativeId);
-            var question = await GameCache.QuestionGetAsync(alternative.QuestionId);
-            var teamChallenge = await GameCache.TeamChallengeGetAsync(teamId, question.ChallengeId);
-            await teamChallenge.UpdateAnswerAsync(
-                new Contract.TeamAnswer
+                if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var teamId))
                 {
-                    TeamId = teamId,
-                    ChallengeId = question.ChallengeId,
-                    QuestionId = alternative.QuestionId,
-                    AlternativeId = alternativeId,
-                    AnsweredRow = answeredRow,
-                    AnsweredColumn = answeredColumn,
-                    IsAnswered = isAnswered,
-                    Answer = answer
-                },
-                session);
+                    throw new InvalidSaveCandidateException("A team needs to be specified.");
+                }
 
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Notification,
-                    NotificationLevel.Success,
-                    "The answer has been successfully saved.",
-                    string.Empty,
-                    string.Empty,
-                    2000));
+                var session = await SessionHandler.GetSessionAsync();
+                var alternative = await GameCache.AlternativeGetAsync(alternativeId);
+                var question = await GameCache.QuestionGetAsync(alternative.QuestionId);
+                var teamChallenge = await GameCache.TeamChallengeGetAsync(teamId, question.ChallengeId);
+                await teamChallenge.UpdateAnswerAsync(
+                    new Contract.TeamAnswer
+                    {
+                        TeamId = teamId,
+                        ChallengeId = question.ChallengeId,
+                        QuestionId = alternative.QuestionId,
+                        AlternativeId = alternativeId,
+                        AnsweredRow = answeredRow,
+                        AnsweredColumn = answeredColumn,
+                        IsAnswered = isAnswered,
+                        Answer = answer
+                    },
+                    session);
+
+                return this.Json(
+                    this.JsonResult(
+                        ResponseAction.Notification,
+                        NotificationLevel.Success,
+                        "The answer has been successfully saved.",
+                        string.Empty,
+                        string.Empty,
+                        0));
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>The help page.</summary>
         /// <returns>The <see cref="ActionResult"/>.</returns>
-        public async Task<ActionResult> Help()
+        public ActionResult Help()
         {
             return this.View();
         }
@@ -324,21 +431,28 @@ namespace Chaos.Wedding.Controllers
         /// <summary>Sets the <see cref="CultureInfo"/> for the current <see cref="HttpSessionState"/> to the <paramref name="language"/>.</summary>
         /// <param name="language">The <see cref="CultureInfo.Name"/> of the <see cref="CultureInfo"/> to set.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="language"/> is <see langword="null"/></exception>
         public ActionResult SetUserLanguage(string language)
         {
-            if (string.IsNullOrWhiteSpace(language))
+            try
             {
-                throw new ArgumentNullException(nameof(language));
-            }
+                if (string.IsNullOrWhiteSpace(language))
+                {
+                    throw new ArgumentNullException(nameof(language));
+                }
 
-            var culture = new CultureInfo(language);
-            this.Session["UserLanguage"] = culture.Name;
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Notification,
-                    NotificationLevel.Success,
-                    $"The language has been successfully set to {culture.NativeName}."));
+                var culture = new CultureInfo(language);
+                this.Session["UserLanguage"] = culture.Name;
+                return this.Json(
+                    this.JsonResult(
+                        ResponseAction.Notification,
+                        NotificationLevel.Success,
+                        $"The language has been successfully set to {culture.NativeName}."));
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Edits all <see cref="Game"/>s.</summary>
@@ -355,10 +469,10 @@ namespace Chaos.Wedding.Controllers
                 {
                     return this.RedirectToAction("EditTeam", "Game", new { teamId });
                 }
-                
+
                 return this.View(new List<Contract.Game>());
             }
-            
+
             var games = await Game.Static.GetAllAsync(await SessionHandler.GetSessionAsync());
             return this.View(games.Select(g => g.ToContract(this.GetUserLanguage())));
         }
@@ -369,6 +483,7 @@ namespace Chaos.Wedding.Controllers
         [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public async Task<ActionResult> EditTeam(int teamId = 0)
         {
+            await this.SetSystemData();
             if (!(bool)this.Session["SystemAdmin"])
             {
                 if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var currentTeamId) || currentTeamId != teamId)
@@ -377,7 +492,6 @@ namespace Chaos.Wedding.Controllers
                 }
             }
 
-            await this.SetSystemData();
             if (teamId == 0)
             {
                 // ReSharper disable once ExceptionNotDocumented
@@ -394,12 +508,12 @@ namespace Chaos.Wedding.Controllers
         /// <returns>The <see cref="Task"/>.</returns>
         public async Task<ActionResult> EditGame(int gameId = 0)
         {
+            await this.SetSystemData();
             if (!(bool)this.Session["SystemAdmin"])
             {
                 return this.RedirectToAction("Index", "Game");
             }
 
-            await this.SetSystemData();
             if (gameId == 0)
             {
                 // ReSharper disable once ExceptionNotDocumented
@@ -418,12 +532,12 @@ namespace Chaos.Wedding.Controllers
         /// <exception cref="ArgumentNullException">Can't create a zone without a game. <paramref name="gameId"/></exception>
         public async Task<ActionResult> EditZone(int zoneId, int gameId = 0)
         {
+            await this.SetSystemData();
             if (!(bool)this.Session["SystemAdmin"])
             {
                 return this.RedirectToAction("Index", "Game");
             }
 
-            await this.SetSystemData();
             if (zoneId == 0)
             {
                 if (gameId == 0)
@@ -432,7 +546,7 @@ namespace Chaos.Wedding.Controllers
                 }
 
                 // ReSharper disable once ExceptionNotDocumented
-                var newZone = new Zone(gameId, 0, 0, 0, 0, string.Empty, string.Empty);
+                var newZone = new Zone(gameId, 0, 0, 0, 0, string.Empty, string.Empty, string.Empty);
                 return this.View(newZone.ToContract(this.GetUserLanguage()));
             }
 
@@ -447,12 +561,12 @@ namespace Chaos.Wedding.Controllers
         /// <exception cref="ArgumentNullException">Can't create a challenge without a zone. <paramref name="zoneId"/></exception>
         public async Task<ActionResult> EditChallenge(int challengeId, int zoneId = 0)
         {
+            await this.SetSystemData();
             if (!(bool)this.Session["SystemAdmin"])
             {
                 return this.RedirectToAction("Index", "Game");
             }
 
-            await this.SetSystemData();
             if (challengeId == 0)
             {
                 if (zoneId == 0)
@@ -476,12 +590,12 @@ namespace Chaos.Wedding.Controllers
         /// <exception cref="ArgumentNullException">Can't create a question without a challenge. <paramref name="challengeId"/></exception>
         public async Task<ActionResult> EditQuestion(int questionId, int challengeId = 0)
         {
+            await this.SetSystemData();
             if (!(bool)this.Session["SystemAdmin"])
             {
                 return this.RedirectToAction("Index", "Game");
             }
-
-            await this.SetSystemData();
+            
             if (questionId == 0)
             {
                 if (challengeId == 0)
@@ -501,16 +615,18 @@ namespace Chaos.Wedding.Controllers
         /// <summary>Edits a <see cref="Alternative"/>.</summary>
         /// <param name="alternativeId">The <see cref="Alternative.Id"/>.</param>
         /// <param name="questionId">The <see cref="Alternative.QuestionId"/>.</param>
+        /// <param name="correctColumn">The <see cref="Alternative.CorrectColumn"/>.</param>
+        /// <param name="correctRow">The <see cref="Alternative.CorrectRow"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
         /// <exception cref="ArgumentNullException">Can't create a alternative without a question. <paramref name="questionId"/></exception>
-        public async Task<ActionResult> EditAlternative(int alternativeId, int questionId = 0)
+        public async Task<ActionResult> EditAlternative(int alternativeId, int questionId = 0, byte correctColumn = 0, byte correctRow = 0)
         {
+            await this.SetSystemData();
             if (!(bool)this.Session["SystemAdmin"])
             {
                 return this.RedirectToAction("Index", "Game");
             }
-
-            await this.SetSystemData();
+            
             if (alternativeId == 0)
             {
                 if (questionId == 0)
@@ -519,7 +635,7 @@ namespace Chaos.Wedding.Controllers
                 }
 
                 // ReSharper disable once ExceptionNotDocumented
-                var newAlternative = new Alternative(questionId, 0, 0, false, 0, string.Empty, string.Empty, string.Empty);
+                var newAlternative = new Alternative(questionId, correctRow, correctColumn, true, 0, string.Empty, string.Empty, string.Empty);
                 return this.View(newAlternative.ToContract(this.GetUserLanguage()));
             }
 
@@ -534,45 +650,49 @@ namespace Chaos.Wedding.Controllers
         /// <param name="height">The <see cref="Game.Height"/>.</param>
         /// <param name="titles">The <see cref="Game.Titles"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Game"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
         public async Task<ActionResult> SaveGame(int gameId, string imageId, short width, short height, string titles)
         {
-            if (!(bool)this.Session["SystemAdmin"])
+            try
             {
-                throw new InvalidSessionException("Only a system administrator can edit.");
-            }
+                if (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"])
+                {
+                    throw new InvalidSessionException("Only a system administrator can edit.");
+                }
 
-            if (gameId == 0)
-            {
-                var newGame = new Game(imageId, width, height, titles);
-                await newGame.SaveAsync(await SessionHandler.GetSessionAsync());
+                if (gameId == 0)
+                {
+                    var newGame = new Game(imageId, width, height, titles);
+                    await newGame.SaveAsync(await SessionHandler.GetSessionAsync());
+                    return this.Json(
+                        this.JsonResult(
+                            ResponseAction.Redirect,
+                            NotificationLevel.Success,
+                            "The game has been successfully saved.",
+                            Url.Action("EditGame", "Game", new { gameId = newGame.Id })));
+                }
+
+                var game = await GameCache.GameGetAsync(gameId);
+                await game.UpdateAsync(
+                    new Contract.Game
+                    {
+                        Id = gameId,
+                        ImageId = imageId,
+                        Width = width,
+                        Height = height,
+                        Titles = new LanguageDescriptionCollection(titles).ToContract()
+                    },
+                    await SessionHandler.GetSessionAsync());
                 return this.Json(
                     this.JsonResult(
-                        ResponseAction.Redirect,
+                        ResponseAction.Notification,
                         NotificationLevel.Success,
-                        "The game has been successfully saved.",
-                        Url.Action("EditGame", "Game", new { gameId = newGame.Id })));
+                        "The game has been successfully updated."));
             }
-
-            var game = await GameCache.GameGetAsync(gameId);
-            await game.UpdateAsync(
-                new Contract.Game
-                {
-                    Id = gameId,
-                    ImageId = imageId,
-                    Width = width,
-                    Height = height,
-                    Titles = new LanguageDescriptionCollection(titles).ToContract()
-                },
-                await SessionHandler.GetSessionAsync());
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Notification,
-                    NotificationLevel.Success,
-                    "The game has been successfully updated."));
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Saves a <see cref="Zone"/>.</summary>
@@ -583,13 +703,9 @@ namespace Chaos.Wedding.Controllers
         /// <param name="positionX">The <see cref="Zone.PositionX"/>.</param>
         /// <param name="positionY">The <see cref="Zone.PositionY"/>.</param>
         /// <param name="imageId">The <see cref="Zone.ImageId"/>.</param>
+        /// <param name="lockCode">The <see cref="Zone.LockCode"/>.</param>
         /// <param name="titles">The <see cref="Zone.Titles"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Game"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         public async Task<ActionResult> SaveZone(
             int zoneId,
             int gameId,
@@ -598,46 +714,56 @@ namespace Chaos.Wedding.Controllers
             short positionX,
             short positionY,
             string imageId,
+            string lockCode,
             string titles)
         {
-            if (!(bool)this.Session["SystemAdmin"])
+            try
             {
-                throw new InvalidSessionException("Only a system administrator can edit.");
-            }
+                if (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"])
+                {
+                    throw new InvalidSessionException("Only a system administrator can edit.");
+                }
 
-            if (zoneId == 0)
-            {
-                var newZone = new Zone(gameId, width, height, positionX, positionY, imageId, titles);
-                await newZone.SaveAsync(await SessionHandler.GetSessionAsync());
-                await GameCache.ZoneAddedAsync(newZone);
+                if (zoneId == 0)
+                {
+                    var newZone = new Zone(gameId, width, height, positionX, positionY, imageId, lockCode, titles);
+                    await newZone.SaveAsync(await SessionHandler.GetSessionAsync());
+                    await GameCache.ZoneAddedAsync(newZone);
+                    return this.Json(
+                        this.JsonResult(
+                            ResponseAction.Redirect,
+                            NotificationLevel.Success,
+                            "The zone has been successfully created.",
+                            Url.Action("EditZone", "Game", new { zoneId = newZone.Id, gameId = newZone.GameId })));
+                }
+
+                var zone = await GameCache.ZoneGetAsync(zoneId);
+                await zone.UpdateAsync(
+                    new Contract.Zone
+                    {
+                        Id = zoneId,
+                        GameId = gameId,
+                        Width = width,
+                        Height = height,
+                        PositionX = positionX,
+                        PositionY = positionY,
+                        ImageId = imageId,
+                        LockCode = lockCode,
+                        Titles = new LanguageDescriptionCollection(titles).ToContract()
+                    },
+                    await SessionHandler.GetSessionAsync());
                 return this.Json(
                     this.JsonResult(
                         ResponseAction.Redirect,
                         NotificationLevel.Success,
-                        "The zone has been successfully created.",
-                        Url.Action("EditZone", "Game", new { zoneId = newZone.Id, gameId = newZone.GameId })));
+                        "The zone has been successfully updated.",
+                        Url.Action("EditGame", "Game", new { gameId = zone.GameId })));
             }
-
-            var zone = await GameCache.ZoneGetAsync(zoneId);
-            await zone.UpdateAsync(
-                new Contract.Zone
-                {
-                    Id = zoneId,
-                    GameId = gameId,
-                    Width = width,
-                    Height = height,
-                    PositionX = positionX,
-                    PositionY = positionY,
-                    ImageId = imageId,
-                    Titles = new LanguageDescriptionCollection(titles).ToContract()
-                },
-                await SessionHandler.GetSessionAsync());
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Redirect,
-                    NotificationLevel.Success,
-                    "The zone has been successfully updated.",
-                    Url.Action("EditGame", "Game", new { gameId = zone.GameId })));
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Saves a <see cref="Challenge"/>.</summary>
@@ -648,55 +774,58 @@ namespace Chaos.Wedding.Controllers
         /// <param name="difficultyId">The <see cref="Challenge.Difficulty"/>.</param>
         /// <param name="titles">The <see cref="Challenge.Titles"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Game"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         public async Task<ActionResult> SaveChallenge(int challengeId, int zoneId, int challengeTypeId, int challengeSubjectId, int difficultyId, string titles)
         {
-            if (!(bool)this.Session["SystemAdmin"])
+            try
             {
-                throw new InvalidSessionException("Only a system administrator can edit.");
-            }
+                if (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"])
+                {
+                    throw new InvalidSessionException("Only a system administrator can edit.");
+                }
 
-            if (challengeId == 0)
-            {
-                var newChallenge = new Challenge(
-                    zoneId,
-                    await GameCache.ChallengeTypeGetAsync(challengeTypeId),
-                    await GameCache.ChallengeSubjectGetAsync(challengeSubjectId),
-                    await GameCache.DifficultyGetAsync(difficultyId),
-                    titles);
-                await newChallenge.SaveAsync(await SessionHandler.GetSessionAsync());
-                await GameCache.ChallengeAddedAsync(newChallenge);
+                if (challengeId == 0)
+                {
+                    var newChallenge = new Challenge(
+                        zoneId,
+                        await GameCache.ChallengeTypeGetAsync(challengeTypeId),
+                        await GameCache.ChallengeSubjectGetAsync(challengeSubjectId),
+                        await GameCache.DifficultyGetAsync(difficultyId),
+                        titles);
+                    await newChallenge.SaveAsync(await SessionHandler.GetSessionAsync());
+                    await GameCache.ChallengeAddedAsync(newChallenge);
+                    return this.Json(
+                        this.JsonResult(
+                            ResponseAction.Redirect,
+                            NotificationLevel.Success,
+                            "The challenge has been successfully created.",
+                            Url.Action("EditChallenge", "Game", new { challengeId = newChallenge.Id, zoneId = newChallenge.ZoneId })));
+                }
+
+                var challenge = await GameCache.ChallengeGetAsync(challengeId);
+                await challenge.UpdateAsync(
+                    new Contract.Challenge
+                    {
+                        Id = challengeId,
+                        ZoneId = zoneId,
+                        Type = (await GameCache.ChallengeTypeGetAsync(challengeTypeId)).ToContract(),
+                        Subject = (await GameCache.ChallengeSubjectGetAsync(challengeSubjectId)).ToContract(),
+                        Difficulty = (await GameCache.DifficultyGetAsync(difficultyId)).ToContract(),
+                        Titles = new LanguageDescriptionCollection(titles).ToContract()
+                    },
+                    await SessionHandler.GetSessionAsync());
+
                 return this.Json(
                     this.JsonResult(
                         ResponseAction.Redirect,
                         NotificationLevel.Success,
-                        "The challenge has been successfully created.",
-                        Url.Action("EditChallenge", "Game", new { challengeId = newChallenge.Id, zoneId = newChallenge.ZoneId })));
+                        "The challenge has been successfully updated.",
+                        Url.Action("EditZone", "Game", new { zoneId = challenge.ZoneId })));
             }
-
-            var challenge = await GameCache.ChallengeGetAsync(challengeId);
-            await challenge.UpdateAsync(
-                new Contract.Challenge
-                {
-                    Id = challengeId,
-                    ZoneId = zoneId,
-                    Type = (await GameCache.ChallengeTypeGetAsync(challengeTypeId)).ToContract(),
-                    Subject = (await GameCache.ChallengeSubjectGetAsync(challengeSubjectId)).ToContract(),
-                    Difficulty = (await GameCache.DifficultyGetAsync(difficultyId)).ToContract(),
-                    Titles = new LanguageDescriptionCollection(titles).ToContract()
-                },
-                await SessionHandler.GetSessionAsync());
-
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Redirect,
-                    NotificationLevel.Success,
-                    "The challenge has been successfully updated.",
-                    Url.Action("EditZone", "Game", new { zoneId = challenge.ZoneId })));
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Saves a <see cref="Question"/>.</summary>
@@ -708,11 +837,6 @@ namespace Chaos.Wedding.Controllers
         /// <param name="imageId">The <see cref="Question.ImageId"/>.</param>
         /// <param name="titles">The <see cref="Question.Titles"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Game"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         public async Task<ActionResult> SaveQuestion(
             int questionId,
             int challengeId,
@@ -722,49 +846,57 @@ namespace Chaos.Wedding.Controllers
             string imageId,
             string titles)
         {
-            if (!(bool)this.Session["SystemAdmin"])
+            try
             {
-                throw new InvalidSessionException("Only a system administrator can edit.");
-            }
+                if (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"])
+                {
+                    throw new InvalidSessionException("Only a system administrator can edit.");
+                }
 
-            if (questionId == 0)
-            {
-                var newQuestion = new Question(
-                    challengeId,
-                    await GameCache.ChallengeTypeGetAsync(challengeTypeId),
-                    await GameCache.ChallengeSubjectGetAsync(challengeSubjectId),
-                    await GameCache.DifficultyGetAsync(difficultyId),
-                    imageId,
-                    titles);
-                await newQuestion.SaveAsync(await SessionHandler.GetSessionAsync());
-                await GameCache.QuestionAddedAsync(newQuestion);
+                if (questionId == 0)
+                {
+                    var newQuestion = new Question(
+                        challengeId,
+                        await GameCache.ChallengeTypeGetAsync(challengeTypeId),
+                        await GameCache.ChallengeSubjectGetAsync(challengeSubjectId),
+                        await GameCache.DifficultyGetAsync(difficultyId),
+                        imageId,
+                        titles);
+                    await newQuestion.SaveAsync(await SessionHandler.GetSessionAsync());
+                    await GameCache.QuestionAddedAsync(newQuestion);
+                    return this.Json(
+                        this.JsonResult(
+                            ResponseAction.Redirect,
+                            NotificationLevel.Success,
+                            "The question has been successfully created.",
+                            Url.Action("EditQuestion", "Game", new { questionId = newQuestion.Id, challengeId = newQuestion.ChallengeId })));
+                }
+
+                var question = await GameCache.QuestionGetAsync(questionId);
+                await question.UpdateAsync(
+                    new Contract.Question
+                    {
+                        Id = questionId,
+                        ChallengeId = challengeId,
+                        Type = (await GameCache.ChallengeTypeGetAsync(challengeTypeId)).ToContract(),
+                        Subject = (await GameCache.ChallengeSubjectGetAsync(challengeSubjectId)).ToContract(),
+                        Difficulty = (await GameCache.DifficultyGetAsync(difficultyId)).ToContract(),
+                        ImageId = imageId,
+                        Titles = new LanguageDescriptionCollection(titles).ToContract()
+                    },
+                    await SessionHandler.GetSessionAsync());
                 return this.Json(
                     this.JsonResult(
                         ResponseAction.Redirect,
                         NotificationLevel.Success,
-                        "The question has been successfully created.",
-                        Url.Action("EditQuestion", "Game", new { questionId = newQuestion.Id, challengeId = newQuestion.ChallengeId })));
+                        "The question has been successfully updated.",
+                        Url.Action("EditChallenge", "Game", new { challengeId = question.ChallengeId })));
             }
-
-            var question = await GameCache.QuestionGetAsync(questionId);
-            await question.UpdateAsync(
-                new Contract.Question
-                {
-                    Id = questionId,
-                    ChallengeId = challengeId,
-                    Type = (await GameCache.ChallengeTypeGetAsync(challengeTypeId)).ToContract(),
-                    Subject = (await GameCache.ChallengeSubjectGetAsync(challengeSubjectId)).ToContract(),
-                    Difficulty = (await GameCache.DifficultyGetAsync(difficultyId)).ToContract(),
-                    ImageId = imageId,
-                    Titles = new LanguageDescriptionCollection(titles).ToContract()
-                },
-                await SessionHandler.GetSessionAsync());
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Redirect,
-                    NotificationLevel.Success,
-                    "The question has been successfully updated.",
-                    Url.Action("EditChallenge", "Game", new { challengeId = question.ChallengeId })));
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Saves a <see cref="Alternative"/>.</summary>
@@ -778,11 +910,6 @@ namespace Chaos.Wedding.Controllers
         /// <param name="imageId">The <see cref="Alternative.ImageId"/>.</param>
         /// <param name="titles">The <see cref="Alternative.Titles"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Game"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         public async Task<ActionResult> SaveAlternative(
             int alternativeId,
             int questionId,
@@ -794,93 +921,104 @@ namespace Chaos.Wedding.Controllers
             string imageId,
             string titles)
         {
-            if (!(bool)this.Session["SystemAdmin"])
+            try
             {
-                throw new InvalidSessionException("Only a system administrator can edit.");
-            }
+                if (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"])
+                {
+                    throw new InvalidSessionException("Only a system administrator can edit.");
+                }
 
-            if (alternativeId == 0)
-            {
-                var newAlternative = new Alternative(questionId, correctRow, correctColumn, isCorrect, scoreValue, correctAnswer, imageId, titles);
-                await newAlternative.SaveAsync(await SessionHandler.GetSessionAsync());
-                await GameCache.AlternativeAddedAsync(newAlternative);
+                if (alternativeId == 0)
+                {
+                    var newAlternative = new Alternative(questionId, correctRow, correctColumn, isCorrect, scoreValue, correctAnswer, imageId, titles);
+                    await newAlternative.SaveAsync(await SessionHandler.GetSessionAsync());
+                    await GameCache.AlternativeAddedAsync(newAlternative);
+                    return this.Json(
+                        this.JsonResult(
+                            ResponseAction.Redirect,
+                            NotificationLevel.Success,
+                            "The alternative has been successfully created.",
+                            Url.Action("EditQuestion", "Game", new { questionId = newAlternative.QuestionId })));
+                }
+
+                var alternative = await GameCache.AlternativeGetAsync(alternativeId);
+                await alternative.UpdateAsync(
+                    new Contract.Alternative
+                    {
+                        Id = alternativeId,
+                        QuestionId = questionId,
+                        CorrectRow = correctRow,
+                        CorrectColumn = correctColumn,
+                        IsCorrect = isCorrect,
+                        ScoreValue = scoreValue,
+                        CorrectAnswer = correctAnswer,
+                        ImageId = imageId,
+                        Titles = new LanguageDescriptionCollection(titles).ToContract()
+                    },
+                    await SessionHandler.GetSessionAsync());
                 return this.Json(
                     this.JsonResult(
                         ResponseAction.Redirect,
                         NotificationLevel.Success,
-                        "The alternative has been successfully created.",
-                        Url.Action("EditQuestion", "Game", new { questionId = newAlternative.QuestionId })));
+                        "The alternative has been successfully updated.",
+                        Url.Action("EditQuestion", "Game", new { questionId = alternative.QuestionId })));
             }
-
-            var alternative = await GameCache.AlternativeGetAsync(alternativeId);
-            await alternative.UpdateAsync(
-                new Contract.Alternative
-                {
-                    Id = alternativeId,
-                    QuestionId = questionId,
-                    CorrectRow = correctRow,
-                    CorrectColumn = correctColumn,
-                    IsCorrect = isCorrect,
-                    ScoreValue = scoreValue,
-                    CorrectAnswer = correctAnswer,
-                    ImageId = imageId,
-                    Titles = new LanguageDescriptionCollection(titles).ToContract()
-                },
-                await SessionHandler.GetSessionAsync());
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Redirect,
-                    NotificationLevel.Success,
-                    "The alternative has been successfully updated.",
-                    Url.Action("EditQuestion", "Game", new { questionId = alternative.QuestionId })));
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Saves a <see cref="Team"/>.</summary>
         /// <param name="teamId">The <see cref="Team.Id"/>.</param>
         /// <param name="name">The <see cref="Team.Name"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        /// <exception cref="InvalidSaveCandidateException">The <see cref="Game"/> is not valid to be saved.</exception>
-        /// <exception cref="MissingResultException">Failed to create a new session.</exception>
-        /// <exception cref="MissingColumnException">A required column is missing in the record.</exception>
-        /// <exception cref="PersistentObjectRequiredException">All items to get needs to be persisted.</exception>
         [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public async Task<ActionResult> SaveTeam(int teamId, string name)
         {
-            if (!(bool)this.Session["SystemAdmin"])
+            try
             {
-                if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var currentTeamId) || currentTeamId != teamId)
+                if (this.Session["SystemAdmin"] == null || !(bool)this.Session["SystemAdmin"])
                 {
-                    throw new InvalidSessionException("Only a system administrator can edit.");
+                    if (!int.TryParse(this.Session["TeamId"]?.ToString(), out var currentTeamId) || currentTeamId != teamId)
+                    {
+                        throw new InvalidSessionException("Only a system administrator can edit.");
+                    }
                 }
-            }
 
-            if (teamId == 0)
-            {
-                var newTeam = new Team(name);
-                await newTeam.SaveAsync(await SessionHandler.GetSessionAsync());
+                if (teamId == 0)
+                {
+                    var newTeam = new Team(name);
+                    await newTeam.SaveAsync(await SessionHandler.GetSessionAsync());
+                    return this.Json(
+                        this.JsonResult(
+                            ResponseAction.Redirect,
+                            NotificationLevel.Success,
+                            "The team has been successfully created.",
+                            Url.Action("Index", "Game", new { teamLookup = newTeam.LookupId })));
+                }
+
+                var team = await GameCache.TeamGetAsync(teamId);
+                await team.UpdateAsync(
+                    new Contract.Team
+                    {
+                        Id = teamId,
+                        Name = name
+                    },
+                    await SessionHandler.GetSessionAsync());
                 return this.Json(
                     this.JsonResult(
                         ResponseAction.Redirect,
                         NotificationLevel.Success,
-                        "The team has been successfully created.",
-                        Url.Action("Index", "Game", new { teamLookup = newTeam.LookupId })));
+                        "The team has been successfully updated.",
+                        Url.Action("Index", "Game", new { teamLookup = team.LookupId })));
             }
-
-            var team = await GameCache.TeamGetAsync(teamId);
-            await team.UpdateAsync(
-                new Contract.Team
-                {
-                    Id = teamId,
-                    Name = name
-                },
-                await SessionHandler.GetSessionAsync());
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Redirect,
-                    NotificationLevel.Success,
-                    "The team has been successfully updated.",
-                    Url.Action("Index", "Game", new { teamLookup = team.LookupId })));
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Reset the <see cref="GameCache"/>, reloading a cached objects.</summary>
@@ -888,6 +1026,7 @@ namespace Chaos.Wedding.Controllers
         public ActionResult ResetGameCache()
         {
             GameCache.ClearAllCache();
+            lastGameScoreUpdate = DateTime.MinValue;
             return this.Json(this.JsonResult(ResponseAction.Notification, NotificationLevel.Success, "The cache has been successfully cleared."));
         }
 
@@ -910,19 +1049,27 @@ namespace Chaos.Wedding.Controllers
         /// <returns>The <see cref="ActionResult"/>.</returns>
         public ActionResult AdminLogin(string username, string password)
         {
-            if (username != Movies.Model.Properties.Settings.Default.SystemUserName
-                || password != Movies.Model.Properties.Settings.Default.SystemPassword)
+            try
             {
-                throw new InvalidSessionException("The specified login is not valid.");
-            }
+                if (username != Movies.Model.Properties.Settings.Default.SystemUserName
+                || password != Movies.Model.Properties.Settings.Default.SystemPassword)
+                {
+                    throw new InvalidSessionException("The specified login is not valid.");
+                }
 
-            this.Session["SystemAdmin"] = true;
-            return this.Json(
-                this.JsonResult(
-                    ResponseAction.Redirect,
-                    NotificationLevel.Success,
-                    "Successfully logged in as administrator.",
-                    Url.Action("EditIndex", "Game")));
+                this.Session["SystemAdmin"] = true;
+                return this.Json(
+                    this.JsonResult(
+                        ResponseAction.Redirect,
+                        NotificationLevel.Success,
+                        "Successfully logged in as administrator.",
+                        Url.Action("EditIndex", "Game")));
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return this.Json(this.JsonException(exception));
+            }
         }
 
         /// <summary>Gets the delay time in milliseconds for the <paramref name="level"/>.</summary>
@@ -941,6 +1088,15 @@ namespace Chaos.Wedding.Controllers
                 default:
                     return 15000;
             }
+        }
+
+        /// <summary>Creates a <see cref="JsonResult"/> from a result to show to the user.</summary>
+        /// <param name="exception">The <see cref="Exception"/>.</param>
+        /// <param name="delay">The delay.</param>
+        /// <returns>The <see cref="object"/>.</returns>
+        private object JsonException(Exception exception, int delay = 30000)
+        {
+            return this.JsonResult(ResponseAction.Notification, NotificationLevel.Danger, exception.Message, string.Empty, string.Empty, delay);
         }
 
         /// <summary>Creates a <see cref="JsonResult"/> from a result to show to the user.</summary>
@@ -964,7 +1120,6 @@ namespace Chaos.Wedding.Controllers
                 case ResponseAction.Redirect:
                     if (string.IsNullOrWhiteSpace(url))
                     {
-                        // ToDo: Change to warning notification
                         throw new ArgumentNullException(nameof(url), $"No URL was specified for the redirect. {title}");
                     }
 

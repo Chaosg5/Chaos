@@ -58,7 +58,13 @@ namespace Chaos.Wedding.Models.Games.Contract
         {
             get
             {
-                return this.Alternatives.Where(a => a.IsCorrect).Sum(a => a.ScoreValue);
+                switch (this.QuestionType)
+                {
+                    case QuestionType.Match:
+                        return this.Alternatives.Where(a => a.IsCorrect && a.CorrectColumn > 1).Sum(a => a.ScoreValue);
+                    default:
+                        return this.Alternatives.Where(a => a.IsCorrect).Sum(a => a.ScoreValue);
+                }
             }
         }
 
@@ -84,7 +90,7 @@ namespace Chaos.Wedding.Models.Games.Contract
         {
             get
             {
-                return this.Alternatives.Max(a => a.CorrectColumn);
+                return !this.Alternatives.Any() ? 0 : this.Alternatives.Max(a => a.CorrectColumn);
             }
         }
 
@@ -93,7 +99,7 @@ namespace Chaos.Wedding.Models.Games.Contract
         {
             get
             {
-                return this.Alternatives.Max(a => a.CorrectRow);
+                return !this.Alternatives.Any() ? 0 : this.Alternatives.Max(a => a.CorrectRow);
             }
         }
 
@@ -114,6 +120,7 @@ namespace Chaos.Wedding.Models.Games.Contract
             {
                 case QuestionType.SingleChoice:
                 case QuestionType.MultiChoice:
+                case QuestionType.TrueOrFalse:
                     if (!isLocked)
                     {
                         return alternative.TeamAnswer?.IsAnswered == true ? Alternative.SelectedClass : Alternative.BaseClass;
@@ -155,21 +162,13 @@ namespace Chaos.Wedding.Models.Games.Contract
                     }
                     else if (alternative.TeamAnswer?.IsAnswered == true)
                     {
-                        if (alternative.TeamAnswer.AnsweredRow == alternative.CorrectRow)
-                        {
-                            return Alternative.CorrectClass;
-                        }
-                        else
-                        {
-                            return Alternative.IncorrectClass;
-                        }
+                        return alternative.TeamAnswer.AnsweredRow == alternative.CorrectRow ? Alternative.CorrectClass : Alternative.IncorrectClass;
                     }
                     else
                     {
                         return Alternative.MissedClass;
                     }
 
-                    return Alternative.BaseClass;
                 case QuestionType.Unknown:
                 default:
                     return Alternative.BaseClass;
@@ -200,14 +199,29 @@ namespace Chaos.Wedding.Models.Games.Contract
                     return score > 0 ? score : 0;
                 case QuestionType.Sort:
                 case QuestionType.SortAndMatch:
-                    correctAlternatives = this.Alternatives.Where(a => a.CorrectColumn == 1 && a.TeamAnswer?.AnsweredRow == a.CorrectRow);
-                    score = correctAlternatives.Sum(a => a.ScoreValue);
-                    for (var column = 2; column <= this.ColumnCount; column++)
+                    score = 0;
+                    var sortAlternatives = this.Alternatives.Where(a => a.CorrectColumn == 1).OrderBy(a => a.CorrectRow).ToList();
+                    foreach (var alternative in sortAlternatives)
                     {
-                        correctAlternatives = this.Alternatives.Where(a => a.CorrectColumn == 1 && a.TeamAnswer?.AnsweredRow == a.CorrectRow);
-                        score += correctAlternatives.Sum(a => a.ScoreValue);
+                        if (alternative.TeamAnswer?.IsAnswered != true)
+                        {
+                            continue;
+                        }
+
+                        if (alternative.CorrectRow == alternative.TeamAnswer.AnsweredRow)
+                        {
+                            score += alternative.ScoreValue;
+                            continue;
+                        }
+
+                        var previousAnswer = sortAlternatives.FirstOrDefault(a => (a.TeamAnswer?.AnsweredRow ?? -1) + 1 == alternative.TeamAnswer.AnsweredRow);
+                        if (previousAnswer != null)
+                        {
+                            score += alternative.ScoreValue;
+                        }
                     }
 
+                    // ToDo: Other columns
                     return score > 0 ? score : 0;
                 default:
                     return 0;

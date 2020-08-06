@@ -1,21 +1,23 @@
-﻿@model Chaos.Wedding.Models.Games.Contract.Team
+﻿@using Chaos.Wedding.Models.Games
+@model Chaos.Wedding.Models.Games.Contract.Team
 
 @{
     ViewBag.Title = "EditGame";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var systemData = (SystemData)this.Session["SystemData"];
 }
 
 <div class="games-backward">
-    <i class="far fa-save clickable success" onclick="saveTeam();" title="Spara"></i>
+    <i class="far fa-save clickable success" onclick="saveTeam();" title="@systemData.GetTitle("Save")"></i>
     <a href="@Url.Action("Index", "Game")">
         <i class="fas fa-backward clickable success"></i>
     </a>
-    <i class="fas fa-sign-out-alt clickable error" onclick="logOut();" title="Log out"></i>
+    <i class="fas fa-sign-out-alt clickable error" onclick="logOut();" title="@systemData.GetTitle("LogOut")"></i>
 </div>
 
-<h2>Edit team</h2>
+<h2>@systemData.GetTitle("EditTeam")</h2>
 
-<h3>Name</h3>
+<h3>@systemData.GetTitle("Name")</h3>
 <div class="game-row">
     <div>
         <input type="text" id="Name" value="@Model.Name" class="input-wide" />

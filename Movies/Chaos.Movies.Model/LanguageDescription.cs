@@ -42,8 +42,8 @@ namespace Chaos.Movies.Model
                 throw new ArgumentNullException(nameof(title));
             }
 
-            this.Title = title;
-            this.Description = description ?? string.Empty;
+            this.Title = title.Trim();
+            this.Description = description?.Trim() ?? string.Empty;
             this.Language = language;
         }
         

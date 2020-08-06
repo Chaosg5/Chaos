@@ -1,5 +1,9 @@
-﻿@using Chaos.Wedding.Models.Games.Contract
+﻿@using Chaos.Wedding.Models.Games
+@using Chaos.Wedding.Models.Games.Contract
 @model Chaos.Wedding.Models.Games.Contract.Question
+@{
+    var systemData = (SystemData)this.Session["SystemData"];
+}
 
 <div class="game-question-type">
     <div><i class="@Model.Type.ImageId" title="@Model.Type.Titles.UserTitle.Title"></i>@Model.Type.Titles.UserTitle.Title</div>
@@ -7,12 +11,17 @@
     <div><i class="@Model.Difficulty.ImageId" title="@Model.Difficulty.Titles.UserTitle.Title"></i>@Model.Difficulty.Titles.UserTitle.Title</div>
     @if (ViewBag.ChallengeLocked)
     {
-        <div><i class="fas fa-lock gray" title="Locked"></i></div>
+        <div><i class="fas fa-lock gray" title="@systemData.GetTitle("Locked")"></i></div>
     }
-    <div>@($"{Model.GetScore()}/{Model.MaxScore}")</div>
+    <div><i class="fas fa-medal gold"></i>@($"{Model.GetScore()} {systemData.GetTitle("Of")} {Model.MaxScore}")</div>
 </div>
 <div class="game-question-content">
     <div class="game-title">@Model.Titles.UserTitle.Title</div>
+    @if (!string.IsNullOrEmpty(Model.Titles.UserTitle.Description))
+    {
+        <span>@Model.Titles.UserTitle.Description</span>
+    }
+
     @if (!string.IsNullOrEmpty(Model.ImageId))
     {
         <img src="~/Content/images/store/@Model.ImageId" />
@@ -25,11 +34,11 @@
             {
                 if (ViewBag.ChallengeLocked)
                 {
-                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@alternative.Titles.UserTitle.Title</div>
+                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@Html.Partial("_AnswerAlternative", alternative)</div>
                 }
                 else
                 {
-                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" data-alternative="@alternative.Id" onclick="selectedSingleChoice(this, '@alternative.Id');">@alternative.Titles.UserTitle.Title</div>
+                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" data-alternative="@alternative.Id" onclick="selectedSingleChoice(this, '@alternative.Id');">@Html.Partial("_AnswerAlternative", alternative)</div>
                 }
             }
         </div>
@@ -41,18 +50,18 @@
             {
                 if (ViewBag.ChallengeLocked)
                 {
-                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@alternative.Titles.UserTitle.Title</div>
+                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@Html.Partial("_AnswerAlternative", alternative)</div>
                 }
                 else
                 {
-                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" data-alternative="@alternative.Id" onclick="selectedMultiChoice(this, '@alternative.Id', @Model.MaxChoices);">@alternative.Titles.UserTitle.Title</div>
+                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)" data-alternative="@alternative.Id" onclick="selectedMultiChoice(this, '@alternative.Id', @Model.MaxChoices);">@Html.Partial("_AnswerAlternative", alternative)</div>
                 }
             }
         </div>
     }
     else if (Model.QuestionType == QuestionType.Match || Model.QuestionType == QuestionType.Sort || Model.QuestionType == QuestionType.SortAndMatch)
     {
-        var unansweredAlternatives = Model.Alternatives.ToList();
+        var unansweredAlternatives = Model.Alternatives.ToList().Shuffle();
         <div class="@($"game-alternatives-grid{Model.ColumnCount}")">
             @for (var row = 1; row <= Model.RowCount; row++)
             {
@@ -66,7 +75,7 @@
                     else if (column == 1 && Model.QuestionType == QuestionType.Match)
                     {
                         unansweredAlternatives.Remove(alternative);
-                        <div class="game-alternative frozen">@alternative.Titles.UserTitle.Title</div>
+                        <div class="game-alternative frozen">@Html.Partial("_AnswerAlternative", alternative)</div>
                     }
                     else
                     {
@@ -77,32 +86,46 @@
                                 unansweredAlternatives.Remove(answer);
                                 if (ViewBag.ChallengeLocked)
                                 {
-                                    <div class="@Model.GetAlternativeCssClass(alternative, ViewBag.ChallengeLocked)">@answer.Titles.UserTitle.Title</div>
+                                    if (alternative == answer)
+                                    {
+                                        <div class="@Model.GetAlternativeCssClass(answer, ViewBag.ChallengeLocked)">@Html.Partial("_AnswerAlternative", answer)</div>
+                                    }
+                                    else if (!string.IsNullOrEmpty(alternative.ImageId))
+                                    {
+                                        <div>
+                                            <div class="game-alternative missed half">@Html.Partial("_AnswerAlternative", alternative)</div>
+                                            <div class="game-alternative incorrect half">@Html.Partial("_AnswerAlternative", answer)</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="@Model.GetAlternativeCssClass(answer, ViewBag.ChallengeLocked)"><span style="text-decoration: line-through;">@answer.Titles.UserTitle.Title</span>@Html.Partial("_AnswerAlternative", alternative)</div>
+                                    }
                                 }
                                 else
                                 {
-                                    <div id="@($"DragAlternative{answer.Id}")" data-question="@Model.Id" data-row="@answer.CorrectRow" data-column="@answer.CorrectColumn" data-alternative="@answer.Id" class="game-alternative selected" draggable="true" ondragstart="drag(event)">@answer.Titles.UserTitle.Title</div>
+                                    <div id="@($"DragAlternative{answer.Id}")" data-question="@Model.Id" data-row="@answer.CorrectRow" data-column="@answer.CorrectColumn" data-alternative="@answer.Id" class="game-alternative selected touch" draggable="true" ondragstart="drag(event)">@Html.Partial("_AnswerAlternative", answer)</div>
                                 }
                             }
                             else if (ViewBag.ChallengeLocked)
                             {
-                                <div class="game-alternative missed">@alternative.Titles.UserTitle.Title</div>
+                                <div class="game-alternative missed">@Html.Partial("_AnswerAlternative", alternative)</div>
                             }
                         </div>
                     }
                 }
             }
         </div>
-        <div id="@($"DragContainer{Model.Id}")" data-question="@Model.Id" class="game-alternatives-container" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div id="@($"DragContainer{Model.Id}")" data-question="@Model.Id" class="@($"game-alternatives-container{Model.ColumnCount}")" ondrop="drop(event)" ondragover="allowDrop(event)">
             @foreach (var alternative in unansweredAlternatives)
             {
                 if (ViewBag.ChallengeLocked)
                 {
-                    <div class="game-alternative missed">@alternative.Titles.UserTitle.Title</div>
+                    <div class="game-alternative missed">@Html.Partial("_AnswerAlternative", alternative)</div>
                 }
                 else
                 {
-                    <div id="@($"DragAlternative{alternative.Id}")" data-question="@Model.Id" data-row="@alternative.CorrectRow" data-column="@alternative.CorrectColumn" data-alternative="@alternative.Id" class="game-alternative" draggable="true" ondragstart="drag(event)">@alternative.Titles.UserTitle.Title</div>
+                    <div id="@($"DragAlternative{alternative.Id}")" data-question="@Model.Id" data-row="@alternative.CorrectRow" data-column="@alternative.CorrectColumn" data-alternative="@alternative.Id" class="game-alternative touch" draggable="true" ondragstart="drag(event)">@Html.Partial("_AnswerAlternative", alternative)</div>
                 }
             }
         </div>

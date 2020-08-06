@@ -249,7 +249,7 @@ namespace Chaos.Movies.Model
                     throw new InvalidSaveCandidateException($"Expected 3 parts of the title, found {parts.Length}.");
                 }
 
-                var newTitle = new LanguageDescription(parts[1], parts[2], new CultureInfo(parts[0]));
+                var newTitle = new LanguageDescription(parts[1], parts[2], new CultureInfo(parts[0].Trim()));
                 var existing = this.FirstOrDefault(l => l.Language.Name == newTitle.Language.Name);
                 if (existing == null)
                 {

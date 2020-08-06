@@ -8,8 +8,8 @@
 }
 
 <div class="games-backward">
+    <i class="far fa-save clickable success" onclick="saveChallenge()" title="Save challenge"></i>
     <a href="@Url.Action("EditZone", "Game", new { zoneId = Model.ZoneId })">
-        <i class="far fa-save clickable success" onclick="saveChallenge()" title="Save challenge"></i>
         <i class="fas fa-backward clickable success"></i>
     </a>
 </div>
@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<h3>Titles</h3>
+<h3>@systemData.GetTitle("Titles")</h3>
 <div id="Titles">
     @foreach (var title in (List<string>)Session["Languages"])
     {
