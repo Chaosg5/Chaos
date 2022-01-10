@@ -269,8 +269,8 @@
         $('div[id^="DragAlternative"]').on("touchmove",
             function(e) {
                 var touchLocation = e.targetTouches[0];
-                this.style.left = touchLocation.pageX + 'px';
-                this.style.top = touchLocation.pageY + 'px';
+                this.style.left = (parseInt(touchLocation.pageX) - 15).toString() + 'px';
+                this.style.top = (parseInt(touchLocation.pageY) - 15).toString() + 'px';
                 this.style.position = "absolute";
 
                 var scrollPosition = parseInt(document.documentElement.scrollTop);

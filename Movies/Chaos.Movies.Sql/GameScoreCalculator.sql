@@ -75,4 +75,4 @@ from (
 ) as q
 --where q.questionId>=57
 --where q.ChallengeTypeId in (15)
-where q.ScoreValue <> q.AlternativeScore * q.CorrectAlternatives
+--where q.ScoreValue <> q.AlternativeScore * q.CorrectAlternatives

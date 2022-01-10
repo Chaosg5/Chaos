@@ -45,6 +45,7 @@
     }
     else if (Model.QuestionType == QuestionType.MultiChoice)
     {
+        <div><b>Max @Model.MaxChoices alternativ</b></div>
         <div class="game-alternatives-choice">
             @foreach (var alternative in Model.Alternatives)
             {

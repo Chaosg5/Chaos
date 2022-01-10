@@ -73,8 +73,6 @@ namespace Chaos.Wedding.Controllers
         {
             // ToDo: System texts
             // ToDo: Score calculation for Sort
-            // ToDo: Display max number of answers for MultiChoice
-            // ToDo: Touch move center instead of corner
 
             // ToDo: Only show supported ChallengeTypes for admin?
             // ToDo: Validate Questions and alternatives when editing

@@ -305,6 +305,7 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="nlog.config" />
+    <Content Include="Content\images\Stadjakten.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
